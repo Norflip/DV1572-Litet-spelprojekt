@@ -36,19 +36,19 @@ HWND init_win32(HINSTANCE hInstance)
 {
 	const wchar_t CLASS_NAME[] = L"className?";
 
-	WNDCLASS wc;
-	ZeroMemory(&wc, sizeof(WNDCLASS));
-	wc.hInstance = hInstance;
-	wc.lpfnWndProc = WindowProc;
-	wc.lpszClassName = CLASS_NAME;
-	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
-	RegisterClass(&wc);
+	WNDCLASS wndclass;
+	ZeroMemory(&wndclass, sizeof(WNDCLASS));
+	wndclass.hInstance = hInstance;
+	wndclass.lpfnWndProc = WindowProc;
+	wndclass.lpszClassName = CLASS_NAME;
+	wndclass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+	wndclass.hIcon = LoadIcon(NULL, IDI_WINLOGO);
+	RegisterClass(&wndclass);
 
-	RECT rr = { 0,0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT };
-	AdjustWindowRect(&rr, WS_OVERLAPPEDWINDOW, FALSE);
+	RECT windowRect = { 0,0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT };
+	AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
-	HWND hwnd = CreateWindowExW(0, CLASS_NAME, L"Title", WS_OVERLAPPEDWINDOW, rr.left, rr.top, rr.right - rr.left, rr.bottom - rr.top, nullptr, nullptr, hInstance, nullptr);
+	HWND hwnd = CreateWindowExW(0, CLASS_NAME, L"Title", WS_OVERLAPPEDWINDOW, windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, nullptr, nullptr, hInstance, nullptr);
 	assert(hwnd);
 	return hwnd;
 }
