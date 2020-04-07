@@ -10,7 +10,7 @@ class Window
 {
 public:
 	Window(HINSTANCE hInstance);
-	~Window();
+	virtual ~Window();
 
 	void Initialize();
 	void ResizeWindow(size_t width, size_t height);

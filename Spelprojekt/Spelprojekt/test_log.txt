@@ -1,6 +1,0 @@
-
-Console open		Writing to file: test_log.txt
-[info] Loading scene1
-
-Console open		Writing to file: test_log.txt
-[info] Loading scene1

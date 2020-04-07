@@ -7,7 +7,7 @@ class Application
 {
 public:
 	Application(HINSTANCE);
-	~Application();
+	virtual ~Application();
 	void Run();
 
 	void LoadScene(Scene* scene);

@@ -2,6 +2,7 @@
 
 Application::Application(HINSTANCE hInstance) : window(hInstance)
 {
+	Logger::Open();
 	this->window.Initialize();
 
 	Logger::Write(LOG_LEVEL::Info, "Loading scene1");
@@ -10,6 +11,7 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 
 Application::~Application()
 {
+	Logger::Close();
 }
 
 void Application::Run()
