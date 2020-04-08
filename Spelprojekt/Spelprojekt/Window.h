@@ -31,5 +31,5 @@ private:
 	HINSTANCE hInstance;
 };
 
-// has to be outside for now... 
+// has to be outside for now... dunno why
 static Window* windowInstance;

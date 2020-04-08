@@ -1,12 +1,27 @@
 #include "Application.h"
 
+
+
 Application::Application(HINSTANCE hInstance) : window(hInstance)
 {
-	Logger::Open();
+
+	// initializes the win32 window
 	this->window.Initialize();
 
-	Logger::Write(LOG_LEVEL::Info, "Loading scene1");
-	this->currentScene = new Scene(this); // different scenes for game, main menu etc 
+	// loading swapchain, device, deviceContext
+	this->dx11Handler = new DX11Handler();
+	this->dx11Handler->Initialize(this->window.GetWidth(), this->window.GetHeight(), this->window.GetHWND()); // pass window class instead? 
+
+	this->deferredRenderer = new Renderer(NULL, NULL);
+		
+	// Opens the console
+	Logger::Open();
+	Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
+			
+	// TEMPORARY. 
+	// Scene should be a abstract base class in the future for the diffrent scenes. 
+	this->currentScene = new Scene(this, this->deferredRenderer); // different scenes for game, main menu etc 
+
 }
 
 Application::~Application()
@@ -19,10 +34,11 @@ void Application::Run()
 	// starts the message loop for win32
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
-	const float TMP_DELTATIME = 1.0f / 60.0f;
+	const float TMP_DELTATIME = 1.0f / 60.0f; // not implemented yet
 
 	while (TRUE)
 	{
+		// Redirects the messages to the static WindowProc in Window.cpp
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
@@ -38,6 +54,8 @@ void Application::Run()
 			{ 
 				this->currentScene->Update(TMP_DELTATIME);
 			}
+
+			//
 		}
 	}
 }

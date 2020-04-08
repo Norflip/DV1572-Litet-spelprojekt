@@ -59,7 +59,7 @@ LRESULT Window::m_WindowProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		return 0;
 
-	case WM_PAINT:
+	/*case WM_PAINT:
 	{
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hwnd, &ps);
@@ -67,7 +67,7 @@ LRESULT Window::m_WindowProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 		FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
 		EndPaint(hwnd, &ps);
 		return 0;
-	}
+	}*/
 	}
 
 	return DefWindowProc(hwnd, umsg, wParam, lParam);

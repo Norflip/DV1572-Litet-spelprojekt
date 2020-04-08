@@ -26,6 +26,7 @@ namespace Logger
 	static std::string LOG_LEVEL_NAMES[] = { "info", "error", "warning", "debug", "WTF" };
 	static std::ofstream filestream;
 
+	// writes a string to the console
 	inline void Write(LOG_LEVEL logLevel, const std::string& msg)
 	{
 		std::string lineString = "[" + LOG_LEVEL_NAMES[static_cast<int>(logLevel)] + "] " + msg + "\n";
@@ -43,6 +44,7 @@ namespace Logger
 #endif
 	}
 
+	// adds a \n to the output console
 	inline void Space()
 	{
 #if ENABLE_CONSOLE_OUTPUT
@@ -58,6 +60,7 @@ namespace Logger
 #endif
 	}
 
+	// initializes and opens the console
 	inline void Open()
 	{
 		if (!_iocopen)
@@ -78,12 +81,11 @@ namespace Logger
 
 			Space();
 			Write(LOG_LEVEL::Info, ss);
-		
 			_iocopen = true;
 		}
 	}
 
-
+	// closes the console
 	inline void Close()
 	{
 		Write(LOG_LEVEL::Info, "Closing console");
