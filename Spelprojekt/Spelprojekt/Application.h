@@ -13,12 +13,10 @@ public:
 	Application(HINSTANCE);
 	virtual ~Application();
 
-
 	//Functions
 	void Run();
 	void LoadScene(Scene* scene);
 	Scene* GetCurrentScene() const { return this->currentScene; }
-
 
 
 private:

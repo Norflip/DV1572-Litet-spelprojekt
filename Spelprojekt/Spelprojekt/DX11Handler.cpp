@@ -21,13 +21,6 @@ DX11Handler::~DX11Handler()
 
 void DX11Handler::Initialize(size_t width, size_t height, HWND hwnd)
 {
-	/*
-		Use adapter output to calculate numerator & denominator
-		IDXGIFactory* pFactory;
-		IDXGIAdapter* pAdapter;
-		IDXGIOutput* pAdapterOutput;
-	*/
-
 	/////////////////				SWAPCHAIN INITIALIZE				/////////////////
 	
 	// Swapchain: swaps between two buffers
