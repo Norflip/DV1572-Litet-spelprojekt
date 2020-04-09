@@ -13,14 +13,14 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 	this->dx11Handler->Initialize(this->window.GetWidth(), this->window.GetHeight(), this->window.GetHWND()); // pass window class instead? 
 
 	this->deferredRenderer = new Renderer(NULL, NULL);
-		
+
 	// Opens the console
 	Logger::Open();
 	Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
-			
+
 	// TEMPORARY. 
 	// Scene should be a abstract base class in the future for the diffrent scenes. 
-	this->currentScene = new Scene(this, this->deferredRenderer); // different scenes for game, main menu etc 
+	this->currentScene = new DevScene(this, this->deferredRenderer); // different scenes for game, main menu etc 
 
 }
 
@@ -51,11 +51,16 @@ void Application::Run()
 		{
 			// call update function
 			if (this->currentScene != nullptr)
-			{ 
+			{
 				this->currentScene->Update(TMP_DELTATIME);
 			}
 
-			//
+			// call fixed update on a fixed timer
+			/*
+			if (this->currentScene != nullptr)
+				this->currentScene->FixedUpdate();
+			*/
+
 		}
 	}
 }

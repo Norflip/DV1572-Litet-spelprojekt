@@ -8,7 +8,7 @@
 
 // https://stackoverflow.com/questions/32185512/output-to-console-from-a-win32-gui-application-on-windows-10
 #define ENABLE_CONSOLE_OUTPUT 1
-#define ENABLE_TEXT_OUTPUT 1
+#define ENABLE_TEXT_OUTPUT 0
 #define TEXT_FILENAME "test_console_output.txt"
 
 enum class LOG_LEVEL

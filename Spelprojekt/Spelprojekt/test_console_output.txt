@@ -10,3 +10,6 @@
 
 [info] Console open		Writing to file: test_console_output.txt
 [info] Testing text output to console
+
+[info] Console open		Writing to file: test_console_output.txt
+[info] Testing text output to console

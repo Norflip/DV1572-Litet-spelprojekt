@@ -27,16 +27,20 @@ public:
 	virtual ~DX11Handler();
 
 	void Initialize(size_t width, size_t height, HWND);
+
 	ID3D11Device* GetDevice() const { return this->device; }
 	ID3D11DeviceContext* GetDeviceContext() const { return this->context; }
+	D3D11_VIEWPORT GetViewport() const { return this->windowViewport; }
+
 	void SetFullscreen(bool fullscreen);
-	void SetFillMode(D3D11_FILL_MODE mode);
+	void SetWireframeMode(bool);
 
 private:
 	ID3D11Device* device;
 	ID3D11DeviceContext* context;
 	IDXGISwapChain* swapchain;
 	ID3D11RasterizerState* rasterizerState;
+	D3D11_VIEWPORT windowViewport;
 
 	DXGI_SWAP_CHAIN_DESC swapChainDescription;
 };
