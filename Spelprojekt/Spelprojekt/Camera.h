@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include "Transform.h"
+#include "Object.h"
 
 class Camera
 {
@@ -12,8 +13,12 @@ public:
 	Camera(float fovDegrees, size_t width, size_t height);
 	virtual ~Camera();
 
+
 	void SetFreeLook(bool freeLookState ) { this->freeLook = freeLookState; }
 	bool IsFreeLook() const { return this->freeLook; }
+
+	void LockToObject(Object* object);
+	bool IsLockedToObject() const;
 
 	void UpdateView();
 

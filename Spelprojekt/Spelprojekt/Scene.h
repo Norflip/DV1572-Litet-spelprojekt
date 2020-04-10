@@ -8,9 +8,15 @@ class Scene
 {
 public:
 	Scene(Application*, Renderer*);
-	~Scene();
+	virtual ~Scene();
+
+	virtual void Load() = 0;
+	virtual void Unload() = 0;
 
 	virtual void Update(const float& deltaTime) = 0;
+	virtual void FixedUpdate(const float& fixedDeltaTime) = 0;
+
+	virtual Scene* GetNextScene() const = 0;
 
 protected:
 

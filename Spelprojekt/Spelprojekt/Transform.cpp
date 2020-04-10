@@ -19,5 +19,6 @@ DirectX::XMVECTOR Transform::TransformDirection(DirectX::XMVECTOR dir) const
 
 DirectX::XMMATRIX Transform::GetWorldMatrix() const
 {
+	// apply rotation and scaling aswell
 	return DirectX::XMMatrixTranslationFromVector(this->position);
 }

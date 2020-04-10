@@ -35,6 +35,7 @@ void Application::Run()
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
 	const float TMP_DELTATIME = 1.0f / 60.0f; // not implemented yet
+	const float TMP_FIXEDDELTATIME = 1.0f / 50.0f;
 
 	while (TRUE)
 	{
@@ -50,17 +51,22 @@ void Application::Run()
 		else
 		{
 			// call update function
-			if (this->currentScene != nullptr)
+			if (currentScene != nullptr)
 			{
-				this->currentScene->Update(TMP_DELTATIME);
+
+				currentScene->Update(TMP_DELTATIME); //Dynamic
+				currentScene->Update(TMP_FIXEDDELTATIME); //Physics 
+
+				Scene* next = currentScene->GetNextScene();
+				if (next != nullptr)
+				{
+					currentScene->Unload();
+					delete currentScene;
+
+					currentScene = next;
+					currentScene->Load();
+				}
 			}
-
-			// call fixed update on a fixed timer
-			/*
-			if (this->currentScene != nullptr)
-				this->currentScene->FixedUpdate();
-			*/
-
 		}
 	}
 }

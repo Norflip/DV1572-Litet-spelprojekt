@@ -8,9 +8,6 @@ public:
 	Renderer(ID3D11Device*, ID3D11DeviceContext*);
 	virtual ~Renderer();
 
-	void Update();
-	void Render();
-
 private:
 
 };

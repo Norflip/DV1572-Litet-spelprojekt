@@ -16,8 +16,10 @@ public:
 
 	void SetPosition(DirectX::XMVECTOR position) { this->position = position; }
 	DirectX::XMVECTOR GetPosition() { return this->position; }
-	DirectX::XMVECTOR TransformDirection(DirectX::XMVECTOR dir) const;
 
+	void 
+
+	DirectX::XMVECTOR TransformDirection(DirectX::XMVECTOR dir) const;
 	DirectX::XMMATRIX GetWorldMatrix() const;
 
 private:

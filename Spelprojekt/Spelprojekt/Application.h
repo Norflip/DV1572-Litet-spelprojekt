@@ -4,6 +4,7 @@
 #include "Logger.h"
 #include "Renderer.h"
 #include "DX11Handler.h"
+#include <stack>
 
 class Application
 {
@@ -15,9 +16,7 @@ public:
 
 	//Functions
 	void Run();
-	void LoadScene(Scene* scene);
 	Scene* GetCurrentScene() const { return this->currentScene; }
-
 
 private:
 	//Variables

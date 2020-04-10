@@ -1,9 +1,103 @@
 #include "Shader.h"
 
-Shader::Shader()
+Shader::Shader() : pixelShader(nullptr), vertexShader(nullptr), inputLayout(nullptr)
 {
+	flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#ifdef _DEBUG
+	flags = flags | D3DCOMPILE_DEBUG;
+#endif
 }
 
 Shader::~Shader()
 {
+	if (vertexShader != nullptr)
+	{ 
+		vertexShader->Release();
+		vertexShader = 0;
+	}
+
+	if (inputLayout != nullptr)
+	{
+		inputLayout->Release();
+		inputLayout = 0;
+	}
+
+	if (pixelShader != nullptr)
+	{
+		pixelShader->Release();
+		pixelShader = 0;
+	}
+}
+
+void Shader::LoadPixelShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device)
+{
+	ID3DBlob* errorBlob = nullptr;
+	ID3DBlob* pixelShaderBlob = nullptr;
+
+	HRESULT pixelShaderCompileResult = D3DCompileFromFile
+	(
+		path,
+		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		entry, 
+		"ps_5_0",
+		flags, 
+		0, 
+		&pixelShaderBlob, 
+		&errorBlob
+	);
+	
+	if (FAILED(pixelShaderCompileResult) && errorBlob)
+	{
+		HandleShaderError(errorBlob);
+	}
+
+	device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, &this->pixelShader);
+	
+	//might fuck shit up
+	pixelShaderBlob->Release();
+}
+
+void Shader::LoadVertexShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device)
+{
+	ID3DBlob* errorBlob = nullptr;
+	ID3DBlob* vertexShaderBlob = nullptr;
+
+	HRESULT	vertShaderSucc = D3DCompileFromFile
+	(
+		path,
+		nullptr,
+		nullptr,
+		entry,
+		"vs_5_0",
+		0,
+		0,
+		&vertexShaderBlob,
+		&errorBlob
+	);
+	
+	if (FAILED(vertShaderSucc) && errorBlob)
+	{
+		HandleShaderError(errorBlob);
+	}
+
+	device->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, &this->vertexShader);
+	device->CreateInputLayout(INPUT_LAYOUT_V_UV_N_T, ARRAYSIZE(INPUT_LAYOUT_V_UV_N_T), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &inputLayout);
+}
+
+void Shader::Apply(ID3D11DeviceContext* context)
+{
+	// sets the vertex shader and layout
+	context->IASetInputLayout(inputLayout);
+	context->VSSetShader(vertexShader, 0, 0);
+
+	//sets the pixel shader	
+	context->PSSetShader(pixelShader, 0, 0);
+}
+
+void Shader::HandleShaderError(ID3DBlob* errorBlob)
+{
+	OutputDebugStringA((char*)errorBlob->GetBufferPointer());
+	Logger::Write(LOG_LEVEL::Error, (char*)errorBlob->GetBufferPointer());
+	errorBlob->Release();
 }
