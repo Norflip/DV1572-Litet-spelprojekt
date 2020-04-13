@@ -49,13 +49,12 @@ void Shader::LoadPixelShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device)
 	
 	if (FAILED(pixelShaderCompileResult) && errorBlob)
 	{
-		HandleShaderError(errorBlob);
+		PrintShaderError(errorBlob);
+		errorBlob->Release();
 	}
 
-	device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, &this->pixelShader);
-	
-	//might fuck shit up
-	pixelShaderBlob->Release();
+	HRESULT psCompileResult = device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), nullptr, &this->pixelShader);
+	assert(SUCCEEDED(psCompileResult));
 }
 
 void Shader::LoadVertexShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device)
@@ -67,7 +66,7 @@ void Shader::LoadVertexShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device)
 	(
 		path,
 		nullptr,
-		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		entry,
 		"vs_5_0",
 		0,
@@ -78,11 +77,15 @@ void Shader::LoadVertexShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device)
 	
 	if (FAILED(vertShaderSucc) && errorBlob)
 	{
-		HandleShaderError(errorBlob);
+		PrintShaderError(errorBlob);
+		errorBlob->Release();
 	}
 
-	device->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, &this->vertexShader);
-	device->CreateInputLayout(INPUT_LAYOUT_V_UV_N_T, ARRAYSIZE(INPUT_LAYOUT_V_UV_N_T), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &inputLayout);
+	HRESULT vsCompileResult = device->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, &this->vertexShader);
+	assert(SUCCEEDED(vsCompileResult));
+
+	HRESULT vsInputLayoutResult = device->CreateInputLayout(INPUT_LAYOUT_V_UV_N_T, ARRAYSIZE(INPUT_LAYOUT_V_UV_N_T), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &inputLayout);
+	assert(SUCCEEDED(vsInputLayoutResult));
 }
 
 void Shader::Apply(ID3D11DeviceContext* context)
@@ -95,9 +98,8 @@ void Shader::Apply(ID3D11DeviceContext* context)
 	context->PSSetShader(pixelShader, 0, 0);
 }
 
-void Shader::HandleShaderError(ID3DBlob* errorBlob)
+void Shader::PrintShaderError(ID3DBlob* errorBlob)
 {
 	OutputDebugStringA((char*)errorBlob->GetBufferPointer());
 	Logger::Write(LOG_LEVEL::Error, (char*)errorBlob->GetBufferPointer());
-	errorBlob->Release();
 }

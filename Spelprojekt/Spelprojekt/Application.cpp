@@ -4,15 +4,13 @@
 
 Application::Application(HINSTANCE hInstance) : window(hInstance)
 {
-
 	// initializes the win32 window
 	this->window.Initialize();
 
 	// loading swapchain, device, deviceContext
-	this->dx11Handler = new DX11Handler();
-	this->dx11Handler->Initialize(this->window.GetWidth(), this->window.GetHeight(), this->window.GetHWND()); // pass window class instead? 
+	this->dx11.Initialize(this->window.GetWidth(), this->window.GetHeight(), this->window.GetHWND()); // pass window class instead? 
 
-	this->deferredRenderer = new Renderer(NULL, NULL);
+	this->deferredRenderer = new Renderer(this->window.GetWidth(), this->window.GetHeight(), dx11);
 
 	// Opens the console
 	Logger::Open();
@@ -20,7 +18,7 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 
 	// TEMPORARY. 
 	// Scene should be a abstract base class in the future for the diffrent scenes. 
-	this->currentScene = new DevScene(this, this->deferredRenderer); // different scenes for game, main menu etc 
+	this->currentScene = new DevScene(this->deferredRenderer, this->dx11, this->window); // different scenes for game, main menu etc 
 
 }
 

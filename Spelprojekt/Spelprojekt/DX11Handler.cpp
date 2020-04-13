@@ -55,26 +55,8 @@ void DX11Handler::Initialize(size_t width, size_t height, HWND hwnd)
 	assert(SUCCEEDED(resultCreateDevAndSwap));
 	/////////////////				END SWAPCHAIN INITIALIZE				/////////////////
 
-
-	/*
-		Depth buffer
-	*/
-
-
-	/////////////////				VIEWPORT INITIALIZE				/////////////////
-	ZeroMemory(&windowViewport, sizeof(D3D11_VIEWPORT));
-	windowViewport.TopLeftX = 0;
-	windowViewport.TopLeftY = 0;
-	windowViewport.Width = static_cast<float>(width);
-	windowViewport.Height = static_cast<float>(height);
-
-	// minDepth and maxDepth was needed for the rasterizer backface culling. 
-	windowViewport.MinDepth = 0; 	
-	windowViewport.MaxDepth = 1;
-	this->context->RSSetViewports(1, &windowViewport);
-	/////////////////				VIEWPORT INITIALIZE				/////////////////
-
-	SetWireframeMode(D3D11_FILL_SOLID);
+	CreateBackbufferRenderTarget(width, height);
+	SetWireframeMode(false);
 }
 
 void DX11Handler::SetWireframeMode(bool useWireframe)
@@ -100,4 +82,65 @@ void DX11Handler::SetWireframeMode(bool useWireframe)
 	HRESULT resultCreateRasterizer = device->CreateRasterizerState(&rasterizerDescription, &rasterizerState);
 	assert(SUCCEEDED(resultCreateRasterizer));
 	context->RSSetState(rasterizerState);
+}
+
+void DX11Handler::CreateBackbufferRenderTarget(size_t width, size_t height)
+{
+	ID3D11Texture2D* backBufferPtr;
+	swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
+
+	ID3D11RenderTargetView* backbufferRTV;
+	if (backBufferPtr != nullptr)
+	{
+		device->CreateRenderTargetView(backBufferPtr, nullptr, &backbufferRTV);
+		backBufferPtr->Release();
+
+		if (backbufferRTV != nullptr)
+		{
+			ID3D11DepthStencilView* dsv;
+			HRESULT hr;
+
+			// VIEWPORT
+			D3D11_VIEWPORT viewport;
+			ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+			viewport.TopLeftX = 0.0f;
+			viewport.TopLeftY = 0.0f;
+			viewport.Width = static_cast<float>(width);
+			viewport.Height = static_cast<float>(height);
+			viewport.MinDepth = 0.0f;
+			viewport.MaxDepth = 1.0f;
+
+			// DEPTH TEXTURE
+			D3D11_TEXTURE2D_DESC depthTexDesc;
+			depthTexDesc.Width = width;
+			depthTexDesc.Height = height;
+			depthTexDesc.MipLevels = 1;
+			depthTexDesc.ArraySize = 1;
+			depthTexDesc.SampleDesc.Count = 1;
+			depthTexDesc.SampleDesc.Quality = 0;
+			depthTexDesc.Format = DXGI_FORMAT_D32_FLOAT;
+			depthTexDesc.Usage = D3D11_USAGE_DEFAULT;
+			depthTexDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+			depthTexDesc.CPUAccessFlags = 0;
+			depthTexDesc.MiscFlags = 0;
+
+			ID3D11Texture2D* depthTexture;
+			hr = device->CreateTexture2D(&depthTexDesc, 0, &depthTexture);
+			assert(SUCCEEDED(hr));
+
+			D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
+			dsvDesc.Format = depthTexDesc.Format;
+			dsvDesc.Flags = 0;
+			dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+			dsvDesc.Texture2D.MipSlice = 0;
+
+			hr = device->CreateDepthStencilView(depthTexture, &dsvDesc, &dsv);
+			assert(SUCCEEDED(hr));
+
+			depthTexture->Release();
+			depthTexture = nullptr;
+
+			this->backbuffer = new RenderTarget(backbufferRTV, nullptr, dsv, viewport);
+		}
+	}
 }

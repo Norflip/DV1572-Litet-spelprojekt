@@ -17,10 +17,11 @@ public:
 	void SetPosition(DirectX::XMVECTOR position) { this->position = position; }
 	DirectX::XMVECTOR GetPosition() { return this->position; }
 
-	void 
-
 	DirectX::XMVECTOR TransformDirection(DirectX::XMVECTOR dir) const;
 	DirectX::XMMATRIX GetWorldMatrix() const;
+
+	void Translate(float x, float y, float z);
+	void Translate(DirectX::XMVECTOR translation);
 
 private:
 	DirectX::XMVECTOR position;

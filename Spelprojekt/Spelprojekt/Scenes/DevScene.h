@@ -1,11 +1,15 @@
 #pragma once
 #include "../Scene.h"
 #include "../Logger.h"
+#include "../Camera.h"
+#include <vector>
+#include "../Object.h"
+#include "../ShittyOBJLoader.h"
 
 class DevScene : public Scene
 {
 public:
-	DevScene(Application*, Renderer*);
+	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window);
 	virtual ~DevScene();
 
 	void Load() override;
@@ -15,4 +19,8 @@ public:
 	void FixedUpdate(const float& fixedDeltaTime) override;
 
 	Scene* GetNextScene() const override;
+
+private:
+	std::vector<Object*> objects;
+	Camera* camera;
 };

@@ -1,14 +1,23 @@
 #include "Camera.h"
 
-Camera::Camera(float fovDegrees, size_t width, size_t height) : fovDegrees(fovDegrees), width(width), height(height)
+Camera::Camera(float fovDegrees, size_t width, size_t height) : width(width), height(height)
 {
-
+	SetFieldOfView(fovDegrees);
+	UpdateView();
 }
 
 Camera::~Camera()
 {
 }
 
+
+void Camera::SetFieldOfView(float fov)
+{
+	const float toRad = 0.0174532925f;
+	float aspect = static_cast<float>(width) / static_cast<float>(height);
+	this->fovDegrees = fov;
+	this->projection = DirectX::XMMatrixPerspectiveFovLH(fov * toRad, aspect, nearZ, farZ);
+}
 
 void Camera::UpdateView()
 {

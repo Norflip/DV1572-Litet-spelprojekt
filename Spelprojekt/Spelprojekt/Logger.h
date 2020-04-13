@@ -44,6 +44,10 @@ namespace Logger
 #endif
 	}
 
+	inline void Write(const std::string& msg)
+	{
+		Write(LOG_LEVEL::Info, msg);
+	}
 	// adds a \n to the output console
 	inline void Space()
 	{

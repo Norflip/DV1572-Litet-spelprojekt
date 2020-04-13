@@ -4,6 +4,10 @@ Material::Material(Shader* shader) : shader(shader)
 {
 }
 
+Material::~Material()
+{
+}
+
 void Material::SetTexture(size_t index, Texture* texture, PIXEL_TYPE type)
 {
 	auto pair = std::pair<Texture*, PIXEL_TYPE>(texture, type);

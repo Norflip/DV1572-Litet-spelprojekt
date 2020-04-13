@@ -1,7 +1,9 @@
 #pragma once
-#include <d3d11.h>    // D3D 11
-#include <dxgi.h>     // används för swapchain och device / deviceContext
-#include <d3dcompiler.h> // for shaders
+#include <d3d11.h>   
+#include <dxgi.h>     
+#include <d3dcompiler.h>
+
+#include <assert.h>
 #include "Logger.h"
 
 constexpr D3D11_INPUT_ELEMENT_DESC INPUT_LAYOUT_V_UV_N_T[] =
@@ -29,7 +31,7 @@ public:
 	void Apply(ID3D11DeviceContext*);
 
 private:
-	void HandleShaderError(ID3DBlob* errorBlob);
+	void PrintShaderError(ID3DBlob* errorBlob);
 
 private:
 

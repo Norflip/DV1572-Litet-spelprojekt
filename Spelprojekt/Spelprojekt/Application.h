@@ -17,13 +17,15 @@ public:
 	//Functions
 	void Run();
 	Scene* GetCurrentScene() const { return this->currentScene; }
+	Window& GetWindow() { return this->window; }
 
 private:
 	//Variables
 	Window window;
+	DX11Handler dx11;
+
 	Scene* currentScene;
 	Renderer* deferredRenderer;
-	DX11Handler* dx11Handler;
 };
 
 
