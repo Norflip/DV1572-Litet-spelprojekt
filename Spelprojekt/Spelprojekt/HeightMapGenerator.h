@@ -16,7 +16,3 @@ MyClass::MyClass()
 MyClass::~MyClass()
 {
 }
-
-inline void MyClass::test()
-{
-}
