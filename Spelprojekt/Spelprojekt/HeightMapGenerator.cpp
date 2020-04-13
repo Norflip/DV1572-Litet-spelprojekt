@@ -1,3 +1,4 @@
-inline void MyClass::test()
+void MyClass::test()
 {
+	int i;
 }
