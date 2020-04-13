@@ -19,7 +19,7 @@ DX11Handler::~DX11Handler()
 	rasterizerState = 0;
 }
 
-void DX11Handler::Initialize(size_t width, size_t height, HWND hwnd)
+void DX11Handler::Initialize(const Window& window)
 {
 	/////////////////				SWAPCHAIN INITIALIZE				/////////////////
 	
@@ -28,8 +28,8 @@ void DX11Handler::Initialize(size_t width, size_t height, HWND hwnd)
 
 	swapChainDescription.BufferCount = 2;	 // one back buffer
 
-	swapChainDescription.BufferDesc.Width = width;
-	swapChainDescription.BufferDesc.Height = height;
+	swapChainDescription.BufferDesc.Width = window.GetWidth();
+	swapChainDescription.BufferDesc.Height = window.GetHeight();
 	swapChainDescription.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapChainDescription.BufferDesc.RefreshRate.Numerator = 60; // sets framerate to 60 as max
 	swapChainDescription.BufferDesc.RefreshRate.Denominator = 1;
@@ -37,7 +37,7 @@ void DX11Handler::Initialize(size_t width, size_t height, HWND hwnd)
 	swapChainDescription.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
 	swapChainDescription.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT; // DXGI_USAGE_SHADER_INPUT = can be used as a texture input in a hlsl file. 
-	swapChainDescription.OutputWindow = hwnd;
+	swapChainDescription.OutputWindow = window.GetHWND();
 	swapChainDescription.SampleDesc.Count = 1;
 	swapChainDescription.SampleDesc.Quality = 0;
 	swapChainDescription.Windowed = TRUE;
@@ -55,7 +55,7 @@ void DX11Handler::Initialize(size_t width, size_t height, HWND hwnd)
 	assert(SUCCEEDED(resultCreateDevAndSwap));
 	/////////////////				END SWAPCHAIN INITIALIZE				/////////////////
 
-	CreateBackbufferRenderTarget(width, height);
+	CreateBackbufferRenderTarget(window.GetWidth(), window.GetHeight());
 	SetWireframeMode(false);
 }
 
@@ -89,9 +89,9 @@ void DX11Handler::CreateBackbufferRenderTarget(size_t width, size_t height)
 	ID3D11Texture2D* backBufferPtr;
 	swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
 
-	ID3D11RenderTargetView* backbufferRTV;
 	if (backBufferPtr != nullptr)
 	{
+		ID3D11RenderTargetView* backbufferRTV;
 		device->CreateRenderTargetView(backBufferPtr, nullptr, &backbufferRTV);
 		backBufferPtr->Release();
 

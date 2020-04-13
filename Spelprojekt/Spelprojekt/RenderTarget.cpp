@@ -33,7 +33,6 @@ void RenderTarget::Initalize(ID3D11Device* device)
 	/*
 		VIEWPORT
 	*/
-
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 	viewport.TopLeftX = 0.0f;
 	viewport.TopLeftY = 0.0f;
@@ -41,6 +40,7 @@ void RenderTarget::Initalize(ID3D11Device* device)
 	viewport.Height = static_cast<float>(height);
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
+
 
 	if (this->createDepthBuffer)
 	{
@@ -76,12 +76,10 @@ void RenderTarget::Initalize(ID3D11Device* device)
 		depthTex = 0;
 	}
 
-
 	/*
 		RENDER TEXTURES
 	*/
 	ID3D11Texture2D** targetTextures = new ID3D11Texture2D * [bufferCount];
-
 	D3D11_TEXTURE2D_DESC textureDesc;
 	ZeroMemory(&textureDesc, sizeof(textureDesc));
 	textureDesc.Width = width;

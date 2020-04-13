@@ -1,7 +1,7 @@
 #include "Window.h"
 
 //HInstance is a Handle to the programs executable module (the .exe file in memory)
-Window::Window(HINSTANCE hInstance) : hInstance(hInstance), height(DEFAULT_SCREEN_HEIGHT), width (DEFAULT_SCREEN_WIDTH)
+Window::Window(HINSTANCE hInstance) : hInstance(hInstance), height(DEFAULT_SCREEN_HEIGHT), width (DEFAULT_SCREEN_WIDTH), input(nullptr)
 {
 	windowInstance = this;
 }
@@ -14,7 +14,7 @@ Window::~Window()
 
 void Window::Initialize()
 {
-	const wchar_t CLASS_NAME[] = L"CoconutClass 4K uber shiet";
+	const wchar_t CLASS_NAME[] = L"CoconutClass";
 
 	WNDCLASS wndclass;
 	ZeroMemory(&wndclass, sizeof(WNDCLASS));
@@ -29,11 +29,12 @@ void Window::Initialize()
 	RECT windowRect = { 0,0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT };
 	AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
-	this->hwnd = CreateWindowExW(0, CLASS_NAME, projectTitel, WS_OVERLAPPEDWINDOW, windowRect.left, windowRect.top,
+	this->hwnd = CreateWindowEx(0, CLASS_NAME, projectTitel, WS_OVERLAPPEDWINDOW, windowRect.left, windowRect.top,
 		windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, nullptr, nullptr, hInstance, nullptr);
 
 	assert(hwnd);
 	ShowWindow(hwnd, SW_SHOW);
+	this->input = new Input(hwnd);
 }
 
 void Window::ResizeWindow(size_t width, size_t height)
@@ -53,6 +54,8 @@ LRESULT Window::WindowProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 LRESULT Window::m_WindowProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
+	this->input->HandleMessage(umsg, wParam, lParam);
+
 	switch (umsg)
 	{
 	case WM_DESTROY:

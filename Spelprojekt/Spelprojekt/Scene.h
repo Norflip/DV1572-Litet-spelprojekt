@@ -1,15 +1,14 @@
 #pragma once
 #include "Renderer.h"
-
+#include "Input.h"
 class Application;
-
 
 // Should contain a list of all objects what will be rendered. 
 // And a pointer to the renderEngine
 class Scene
 {
 public:
-	Scene(Renderer* renderer);
+	Scene(Renderer* renderer, Window& window);
 	virtual ~Scene();
 
 	virtual void Load() = 0;
@@ -22,4 +21,5 @@ public:
 
 protected:
 	Renderer* renderer;
+	Window& window;
 };

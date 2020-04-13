@@ -8,8 +8,8 @@ Camera::Camera(float fovDegrees, size_t width, size_t height) : width(width), he
 
 Camera::~Camera()
 {
+	
 }
-
 
 void Camera::SetFieldOfView(float fov)
 {

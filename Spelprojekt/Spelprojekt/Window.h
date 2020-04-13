@@ -2,6 +2,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h> 
 #include <assert.h>
+#include "Input.h"
 
 #define DEFAULT_SCREEN_WIDTH 800
 #define DEFAULT_SCREEN_HEIGHT 800
@@ -20,6 +21,7 @@ public:
 	size_t GetHeight() const { return this->height; }
 	HWND GetHWND() const { return this->hwnd; }
 	HINSTANCE GetHInstance() const { return this->hInstance; }
+	Input* GetInput() const { return this->input; }
 
 private:
 	LRESULT CALLBACK m_WindowProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
@@ -29,6 +31,7 @@ private:
 	size_t width, height;
 	HWND hwnd;
 	HINSTANCE hInstance;
+	Input* input;
 };
 
 // has to be outside for now... dunno why

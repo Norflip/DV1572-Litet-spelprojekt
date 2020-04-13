@@ -19,7 +19,7 @@ public:
 	DX11Handler();
 	virtual ~DX11Handler();
 
-	void Initialize(size_t width, size_t height, HWND);
+	void Initialize(const Window& window);
 
 	ID3D11Device* GetDevice() const { return this->device; }
 	ID3D11DeviceContext* GetContext() const { return this->context; }

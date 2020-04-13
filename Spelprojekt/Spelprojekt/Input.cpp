@@ -2,15 +2,6 @@
 
 Input::Input(HWND hwnd) : hwnd(hwnd)
 {
-/*
-m_keyboard = std::make_unique<Keyboard>();
-m_mouse = std::make_unique<Mouse>();
-m_mouse->SetWindow(window);
-
-auto kb m_keyboard->GetState();
-
-*/
-
 	//defines MOUSE and KEYBOARD
 	RAWINPUTDEVICE rid[2];	
 	rid[0].usUsagePage = 0x01;
@@ -24,7 +15,6 @@ auto kb m_keyboard->GetState();
 	rid[1].hwndTarget = hwnd;
 
 	assert(RegisterRawInputDevices(rid, 2, sizeof(RAWINPUTDEVICE)));
-
 }
 
 Input::~Input()
@@ -70,7 +60,7 @@ void Input::HandleMessage(UINT umsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	// https://docs.microsoft.com/sv-se/windows/win32/dxtecharts/taking-advantage-of-high-dpi-mouse-movement?redirectedfrom=MSDN
-
+	// https://gamedev.stackexchange.com/questions/72114/how-do-i-handle-directx-mouse-events
 	case WM_INPUT:
 	{
 		UINT size{};
@@ -78,14 +68,23 @@ void Input::HandleMessage(UINT umsg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		LPBYTE buffer = new BYTE[size];
-		BOOL bufferCorrectSizeResult = GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, buffer, &size, sizeof(RAWINPUTHEADER)) != size;
-		assert(bufferCorrectSizeResult);
+		BOOL bufferCorrectSizeResult = GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, buffer, &size, sizeof(RAWINPUTHEADER)) == size;
+		//assert(bufferCorrectSizeResult);
+		if (!bufferCorrectSizeResult)
+			return;
 
 		RAWINPUT* raw = (RAWINPUT*)buffer;
 		if (raw->header.dwType == RIM_TYPEKEYBOARD)
 		{
 			USHORT key = raw->data.keyboard.VKey;
 			SetKeyState((char)key, !(raw->data.keyboard.Flags & RI_KEY_BREAK));
+		}
+		else if (raw->header.dwType == RIM_TYPEMOUSE)
+		{
+			POINTS mouseDeltaPosition = {};
+			mouseDeltaPosition.x = static_cast<SHORT>(raw->data.mouse.lLastX);
+			mouseDeltaPosition.y = static_cast<SHORT>(raw->data.mouse.lLastY);
+			mouseBuffer.push({ MouseAction::DELTA, mouseDeltaPosition });
 		}
 		break;
 	}
@@ -108,6 +107,22 @@ void Input::UpdateState()
 		keyboardBuffer.pop();
 
 		keyboardState[ke.key].state = ke.state;
+	}
+
+	while (!mouseBuffer.empty())
+	{
+		MouseEvent me = mouseBuffer.front();
+		mouseBuffer.pop();
+
+		int d = static_cast<int>(me.action);
+		if (d >= 0 && d < 3)
+		{
+			mouseButtonState[d] = me.state;
+		}
+		else if (me.action == MouseAction::DELTA)
+		{
+			//mouseDelta = me.pt;
+		}
 	}
 }
 

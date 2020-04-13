@@ -5,6 +5,7 @@
 #include <vector>
 #include "../Object.h"
 #include "../ShittyOBJLoader.h"
+#include "../Input.h"
 
 class DevScene : public Scene
 {

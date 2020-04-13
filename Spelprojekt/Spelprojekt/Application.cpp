@@ -1,25 +1,17 @@
 #include "Application.h"
 
-
-
 Application::Application(HINSTANCE hInstance) : window(hInstance)
 {
-	// initializes the win32 window
-	this->window.Initialize();
-
-	// loading swapchain, device, deviceContext
-	this->dx11.Initialize(this->window.GetWidth(), this->window.GetHeight(), this->window.GetHWND()); // pass window class instead? 
-
+	this->window.Initialize(); // initializes the win32 window
+	this->dx11.Initialize(this->window); // creates swapchain, device, deviceContext
 	this->deferredRenderer = new Renderer(this->window.GetWidth(), this->window.GetHeight(), dx11);
 
 	// Opens the console
 	Logger::Open();
 	Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
 
-	// TEMPORARY. 
-	// Scene should be a abstract base class in the future for the diffrent scenes. 
-	this->currentScene = new DevScene(this->deferredRenderer, this->dx11, this->window); // different scenes for game, main menu etc 
-
+	// default scene.. devScene at the moment. Different sceness for the actual game, main menu, game over(?) etc 
+	this->currentScene = new DevScene(this->deferredRenderer, this->dx11, this->window);
 }
 
 Application::~Application()
@@ -48,10 +40,11 @@ void Application::Run()
 		}
 		else
 		{
+			window.GetInput()->UpdateState();
+
 			// call update function
 			if (currentScene != nullptr)
 			{
-
 				currentScene->Update(TMP_DELTATIME); //Dynamic
 				currentScene->Update(TMP_FIXEDDELTATIME); //Physics 
 

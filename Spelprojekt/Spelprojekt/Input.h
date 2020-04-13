@@ -1,7 +1,11 @@
 #pragma once
 #include <string>
 #include <queue>
-#include "Window.h"
+
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include <assert.h>
+#include "Logger.h"
 
 class Input
 {
@@ -21,7 +25,7 @@ public:
 		POINTS pt;
 		bool state;
 
-		//MouseEvent() {}
+		MouseEvent() {}
 		MouseEvent(MouseAction mousebutton, POINTS pt, bool state) : action(mousebutton), state(state), pt(pt) {};
 		MouseEvent(MouseAction mousebutton, POINTS pt) : action(mousebutton), state(0), pt(pt) {};
 	};
@@ -30,6 +34,7 @@ public:
 	{
 		char key;
 		bool state;
+		KeyboardEvent() {}
 		KeyboardEvent(char key, bool state) : key(key), state(state) {};
 	};
 
@@ -63,6 +68,7 @@ private:
 
 private:
 	HWND hwnd;
+
 	// mouse event buffer
 	std::queue<MouseEvent> mouseBuffer;
 	bool mouseButtonState[3];
@@ -71,14 +77,5 @@ private:
 	std::queue<KeyboardEvent> keyboardBuffer;
 	KeyState keyboardState[256];
 
-
 	POINT mouseWindowPosition;
-
-	
-	/*
-std::unique_ptr<DirectX::Keyboard> m_keyboard;
-std::unique_ptr<DirectX::Mouse> m_mouse;
-
-
-*/
 };

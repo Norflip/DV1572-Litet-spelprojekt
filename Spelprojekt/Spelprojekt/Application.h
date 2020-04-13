@@ -4,6 +4,7 @@
 #include "Logger.h"
 #include "Renderer.h"
 #include "DX11Handler.h"
+#include "Input.h"
 #include <stack>
 
 class Application
