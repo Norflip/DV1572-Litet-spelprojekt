@@ -6,7 +6,7 @@
 #include "../Object.h"
 #include "../ShittyOBJLoader.h"
 #include "../Input.h"
-
+#include "../HeightMapGenerator.h"
 class DevScene : public Scene
 {
 public:

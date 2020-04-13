@@ -1,0 +1,3 @@
+inline void MyClass::test()
+{
+}

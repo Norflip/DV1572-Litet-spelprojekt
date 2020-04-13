@@ -1,5 +1,6 @@
 #include "DevScene.h"
 
+
 DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scene(renderer, window)
 {
 	camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
@@ -11,6 +12,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	defaultShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
 
 	// object = mesh + material
+	// Mesh* terrainMesh = 
 	Mesh* sphereMesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 	Object* sphere = new Object(sphereMesh, new Material(defaultShader));
 
