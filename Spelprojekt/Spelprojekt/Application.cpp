@@ -24,7 +24,9 @@ void Application::Run()
 	// starts the message loop for win32
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
-	const float TMP_DELTATIME = 1.0f / 60.0f; // not implemented yet
+
+	// not implemented yet
+	const float TMP_DELTATIME = 1.0f / 60.0f;
 	const float TMP_FIXEDDELTATIME = 1.0f / 50.0f;
 
 	while (TRUE)
@@ -46,7 +48,7 @@ void Application::Run()
 			if (currentScene != nullptr)
 			{
 				currentScene->Update(TMP_DELTATIME); //Dynamic
-				currentScene->Update(TMP_FIXEDDELTATIME); //Physics 
+				currentScene->FixedUpdate(TMP_FIXEDDELTATIME); //Physics 
 
 				Scene* next = currentScene->GetNextScene();
 				if (next != nullptr)
@@ -58,6 +60,7 @@ void Application::Run()
 					currentScene->Load();
 				}
 			}
+
 		}
 	}
 }

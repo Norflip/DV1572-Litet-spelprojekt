@@ -28,7 +28,7 @@ void Camera::UpdateView()
 	);
 
 	//Update frustum planes
-	
+	frustum.UpdatePlanes(projection, view);
 }
 
 DirectX::XMMATRIX Camera::GetOrthographic() const

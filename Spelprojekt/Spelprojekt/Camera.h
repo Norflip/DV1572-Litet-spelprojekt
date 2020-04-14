@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include "Transform.h"
+#include "Frustum.h"
 
 class Camera
 {
@@ -23,14 +24,17 @@ public:
 	DirectX::XMMATRIX GetProjection() const { return this->projection; }
 	DirectX::XMMATRIX GetOrthographic() const;
 
+
 	float GetAspectRatio() { return static_cast<float>(width) / static_cast<float>(height); }
 	Transform& GetTransform() { return this->transform; }
+	Frustum& GetFrustum() { return this->frustum; }
 
 private:
 	float fovDegrees = 90.0f;
 	bool freeLook;
 	size_t width, height;
 	Transform transform;
+	Frustum frustum;
 	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX projection;
 };

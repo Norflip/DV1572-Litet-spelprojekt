@@ -15,7 +15,6 @@ public:
 		LEFT = 0,
 		RIGHT = 1,
 		MIDDLE = 2,
-		SCROLL = 3,
 		DELTA = 4
 	};
 
@@ -25,16 +24,14 @@ public:
 		POINTS pt;
 		bool state;
 
-		MouseEvent() {}
+		MouseEvent(MouseAction mousebutton, POINTS pt) : action(mousebutton), state(true), pt(pt) {};
 		MouseEvent(MouseAction mousebutton, POINTS pt, bool state) : action(mousebutton), state(state), pt(pt) {};
-		MouseEvent(MouseAction mousebutton, POINTS pt) : action(mousebutton), state(0), pt(pt) {};
 	};
 
 	struct KeyboardEvent
 	{
 		char key;
 		bool state;
-		KeyboardEvent() {}
 		KeyboardEvent(char key, bool state) : key(key), state(state) {};
 	};
 
@@ -45,37 +42,47 @@ public:
 	};
 
 public:
-	Input(HWND);
+	Input(HWND, size_t width, size_t height);
 	virtual ~Input();
 
 	bool GetKey(const char& c) const;
 	bool GetKeyDown(const char& c) const;
 	bool GetKeyUp(const char& c) const;
+
+	bool GetMouseButton(size_t key) const;
+	bool GetMouseButtonDown(size_t key) const;
+	bool GetMouseButtonUp(size_t key) const;
+
+
+	POINTS GetMousePosition() const { return this->current_mpos; }
+	POINTS GetMouseDelta() const { return this->mouseDelta; }
+
+	void LockCursor(bool lockstate);
+	bool IsCursorLocked() const { return this->lockCursor; }
 	
-	/*
-	POINTS GetMousePosition() const;
-	POINTS GetMouseDelta() const;
-
-	bool GetMouseButtonPressed(MouseAction mb) const;
-	*/
-
 	void HandleMessage (UINT umsg, WPARAM wParam, LPARAM lParam);
 	void UpdateState();
 
-
 private:
 	void SetKeyState(char key, bool state);
+	BOOL ContainsPoint(const POINTS& pt) const;
 
 private:
+	size_t height, width;
 	HWND hwnd;
+	bool lockCursor;
 
 	// mouse event buffer
 	std::queue<MouseEvent> mouseBuffer;
-	bool mouseButtonState[3];
+	KeyState mouseButtonState[3];
 
 	// keyboard event buffer
 	std::queue<KeyboardEvent> keyboardBuffer;
 	KeyState keyboardState[256];
 
 	POINT mouseWindowPosition;
+	POINTS current_mpos;
+	POINTS previous_mpos;
+	POINTS mouseDelta;
+
 };

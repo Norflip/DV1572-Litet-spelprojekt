@@ -23,6 +23,15 @@ DirectX::XMMATRIX Transform::GetWorldMatrix() const
 	return DirectX::XMMatrixTranslationFromVector(this->position);
 }
 
+void Transform::Rotate(float pitch, float yaw, float roll)
+{
+	DirectX::XMFLOAT3 rot(pitch, yaw, roll);
+	this->rotation = DirectX::XMVectorAdd(this->rotation, DirectX::XMLoadFloat3(&rot));
+
+	float p = std::max (-maxPitch, std::min (DirectX::XMVectorGetByIndex(this->rotation, 0), maxPitch));
+	this->rotation = DirectX::XMVectorSetByIndex(this->rotation, p, 0);
+}
+
 void Transform::Translate(float x, float y, float z)
 {
 	Translate({ x,y,z });

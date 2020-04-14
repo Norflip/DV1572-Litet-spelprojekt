@@ -1,9 +1,12 @@
 #pragma once
 #include <DirectXMath.h>
-
+#include <math.h>
+#include <algorithm>
 
 class Transform
 {
+	const float maxPitch = (90.0f - 0.0001f) * 0.0174532925f;
+
 public:
 	static constexpr DirectX::XMVECTOR default_right = { 1,0,0 };
 	static constexpr DirectX::XMVECTOR default_up = { 0,1,0 };
@@ -19,6 +22,8 @@ public:
 
 	DirectX::XMVECTOR TransformDirection(DirectX::XMVECTOR dir) const;
 	DirectX::XMMATRIX GetWorldMatrix() const;
+
+	void Rotate(float pitch, float yaw, float roll);
 
 	void Translate(float x, float y, float z);
 	void Translate(DirectX::XMVECTOR translation);

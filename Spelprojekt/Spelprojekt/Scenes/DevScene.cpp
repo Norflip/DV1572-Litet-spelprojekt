@@ -5,6 +5,14 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
 	camera->UpdateView();
 
+	Lights* lights = new Lights();
+	lights->AddPointLight({ -2, 0, 0 }, { 0.9f,0.1f,0.1f,1 }, 0);
+	lights->AddPointLight({ -2, 0, 10 }, { 0.1f,0.1f, 0.9f, 1 }, 0);
+
+	renderer->SetLights(lights);
+
+
+
 	// save the shaders somewhere, remember to clean it up
 	Shader* defaultShader = new Shader();
 	defaultShader->LoadPixelShader(L"Shaders/Default_ps.hlsl", "main", dx11.GetDevice());
@@ -34,25 +42,54 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {
-	
-	// TESTING CAMERA MOVEMENT
-	const float cameraSpeed = 0.2f;
 	Input* input = window.GetInput();
 
-	float forward = 0.0f;
-	if (input->GetKey('w')) forward += 1.0f;
-	if (input->GetKey('s')) forward -= 1.0f;
+	// dess körs två gånger atm
+	if (input->GetKeyDown('f'))
+		Logger::Write("f down");
 
-	float right = 0.0f;
-	if (input->GetKey('a')) right -= 1.0f;
-	if (input->GetKey('d')) right += 1.0f;
+	if (input->GetKeyUp('f'))
+		Logger::Write("f up");
 
-	//Logger::Write(std::to_string(rg));
 
-	forward *= cameraSpeed * deltaTime;
-	right *= cameraSpeed * deltaTime;
-	camera->GetTransform().Translate(right, 0, forward);
-	camera->UpdateView();
+
+	if (input->GetKeyDown('f'))
+	{
+		input->LockCursor(!input->IsCursorLocked());
+	}
+	else if (input->IsCursorLocked())
+	{
+
+		POINTS delta = input->GetMouseDelta();
+		camera->GetTransform().Rotate(delta.y * 0.2f * deltaTime, delta.x * 0.2f * deltaTime, 0);
+
+		// TESTING CAMERA MOVEMENT
+		const float cameraSpeed = 2.0f;
+		float forwardDelta = 0.0f;
+		float rightDelta = 0.0f;
+
+		if (input->GetKey('w')) forwardDelta += 1.0f;
+		if (input->GetKey('a')) rightDelta -= 1.0f;
+		if (input->GetKey('s')) forwardDelta -= 1.0f;
+		if (input->GetKey('d')) rightDelta += 1.0f;
+
+		float len = sqrtf(forwardDelta * forwardDelta + rightDelta * rightDelta);
+
+		if (len != 0.0f)
+		{
+			DirectX::XMVECTOR forward = camera->GetTransform().TransformDirection(Transform::default_forward);
+			DirectX::XMVECTOR right = camera->GetTransform().TransformDirection(Transform::default_right);
+
+			DirectX::XMVECTOR translation = DirectX::XMVectorScale(forward, (forwardDelta / len));
+			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorScale(right, (rightDelta / len)));
+			translation = DirectX::XMVectorScale(DirectX::XMVector3Normalize(translation), cameraSpeed * deltaTime);
+
+			camera->GetTransform().Translate(translation);
+		}
+
+		camera->UpdateView();
+	}
+
 	//--------------------------------
 
 
@@ -64,11 +101,14 @@ void DevScene::Update(const float& deltaTime)
 	// loop objects in scene
 	for (auto i : objects)
 	{
-		renderer->ApplyMaterial(i->GetMaterial());
-		i->Render(renderer, camera);
+		if (camera->GetFrustum().AABBInFrustrum(i->GetWorldBounds()))
+		{
+			renderer->ApplyMaterial(i->GetMaterial());
+			i->Render(renderer, camera);
+		}
 	}
 
-	renderer->DisplayFrame();
+	renderer->DisplayFrame(camera);
 }
 
 void DevScene::FixedUpdate(const float& fixedDeltaTime)
