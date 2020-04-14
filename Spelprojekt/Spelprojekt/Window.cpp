@@ -34,7 +34,8 @@ void Window::Initialize()
 
 	assert(hwnd);
 	ShowWindow(hwnd, SW_SHOW);
-	this->input = new Input(hwnd);
+
+	this->input = new Input(hwnd, width, height);
 }
 
 void Window::ResizeWindow(size_t width, size_t height)
@@ -54,7 +55,6 @@ LRESULT Window::WindowProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 LRESULT Window::m_WindowProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-	this->input->HandleMessage(umsg, wParam, lParam);
 
 	switch (umsg)
 	{
@@ -62,6 +62,8 @@ LRESULT Window::m_WindowProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		return 0;
 	}
+
+	this->input->HandleMessage(umsg, wParam, lParam);
 
 	return DefWindowProc(hwnd, umsg, wParam, lParam);
 }

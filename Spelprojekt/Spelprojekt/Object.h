@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "AABB.h"
 
 class Object
 {
@@ -17,10 +18,18 @@ public:
 	Material* GetMaterial() const { return this->material; }
 	Mesh* GetMesh() const { return this->mesh; }
 
+	AABB GetLocalBounds() const { return this->localBounds; }
+	AABB GetWorldBounds() const;
+
 	void Render(Renderer*, Camera*);
 
 private:
+	void UpdateLocalBounds();
+
+private:
 	Transform transform;
+	AABB localBounds;
+	
 	Material* material;
 	Mesh* mesh;
 };

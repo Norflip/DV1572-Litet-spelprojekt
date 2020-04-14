@@ -2,8 +2,14 @@
 
 DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scene(renderer, window)
 {
-	camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
-	camera->UpdateView();
+	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
+	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::Follow);
+	window.GetInput()->LockCursor(false);
+
+	Lights* lights = new Lights();
+	lights->AddPointLight({ -2, 0, 0 }, { 0.9f,0.1f,0.1f,1 }, 0);
+	lights->AddPointLight({ -2, 0, 10 }, { 0.1f,0.1f, 0.9f, 1 }, 0);
+	renderer->SetLights(lights);
 
 	// save the shaders somewhere, remember to clean it up
 	Shader* defaultShader = new Shader();
@@ -16,10 +22,14 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 
 	sphere->GetTransform().Translate(0, 0, 6);
 	objects.push_back(sphere);
+
+	controller->SetFollow(&sphere->GetTransform(), { 0, 10.0f, -10.0f });
 }
 
 DevScene::~DevScene()
 {
+	delete controller;
+	delete camera;
 }
 
 void DevScene::Load()
@@ -34,26 +44,20 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {
-	
-	// TESTING CAMERA MOVEMENT
-	const float cameraSpeed = 0.2f;
 	Input* input = window.GetInput();
 
-	float forward = 0.0f;
-	if (input->GetKey('w')) forward += 1.0f;
-	if (input->GetKey('s')) forward -= 1.0f;
+	POINTS p = input->GetMousePosition();
 
-	float right = 0.0f;
-	if (input->GetKey('a')) right -= 1.0f;
-	if (input->GetKey('d')) right += 1.0f;
+	Logger::Write("x: " + std::to_string(p.x) + ", y: " + std::to_string(p.y));
 
-	//Logger::Write(std::to_string(rg));
+	if (input->GetKeyDown(DEBUG_CAMERA_KEY))
+	{
+		input->LockCursor(!input->IsCursorLocked());
+		bool following = controller->GetState() == CameraController::State::Follow;
+		controller->SetState(following ? CameraController::State::Free : CameraController::State::Follow);
+	}
 
-	forward *= cameraSpeed * deltaTime;
-	right *= cameraSpeed * deltaTime;
-	camera->GetTransform().Translate(right, 0, forward);
-	camera->UpdateView();
-	//--------------------------------
+	controller->Update(deltaTime);
 
 
 	// itererats through the objects and passes the renderer to the object.
@@ -64,11 +68,14 @@ void DevScene::Update(const float& deltaTime)
 	// loop objects in scene
 	for (auto i : objects)
 	{
-		renderer->ApplyMaterial(i->GetMaterial());
-		i->Render(renderer, camera);
+		if (camera->InView(i->GetWorldBounds()))
+		{
+			renderer->ApplyMaterial(i->GetMaterial());
+			i->Render(renderer, camera);
+		}
 	}
 
-	renderer->DisplayFrame();
+	renderer->DisplayFrame(camera);
 }
 
 void DevScene::FixedUpdate(const float& fixedDeltaTime)

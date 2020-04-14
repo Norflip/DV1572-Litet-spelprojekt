@@ -6,10 +6,10 @@
 #include "Camera.h"
 #include "Material.h"
 #include "Mesh.h"
-
 #include "DX11Handler.h"
 #include "RenderTarget.h"
 #include "ConstantBuffers.h"
+#include "Lights.h"
 
 constexpr float CLEAR_COLOR[3] = { 0.4f,0.4f,0.4f };
 
@@ -25,7 +25,10 @@ public:
 	void ClearRenderTarget();
 	void DrawMesh(Mesh*, DirectX::XMMATRIX world, Camera*);
 
-	void DisplayFrame();
+	Lights* GetLights() const { return this->lights; }
+	void SetLights(Lights* lights);
+	
+	void DisplayFrame(Camera*);
 	void ApplyMaterial(Material*);
 
 private:
@@ -35,6 +38,7 @@ private:
 	DX11Handler& dx11;
 	Shader* lightpass;
 	Mesh* screenQuad;
+	Lights* lights;
 	
 	ID3D11Buffer* worldBuffer_ptr;
 	WorldConstantBuffer cb_world;

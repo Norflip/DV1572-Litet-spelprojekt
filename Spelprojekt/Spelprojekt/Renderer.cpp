@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-Renderer::Renderer(size_t width, size_t height, DX11Handler& dx11) : dx11(dx11)
+Renderer::Renderer(size_t width, size_t height, DX11Handler& dx11) : dx11(dx11), lights(nullptr)
 {
 	this->gbufferRenderTarget = new RenderTarget(3, width, height, true);
 	this->gbufferRenderTarget->Initalize(dx11.GetDevice());
@@ -73,12 +73,22 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, Camera* camera)
 	DrawMesh(mesh);
 }
 
-void Renderer::DisplayFrame()
+void Renderer::SetLights(Lights* lights)
+{
+	this->lights = lights;
+	this->lights->Initialize(dx11.GetDevice());
+}
+
+void Renderer::DisplayFrame(Camera* camera)
 {
 	//Uppdate light constant buffer here
-
-	//
-
+	if (lights != nullptr)
+	{
+		DirectX::XMFLOAT3 eyePosition;
+		DirectX::XMStoreFloat3(&eyePosition, camera->GetTransform().GetPosition());
+		lights->UpdateConstantBuffer(eyePosition, dx11.GetContext());
+	}
+	
 	SetRenderTarget(backbufferRenderTarget);
 	ClearRenderTarget();
 
@@ -86,7 +96,7 @@ void Renderer::DisplayFrame()
 	lightpass->Apply(dx11.GetContext());
 
 	DrawMesh(screenQuad);
-	dx11.GetSwapChain()->Present(0, 0);
+	dx11.GetSwapChain()->Present(1, 0);
 }
 
 void Renderer::ApplyMaterial(Material* material)
