@@ -1,3 +1,5 @@
+Texture2D objNormMap;
+
 
 struct VS_OUTPUT
 {

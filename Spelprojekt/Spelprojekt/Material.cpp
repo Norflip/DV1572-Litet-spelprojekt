@@ -1,4 +1,12 @@
 #include "Material.h"
+#include <vector>
+#include <fstream>
+#include <istream>
+#include <sstream>
+#include <d3d11.h>
+#include <DirectXMath.h>
+#include <assert.h>
+//#include <WICTextureLoader.h> //fixa paketet
 
 Material::Material(Shader* shader) : shader(shader)
 {
@@ -16,14 +24,25 @@ void Material::SetTexture(size_t index, Texture* texture, PIXEL_TYPE type)
 	// Searches the textureMap for the given index.
 	// if not then it will insert the new texture*
 	// replaces the value else
-	auto hi = textureMap.find(index);
-	if (hi == textureMap.end())
+	auto texIndex = textureMap.find(index);
+	if (texIndex == textureMap.end())
 	{
 		textureMap.insert({ index, pair });
 	}
 	else
 	{
-		(*hi).second = pair;
+		(*texIndex).second = pair;
+	}
+
+	//Normal map
+	auto normIndex = textureMap.find(index);
+	if (normIndex == textureMap.end())
+	{
+		textureMap.insert({ index, pair });
+	}
+	else
+	{
+		(*normIndex).second = pair;
 	}
 }
 
@@ -34,11 +53,25 @@ Texture* Material::GetTexture(size_t index) const
 	if (teg != textureMap.end())
 		texture = (*teg).second.first;
 
-	return texture;
+	if (hasNormMap){
+
+		Texture* normal = nullptr;
+		auto neg = textureMap.find(index);
+		if (neg != textureMap.end())
+			normal = (*neg).second.first;
+
+		return texture, normal;
+	}
+	
+	else {
+		return texture;
+	}
+
 }
 
 void Material::Apply(ID3D11DeviceContext* context)
 {
+
 	this->shader->Apply(context);
 
 	/*auto iterator = textureMap.begin();
