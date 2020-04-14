@@ -23,7 +23,13 @@ public:
 	DirectX::XMVECTOR TransformDirection(DirectX::XMVECTOR dir) const;
 	DirectX::XMMATRIX GetWorldMatrix() const;
 
+	DirectX::XMVECTOR Right() const { return TransformDirection(default_right); }
+	DirectX::XMVECTOR Up() const { return TransformDirection(default_up); }
+	DirectX::XMVECTOR Forward() const { return TransformDirection(default_forward); }
+	
 	void Rotate(float pitch, float yaw, float roll);
+	void SetRotation(DirectX::XMVECTOR rotation) { this->rotation = rotation; }
+	void LookAt(DirectX::XMVECTOR position);
 
 	void Translate(float x, float y, float z);
 	void Translate(DirectX::XMVECTOR translation);

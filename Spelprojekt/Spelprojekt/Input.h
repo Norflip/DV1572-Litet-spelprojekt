@@ -42,6 +42,7 @@ public:
 	};
 
 public:
+
 	Input(HWND, size_t width, size_t height);
 	virtual ~Input();
 
@@ -53,13 +54,10 @@ public:
 	bool GetMouseButtonDown(size_t key) const;
 	bool GetMouseButtonUp(size_t key) const;
 
-
 	POINTS GetMousePosition() const { return this->current_mpos; }
 	POINTS GetMouseDelta() const { return this->mouseDelta; }
-
 	void LockCursor(bool lockstate);
 	bool IsCursorLocked() const { return this->lockCursor; }
-	
 	void HandleMessage (UINT umsg, WPARAM wParam, LPARAM lParam);
 	void UpdateState();
 
@@ -71,18 +69,14 @@ private:
 	size_t height, width;
 	HWND hwnd;
 	bool lockCursor;
+	POINTS current_mpos;
+	POINTS mouseDelta;
 
-	// mouse event buffer
+	// mouse 
 	std::queue<MouseEvent> mouseBuffer;
 	KeyState mouseButtonState[3];
 
-	// keyboard event buffer
+	// keyboard
 	std::queue<KeyboardEvent> keyboardBuffer;
 	KeyState keyboardState[256];
-
-	POINT mouseWindowPosition;
-	POINTS current_mpos;
-	POINTS previous_mpos;
-	POINTS mouseDelta;
-
 };

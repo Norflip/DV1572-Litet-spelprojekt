@@ -34,6 +34,7 @@ void Window::Initialize()
 
 	assert(hwnd);
 	ShowWindow(hwnd, SW_SHOW);
+
 	this->input = new Input(hwnd, width, height);
 }
 

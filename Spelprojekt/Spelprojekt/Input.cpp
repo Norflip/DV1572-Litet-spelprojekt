@@ -3,7 +3,7 @@
 Input::Input(HWND hwnd, size_t width, size_t height) : hwnd(hwnd), height(height), width(width)
 {
 	//defines MOUSE and KEYBOARD
-	RAWINPUTDEVICE rid[2];	
+	RAWINPUTDEVICE rid[2];
 	rid[0].usUsagePage = 0x01;
 	rid[0].usUsage = 0x02;
 	rid[0].dwFlags = 0;
@@ -103,6 +103,19 @@ void Input::HandleMessage(UINT umsg, WPARAM wParam, LPARAM lParam)
 
 		break;
 
+	case WM_MOUSEMOVE:
+	{
+		POINT ptCursor;
+		GetCursorPos(&ptCursor);
+		ScreenToClient(hwnd, &ptCursor);
+
+		if (ContainsPoint(mousePosition))
+		{
+			current_mpos = mousePosition;
+		}
+		break;
+	}
+
 	// https://docs.microsoft.com/sv-se/windows/win32/dxtecharts/taking-advantage-of-high-dpi-mouse-movement?redirectedfrom=MSDN
 	// https://gamedev.stackexchange.com/questions/72114/how-do-i-handle-directx-mouse-events
 	case WM_INPUT:
@@ -118,6 +131,7 @@ void Input::HandleMessage(UINT umsg, WPARAM wParam, LPARAM lParam)
 			return;
 
 		RAWINPUT* raw = (RAWINPUT*)buffer;
+
 		if (raw->header.dwType == RIM_TYPEKEYBOARD)
 		{
 			USHORT key = raw->data.keyboard.VKey;
@@ -125,6 +139,7 @@ void Input::HandleMessage(UINT umsg, WPARAM wParam, LPARAM lParam)
 		}
 		else if (raw->header.dwType == RIM_TYPEMOUSE)
 		{
+
 			POINTS mouseDeltaPosition = {};
 			mouseDeltaPosition.x = static_cast<SHORT>(raw->data.mouse.lLastX);
 			mouseDeltaPosition.y = static_cast<SHORT>(raw->data.mouse.lLastY);
@@ -188,5 +203,5 @@ void Input::SetKeyState(char key, bool state)
 
 BOOL Input::ContainsPoint(const POINTS& pt) const
 {
-	return pt.x >= 0 && pt.x < (SHORT)width && pt.y >= 0 && pt.y < (SHORT)height;
+	return pt.x >= 0 && pt.x < (SHORT)width&& pt.y >= 0 && pt.y < (SHORT)height;
 }

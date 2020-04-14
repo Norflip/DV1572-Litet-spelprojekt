@@ -62,7 +62,6 @@ void Lights::SetSunDirection(DirectX::XMFLOAT3 direction)
 
 void Lights::UpdateConstantBuffer(DirectX::XMFLOAT3 eye, ID3D11DeviceContext* context)
 {
-
 	auto it = pointLightMap.begin();
 	size_t index = 0;
 

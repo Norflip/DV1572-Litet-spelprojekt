@@ -147,8 +147,8 @@
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="DX11Handler.cpp" />
-    <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Lights.cpp" />
     <ClCompile Include="main.cpp" />
@@ -169,7 +169,6 @@
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="ConstantBuffers.h" />
     <ClInclude Include="DX11Handler.h" />
-    <ClInclude Include="Frustum.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Lights.h" />
     <ClInclude Include="Logger.h" />

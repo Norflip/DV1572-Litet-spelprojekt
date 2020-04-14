@@ -1,7 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include "Transform.h"
-#include "Frustum.h"
+#include "AABB.h"
 
 class Camera
 {
@@ -14,27 +14,27 @@ public:
 	virtual ~Camera();
 
 	void SetFieldOfView(float fov);
-
-	void SetFreeLook(bool freeLookState ) { this->freeLook = freeLookState; }
-	bool IsFreeLook() const { return this->freeLook; }
-
 	void UpdateView();
 
 	DirectX::XMMATRIX GetView() const { return this->view; }
 	DirectX::XMMATRIX GetProjection() const { return this->projection; }
 	DirectX::XMMATRIX GetOrthographic() const;
 
-
 	float GetAspectRatio() { return static_cast<float>(width) / static_cast<float>(height); }
 	Transform& GetTransform() { return this->transform; }
-	Frustum& GetFrustum() { return this->frustum; }
+	
+	bool InView (const AABB& aabb) const;
+
+private:
+	void UpdatePlanes(DirectX::XMMATRIX projection, DirectX::XMMATRIX view);
 
 private:
 	float fovDegrees = 90.0f;
 	bool freeLook;
 	size_t width, height;
 	Transform transform;
-	Frustum frustum;
 	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX projection;
+
+	DirectX::XMFLOAT4 frustumPlanes[6];
 };

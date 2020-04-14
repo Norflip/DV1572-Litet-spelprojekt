@@ -63,10 +63,10 @@
     <ClCompile Include="AABB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Frustum.cpp">
+    <ClCompile Include="Lights.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Lights.cpp">
+    <ClCompile Include="CameraController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -122,19 +122,16 @@
     <ClInclude Include="ShittyOBJLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Frustum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AABB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CameraController.h">
+    <ClInclude Include="Lights.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Lights.h">
+    <ClInclude Include="CameraController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
