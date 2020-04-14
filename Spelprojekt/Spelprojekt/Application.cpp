@@ -1,5 +1,7 @@
 #include "Application.h"
 
+// "Hej från Filip" testing github merge conflicts
+
 Application::Application(HINSTANCE hInstance) : window(hInstance)
 {
 	this->window.Initialize(); // initializes the win32 window
