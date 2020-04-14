@@ -46,10 +46,6 @@ void DevScene::Update(const float& deltaTime)
 {
 	Input* input = window.GetInput();
 
-	POINTS p = input->GetMousePosition();
-
-	Logger::Write("x: " + std::to_string(p.x) + ", y: " + std::to_string(p.y));
-
 	if (input->GetKeyDown(DEBUG_CAMERA_KEY))
 	{
 		input->LockCursor(!input->IsCursorLocked());
@@ -58,7 +54,6 @@ void DevScene::Update(const float& deltaTime)
 	}
 
 	controller->Update(deltaTime);
-
 
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object
