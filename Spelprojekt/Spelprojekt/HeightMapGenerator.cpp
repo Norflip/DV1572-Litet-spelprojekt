@@ -1,19 +1,21 @@
-#include "HeightMapGenerator.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
-void TerrainGenerator::generateFromHeightMap(std::string textureName)
+#include "HeightMapGenerator.h"
+#include "DX11Handler.h"
+void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mesh, ID3D11Device* device)
 {
 	// follow this shit to the dot https://www.braynzarsoft.net/viewtutorial/q16390-30-heightmap-terrain
-	int bpp;
+	int bpp = sizeof(uint8_t) * 4;
 	width = 200;
 	height = 200;
 	bpp = sizeof(uint8_t) * 4; //RGBA, bits per pixel
 	uint8_t* rgb_image = stbi_load(textureName.data(), &width, &height, &bpp, 1);
-
 	float sizeMultiplier = scaling;
 	DirectX::XMFLOAT3 temp0;
 	std::vector<MeshVertex> vertList;
 	MeshVertex test;
-	std::vector<int> indexList;
+	std::vector<unsigned int> indexList;
 	for (int y = 0; y < height; y++)
 	{
 		for (int x = 0; x < width; x++)
@@ -23,10 +25,11 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName)
 			
 			test.position.y = (float)rgb_image[y * width + x + 0] / 255.f;  //Load in height of said vertex, only returns 0-1.
 			test.position.y *= verticalScaling;
-			
+			test.position.y -= 10;
 			test.normal = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f); // needs to be calculated when we create a quad
 			test.uv = DirectX::XMFLOAT2(0.0f, 0.0f); // needs to be calculated when we create a quad
-			
+			test.tangent = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+
 			vertList.push_back(test);
 			indexList.push_back((height * y) + x);
 		}
@@ -66,56 +69,13 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName)
 		texVIndex++;
 	}
 
+	mesh = MeshCreator::CreateMesh(vertList, indexList, device);
+
 	//Compute vertex normals (normal Averaging)
-	DirectX::XMVECTOR normalSum = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	/*DirectX::XMVECTOR normalSum = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	int facesUsing = 0;
 	float tX;
 	float tY;
-	float tZ;
-
-
-
-
-	//Row by row from top down
-	float sizeMultiplier = scaling;
-	DirectX::XMFLOAT3 temp0, temp1, temp2, temp3; //These are the quad positions to generate from
-
-
-
-	for (int y = 0; y < height - 1; y++)
-	{
-		for (int x = 0; x < width - 1; x++)
-		{
-			temp0.x = x * sizeMultiplier; //Vertex locations on x and y axis loaded here.
-			temp0.z = y * sizeMultiplier;
-			temp0.y = (float)rgb_image[y * width + x + 0] / 255.f;  //Load in height of said vertex, only returns 0-1.
-			temp0.y *= verticalScaling;
-			//Repeat this for all 4 vertex positions.		
-
-			temp2.x = (x + 1) * sizeMultiplier;
-			temp2.z = (y)*sizeMultiplier;
-			temp2.y = (float)rgb_image[y * width + x + 1] / 255.f;
-			temp2.y *= verticalScaling;
-
-			temp1.x = (x)*sizeMultiplier;
-			temp1.z = (y + 1) * sizeMultiplier;
-			temp1.y = (float)rgb_image[(y + 1) * width + x] / 255.f;
-			temp1.y *= verticalScaling;
-
-			temp3.x = (x + 1) * sizeMultiplier;
-			temp3.z = (y + 1) * sizeMultiplier;
-			temp3.y = (float)rgb_image[(y + 1) * width + x + 1] / 255.f;
-			temp3.y *= verticalScaling;
-
-			//After we have all 4 positions, generate quad.
-			//std::vector<MeshVertex> vertList = generateQuad(temp0, temp1, temp2, temp3);
-
-			//Push this to the mesh.
-			for (int i = 0; i < vertList.size(); i++)
-			{
-				heightTerrain.vertexes.push_back(vertList.at(i));
-			}
-		}
-	}
+	float tZ;*/
 
 }

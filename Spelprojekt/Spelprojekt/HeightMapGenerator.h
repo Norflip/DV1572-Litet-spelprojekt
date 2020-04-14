@@ -1,25 +1,25 @@
 #pragma once
 
-#ifndef STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
-#endif
-#include "stb_image.h"
 #include <string>
 #include "Mesh.h"
+
+
+
+
 class TerrainGenerator
 {
 
 
 public:
-	void generateFromHeightMap(std::string textureName);
+	void generateFromHeightMap(std::string textureName, Mesh*& mesh, ID3D11Device* device);
 
 
 	static Mesh heightTerrain;
 
-	static float scaling;
-	static float verticalScaling;
-	static int width;
-	static int height;
+	float scaling = 2;
+	float verticalScaling = 2;
+	int width;
+	int height;
 
 	ID3D11Resource* texture;
 	ID3D11ShaderResourceView* textureView;
