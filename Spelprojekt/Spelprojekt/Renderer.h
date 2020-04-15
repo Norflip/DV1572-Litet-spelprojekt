@@ -1,6 +1,6 @@
 #pragma once
 #include <d3d11_1.h>
-#include <dxgi.h>     // används för swapchain och device / deviceContext
+#include <dxgi.h>     // anvï¿½nds fï¿½r swapchain och device / deviceContext
 #include <DirectXMath.h>
 
 #include "Camera.h"
