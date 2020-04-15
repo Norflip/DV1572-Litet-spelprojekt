@@ -20,6 +20,8 @@ void Material::SetTexture(size_t index, Texture* texture, PIXEL_TYPE type)
 {
 	auto pair = std::pair<Texture*, PIXEL_TYPE>(texture, type);
 	
+	//this->m_Texture = texture;
+	
 	// rename 'hi'
 	// Searches the textureMap for the given index.
 	// if not then it will insert the new texture*
@@ -35,7 +37,7 @@ void Material::SetTexture(size_t index, Texture* texture, PIXEL_TYPE type)
 	}
 
 	//Normal map
-	auto normIndex = textureMap.find(index);
+	/*auto normIndex = textureMap.find(index);
 	if (normIndex == textureMap.end())
 	{
 		textureMap.insert({ index, pair });
@@ -43,7 +45,7 @@ void Material::SetTexture(size_t index, Texture* texture, PIXEL_TYPE type)
 	else
 	{
 		(*normIndex).second = pair;
-	}
+	}*/
 }
 
 Texture* Material::GetTexture(size_t index) const
@@ -53,7 +55,9 @@ Texture* Material::GetTexture(size_t index) const
 	if (teg != textureMap.end())
 		texture = (*teg).second.first;
 
-	if (hasNormMap){
+	//DXHandler.GetContext()->PSSetShaderResources(0, 1, &texture->GetTexture());
+
+	/*if (hasNormMap){
 
 		Texture* normal = nullptr;
 		auto neg = textureMap.find(index);
@@ -61,11 +65,12 @@ Texture* Material::GetTexture(size_t index) const
 			normal = (*neg).second.first;
 
 		return texture, normal;
-	}
+	}*/
 	
-	else {
-		return texture;
-	}
+	/*else {
+		
+	}*/
+	return texture;
 
 }
 

@@ -33,6 +33,8 @@ private:
 	void CreateBackbufferRenderTarget(size_t width, size_t height);
 
 private:
+
+
 	ID3D11Device* device;
 	ID3D11DeviceContext* context;
 	IDXGISwapChain* swapchain;

@@ -1,5 +1,6 @@
-Texture2D objNormMap;
-
+Texture2D NormMap;
+Texture2D TextureMap;
+SamplerState samplerState;
 
 struct VS_OUTPUT
 {
@@ -24,4 +25,13 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 	output.normal = float4(input.normal, 1.0f);
 	output.position = float4(input.worldPosition, 1.0f);
 	return output;
+}
+
+float4 TexturePixelShader(VS_OUTPUT input) : SV_TARGET
+{
+	float4 textureColor;
+
+textureColor = TextureMap.Sample(samplerState, input.uv);
+
+return textureColor;
 }
