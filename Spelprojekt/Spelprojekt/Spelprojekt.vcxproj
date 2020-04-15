@@ -149,6 +149,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="DX11Handler.cpp" />
+    <ClCompile Include="HeightMapGenerator.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Lights.cpp" />
     <ClCompile Include="main.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="ConstantBuffers.h" />
     <ClInclude Include="DX11Handler.h" />
+    <ClInclude Include="HeightMapGenerator.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Lights.h" />
     <ClInclude Include="Logger.h" />
@@ -181,6 +183,7 @@
     <ClInclude Include="Scenes\DevScene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShittyOBJLoader.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Window.h" />

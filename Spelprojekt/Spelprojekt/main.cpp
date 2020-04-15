@@ -1,6 +1,5 @@
 
 #include "Application.h"
-
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
 	Application application (hInstance); //sets up an application with hInstance

@@ -7,12 +7,13 @@
 #include "../ShittyOBJLoader.h"
 #include "../Input.h"
 #include "../CameraController.h"
-
+#include "../HeightMapGenerator.h"
 class DevScene : public Scene
 {
 	const char DEBUG_CAMERA_KEY = 'f';
 
 public:
+	
 	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window);
 	virtual ~DevScene();
 

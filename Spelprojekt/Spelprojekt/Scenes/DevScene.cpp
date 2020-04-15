@@ -1,5 +1,6 @@
 #include "DevScene.h"
 
+
 DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scene(renderer, window)
 {
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
@@ -17,13 +18,25 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	defaultShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
 
 	// object = mesh + material
+	// Mesh* terrainMesh = 
+	
 	Mesh* sphereMesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 	Object* sphere = new Object(sphereMesh, new Material(defaultShader));
+
 
 	sphere->GetTransform().Translate(0, 0, 6);
 	objects.push_back(sphere);
 
 	controller->SetFollow(&sphere->GetTransform(), { 0, 10.0f, -10.0f });
+
+	TerrainGenerator test;
+	Mesh* terrain = new Mesh();
+	test.generateFromHeightMap("heightmap.png", terrain, dx11.GetDevice());
+	Object* terrainObject = new Object(terrain, new Material(defaultShader));
+	sphere->GetTransform().Translate(0, 0, 0);
+	terrainObject->GetTransform().Translate(2, 2, 22);
+	//objects.push_back(sphere);
+	objects.push_back(terrainObject);
 }
 
 DevScene::~DevScene()
