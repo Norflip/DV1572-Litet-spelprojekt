@@ -10,6 +10,7 @@
 class DevScene : public Scene
 {
 public:
+	
 	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window);
 	virtual ~DevScene();
 
