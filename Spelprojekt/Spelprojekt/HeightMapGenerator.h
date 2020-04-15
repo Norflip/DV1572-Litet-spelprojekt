@@ -16,8 +16,8 @@ public:
 
 	static Mesh heightTerrain;
 
-	float scaling = 2;
-	float verticalScaling = 2;
+	float scaling = 0.2;
+	float verticalScaling = 12;
 	int width;
 	int height;
 
