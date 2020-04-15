@@ -12,12 +12,9 @@ class TerrainGenerator
 
 public:
 	void generateFromHeightMap(std::string textureName, Mesh*& mesh, ID3D11Device* device);
-
-
-	static Mesh heightTerrain;
 private:
-	float xzScale = 0.2;
-	float verticalScaling = 12;
+	float xzScale = 0.2; //defines how large plane to generate
+	float verticalScaling = 3; // height of the vertecies
 	int width;
 	int height;
 

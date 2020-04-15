@@ -7,13 +7,14 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 {
 	int bpp = sizeof(uint8_t) * 4;//RGBA, bits per pixel
 
+	//loads image
 	uint8_t* rgb_image = stbi_load(textureName.data(), &width, &height, &bpp, 1);
 
-	DirectX::XMFLOAT3 temp0;
-	std::vector<MeshVertex> vertList;
+
 	MeshVertex tempVertex;
 	std::vector<unsigned int> indexList;
-	size_t amountOfIndecies = 0;
+	std::vector<MeshVertex> vertList;
+	size_t indexNr = 0;
 
 	for (int y = 0; y < height; y++)
 	{
@@ -33,15 +34,15 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 			if (y < height-1 && x < width-1)
 			{
 				// triangle 1
-				indexList.push_back((amountOfIndecies + width));
-				indexList.push_back((amountOfIndecies + width) + 1);
-				indexList.push_back(amountOfIndecies + 1);
+				indexList.push_back((indexNr + width));
+				indexList.push_back((indexNr + width) + 1);
+				indexList.push_back(indexNr + 1);
 				//triangle 2
-				indexList.push_back(amountOfIndecies + width);
-				indexList.push_back(amountOfIndecies + 1);
-				indexList.push_back(amountOfIndecies);
+				indexList.push_back(indexNr + width);
+				indexList.push_back(indexNr + 1);
+				indexList.push_back(indexNr);
 			}
-			amountOfIndecies++;
+			indexNr++;
 			
 		}
 
@@ -51,6 +52,8 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 
 	int texUIndex = 0;
 	int texVIndex = 0;
+
+	//generates UV coordinates for verts
 	for (int i = 0; i < width-1; i++)
 	{
 		for (int j = 0; j < height-1; j++)
@@ -66,4 +69,5 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 		texUIndex = 0;
 		texVIndex++;
 	}
+
 }

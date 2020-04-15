@@ -19,7 +19,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 
 	TerrainGenerator test;
 	Mesh* terrain = new Mesh();
-	test.generateFromHeightMap("heightmap2.png", terrain, dx11.GetDevice());
+	test.generateFromHeightMap("heightmap.png", terrain, dx11.GetDevice());
 	Object* terrainObject = new Object(terrain, new Material(defaultShader));
 	sphere->GetTransform().Translate(0, 0, 0);
 	terrainObject->GetTransform().Translate(2, 2, 22);
