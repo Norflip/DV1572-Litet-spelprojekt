@@ -14,7 +14,7 @@ struct PointLight
 {
 	DirectX::XMFLOAT4 color;
 	DirectX::XMFLOAT3 position;
-	float power;
+	float radius;
 };
 
 __declspec(align(16))

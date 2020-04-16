@@ -7,8 +7,13 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	window.GetInput()->LockCursor(false);
 
 	Lights* lights = new Lights();
-	lights->AddPointLight({ -2, 0, 0 }, { 0.9f,0.1f,0.1f,1 }, 0);
-	lights->AddPointLight({ -2, 0, 10 }, { 0.1f,0.1f, 0.9f, 1 }, 0);
+	lights->AddPointLight({ -2, 0, 0 }, { 0.9f,0.1f,0.1f,1 }, 50);
+	lights->AddPointLight({ -2, 0, 10 }, { 0.1f,0.1f, 0.9f, 1 }, 50);
+
+	lights->SetSunDirection({ 1,-1, 1 });
+	lights->SetSunColor({ 1,1,1,1 });
+	lights->SetSunIntensity(0.2f);
+
 	renderer->SetLights(lights);
 
 	// save the shaders somewhere, remember to clean it up
@@ -26,26 +31,24 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	Object* sphere = new Object(sphereMesh, new Material(defaultShader));
 	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
 
-
 	sphere->GetTransform().Translate(0, 0, 6);
 	objects.push_back(sphere);
 
 	controller->SetFollow(&sphere->GetTransform(), { 0, 10.0f, -10.0f });
 
-	TerrainGenerator test;
 	Mesh* terrain = new Mesh();
+	TerrainGenerator test;
 	test.generateFromHeightMap("heightmap.png", terrain, dx11.GetDevice());
+
 	Object* terrainObject = new Object(terrain, new Material(defaultShader));
-	sphere->GetTransform().Translate(0, 0, 0);
 	terrainObject->GetTransform().Translate(2, 2, 22);
-	//objects.push_back(sphere);
 	objects.push_back(terrainObject);
+
 	gametimer.Start();
 	gametimerText = new GUITextObject(dx11, "Test", window.GetWidth()/2.0f, 0);
 
 	GUI* gui = new GUI(dx11);
 	gui->AddGUIObject(gametimerText);
-
 	renderer->SetGUI(gui);
 }
 

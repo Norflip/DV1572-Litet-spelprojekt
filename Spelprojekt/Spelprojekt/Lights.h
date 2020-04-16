@@ -19,6 +19,8 @@ public:
 	size_t AddPointLight(DirectX::XMFLOAT3 position, DirectX::XMFLOAT4 color, float attenuation);
 	void RemovePointLight(size_t id);
 
+	void SetSun(DirectX::XMFLOAT3 direction, DirectX::XMFLOAT4 color, float intensity);
+
 	void SetSunColor(DirectX::XMFLOAT4 color) { lightConstantBuffer.sunColor = color; }
 	void SetSunIntensity(float intensity) { lightConstantBuffer.sunIntensity = intensity; }
 	void SetSunDirection(DirectX::XMFLOAT3 direction);
