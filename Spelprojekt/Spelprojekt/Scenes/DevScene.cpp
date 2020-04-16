@@ -56,11 +56,10 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	renderer->SetGUI(gui);
 
 	terrainObject->GetTransform().Translate(0, 0, 0);
-	Object* sphere = new Object(sphereMesh, new Material(defaultShader));
 	player = new Player(playerMesh, new Material(defaultShader), window.GetInput(),&test);
 	player->GetTransform().Translate(0, 1, 0);
 	sphere->GetTransform().Translate(0, 0, 6);
-	objects.push_back(sphere);
+
 	objects.push_back(player->GetPlayerObject());
 	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
 
