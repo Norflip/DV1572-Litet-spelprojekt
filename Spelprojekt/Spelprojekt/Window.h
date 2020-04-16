@@ -25,7 +25,7 @@ public:
 
 private:
 	LRESULT CALLBACK m_WindowProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
-	
+
 private:
 	const wchar_t* projectTitel = L"Game of Cones - Litet spelprojekt";
 	size_t width, height;

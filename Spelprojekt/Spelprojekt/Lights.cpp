@@ -29,13 +29,13 @@ void Lights::Initialize(ID3D11Device* device)
 	}
 }
 
-size_t Lights::AddPointLight(DirectX::XMFLOAT3 position, DirectX::XMFLOAT4 color, float attenuation)
+size_t Lights::AddPointLight(DirectX::XMFLOAT3 position, DirectX::XMFLOAT4 color, float radius)
 {
 	size_t id = pointLight_ID++;
 	PointLight pl;
 	pl.position = position;
 	pl.color = color;
-	pl.power = attenuation;
+	pl.radius = radius;
 
 	pointLightMap.insert({ id, pl });
 
@@ -51,6 +51,13 @@ void Lights::RemovePointLight(size_t id)
 		pointLightMap.erase(findResult);
 		dirty = true;
 	}
+}
+
+void Lights::SetSun(DirectX::XMFLOAT3 direction, DirectX::XMFLOAT4 color, float intensity)
+{
+	SetSunDirection(direction);
+	SetSunColor(color);
+	SetSunIntensity(intensity);
 }
 
 void Lights::SetSunDirection(DirectX::XMFLOAT3 direction)

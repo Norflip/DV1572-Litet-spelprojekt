@@ -22,8 +22,6 @@ public:
 	AABB GetWorldBounds() const;
 
 	void Render(Renderer*, Camera*);
-
-private:
 	void UpdateLocalBounds();
 
 private:

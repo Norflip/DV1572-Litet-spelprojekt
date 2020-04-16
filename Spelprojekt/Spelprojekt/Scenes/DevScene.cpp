@@ -8,8 +8,13 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	window.GetInput()->LockCursor(false);
 
 	Lights* lights = new Lights();
-	lights->AddPointLight({ -2, 0, 0 }, { 0.9f,0.1f,0.1f,1 }, 0);
-	lights->AddPointLight({ -2, 0, 10 }, { 0.1f,0.1f, 0.9f, 1 }, 0);
+	lights->AddPointLight({ -2, 0, 0 }, { 0.9f,0.1f,0.1f,1 }, 50);
+	lights->AddPointLight({ -2, 0, 10 }, { 0.1f,0.1f, 0.9f, 1 }, 50);
+
+	lights->SetSunDirection({ 1,-1, 1 });
+	lights->SetSunColor({ 1,1,1,1 });
+	lights->SetSunIntensity(0.2f);
+
 	renderer->SetLights(lights);
 
 	// save the shaders somewhere, remember to clean it up
