@@ -103,7 +103,7 @@ void Renderer::DisplayFrame(Camera* camera)
 	dx11.GetSwapChain()->Present(1, 0);	
 }
 
-void Renderer::ApplyMaterial(Material* material)
+void Renderer::BindMaterial(Material* material)
 {
 	material->Apply(dx11.GetContext());
 	// update material constant buffer

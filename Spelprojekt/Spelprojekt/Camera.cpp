@@ -36,7 +36,7 @@ DirectX::XMMATRIX Camera::GetOrthographic() const
 	return DirectX::XMMatrixOrthographicLH(static_cast<float>(width), static_cast<float>(height), nearZ, farZ);
 }
 
-bool Camera::InView(const AABB& aabb) const
+bool Camera::IsBoundsInView(const AABB& aabb) const
 {
 	bool inViewResult = true;
 	DirectX::XMFLOAT3 min, max, vmin, vmax;
