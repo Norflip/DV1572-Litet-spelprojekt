@@ -15,22 +15,22 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 	std::vector<unsigned int> indexList;
 	size_t amountOfIndecies = 0;
 
-	for (int y = 0; y < height; y++)
+	for (int z = 0; z < height; z++)
 	{
 		for (int x = 0; x < width; x++)
 		{
 			test.position.x = x * xzScale; //Vertex locations on x and y axis loaded here.
-			test.position.z = y * xzScale;
+			test.position.z = z * xzScale;
 			
-			test.position.y = (float)rgb_image[y * width + x + 0] / 255.f;  //Load in height of said vertex, only returns 0-1.
+			test.position.y = (float)rgb_image[z * width + x + 0] / 255.f;  //Load in height of said vertex, only returns 0-1.
+			
 			test.position.y *= verticalScaling;
-			test.position.y -= 10;
 			test.normal = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f); // needs to be calculated when we create a quad
 			test.uv = DirectX::XMFLOAT2(0.0f, 0.0f); // needs to be calculated when we create a quad
 			test.tangent = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 			vertList.push_back(test);
-			if (y < height-1 && x < width-1)
+			if (z < height-1 && x < width-1)
 			{
 				// triangle 1
 				indexList.push_back((amountOfIndecies + width));

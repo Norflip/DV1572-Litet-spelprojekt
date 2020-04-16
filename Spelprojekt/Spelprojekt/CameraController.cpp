@@ -63,6 +63,7 @@ void CameraController::UpdateFree(const float& deltaTime)
 
 void CameraController::UpdateFollow(const float& deltaTime)
 {
+
 	if (target != nullptr)
 	{
 		DirectX::XMVECTOR position = DirectX::XMVectorAdd(target->GetPosition(), offset);
