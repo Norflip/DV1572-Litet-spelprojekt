@@ -16,10 +16,12 @@ public:
 	int getWidth() { return this->width; };
 	int getXzScale(){ return this->xzScale; };
 	int getVerticalScaling() { return this->verticalScaling; };
+	Mesh* getMesh() { return this->mesh; };
 private:
-	float xzScale = 0.2; //defines how large plane to generate
-	float verticalScaling = 3.f; // height of the vertecies
+	float xzScale = 1; //defines how large plane to generate
+	float verticalScaling = 11.f; // height of the vertecies
 	int width;
 	int height;
-
+	Mesh* mesh;
+	
 };

@@ -1,8 +1,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
+#include <DirectXMath.h>
 #include "HeightMapGenerator.h"
 #include "DX11Handler.h"
+using namespace DirectX;
 void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mesh, ID3D11Device* device)
 {
 	int bpp = sizeof(uint8_t) * 4;//RGBA, bits per pixel
@@ -47,10 +48,9 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 
 	}
 	delete rgb_image;
-	mesh = MeshCreator::CreateMesh(vertList, indexList, device);
+
 	int NumVertices = width * height;
 	int NumFaces = (width - 1) * (height - 1) * 2;
-	//std::vector<int> indices(NumFaces * 3);
 	int k = 0;
 	int texUIndex = 0;
 	int texVIndex = 0;
@@ -74,13 +74,79 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 		texVIndex++;
 	}
 
-	
+	std::vector<DirectX::XMFLOAT3> tempNormal;
+	DirectX::XMFLOAT3 unnormalized = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 
-	//Compute vertex normals (normal Averaging)
-	/*DirectX::XMVECTOR normalSum = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	int facesUsing = 0;
-	float tX;
-	float tY;
-	float tZ;*/
+	DirectX::XMVECTOR edge1 = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	DirectX::XMVECTOR edge2 = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	float vecX, vecY, vecZ;
+	for (int i = 0; i < NumFaces; ++i)
+	{
+		vecX = vertList.at(indexList.at(i * 3)).position.x - vertList.at(indexList.at((i * 3) + 2)).position.x;
+		vecY = vertList.at(indexList.at(i * 3)).position.y - vertList.at(indexList.at((i * 3) + 2)).position.y;
+		vecZ = vertList.at(indexList.at(i * 3)).position.z - vertList.at(indexList.at((i * 3) + 2)).position.z;
+		edge1 = DirectX::XMVectorSet(vecX, vecY, vecZ, 0.0f); 
 
+		vecX = vertList.at(indexList.at((i * 3) + 2)).position.x - vertList.at(indexList.at((i * 3) + 1)).position.x;
+		vecY = vertList.at(indexList.at((i * 3) + 2)).position.y - vertList.at(indexList.at((i * 3) + 1)).position.y;
+		vecZ = vertList.at(indexList.at((i * 3) + 2)).position.z - vertList.at(indexList.at((i * 3) + 1)).position.z;
+		edge2 = DirectX::XMVectorSet(vecX, vecY, vecZ, 0.0f);
+
+		XMStoreFloat3(&unnormalized, DirectX::XMVector3Cross(edge1, edge2));
+		vertList.at(indexList.at(i * 3)).normal = unnormalized;
+		vertList.at(indexList.at((i * 3)+1)).normal = unnormalized;
+		vertList.at(indexList.at((i * 3)+2)).normal = unnormalized;
+	}
+
+
+	for (int i = 0; i < vertList.size(); ++i)
+	{
+		XMFLOAT3 temp = vertList.at(i).normal;
+		XMStoreFloat3(&vertList.at(i).normal, DirectX::XMVector3Normalize({ temp.x,temp.y,temp.z }));
+	}
+
+	mesh = MeshCreator::CreateMesh(vertList, indexList, device);
+	this->mesh = mesh;
+
+
+
+	////float vecX, vecY, vecZ;
+	//DirectX::XMVECTOR normalSum = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	//int facesUsing = 0;
+ //   float tX;
+ //   float tY;
+ //   float tZ;
+
+	//for (int i = 0; i < NumVertices; ++i)
+	//{
+	//	for (int j = 0; j < NumFaces; ++j)
+	//	{
+	//		if (indexList.at(j * 3) == i ||
+	//			indexList.at((j * 3) + 1) == i ||
+	//			indexList.at((j * 3) + 2) == i)
+	//		{
+	//			tX = DirectX::XMVectorGetX(normalSum) + tempNormal[j].x;
+	//			tY = DirectX::XMVectorGetY(normalSum) + tempNormal[j].y;
+	//			tZ = DirectX::XMVectorGetZ(normalSum) + tempNormal[j].z;
+
+	//			normalSum = DirectX::XMVectorSet(tX, tY, tZ, 0.0f); 
+	//			facesUsing++;
+	//		}
+	//	}
+	//	/*float x = DirectX::XMVectorGetX(normalSum)/ (float)facesUsing;
+	//	float y = DirectX::XMVectorGetY(normalSum)/ (float)facesUsing;
+	//	float z = DirectX::XMVectorGetZ(normalSum)/ (float)facesUsing;*/
+
+	//	normalSum = normalSum / (float)facesUsing;
+	//	//normalSum = { x,y,z };
+
+	//	normalSum = DirectX::XMVector3Normalize(normalSum);
+
+	//	vertList.at(i).normal.x = DirectX::XMVectorGetX(normalSum);
+	//	vertList.at(i).normal.y = DirectX::XMVectorGetY(normalSum);
+	//	vertList.at(i).normal.z = DirectX::XMVectorGetZ(normalSum);
+
+	//	normalSum = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	//	facesUsing = 0;
+	//}
 }
