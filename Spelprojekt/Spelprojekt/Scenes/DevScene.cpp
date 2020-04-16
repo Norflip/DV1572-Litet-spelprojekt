@@ -21,22 +21,28 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	// Mesh* terrainMesh = 
 	
 	Mesh* sphereMesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
-	Object* sphere = new Object(sphereMesh, new Material(defaultShader));
+	Mesh* playerMesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 
-
-	sphere->GetTransform().Translate(0, 0, 6);
-	objects.push_back(sphere);
-
-	controller->SetFollow(&sphere->GetTransform(), { 0, 10.0f, -10.0f });
-
-	TerrainGenerator test;
 	Mesh* terrain = new Mesh();
 	test.generateFromHeightMap("heightmap.png", terrain, dx11.GetDevice());
 	Object* terrainObject = new Object(terrain, new Material(defaultShader));
+	terrainObject->GetTransform().Translate(0, 0, 0);
+	Object* sphere = new Object(sphereMesh, new Material(defaultShader));
+	player = new Player(playerMesh, new Material(defaultShader), window.GetInput(),&test);
+	player->GetTransform().Translate(0, 1, 0);
+	sphere->GetTransform().Translate(0, 0, 6);
+	objects.push_back(sphere);
+	objects.push_back(player->GetPlayerObject());
+	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
+
+	
 	sphere->GetTransform().Translate(0, 0, 0);
-	terrainObject->GetTransform().Translate(2, 2, 22);
+	
 	//objects.push_back(sphere);
 	objects.push_back(terrainObject);
+
+	//Mesh Object and Player is not deleted
+
 }
 
 DevScene::~DevScene()
@@ -65,9 +71,9 @@ void DevScene::Update(const float& deltaTime)
 		bool following = controller->GetState() == CameraController::State::Follow;
 		controller->SetState(following ? CameraController::State::Free : CameraController::State::Follow);
 	}
-
+	player->Update(deltaTime);
 	controller->Update(deltaTime);
-
+	
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object
 	renderer->SetDeferredRenderTarget();

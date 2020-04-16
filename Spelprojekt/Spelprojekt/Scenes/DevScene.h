@@ -26,7 +26,10 @@ public:
 	Scene* GetNextScene() const override;
 
 private:
+	float testFloat = 0.f;
 	std::vector<Object*> objects;
 	Camera* camera;
 	CameraController* controller;
+	Player* player;
+	TerrainGenerator test;
 };

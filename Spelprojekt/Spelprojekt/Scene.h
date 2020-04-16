@@ -1,6 +1,7 @@
 #pragma once
 #include "Renderer.h"
 #include "Input.h"
+#include "Player.h"
 class Application;
 
 // Should contain a list of all objects what will be rendered. 
