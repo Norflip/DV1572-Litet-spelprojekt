@@ -127,7 +127,7 @@
     </ClInclude>
     <ClInclude Include="AABB.h">
       <Filter>Header Files</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="HeightMapGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
