@@ -40,6 +40,13 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	terrainObject->GetTransform().Translate(2, 2, 22);
 	//objects.push_back(sphere);
 	objects.push_back(terrainObject);
+	gametimer.Start();
+	gametimerText = new GUITextObject(dx11, "Test", window.GetWidth()/2.0f, 0);
+
+	GUI* gui = new GUI(dx11);
+	gui->AddGUIObject(gametimerText);
+
+	renderer->SetGUI(gui);
 }
 
 DevScene::~DevScene()
@@ -60,6 +67,8 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {
+	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
+
 	Input* input = window.GetInput();
 
 	if (input->GetKeyDown(DEBUG_CAMERA_KEY))
@@ -70,6 +79,9 @@ void DevScene::Update(const float& deltaTime)
 	}
 
 	controller->Update(deltaTime);
+
+
+
 
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object

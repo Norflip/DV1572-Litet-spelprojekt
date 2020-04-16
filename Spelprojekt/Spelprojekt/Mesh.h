@@ -11,7 +11,8 @@ struct MeshVertex
 	DirectX::XMFLOAT3 tangent;
 
 	MeshVertex() : position(0, 0, 0), uv(0, 0), normal(0, 0, 0), tangent(0, 0, 0) {}
-	MeshVertex(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT3 normal, DirectX::XMFLOAT3 tangent) : position(position), uv(uv), normal(normal), tangent(tangent) {}
+	MeshVertex(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT3 normal, DirectX::XMFLOAT3 tangent) 
+		: position(position), uv(uv), normal(normal), tangent(tangent) {}
 };
 
 struct Mesh

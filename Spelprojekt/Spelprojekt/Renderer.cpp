@@ -96,7 +96,11 @@ void Renderer::DisplayFrame(Camera* camera)
 	lightpass->Apply(dx11.GetContext());
 
 	DrawMesh(screenQuad);
-	dx11.GetSwapChain()->Present(1, 0);
+
+	if(gui != nullptr)
+		gui->DrawAll();
+
+	dx11.GetSwapChain()->Present(1, 0);	
 }
 
 void Renderer::ApplyMaterial(Material* material)

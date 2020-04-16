@@ -8,6 +8,11 @@
 #include "../Input.h"
 #include "../CameraController.h"
 #include "../HeightMapGenerator.h"
+
+// new
+#include "../Timer.h"
+#include "../GUITextObject.h"
+
 class DevScene : public Scene
 {
 	const char DEBUG_CAMERA_KEY = 'f';
@@ -23,6 +28,10 @@ public:
 	void Update(const float& deltaTime) override;
 	void FixedUpdate(const float& fixedDeltaTime) override;
 
+	
+	// update time function?
+
+
 	Scene* GetNextScene() const override;
 
 private:
@@ -30,4 +39,9 @@ private:
 	Camera* camera;
 	CameraController* controller;
 	Texture* m_texture;
+
+	// new
+	Timer gametimer;
+	GUITextObject* gametimerText;
+
 };

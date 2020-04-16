@@ -11,6 +11,10 @@
 #include "ConstantBuffers.h"
 #include "Lights.h"
 
+#include "GUI.h"
+#include "GUITextObject.h"
+
+
 constexpr float CLEAR_COLOR[3] = { 0.4f,0.4f,0.4f };
 
 class Renderer
@@ -18,7 +22,7 @@ class Renderer
 public:
 	Renderer(size_t width, size_t height, DX11Handler&);
 	virtual ~Renderer();
-
+	
 	void SetDeferredRenderTarget();
 	void SetRenderTarget(RenderTarget* renderTarget);
 
@@ -27,7 +31,9 @@ public:
 
 	Lights* GetLights() const { return this->lights; }
 	void SetLights(Lights* lights);
-	
+
+	void SetGUI(GUI* gui) { this->gui = gui; }	
+
 	void DisplayFrame(Camera*);
 	void ApplyMaterial(Material*);
 
@@ -41,6 +47,7 @@ private:
 	Lights* lights;
 	
 	Material* meshMat;
+	GUI* gui;
 
 	ID3D11Buffer* worldBuffer_ptr;
 	WorldConstantBuffer cb_world;
