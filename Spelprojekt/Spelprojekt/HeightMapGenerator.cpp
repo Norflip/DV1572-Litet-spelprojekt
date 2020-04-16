@@ -22,11 +22,10 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 		{
 			test.position.x = x * xzScale; //Vertex locations on x and y axis loaded here.
 			test.position.z = z * xzScale;
-			
 			test.position.y = (float)rgb_image[z * width + x + 0] / 255.f;  //Load in height of said vertex, only returns 0-1.
-			
 			test.position.y *= verticalScaling;
-			test.normal = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f); // needs to be calculated when we create a quad
+
+			test.normal = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f); 
 			test.uv = DirectX::XMFLOAT2(0.0f, 0.0f); // needs to be calculated when we create a quad
 			test.tangent = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 
@@ -92,10 +91,16 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 		vecZ = vertList.at(indexList.at((i * 3) + 2)).position.z - vertList.at(indexList.at((i * 3) + 1)).position.z;
 		edge2 = DirectX::XMVectorSet(vecX, vecY, vecZ, 0.0f);
 
-		XMStoreFloat3(&unnormalized, DirectX::XMVector3Cross(edge1, edge2));
-		vertList.at(indexList.at(i * 3)).normal = unnormalized;
-		vertList.at(indexList.at((i * 3)+1)).normal = unnormalized;
-		vertList.at(indexList.at((i * 3)+2)).normal = unnormalized;
+		XMStoreFloat3(&unnormalized, XMVector3Normalize(DirectX::XMVector3Cross(edge1, edge2)));
+
+		//HEJ. Lycka till <3
+		// SÅ JÄVLA SNYYYGGGT, MASTER CODER
+		for(int j = 0; j < 3; j++)
+		{
+			vertList.at(indexList.at((i * 3) + j)).normal.x += unnormalized.x;
+			vertList.at(indexList.at((i * 3)+ j)).normal.y += unnormalized.y;
+			vertList.at(indexList.at((i * 3)+ j)).normal.z += unnormalized.z;
+		}
 	}
 
 

@@ -7,7 +7,7 @@ class RenderTarget
 {
 public:
 	RenderTarget(ID3D11RenderTargetView* rtv, ID3D11ShaderResourceView* srv, ID3D11DepthStencilView* dsv, D3D11_VIEWPORT viewport);
-	RenderTarget(size_t bufferCount, size_t width, size_t height, bool createDepthBuffer);
+	RenderTarget(size_t bufferCount, size_t width, size_t height, bool create);
 	virtual ~RenderTarget();
 
 	void Initalize(ID3D11Device*);
