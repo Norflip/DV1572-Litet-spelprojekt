@@ -35,7 +35,7 @@ public:
 	void SetGUI(GUI* gui) { this->gui = gui; }	
 
 	void DisplayFrame(Camera*);
-	void ApplyMaterial(Material*);
+	void BindMaterial(Material*);
 
 private:
 	void DrawMesh(Mesh*);

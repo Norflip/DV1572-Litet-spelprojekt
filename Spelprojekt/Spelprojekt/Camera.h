@@ -23,7 +23,7 @@ public:
 	float GetAspectRatio() { return static_cast<float>(width) / static_cast<float>(height); }
 	Transform& GetTransform() { return this->transform; }
 	
-	bool InView (const AABB& aabb) const;
+	bool IsBoundsInView (const AABB& aabb) const;
 
 private:
 	void UpdatePlanes(DirectX::XMMATRIX projection, DirectX::XMMATRIX view);
