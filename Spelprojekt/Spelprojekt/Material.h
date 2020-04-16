@@ -3,11 +3,13 @@
 #include "Shader.h"
 #include <unordered_map>
 
-enum PIXEL_TYPE
+enum class PIXEL_TYPE
 {
 	VERTEX,
 	PIXEL
 };
+
+constexpr size_t ALBEDO_MATERIAL_TYPE = 0;
 
 class Material
 {
@@ -21,9 +23,8 @@ public:
 
 	Shader* GetShader() const { return this->shader; }
 	void Apply(ID3D11DeviceContext*);
-
+	
 private:
-
 	Shader* shader;
 	std::unordered_map<size_t, std::pair<Texture*, PIXEL_TYPE>> textureMap;
 };

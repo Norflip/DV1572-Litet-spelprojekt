@@ -29,4 +29,5 @@ private:
 	std::vector<Object*> objects;
 	Camera* camera;
 	CameraController* controller;
+	Texture* m_texture;
 };

@@ -1,4 +1,11 @@
 #include "Material.h"
+#include <vector>
+#include <fstream>
+#include <istream>
+#include <sstream>
+#include <d3d11.h>
+#include <DirectXMath.h>
+#include <assert.h>
 
 Material::Material(Shader* shader) : shader(shader)
 {
@@ -11,20 +18,21 @@ Material::~Material()
 void Material::SetTexture(size_t index, Texture* texture, PIXEL_TYPE type)
 {
 	auto pair = std::pair<Texture*, PIXEL_TYPE>(texture, type);
-	
+
 	// rename 'hi'
 	// Searches the textureMap for the given index.
 	// if not then it will insert the new texture*
 	// replaces the value else
-	auto hi = textureMap.find(index);
-	if (hi == textureMap.end())
+	auto teg = textureMap.find(index);
+	if (teg == textureMap.end())
 	{
 		textureMap.insert({ index, pair });
 	}
 	else
 	{
-		(*hi).second = pair;
+		(*teg).second = pair;
 	}
+
 }
 
 Texture* Material::GetTexture(size_t index) const
@@ -35,13 +43,15 @@ Texture* Material::GetTexture(size_t index) const
 		texture = (*teg).second.first;
 
 	return texture;
+
 }
 
 void Material::Apply(ID3D11DeviceContext* context)
 {
+
 	this->shader->Apply(context);
 
-	/*auto iterator = textureMap.begin();
+	auto iterator = textureMap.begin();
 	Texture* texture = nullptr;
 
 	while (iterator != textureMap.end())
@@ -69,5 +79,5 @@ void Material::Apply(ID3D11DeviceContext* context)
 		}
 
 		iterator++;
-	}*/
+	}
 }

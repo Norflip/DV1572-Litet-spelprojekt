@@ -1,6 +1,6 @@
 #pragma once
 #include <d3d11_1.h>
-#include <dxgi.h>     // används för swapchain och device / deviceContext
+#include <dxgi.h>     // anvï¿½nds fï¿½r swapchain och device / deviceContext
 #include <DirectXMath.h>
 
 #include "Camera.h"
@@ -40,6 +40,8 @@ private:
 	Mesh* screenQuad;
 	Lights* lights;
 	
+	Material* meshMat;
+
 	ID3D11Buffer* worldBuffer_ptr;
 	WorldConstantBuffer cb_world;
 
