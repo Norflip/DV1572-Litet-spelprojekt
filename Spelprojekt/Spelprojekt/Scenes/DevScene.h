@@ -8,6 +8,10 @@
 #include "../Input.h"
 #include "../CameraController.h"
 
+// new
+#include "../Timer.h"
+#include "../GUITextObject.h"
+
 class DevScene : public Scene
 {
 	const char DEBUG_CAMERA_KEY = 'f';
@@ -22,10 +26,19 @@ public:
 	void Update(const float& deltaTime) override;
 	void FixedUpdate(const float& fixedDeltaTime) override;
 
+	
+	// update time function?
+
+
 	Scene* GetNextScene() const override;
 
 private:
 	std::vector<Object*> objects;
 	Camera* camera;
 	CameraController* controller;
+
+	// new
+	Timer gametimer;
+	GUITextObject* gametimerText;
+
 };

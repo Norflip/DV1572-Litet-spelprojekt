@@ -1,7 +1,5 @@
 #include "Application.h"
 
-// "Hej från Filip" testing github merge conflicts
-
 Application::Application(HINSTANCE hInstance) : window(hInstance)
 {
 	this->window.Initialize(); // initializes the win32 window
@@ -14,6 +12,11 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 
 	// default scene.. devScene at the moment. Different sceness for the actual game, main menu, game over(?) etc 
 	this->currentScene = new DevScene(this->deferredRenderer, this->dx11, this->window);
+
+
+	
+	
+
 }
 
 Application::~Application()

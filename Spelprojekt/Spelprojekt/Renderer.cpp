@@ -33,9 +33,6 @@ Renderer::Renderer(size_t width, size_t height, DX11Handler& dx11) : dx11(dx11),
 	subresourceData.pSysMem = &cb_world;
 	hr = dx11.GetDevice()->CreateBuffer(&bufferDescription, &subresourceData, &worldBuffer_ptr);
 	assert(SUCCEEDED(hr));
-
-	this->hud = new HUD(dx11);	//Initialize HUD
-	timer.Start();
 }
 
 Renderer::~Renderer()
@@ -100,17 +97,10 @@ void Renderer::DisplayFrame(Camera* camera)
 
 	DrawMesh(screenQuad);
 
-	//Temp test place for timer
-	if (timer.GetMilisecondsElapsed() > 1000)
-	{
-		counter += 1;
-		timer.Restart();
-	}
-	std::wstring addCounter = L"Timer: " + std::to_wstring(counter);
-	const wchar_t* showTimer = addCounter.c_str();
-	hud->drawHUD(showTimer, 350, 0);
+	if(gui != nullptr)
+		gui->DrawAll();
 
-	dx11.GetSwapChain()->Present(1, 0);
+	dx11.GetSwapChain()->Present(1, 0);	
 }
 
 void Renderer::ApplyMaterial(Material* material)
