@@ -40,12 +40,11 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 
 	Mesh* playerMesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 	Mesh* terrain = new Mesh();
-	TerrainGenerator test;
 	test.generateFromHeightMap("heightmap.png", terrain, dx11.GetDevice());
 
 	Object* terrainObject = new Object(terrain, new Material(defaultShader));
 
-	terrainObject->GetTransform().Translate(2, 2, 22);
+	//terrainObject->GetTransform().Translate(0, 0, 0);
 	objects.push_back(terrainObject);
 
 	gametimer.Start();
@@ -55,12 +54,12 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	gui->AddGUIObject(gametimerText);
 	renderer->SetGUI(gui);
 
-	terrainObject->GetTransform().Translate(0, 0, 0);
+	//terrainObject->GetTransform().Translate(0, 0, 0);
 	player = new Player(playerMesh, new Material(defaultShader), window.GetInput(),&test);
-	player->GetTransform().Translate(0, 1, 0);
+	//player->GetTransform().Translate(0, 2, 0);
 	sphere->GetTransform().Translate(0, 0, 6);
 
-	objects.push_back(player->GetPlayerObject());
+	
 	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
 
 	
@@ -68,7 +67,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	
 	//objects.push_back(sphere);
 	objects.push_back(terrainObject);
-
+	objects.push_back(player->GetPlayerObject());
 	//Mesh Object and Player is not deleted
 }
 
