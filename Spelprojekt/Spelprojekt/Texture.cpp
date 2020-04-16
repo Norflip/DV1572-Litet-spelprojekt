@@ -1,46 +1,44 @@
 #include "Texture.h"
 
-Texture::Texture()
+Texture::Texture() : texture(nullptr), textureSRV(nullptr), samplerState(nullptr)
 {
-	//m_Texture = nullptr;
-
-	texture = nullptr;
-	textureSRV = nullptr;
-	samplerState = nullptr;
 }
 
 Texture::~Texture()
 {
 }
 
-ID3D11Texture2D* Texture::GetDX11Texture() const
+Texture* Texture::CreateTexture(std::string filePath, DX11Handler& dx11, bool createSampler, D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode)
 {
-	return this->texture;
-}
+	Texture* texture = new Texture();
+	HRESULT hr;
+	std::wstring wsConvert(filePath.begin(), filePath.end());
 
-ID3D11ShaderResourceView* Texture::GetSRV() const
-{
-	return this->textureSRV;
-}
+	hr = DirectX::CreateWICTextureFromFile(dx11.GetDevice(), wsConvert.c_str(), &texture->texture, &texture->textureSRV);
+	assert(SUCCEEDED(hr));
 
-ID3D11SamplerState* Texture::GetSampler() const
-{
-	return this->samplerState;
-}
+	ID3D11Texture2D* pTextureInterface = 0;
+	texture->texture->QueryInterface<ID3D11Texture2D>(&pTextureInterface);
+	pTextureInterface->GetDesc(&texture->imageSampleDesc);
+	pTextureInterface->Release();
 
-//bool Texture::Initialize(ID3D11Device*, WCHAR*)
-//{
-//	HRESULT hr;
-//
-//	hr = DirectX::CreateWICTextureFromFile(DXHandler.GetDevice(), L"rocks.jpg", nullptr, &m_Texture);
-//	if (FAILED(hr))
-//	{
-//		return false;
-//	}
-//	return true;
-//}
-//
-//ID3D11ShaderResourceView* Texture::GetTexture()
-//{
-//	return m_Texture;
-//}
+	if (createSampler)
+	{
+		D3D11_SAMPLER_DESC samplerDescription;
+		ZeroMemory(&samplerDescription, sizeof(D3D11_SAMPLER_DESC));
+		samplerDescription.Filter = filter;
+		samplerDescription.AddressU = mode;
+		samplerDescription.AddressV = mode;
+		samplerDescription.AddressW = mode;
+		samplerDescription.ComparisonFunc = D3D11_COMPARISON_NEVER;
+
+		for (size_t i = 0; i < 4; i++)
+			samplerDescription.BorderColor[i] = 1.0f;
+
+		ID3D11SamplerState* samplerState;
+		ZeroMemory(&samplerState, sizeof(ID3D11SamplerState));
+		dx11.GetDevice()->CreateSamplerState(&samplerDescription, &samplerState);
+	}
+
+	return texture;
+}

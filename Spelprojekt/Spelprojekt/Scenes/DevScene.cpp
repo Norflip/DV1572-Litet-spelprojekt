@@ -1,5 +1,6 @@
 #include "DevScene.h"
 
+HRESULT hr = CoInitialize(NULL);
 DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scene(renderer, window)
 {
 	camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
@@ -10,9 +11,13 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	defaultShader->LoadPixelShader(L"Shaders/Default_ps.hlsl", "main", dx11.GetDevice());
 	defaultShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
 
+	// Texture
+	m_texture = Texture::CreateTexture("rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+
 	// object = mesh + material
 	Mesh* sphereMesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 	Object* sphere = new Object(sphereMesh, new Material(defaultShader));
+	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
 
 	sphere->GetTransform().Translate(0, 0, 6);
 	objects.push_back(sphere);
@@ -54,7 +59,6 @@ void DevScene::Update(const float& deltaTime)
 	camera->GetTransform().Translate(right, 0, forward);
 	camera->UpdateView();
 	//--------------------------------
-
 
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object

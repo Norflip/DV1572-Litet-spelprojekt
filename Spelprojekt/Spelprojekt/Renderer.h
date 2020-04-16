@@ -35,7 +35,8 @@ private:
 	DX11Handler& dx11;
 	Shader* lightpass;
 	Mesh* screenQuad;
-	
+	Material* meshMat;
+
 	ID3D11Buffer* worldBuffer_ptr;
 	WorldConstantBuffer cb_world;
 

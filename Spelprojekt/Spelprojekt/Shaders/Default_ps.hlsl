@@ -1,6 +1,6 @@
-Texture2D NormMap;
-Texture2D TextureMap;
-SamplerState samplerState;
+Texture2D m_albedoMap : register(t0);
+SamplerState m_samplerState: register(s0);
+//Texture2D NormMap;
 
 struct VS_OUTPUT
 {
@@ -21,17 +21,8 @@ struct GBUFFER
 GBUFFER main(VS_OUTPUT input) : SV_TARGET
 {
 	GBUFFER output;
-	output.albedo = float4(1.0f, 0.69f, 0.0f, 1.0f);
+	output.albedo = float4(m_albedoMap.Sample(m_samplerState, input.uv, 1.0f));
 	output.normal = float4(input.normal, 1.0f);
 	output.position = float4(input.worldPosition, 1.0f);
 	return output;
-}
-
-float4 TexturePixelShader(VS_OUTPUT input) : SV_TARGET
-{
-	float4 textureColor;
-
-textureColor = TextureMap.Sample(samplerState, input.uv);
-
-return textureColor;
 }

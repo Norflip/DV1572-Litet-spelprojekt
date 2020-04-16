@@ -31,7 +31,5 @@ VS_OUTPUT main(VS_INPUT input)
 	float4 tangent = float4(input.tangent, 0);
 	output.tangent = normalize(mul(tangent, world).xyz);
 
-	output.uv = input.uv;
-
 	return output;
 }

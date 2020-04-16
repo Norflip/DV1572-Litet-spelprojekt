@@ -24,4 +24,5 @@ public:
 private:
 	std::vector<Object*> objects;
 	Camera* camera;
+	Texture* m_texture;
 };

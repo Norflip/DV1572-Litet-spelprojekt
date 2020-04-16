@@ -9,6 +9,8 @@ enum class PIXEL_TYPE
 	PIXEL
 };
 
+constexpr size_t ALBEDO_MATERIAL_TYPE = 0;
+
 class Material
 {
 public:
@@ -23,11 +25,6 @@ public:
 	void Apply(ID3D11DeviceContext*);
 	
 private:
-	int texArrayIndex = 0;
-	//bool hasNormMap = false;
-	bool hasTexture = false;
-	DX11Handler DXHandler;
-	//bool LoadTexture(ID3D11Device*, WCHAR*);
 	Shader* shader;
 	std::unordered_map<size_t, std::pair<Texture*, PIXEL_TYPE>> textureMap;
 };
