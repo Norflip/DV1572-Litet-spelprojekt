@@ -28,20 +28,28 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	Mesh* sphereMesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 	Object* sphere = new Object(sphereMesh, new Material(defaultShader));
 
-
 	sphere->GetTransform().Translate(0, 0, 6);
 	objects.push_back(sphere);
 
 	controller->SetFollow(&sphere->GetTransform(), { 0, 10.0f, -10.0f });
 
-	TerrainGenerator test;
 	Mesh* terrain = new Mesh();
+	TerrainGenerator test;
 	test.generateFromHeightMap("heightmap.png", terrain, dx11.GetDevice());
+
 	Object* terrainObject = new Object(terrain, new Material(defaultShader));
-	sphere->GetTransform().Translate(0, 0, 0);
 	terrainObject->GetTransform().Translate(2, 2, 22);
-	//objects.push_back(sphere);
 	objects.push_back(terrainObject);
+<<<<<<< Updated upstream
+=======
+
+	gametimer.Start();
+	gametimerText = new GUITextObject(dx11, "Test", window.GetWidth()/2.0f, 0);
+
+	GUI* gui = new GUI(dx11);
+	gui->AddGUIObject(gametimerText);
+	renderer->SetGUI(gui);
+>>>>>>> Stashed changes
 }
 
 DevScene::~DevScene()
