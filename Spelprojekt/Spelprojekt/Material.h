@@ -23,7 +23,7 @@ public:
 
 	Shader* GetShader() const { return this->shader; }
 	void Apply(ID3D11DeviceContext*);
-	
+
 private:
 	Shader* shader;
 	std::unordered_map<size_t, std::pair<Texture*, PIXEL_TYPE>> textureMap;

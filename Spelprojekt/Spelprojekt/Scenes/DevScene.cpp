@@ -9,11 +9,9 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	Lights* lights = new Lights();
 	lights->AddPointLight({ -2, 0, 0 }, { 0.9f,0.1f,0.1f,1 }, 50);
 	lights->AddPointLight({ -2, 0, 10 }, { 0.1f,0.1f, 0.9f, 1 }, 50);
-
 	lights->SetSunDirection({ 1,-1, 1 });
 	lights->SetSunColor({ 1,1,1,1 });
 	lights->SetSunIntensity(0.2f);
-
 	renderer->SetLights(lights);
 
 	// save the shaders somewhere, remember to clean it up
@@ -22,53 +20,38 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	defaultShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
 
 	// Texture
-	m_texture = Texture::CreateTexture("rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 
 	// object = mesh + material
-	// Mesh* terrainMesh = 
 	
-	Mesh* sphereMesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
+	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
+	Object* sphere = new Object(dev_monkey_mesh, new Material(defaultShader));
 
-	Object* sphere = new Object(sphereMesh, new Material(defaultShader));
+	Texture* m_texture = Texture::CreateTexture("rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
-
 	sphere->GetTransform().Translate(0, 0, 6);
 	objects.push_back(sphere);
 
-	controller->SetFollow(&sphere->GetTransform(), { 0, 10.0f, -10.0f });
-
-
-	Mesh* playerMesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
+	// ------- TERRAIN
 	Mesh* terrain = new Mesh();
 	test.generateFromHeightMap("heightmap.png", terrain, dx11.GetDevice());
+	objects.push_back(new Object(terrain, new Material(defaultShader)));
 
-	Object* terrainObject = new Object(terrain, new Material(defaultShader));
+	// ------ PLAYER
+	player = new Player(dev_monkey_mesh, new Material(defaultShader), window.GetInput(), &test);
+	player->GetPlayerObject()->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
 
-	//terrainObject->GetTransform().Translate(0, 0, 0);
-	objects.push_back(terrainObject);
+	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
+	objects.push_back(player->GetPlayerObject());
 
+	//Mesh Object and Player is not deleted
+
+	//----- GUI SHIET
 	gametimer.Start();
-	gametimerText = new GUITextObject(dx11, "Test", window.GetWidth()/2.0f, 0);
+	gametimerText = new GUITextObject(dx11, "Test", window.GetWidth() / 2.0f, 0);
 
 	GUI* gui = new GUI(dx11);
 	gui->AddGUIObject(gametimerText);
 	renderer->SetGUI(gui);
-
-	//terrainObject->GetTransform().Translate(0, 0, 0);
-	player = new Player(playerMesh, new Material(defaultShader), window.GetInput(),&test);
-	//player->GetTransform().Translate(0, 2, 0);
-	sphere->GetTransform().Translate(0, 0, 6);
-
-	
-	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
-
-	
-	sphere->GetTransform().Translate(0, 0, 0);
-	
-	//objects.push_back(sphere);
-	objects.push_back(terrainObject);
-	objects.push_back(player->GetPlayerObject());
-	//Mesh Object and Player is not deleted
 }
 
 DevScene::~DevScene()
@@ -99,8 +82,12 @@ void DevScene::Update(const float& deltaTime)
 		bool following = controller->GetState() == CameraController::State::Follow;
 		controller->SetState(following ? CameraController::State::Free : CameraController::State::Follow);
 	}
+
 	player->Update(deltaTime);
 	controller->Update(deltaTime);
+
+
+
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object
 	renderer->SetDeferredRenderTarget();
@@ -109,10 +96,13 @@ void DevScene::Update(const float& deltaTime)
 	// loop objects in scene
 	for (auto i : objects)
 	{
-		if (camera->InView(i->GetWorldBounds()))
+		if (camera->IsBoundsInView(i->GetWorldBounds()))
 		{
-			renderer->ApplyMaterial(i->GetMaterial());
+			renderer->BindMaterial(i->GetMaterial());
 			i->Render(renderer, camera);
+
+			//unbind material after the use
+			
 		}
 	}
 

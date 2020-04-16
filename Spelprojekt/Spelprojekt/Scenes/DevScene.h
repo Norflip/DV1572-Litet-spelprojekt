@@ -38,10 +38,11 @@ private:
 	float testFloat = 0.f;
 	std::vector<Object*> objects;
 	Camera* camera;
+	
 	CameraController* controller;
-	Texture* m_texture;
-	Timer gametimer;
 	GUITextObject* gametimerText;
 	Player* player;
+
 	TerrainGenerator test;
+	Timer gametimer;
 };
