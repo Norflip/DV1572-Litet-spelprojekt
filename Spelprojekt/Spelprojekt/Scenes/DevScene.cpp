@@ -99,8 +99,9 @@ void DevScene::Update(const float& deltaTime)
 		bool following = controller->GetState() == CameraController::State::Follow;
 		controller->SetState(following ? CameraController::State::Free : CameraController::State::Follow);
 	}
-	player->Update(deltaTime);
 	controller->Update(deltaTime);
+	player->Update(deltaTime);
+
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object
 	renderer->SetDeferredRenderTarget();
