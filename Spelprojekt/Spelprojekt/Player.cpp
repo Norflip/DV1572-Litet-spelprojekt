@@ -9,18 +9,14 @@ Player::Player(Mesh* mesh, Material* material, Input* input, TerrainGenerator* t
 
 Player::~Player()
 {
-
+	
 }
 
 void Player::Update(const float& deltaTime)
 {
-
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
-
 }
-
-
 
 void Player::UpdateMovement(float FixedDeltaTime)
 {
@@ -59,7 +55,6 @@ void Player::UpdateHeight(float FixedDeltaTime)
 	else
 		bottomTriangle = false;
 
-
 	int bottomLeft=0;
 	int topLeft=0;
 	int bottomRight=0;
@@ -80,7 +75,6 @@ void Player::UpdateHeight(float FixedDeltaTime)
 		 heightZ = lerp(terrain->getMesh()->vertexes.at(bottomLeft).position.y, terrain->getMesh()->vertexes.at(topLeft).position.y, howFarZ);
 
 		 heightTot = lerp (heightZ , heightX, (1.f-howFarX-howFarZ));
-
 	}	
 	else
 	{
@@ -99,7 +93,6 @@ void Player::UpdateHeight(float FixedDeltaTime)
 	GetTransform().SetPosition({ position.x, heightTot + 1, position.z });
 	//playerObject->GetTransform().SetPosition({ position.x, (terrain->getMesh()->vertexes.at(whichVertex).position.y)+1, position.z });
 
-
 	//std::cout << "bottomTriangle " << bottomTriangle << std::endl << std::endl;
 	//std::cout << "bottomLeft " << bottomLeft << std::endl;
 	//std::cout << "topLeft " << topLeft << std::endl;
@@ -114,5 +107,4 @@ void Player::UpdateHeight(float FixedDeltaTime)
 	//std::cout << "scaleXZ " << scaleXZ << std::endl;
 	//std::cout << "scaleY " << scaleY << std::endl;
 	//std::cout << "bottomleft Vert is "<<  whichVertex << std::endl;
-
 }

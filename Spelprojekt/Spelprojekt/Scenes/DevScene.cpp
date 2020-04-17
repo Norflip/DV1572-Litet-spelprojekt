@@ -7,8 +7,8 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	window.GetInput()->LockCursor(false);
 
 	Lights* lights = new Lights();
-	lights->AddPointLight({ -2, 0, 0 }, { 0.9f,0.1f,0.1f,1 }, 50);
-	lights->AddPointLight({ -2, 0, 10 }, { 0.1f,0.1f, 0.9f, 1 }, 50);
+	lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
+	lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);
 	lights->SetSunDirection({ 1,-1, 1 });
 	lights->SetSunColor({ 1,1,1,1 });
 	lights->SetSunIntensity(0.2f);
@@ -19,27 +19,32 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	defaultShader->LoadPixelShader(L"Shaders/Default_ps.hlsl", "main", dx11.GetDevice());
 	defaultShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
 
-	// Texture
-
 	// object = mesh + material
-
-	Material* test_material = new Material(defaultShader, dx11);
-	Texture* m_texture = Texture::CreateTexture("rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	test_material->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
 
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 
-	Object* sphere = new Object(dev_monkey_mesh, test_material);
+	Object* sphere = new Object(dev_monkey_mesh, new Material(defaultShader, dx11));
+	Texture* monkey_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	Texture* monkey_normal = Texture::CreateTexture("Textures/rocks_normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
+	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	sphere->GetTransform().Translate(0, 0, 6);
 	objects.push_back(sphere);
 
 	// ------- TERRAIN
+	Material* test_material = new Material(defaultShader, dx11);
+	Texture* m_texture = Texture::CreateTexture("rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	test_material->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
+
 	Mesh* terrain = new Mesh();
 	test.generateFromHeightMap("heightmap.png", terrain, dx11.GetDevice());
 	objects.push_back(new Object(terrain, test_material));
 
 	// ------ PLAYER
-	player = new Player(dev_monkey_mesh, test_material, window.GetInput(), &test);
+	player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), window.GetInput(), &test);
+	player->GetPlayerObject()->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
+	player->GetPlayerObject()->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
+
 	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
 	objects.push_back(player);
 
@@ -61,12 +66,10 @@ DevScene::~DevScene()
 
 void DevScene::Load()
 {
-
 }
 
 void DevScene::Unload()
 {
-
 }
 
 void DevScene::Update(const float& deltaTime)
