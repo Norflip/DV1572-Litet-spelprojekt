@@ -24,12 +24,12 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	// object = mesh + material
 
 	Material* test_material = new Material(defaultShader, dx11);
+	Texture* m_texture = Texture::CreateTexture("rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	test_material->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
 
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
-	Object* sphere = new Object(dev_monkey_mesh, test_material);
 
-	Texture* m_texture = Texture::CreateTexture("rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
+	Object* sphere = new Object(dev_monkey_mesh, test_material);
 	sphere->GetTransform().Translate(0, 0, 6);
 	objects.push_back(sphere);
 
@@ -40,11 +40,8 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 
 	// ------ PLAYER
 	player = new Player(dev_monkey_mesh, test_material, window.GetInput(), &test);
-	player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
-
 	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
 	objects.push_back(player);
-
 
 
 	//----- GUI SHIET

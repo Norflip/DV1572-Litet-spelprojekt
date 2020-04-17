@@ -4,6 +4,7 @@
 #include "HeightMapGenerator.h"
 #include "DX11Handler.h"
 using namespace DirectX;
+
 void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mesh, ID3D11Device* device)
 {
 	int bpp = sizeof(uint8_t) * 4;//RGBA, bits per pixel
@@ -26,7 +27,7 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 			test.position.y *= verticalScaling;
 
 			test.normal = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f); 
-			test.uv = DirectX::XMFLOAT2(0.0f, 0.0f); // needs to be calculated when we create a quad
+			test.uv = DirectX::XMFLOAT2((float)x / width, (float)z / height); // needs to be calculated when we create a quad
 			test.tangent = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 			vertList.push_back(test);
