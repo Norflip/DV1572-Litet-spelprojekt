@@ -28,7 +28,7 @@ public:
 	ID3D11VertexShader* GetVertexShader() const { return this->vertexShader; }
 	ID3D11InputLayout* GetInputLayout() const { return this->inputLayout; }
 
-	void Apply(ID3D11DeviceContext*);
+	void Bind(ID3D11DeviceContext*);
 
 private:
 	void PrintShaderError(ID3DBlob* errorBlob);

@@ -88,7 +88,7 @@ void Shader::LoadVertexShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device)
 	assert(SUCCEEDED(vsInputLayoutResult));
 }
 
-void Shader::Apply(ID3D11DeviceContext* context)
+void Shader::Bind(ID3D11DeviceContext* context)
 {
 	// sets the vertex shader and layout
 	context->IASetInputLayout(inputLayout);

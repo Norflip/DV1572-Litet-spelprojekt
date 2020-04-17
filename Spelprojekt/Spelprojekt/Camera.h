@@ -1,9 +1,9 @@
 #pragma once
 #include <DirectXMath.h>
-#include "Transform.h"
+#include "Object.h"
 #include "AABB.h"
 
-class Camera
+class Camera : public Object
 {
 	const float nearZ = 0.001f;
 	const float farZ = 1000.0f;
@@ -19,10 +19,9 @@ public:
 	DirectX::XMMATRIX GetView() const { return this->view; }
 	DirectX::XMMATRIX GetProjection() const { return this->projection; }
 	DirectX::XMMATRIX GetOrthographic() const;
+	DirectX::XMMATRIX GetVP();
 
-	float GetAspectRatio() { return static_cast<float>(width) / static_cast<float>(height); }
-	Transform& GetTransform() { return this->transform; }
-	
+	float GetAspectRatio() { return this->aspect; }
 	bool IsBoundsInView (const AABB& aabb) const;
 
 private:
@@ -30,11 +29,10 @@ private:
 
 private:
 	float fovDegrees = 90.0f;
-	bool freeLook;
+	float aspect;
 	size_t width, height;
-	Transform transform;
+
 	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX projection;
-
 	DirectX::XMFLOAT4 frustumPlanes[6];
 };

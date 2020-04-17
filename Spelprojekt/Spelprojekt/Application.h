@@ -6,9 +6,12 @@
 #include "DX11Handler.h"
 #include "Input.h"
 #include <stack>
+#include "Timer.h"
 
 class Application
 {
+	const float TARGET_FIXED_DELTA = 1.0f / 50.0f;
+
 public:
 
 	//constructor & destructor
@@ -27,6 +30,8 @@ private:
 
 	Scene* currentScene;
 	Renderer* deferredRenderer;
+
+	Timer timer;
 };
 
 

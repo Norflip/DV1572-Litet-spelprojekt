@@ -1,26 +1,10 @@
 #include "Player.h"
 Player::Player(Mesh* mesh, Material* material, Input* input, TerrainGenerator* terrain)
-	:input(input), terrain(terrain)
+	:input(input), terrain(terrain), Object(mesh, material)
 {
-	this->playerObject = new Object(mesh, material);
 	this->scaleY = terrain->getVerticalScaling();
 	this->scaleXZ = terrain->getXzScale();
 	this->movementspeed = 3;
-
-
-}
-
-void Player::Update(float FixedDeltaTime)
-{
-
-	UpdateMovement(FixedDeltaTime);
-	UpdateHeight(FixedDeltaTime);
-
-}
-
-Transform& Player::GetTransform()
-{
-	return playerObject->GetTransform();
 }
 
 Player::~Player()
@@ -28,10 +12,21 @@ Player::~Player()
 
 }
 
+void Player::Update(const float& deltaTime)
+{
+
+	UpdateMovement(deltaTime);
+	UpdateHeight(deltaTime);
+
+}
+
+
+
 void Player::UpdateMovement(float FixedDeltaTime)
 {
 	DirectX::XMFLOAT3 position;
-	DirectX::XMStoreFloat3(&position, playerObject->GetTransform().GetPosition());
+	DirectX::XMStoreFloat3(&position, GetTransform().GetPosition());
+
 	if (input->GetKey('w'))
 		position.z += FixedDeltaTime * movementspeed;
 	if (input->GetKey('a'))
@@ -40,13 +35,15 @@ void Player::UpdateMovement(float FixedDeltaTime)
 		position.z -= FixedDeltaTime * movementspeed;
 	if (input->GetKey('d'))
 		position.x += FixedDeltaTime * movementspeed;
-	playerObject->GetTransform().SetPosition({ position.x, position.y, position.z });
+
+	GetTransform().SetPosition({ position.x, position.y, position.z });
 }
 
 void Player::UpdateHeight(float FixedDeltaTime)
 {
 	DirectX::XMFLOAT3 position;
-	DirectX::XMStoreFloat3(&position, playerObject->GetTransform().GetPosition());
+	DirectX::XMStoreFloat3(&position, GetTransform().GetPosition());
+
 	int xpos = position.x / scaleXZ;
 	int zpos = position.z / scaleXZ;
 	int whichVertex = terrain->getWidth() * zpos + xpos;
@@ -99,7 +96,7 @@ void Player::UpdateHeight(float FixedDeltaTime)
 		heightTot = lerp(heightZ, heightX, (1.f - howFarX - howFarZ));
 	}
 
-	playerObject->GetTransform().SetPosition({ position.x, heightTot + 1, position.z });
+	GetTransform().SetPosition({ position.x, heightTot + 1, position.z });
 	//playerObject->GetTransform().SetPosition({ position.x, (terrain->getMesh()->vertexes.at(whichVertex).position.y)+1, position.z });
 
 

@@ -3,7 +3,6 @@
 #include <dxgi.h>     // anv�nds f�r swapchain och device / deviceContext
 #include <DirectXMath.h>
 
-#include "Camera.h"
 #include "Material.h"
 #include "Mesh.h"
 #include "DX11Handler.h"
@@ -13,7 +12,6 @@
 
 #include "GUI.h"
 #include "GUITextObject.h"
-
 
 constexpr float CLEAR_COLOR[3] = { 0.4f,0.4f,0.4f };
 
@@ -27,15 +25,13 @@ public:
 	void SetRenderTarget(RenderTarget* renderTarget);
 
 	void ClearRenderTarget();
-	void DrawMesh(Mesh*, DirectX::XMMATRIX world, Camera*);
+	void DrawMesh(Mesh*, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection);
 
 	Lights* GetLights() const { return this->lights; }
 	void SetLights(Lights* lights);
 
 	void SetGUI(GUI* gui) { this->gui = gui; }	
-
-	void DisplayFrame(Camera*);
-	void BindMaterial(Material*);
+	void DisplayFrame(DirectX::XMVECTOR eye);
 
 private:
 	void DrawMesh(Mesh*);
@@ -50,7 +46,7 @@ private:
 	GUI* gui;
 
 	ID3D11Buffer* worldBuffer_ptr;
-	WorldConstantBuffer cb_world;
+	WorldData cb_world;
 
 	RenderTarget* backbufferRenderTarget;
 	RenderTarget* gbufferRenderTarget;

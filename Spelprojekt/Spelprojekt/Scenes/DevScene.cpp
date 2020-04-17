@@ -1,6 +1,6 @@
 #include "DevScene.h"
 
-DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scene(renderer, window)
+DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scene(renderer, dx11, window)
 {
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
 	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::Follow);
@@ -22,9 +22,11 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	// Texture
 
 	// object = mesh + material
-	
+
+	Material* test_material = new Material(defaultShader, dx11);
+
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
-	Object* sphere = new Object(dev_monkey_mesh, new Material(defaultShader));
+	Object* sphere = new Object(dev_monkey_mesh, test_material);
 
 	Texture* m_texture = Texture::CreateTexture("rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
@@ -34,16 +36,16 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	// ------- TERRAIN
 	Mesh* terrain = new Mesh();
 	test.generateFromHeightMap("heightmap.png", terrain, dx11.GetDevice());
-	objects.push_back(new Object(terrain, new Material(defaultShader)));
+	objects.push_back(new Object(terrain, test_material));
 
 	// ------ PLAYER
-	player = new Player(dev_monkey_mesh, new Material(defaultShader), window.GetInput(), &test);
-	player->GetPlayerObject()->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
+	player = new Player(dev_monkey_mesh, test_material, window.GetInput(), &test);
+	player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
 
 	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
-	objects.push_back(player->GetPlayerObject());
+	objects.push_back(player);
 
-	//Mesh Object and Player is not deleted
+
 
 	//----- GUI SHIET
 	gametimer.Start();
@@ -84,32 +86,43 @@ void DevScene::Update(const float& deltaTime)
 	}
 
 	controller->Update(deltaTime);
-	player->Update(deltaTime);
+
+	for (auto i : objects)
+	{
+		if (i->IsEnabled())
+		{
+			i->Update(deltaTime);
+		}
+	}
 
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object
 	renderer->SetDeferredRenderTarget();
 	renderer->ClearRenderTarget();
 
+	DirectX::XMMATRIX view = camera->GetView();
+	DirectX::XMMATRIX projection = camera->GetProjection();
+
 	// loop objects in scene
 	for (auto i : objects)
 	{
-		if (camera->IsBoundsInView(i->GetWorldBounds()))
+		if (i->IsEnabled() && camera->IsBoundsInView(i->GetWorldBounds()))
 		{
-			renderer->BindMaterial(i->GetMaterial());
-			i->Render(renderer, camera);
-
-			//unbind material after the use
-			
+			i->GetMaterial()->Bind(dx11.GetContext());
+			i->Render(renderer, view, projection);
+			i->GetMaterial()->Unbind(dx11.GetContext()); 			//unbind material after the use
 		}
 	}
 
-	renderer->DisplayFrame(camera);
+	renderer->DisplayFrame(camera->GetTransform().GetPosition());
 }
 
 void DevScene::FixedUpdate(const float& fixedDeltaTime)
 {
-
+	for (auto i : objects)
+	{
+		i->FixedUpdate(fixedDeltaTime);
+	}
 }
 
 Scene* DevScene::GetNextScene() const

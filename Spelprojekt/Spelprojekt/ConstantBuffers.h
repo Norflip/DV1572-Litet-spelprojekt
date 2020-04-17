@@ -3,7 +3,7 @@
 #define MAX_LIGHTS 32
 
 __declspec(align(16))
-struct WorldConstantBuffer
+struct WorldData
 {
 	DirectX::XMMATRIX mvp;
 	DirectX::XMMATRIX world;
@@ -18,7 +18,7 @@ struct PointLight
 };
 
 __declspec(align(16))
-struct LightConstantBuffer
+struct LightData
 {
 	DirectX::XMFLOAT4 sunColor;
 	DirectX::XMFLOAT3 sunDirection;
@@ -27,4 +27,14 @@ struct LightConstantBuffer
 	DirectX::XMFLOAT3 eyePosition;
 	int pointLightCount;
 	PointLight pointLights[MAX_LIGHTS];
+};
+
+__declspec(align(16))
+struct MaterialData
+{
+	DirectX::XMFLOAT4 ambient;
+	DirectX::XMFLOAT4 diffuse;
+	DirectX::XMFLOAT4 specular;
+
+	// bools för vilka textures som används
 };

@@ -1,25 +1,31 @@
 #include "Object.h"
 
-Object::Object(Mesh* mesh, Material* material) : mesh(mesh), material(material) 
+Object::Object(Mesh* mesh, Material* material) : mesh(mesh), material(material), enabled(true)
 {
-	UpdateLocalBounds();
+	SetMesh(mesh);
 }
 
+Object::Object() : Object(nullptr, nullptr) {}
 Object::Object(const Object& other) : Object(other.mesh, other.material) {}
-
 Object::~Object() {}
+
+void Object::SetMesh(Mesh* mesh)
+{
+	this->mesh = mesh; 
+	UpdateLocalBounds();
+}
 
 AABB Object::GetWorldBounds() const
 {
 	DirectX::XMVECTOR min, max, ch;
-	DirectX::XMMATRIX w = transform.GetWorldMatrix();
+	DirectX::XMMATRIX worldTransform = transform.GetWorldMatrix();
 
 	DirectX::XMVECTOR corners[8];
 	localBounds.GetCorners(corners);
 
 	for (size_t i = 0; i < 8; i++)
 	{
-		ch = DirectX::XMVector3Transform(corners[i], w);
+		ch = DirectX::XMVector3Transform(corners[i], worldTransform);
 
 		if (i == 0)
 			min = max = corners[i];
@@ -31,11 +37,6 @@ AABB Object::GetWorldBounds() const
 	}
 
 	return AABB(min, max);
-}
-
-void Object::Render(Renderer* renderer, Camera* camera)
-{
-	renderer->DrawMesh(mesh, transform.GetWorldMatrix(), camera);
 }
 
 void Object::UpdateLocalBounds()
@@ -53,4 +54,9 @@ void Object::UpdateLocalBounds()
 			localBounds.Encapsulate(pos);
 		}
 	}
+}
+
+void Object::Render(Renderer* renderer, DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
+{
+	renderer->DrawMesh(mesh, transform.GetWorldMatrix(), view, projection);
 }

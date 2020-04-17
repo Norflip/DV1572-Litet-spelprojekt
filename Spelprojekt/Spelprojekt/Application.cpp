@@ -10,12 +10,9 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 	Logger::Open();
 	Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
 
+
 	// default scene.. devScene at the moment. Different sceness for the actual game, main menu, game over(?) etc 
 	this->currentScene = new DevScene(this->deferredRenderer, this->dx11, this->window);
-
-
-	
-	
 
 }
 
@@ -29,10 +26,11 @@ void Application::Run()
 	// starts the message loop for win32
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
+	timer.Start();
 
-	// not implemented yet
-	const float TMP_DELTATIME = 1.0f / 60.0f;
-	const float TMP_FIXEDDELTATIME = 1.0f / 50.0f;
+	float timeLastFrame = static_cast<float>(timer.GetMilisecondsElapsed() / 1000.0f);
+	float fixedTimeAccumulation = 0.0f;
+	float currentTime, deltaTime;
 
 	while (TRUE)
 	{
@@ -47,13 +45,22 @@ void Application::Run()
 		}
 		else
 		{
+			currentTime = static_cast<float>(timer.GetMilisecondsElapsed() / 1000.0f);
+			deltaTime = currentTime - timeLastFrame;
+
 			window.GetInput()->UpdateState();
 
 			// call update function
 			if (currentScene != nullptr)
 			{
-				currentScene->Update(TMP_DELTATIME); //Dynamic
-				currentScene->FixedUpdate(TMP_FIXEDDELTATIME); //Physics 
+				fixedTimeAccumulation += deltaTime;
+				currentScene->Update(deltaTime);
+
+				while (fixedTimeAccumulation >= TARGET_FIXED_DELTA)
+				{
+					currentScene->FixedUpdate(TARGET_FIXED_DELTA);
+					fixedTimeAccumulation -= TARGET_FIXED_DELTA;
+				}
 
 				Scene* next = currentScene->GetNextScene();
 				if (next != nullptr)
@@ -66,6 +73,7 @@ void Application::Run()
 				}
 			}
 
+			timeLastFrame = currentTime;
 		}
 	}
 }

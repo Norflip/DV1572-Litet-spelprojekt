@@ -3,30 +3,9 @@
 Lights::Lights() : lightBuffer_ptr(nullptr) {}
 Lights::~Lights() {}
 
-void Lights::Initialize(ID3D11Device* device)
+void Lights::Initialize(DX11Handler& dx11)
 {
-	if (lightBuffer_ptr == nullptr)
-	{
-		static_assert(sizeof(lightConstantBuffer) % 16 == 0, "wrong size");
-
-		HRESULT hr;
-		D3D11_BUFFER_DESC bufferDescription;
-		D3D11_SUBRESOURCE_DATA subresourceData;
-		ZeroMemory(&bufferDescription, sizeof(D3D11_BUFFER_DESC));
-		ZeroMemory(&subresourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-		ZeroMemory(&lightBuffer_ptr, sizeof(lightBuffer_ptr));
-
-		bufferDescription.Usage = D3D11_USAGE_DEFAULT;
-		bufferDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		bufferDescription.CPUAccessFlags = 0;
-
-		// LIGHT BUFFER
-		bufferDescription.ByteWidth = sizeof(lightConstantBuffer);
-		subresourceData.pSysMem = &lightConstantBuffer;
-
-		hr = device->CreateBuffer(&bufferDescription, &subresourceData, &lightBuffer_ptr);
-		assert(SUCCEEDED(hr));
-	}
+	lightBuffer_ptr = dx11.CreateBuffer<LightData>(lightConstantBuffer);
 }
 
 size_t Lights::AddPointLight(DirectX::XMFLOAT3 position, DirectX::XMFLOAT4 color, float radius)

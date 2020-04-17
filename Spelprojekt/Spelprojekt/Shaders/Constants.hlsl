@@ -26,3 +26,12 @@ cbuffer LightConstantBuffer : register(b1)
 
 	PointLight pointLights[MAX_LIGHTS];
 }
+
+cbuffer MaterialBuffer : register (b2)
+{
+	float4 ambient;
+	float4 diffuse;
+	float4 specular;
+
+	// bools för vilka textures som används
+}

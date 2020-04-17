@@ -1,7 +1,9 @@
 #include "Camera.h"
 
-Camera::Camera(float fovDegrees, size_t width, size_t height) : width(width), height(height)
+Camera::Camera(float fovDegrees, size_t width, size_t height) : Object(nullptr, nullptr), width(width), height(height)
 {
+	this->aspect = static_cast<float>(width) / static_cast<float>(height);
+	this->SetEnabled(false);
 	SetFieldOfView(fovDegrees);
 	UpdateView();
 }
@@ -21,6 +23,7 @@ void Camera::SetFieldOfView(float fov)
 
 void Camera::UpdateView()
 {
+	Transform& transform = GetTransform();
 	this->view = DirectX::XMMatrixLookToLH(
 		transform.GetPosition(),
 		transform.TransformDirection(Transform::default_forward),
@@ -34,6 +37,11 @@ void Camera::UpdateView()
 DirectX::XMMATRIX Camera::GetOrthographic() const
 {
 	return DirectX::XMMatrixOrthographicLH(static_cast<float>(width), static_cast<float>(height), nearZ, farZ);
+}
+
+DirectX::XMMATRIX Camera::GetVP()
+{
+	return DirectX::XMMATRIX();
 }
 
 bool Camera::IsBoundsInView(const AABB& aabb) const

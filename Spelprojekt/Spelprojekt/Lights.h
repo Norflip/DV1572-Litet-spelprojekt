@@ -14,7 +14,7 @@ public:
 	Lights();
 	virtual ~Lights();
 
-	void Initialize(ID3D11Device*);
+	void Initialize(DX11Handler& dx11);
 
 	size_t AddPointLight(DirectX::XMFLOAT3 position, DirectX::XMFLOAT4 color, float attenuation);
 	void RemovePointLight(size_t id);
@@ -35,6 +35,6 @@ private:
 	std::unordered_map<size_t, PointLight> pointLightMap;
 
 	bool dirty;
-	LightConstantBuffer lightConstantBuffer;
+	LightData lightConstantBuffer;
 	ID3D11Buffer* lightBuffer_ptr;
 };

@@ -7,8 +7,9 @@
 #include <DirectXMath.h>
 #include <assert.h>
 
-Material::Material(Shader* shader) : shader(shader)
+Material::Material(Shader* shader, DX11Handler& dx11) : shader(shader)
 {
+	this->buffer = dx11.CreateBuffer<MaterialData>(materialData);
 }
 
 Material::~Material()
@@ -43,13 +44,52 @@ Texture* Material::GetTexture(size_t index) const
 		texture = (*teg).second.first;
 
 	return texture;
-
 }
 
-void Material::Apply(ID3D11DeviceContext* context)
+void Material::Unbind(ID3D11DeviceContext* context)
 {
+	ID3D11Buffer* const nullBuffer[1] = { NULL };
+	context->PSSetConstantBuffers(CONSTANT_BUFFER_SLOT, 1, nullBuffer);
 
-	this->shader->Apply(context);
+	auto iterator = textureMap.begin();
+	Texture* texture = nullptr;
+	ID3D11ShaderResourceView* const pSRV[1] = { NULL };
+
+	while (iterator != textureMap.end())
+	{
+		size_t index = (*iterator).first;
+		PIXEL_TYPE flag = (*iterator).second.second;
+		texture = (*iterator).second.first;
+
+		ID3D11ShaderResourceView* srv = texture->GetSRV();
+		ID3D11SamplerState* sampler = texture->GetSampler();
+
+		if (flag == PIXEL_TYPE::PIXEL)
+		{
+			if (sampler != nullptr)
+				context->PSSetSamplers(index, 1, nullptr);
+
+			context->PSSetShaderResources(index, 1, pSRV);
+		}
+		else if (flag == PIXEL_TYPE::VERTEX)
+		{
+			if (sampler != nullptr)
+				context->VSSetSamplers(index, 1, nullptr);
+
+			context->VSSetShaderResources(index, 1, pSRV);
+		}
+
+		iterator++;
+	}
+}
+
+void Material::Bind(ID3D11DeviceContext* context)
+{
+	this->shader->Bind(context);
+	// update buffer
+
+	context->UpdateSubresource(buffer, 0, 0, &materialData, 0, 0);
+	context->PSSetConstantBuffers(CONSTANT_BUFFER_SLOT, 1, &buffer);
 
 	auto iterator = textureMap.begin();
 	Texture* texture = nullptr;

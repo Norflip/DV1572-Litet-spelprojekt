@@ -3,16 +3,17 @@
 #include "Scene.h"
 #include "Input.h"
 #include "HeightMapGenerator.h"
-class Player
+
+class Player : public Object
 {
 public:
 	Player(Mesh* mesh, Material* material, Input* input, TerrainGenerator* terrain);
-	void Update(float FixedDeltaTime);
-	Transform& GetTransform();
-	Object* GetPlayerObject() { return this->playerObject; };
 	~Player();
+
+	void Update(const float& deltaTime) override;
+
 private:
-	Object* playerObject;
+
 	Input* input;
 	float movementspeed;
 	void UpdateMovement(float FixedDeltaTime);

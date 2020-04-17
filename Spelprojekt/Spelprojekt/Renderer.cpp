@@ -12,32 +12,10 @@ Renderer::Renderer(size_t width, size_t height, DX11Handler& dx11) : dx11(dx11),
 	this->lightpass->LoadVertexShader(L"Shaders/DeferredLightPass_vs.hlsl", "main", dx11.GetDevice());
 
 	screenQuad = MeshCreator::CreateScreenQuad(dx11.GetDevice());
-
-	// -------------- WORLD BUFFER
-	static_assert(sizeof(cb_world) % 16 == 0, "wrong size");
-
-	HRESULT hr;
-	D3D11_BUFFER_DESC bufferDescription;
-	D3D11_SUBRESOURCE_DATA subresourceData;
-	ZeroMemory(&bufferDescription, sizeof(D3D11_BUFFER_DESC));
-	ZeroMemory(&subresourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-
-	ZeroMemory(&worldBuffer_ptr, sizeof(worldBuffer_ptr));
-	
-	bufferDescription.Usage = D3D11_USAGE_DEFAULT;
-	bufferDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bufferDescription.CPUAccessFlags = 0;
-
-	// WORLD BUFFER
-	bufferDescription.ByteWidth = sizeof(cb_world);
-	subresourceData.pSysMem = &cb_world;
-	hr = dx11.GetDevice()->CreateBuffer(&bufferDescription, &subresourceData, &worldBuffer_ptr);
-	assert(SUCCEEDED(hr));
+	worldBuffer_ptr = dx11.CreateBuffer<WorldData>(cb_world);
 }
 
-Renderer::~Renderer()
-{
-}
+Renderer::~Renderer() {}
 
 void Renderer::SetDeferredRenderTarget()
 {
@@ -61,10 +39,10 @@ void Renderer::ClearRenderTarget()
 	dx11.GetContext()->ClearDepthStencilView(currentRenderTarget->GetDepthStencil(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0.0f);
 }
 
-void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, Camera* camera)
+void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
 {
 	// update the world buffer content
-	cb_world.mvp = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMMatrixMultiply(world, camera->GetView()), camera->GetProjection()));
+	cb_world.mvp = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMMatrixMultiply(world, view), projection));
 	cb_world.world = DirectX::XMMatrixTranspose(world);
 
 	dx11.GetContext()->UpdateSubresource(worldBuffer_ptr, 0, 0, &cb_world, 0, 0);
@@ -76,16 +54,16 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, Camera* camera)
 void Renderer::SetLights(Lights* lights)
 {
 	this->lights = lights;
-	this->lights->Initialize(dx11.GetDevice());
+	this->lights->Initialize(dx11);
 }
 
-void Renderer::DisplayFrame(Camera* camera)
+void Renderer::DisplayFrame(DirectX::XMVECTOR eye)
 {
 	//Uppdate light constant buffer here
 	if (lights != nullptr)
 	{
 		DirectX::XMFLOAT3 eyePosition;
-		DirectX::XMStoreFloat3(&eyePosition, camera->GetTransform().GetPosition());
+		DirectX::XMStoreFloat3(&eyePosition, eye);
 		lights->UpdateConstantBuffer(eyePosition, dx11.GetContext());
 	}
 	
@@ -93,7 +71,7 @@ void Renderer::DisplayFrame(Camera* camera)
 	ClearRenderTarget();
 
 	gbufferRenderTarget->Bind(dx11.GetContext());
-	lightpass->Apply(dx11.GetContext());
+	lightpass->Bind(dx11.GetContext());
 
 	DrawMesh(screenQuad);
 
@@ -101,12 +79,6 @@ void Renderer::DisplayFrame(Camera* camera)
 		gui->DrawAll();
 
 	dx11.GetSwapChain()->Present(1, 0);	
-}
-
-void Renderer::BindMaterial(Material* material)
-{
-	material->Apply(dx11.GetContext());
-	// update material constant buffer
 }
 
 void Renderer::DrawMesh(Mesh* mesh)
