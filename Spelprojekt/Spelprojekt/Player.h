@@ -3,7 +3,7 @@
 #include "Scene.h"
 #include "Input.h"
 #include "HeightMapGenerator.h"
-
+#include "CameraController.h"
 class Player : public Object
 {
 public:
