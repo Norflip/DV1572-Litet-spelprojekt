@@ -94,8 +94,6 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 
 		XMStoreFloat3(&unnormalized, XMVector3Normalize(DirectX::XMVector3Cross(edge1, edge2)));
 
-		//HEJ. Lycka till <3
-		// SÅ JÄVLA SNYYYGGGT, MASTER CODER
 		for(int j = 0; j < 3; j++)
 		{
 			vertList.at(indexList.at((i * 3) + j)).normal.x += unnormalized.x;
@@ -113,46 +111,4 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 
 	mesh = MeshCreator::CreateMesh(vertList, indexList, device);
 	this->mesh = mesh;
-
-
-
-	////float vecX, vecY, vecZ;
-	//DirectX::XMVECTOR normalSum = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	//int facesUsing = 0;
- //   float tX;
- //   float tY;
- //   float tZ;
-
-	//for (int i = 0; i < NumVertices; ++i)
-	//{
-	//	for (int j = 0; j < NumFaces; ++j)
-	//	{
-	//		if (indexList.at(j * 3) == i ||
-	//			indexList.at((j * 3) + 1) == i ||
-	//			indexList.at((j * 3) + 2) == i)
-	//		{
-	//			tX = DirectX::XMVectorGetX(normalSum) + tempNormal[j].x;
-	//			tY = DirectX::XMVectorGetY(normalSum) + tempNormal[j].y;
-	//			tZ = DirectX::XMVectorGetZ(normalSum) + tempNormal[j].z;
-
-	//			normalSum = DirectX::XMVectorSet(tX, tY, tZ, 0.0f); 
-	//			facesUsing++;
-	//		}
-	//	}
-	//	/*float x = DirectX::XMVectorGetX(normalSum)/ (float)facesUsing;
-	//	float y = DirectX::XMVectorGetY(normalSum)/ (float)facesUsing;
-	//	float z = DirectX::XMVectorGetZ(normalSum)/ (float)facesUsing;*/
-
-	//	normalSum = normalSum / (float)facesUsing;
-	//	//normalSum = { x,y,z };
-
-	//	normalSum = DirectX::XMVector3Normalize(normalSum);
-
-	//	vertList.at(i).normal.x = DirectX::XMVectorGetX(normalSum);
-	//	vertList.at(i).normal.y = DirectX::XMVectorGetY(normalSum);
-	//	vertList.at(i).normal.z = DirectX::XMVectorGetZ(normalSum);
-
-	//	normalSum = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	//	facesUsing = 0;
-	//}
 }

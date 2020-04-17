@@ -7,7 +7,7 @@
 class Player : public Object
 {
 public:
-	Player(Mesh* mesh, Material* material, Input* input, TerrainGenerator* terrain);
+	Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain);
 	~Player();
 
 	void Update(const float& deltaTime) override;
@@ -15,6 +15,7 @@ public:
 private:
 
 	Input* input;
+	CameraController* controller;
 	float movementspeed;
 	void UpdateMovement(float FixedDeltaTime);
 	void UpdateHeight(float FixedDeltaTime);

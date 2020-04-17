@@ -41,7 +41,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	objects.push_back(new Object(terrain, test_material));
 
 	// ------ PLAYER
-	player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), window.GetInput(), &test);
+	player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), controller, &test);
 	player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 
