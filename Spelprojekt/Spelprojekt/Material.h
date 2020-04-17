@@ -10,6 +10,7 @@ enum class PIXEL_TYPE
 };
 
 constexpr size_t ALBEDO_MATERIAL_TYPE = 0;
+constexpr size_t NORMAL_MATERIAL_TYPE = 1;
 
 class Material
 {

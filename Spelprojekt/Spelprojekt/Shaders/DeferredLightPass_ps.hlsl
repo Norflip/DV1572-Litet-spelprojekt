@@ -27,10 +27,10 @@ float4 main(PixelInputType input) : SV_TARGET
 	float3 sunDir = normalize(-sunDirection);
 
 	// diffuse shading
-	float diff = max(dot(normal, sunDir), 0.0); 	
+	float diff = max(dot(normal, sunDir), 0.0);
 
 	// specular shading
-	float3 reflectDir = reflect(-sunDir, normal); 	
+	float3 reflectDir = reflect(-sunDir, normal);
 
 	// SHINYNESS
 	float spec = pow(max(dot(viewDirection, reflectDir), 0.0), 32); 
