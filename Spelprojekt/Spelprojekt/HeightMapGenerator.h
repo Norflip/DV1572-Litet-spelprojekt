@@ -2,8 +2,8 @@
 
 #include <string>
 #include "Mesh.h"
-
-
+#include <algorithm>
+#include<DirectXMath.h>
 
 
 class TerrainGenerator

@@ -21,7 +21,7 @@ public:
 	State GetState() const { return this->currentState; }
 	void SetFollow(Transform* transform, DirectX::XMVECTOR offset);
 	void SetFreeCameraSpeed(float speed) { this->freeSpeed = speed; }
-
+	Input* getInput() const { return this->input; };
 	void Update(const float& deltaTime);
 
 private:

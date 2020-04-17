@@ -3,10 +3,12 @@
 #include "Scene.h"
 #include "Input.h"
 #include "HeightMapGenerator.h"
+#include "CameraController.h"
+#include "Camera.h"
 class Player
 {
 public:
-	Player(Mesh* mesh, Material* material, Input* input, TerrainGenerator* terrain);
+	Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain);
 	void Update(float FixedDeltaTime);
 	Transform& GetTransform();
 	Object* GetPlayerObject() { return this->playerObject; };
@@ -14,6 +16,7 @@ public:
 private:
 	Object* playerObject;
 	Input* input;
+	CameraController* controller;
 	float movementspeed;
 	void UpdateMovement(float FixedDeltaTime);
 	void UpdateHeight(float FixedDeltaTime);
