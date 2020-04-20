@@ -96,32 +96,33 @@ void Player::UpdateHeight(float FixedDeltaTime)
 
 void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime)
 {
-	bool updateRot = false;
-	if (input->GetKey('w') || input->GetKey('a') || input->GetKey('s') || input->GetKey('d'))
-		updateRot = true;
 
-	float temp = 0;
-	float temp2 = 0;
 	float currentDir = DirectX::XMVectorGetByIndex(GetTransform().GetRotation(),1);
+
 	DirectX::XMVECTOR directionVector = { currentPosition.x - nextPosition.x,0, currentPosition.z - nextPosition.z };
-	float Y = atan2(DirectX::XMVectorGetByIndex(directionVector, 0) , DirectX::XMVectorGetByIndex(directionVector, 2));
-	float nextDir = atan2(DirectX::XMVectorGetByIndex(directionVector, 0), DirectX::XMVectorGetByIndex(directionVector, 2));
-	
+	//Checks if WASD is pressed. True sets new direction
+	if (input->GetKey('w') || input->GetKey('a') || input->GetKey('s') || input->GetKey('d'))
+		nextDir = atan2(DirectX::XMVectorGetByIndex(directionVector, 0), DirectX::XMVectorGetByIndex(directionVector, 2));
 
-
+		//Rotates to shortest angle(in rad)
 		GetTransform().Rotate(0, shortestRoration(currentDir, nextDir)/10, 0);
 
-
-
-	std::cout << DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1);
-	// needs revesing
+		//removes rotations bigger and smaller than 360 & -360
 	if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) < -MathHelper::PI*2)
-	{
 		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) + MathHelper::PI * 2, 0 });
-	}
-	// reveersed
 	if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) > MathHelper::PI * 2)
-	{
 		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) - MathHelper::PI * 2, 0 });
-	}
+
+}
+
+float Player::shortestRoration(float currentDir, float nextDir)
+{
+		float returnValue = 0;
+		if (abs(nextDir - currentDir) < MathHelper::PI)
+			returnValue = nextDir - currentDir;
+		else if (currentDir < nextDir)
+			returnValue = nextDir - currentDir - MathHelper::PI * 2.0f;
+		else
+			returnValue = nextDir - currentDir + MathHelper::PI * 2.0f;
+		return returnValue;
 }

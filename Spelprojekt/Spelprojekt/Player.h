@@ -29,14 +29,10 @@ private:
 		return a + f * (b - a);
 	}
 	float refVel = 0;
+	float nextDir = 0;
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
-	float shortestRoration(float currentDir, float nextDir)
-	{
-		if (abs(nextDir - currentDir) < MathHelper::PI)
-			return nextDir - currentDir;
-		else if (currentDir < nextDir)
-			return nextDir - currentDir - MathHelper::PI * 2.0f;
-		return nextDir - currentDir + MathHelper::PI * 2.0f;
-	}
+
+	float shortestRoration(float currentDir, float nextDir);
+
 }; 
 
