@@ -29,6 +29,7 @@ void Renderer::SetRenderTarget(RenderTarget* renderTarget)
 
 	dx11.GetContext()->RSSetViewports(1, &currentRenderTarget->GetViewport());
 	dx11.GetContext()->OMSetRenderTargets(currentRenderTarget->BufferCount(), currentRenderTarget->GetRenderTargetViews(), currentRenderTarget->GetDepthStencil());
+	dx11.GetContext()->OMSetDepthStencilState(currentRenderTarget->GetDepthStencilState(), 0);
 }
 
 void Renderer::ClearRenderTarget()
@@ -36,7 +37,7 @@ void Renderer::ClearRenderTarget()
 	for (size_t i = 0; i < currentRenderTarget->BufferCount(); i++)
 		dx11.GetContext()->ClearRenderTargetView(currentRenderTarget->GetRenderTargetViews()[i], CLEAR_COLOR);
 
-	dx11.GetContext()->ClearDepthStencilView(currentRenderTarget->GetDepthStencil(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0.0f);
+	dx11.GetContext()->ClearDepthStencilView(currentRenderTarget->GetDepthStencil(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection)

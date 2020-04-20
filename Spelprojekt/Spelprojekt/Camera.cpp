@@ -15,10 +15,9 @@ Camera::~Camera()
 
 void Camera::SetFieldOfView(float fov)
 {
-	const float toRad = 0.0174532925f;
 	float aspect = static_cast<float>(width) / static_cast<float>(height);
 	this->fovDegrees = fov;
-	this->projection = DirectX::XMMatrixPerspectiveFovLH(fov * toRad, aspect, nearZ, farZ);
+	this->projection = DirectX::XMMatrixPerspectiveFovLH(fov * MathHelper::ToRadians, aspect, nearZ, farZ);
 }
 
 void Camera::UpdateView()

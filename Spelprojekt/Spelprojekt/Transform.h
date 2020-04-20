@@ -2,10 +2,11 @@
 #include <DirectXMath.h>
 #include <math.h>
 #include <algorithm>
+#include "MathHelper.h"
 
 class Transform
 {
-	const float maxPitch = (90.0f - 0.0001f) * 0.0174532925f;
+	const float maxPitch = (90.0f - 0.0001f) * MathHelper::ToRadians;
 
 public:
 	static constexpr DirectX::XMVECTOR default_right = { 1,0,0 };
