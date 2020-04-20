@@ -59,6 +59,7 @@ void Material::Unbind(ID3D11DeviceContext* context)
 	{
 		size_t index = (*iterator).first;
 		PIXEL_TYPE flag = (*iterator).second.second;
+
 		texture = (*iterator).second.first;
 
 		ID3D11ShaderResourceView* srv = texture->GetSRV();

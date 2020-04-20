@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include <algorithm>
+#include <cmath>
 
 namespace MathHelper
 {
@@ -15,13 +16,13 @@ namespace MathHelper
 
 	inline float Clamp(const float& value, const float& min, const float& max)
 	{
-		return std::min(max, std::max(value, max));
+		return std::fmaxf(min, std::fminf(value, max));
 	}
 
 	inline float SmoothDamp(const float& current, const float& target, const float& time, const float& deltaTime, float& refVelocity)
 	{
 		float t_target = target;
-		float smoothTime = std::max(0.000f, time);
+		float smoothTime = std::fmaxf(0.0f, time);
 		float omega = 2.0f / smoothTime;
 
 		float x = omega * deltaTime;

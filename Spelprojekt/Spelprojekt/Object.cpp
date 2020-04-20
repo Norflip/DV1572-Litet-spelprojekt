@@ -44,8 +44,6 @@ void Object::UpdateLocalBounds()
 	if (this->mesh != nullptr)
 	{
 		this->localBounds = AABB({ FLT_MAX, FLT_MAX, FLT_MAX }, { -FLT_MAX, -FLT_MAX, -FLT_MAX });
-
-		DirectX::XMMATRIX rot = this->transform.GetWorldMatrix();
 		DirectX::XMVECTOR pos;
 
 		for (size_t i = 0; i < this->mesh->vertexes.size(); i++)

@@ -26,8 +26,10 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	Object* sphere = new Object(dev_monkey_mesh, new Material(defaultShader, dx11));
 	Texture* monkey_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	Texture* monkey_normal = Texture::CreateTexture("Textures/rocks_normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+
 	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
-	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
+	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
+
 	sphere->GetTransform().Translate(0, 0, 6);
 	objects.push_back(sphere);
 

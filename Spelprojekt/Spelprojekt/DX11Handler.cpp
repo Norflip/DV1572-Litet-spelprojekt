@@ -67,17 +67,18 @@ void DX11Handler::SetWireframeMode(bool useWireframe)
 	ZeroMemory(&rasterizerDescription, sizeof(D3D11_RASTERIZER_DESC));
 
 	D3D11_FILL_MODE mode = useWireframe ? D3D11_FILL_WIREFRAME : D3D11_FILL_SOLID;
-	rasterizerDescription.FillMode = mode; //if we want wireframe, fill etc
-	rasterizerDescription.CullMode = D3D11_CULL_NONE;
 
-	/* Filips nasty shit >:D
-	rasterizerDescription.DepthClipEnable = false;
+	rasterizerDescription.FillMode = mode; //if we want wireframe, fill etc
+	rasterizerDescription.CullMode = D3D11_CULL_BACK;
+
+	///* Filips nasty shit >:D
+	rasterizerDescription.DepthClipEnable = true;
 	rasterizerDescription.FrontCounterClockwise = false;
 	rasterizerDescription.MultisampleEnable = false;
-	rasterizerDescription.ScissorEnable = false;
+	rasterizerDescription.ScissorEnable = true;
 	rasterizerDescription.DepthBias = 0;
 	rasterizerDescription.DepthBiasClamp = 0.0f;
-	*/
+	
 
 	HRESULT resultCreateRasterizer = device->CreateRasterizerState(&rasterizerDescription, &rasterizerState);
 	assert(SUCCEEDED(resultCreateRasterizer));
@@ -88,6 +89,8 @@ void DX11Handler::CreateBackbufferRenderTarget(size_t width, size_t height)
 {
 	ID3D11Texture2D* backBufferPtr;
 	swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
+
+	// assert backbufferPtr instead
 
 	if (backBufferPtr != nullptr)
 	{

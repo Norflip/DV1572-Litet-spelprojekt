@@ -2,6 +2,7 @@
 #include <DirectXMath.h>
 #include "Object.h"
 #include "AABB.h"
+#include "MathHelper.h"
 
 class Camera : public Object
 {

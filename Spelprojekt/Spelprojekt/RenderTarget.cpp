@@ -44,6 +44,36 @@ void RenderTarget::Initalize(ID3D11Device* device)
 
 	if (this->createDepthBuffer)
 	{
+		D3D11_DEPTH_STENCIL_DESC depthStencilStateDsc;
+		ZeroMemory(&depthStencilStateDsc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+
+		depthStencilStateDsc.DepthEnable = true;
+		depthStencilStateDsc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		depthStencilStateDsc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+		depthStencilStateDsc.StencilEnable = true;
+		depthStencilStateDsc.StencilReadMask = 0xFF;
+		depthStencilStateDsc.StencilWriteMask = 0xFF;
+
+		// Stencil operations if pixel is front-facing.s
+		depthStencilStateDsc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		depthStencilStateDsc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		depthStencilStateDsc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+		depthStencilStateDsc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+		// Stencil operations if pixel is back-facing.
+		depthStencilStateDsc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		depthStencilStateDsc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		depthStencilStateDsc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+		depthStencilStateDsc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+		HRESULT createDepthStencilResult = device->CreateDepthStencilState(&depthStencilStateDsc, &dss);
+		assert(SUCCEEDED(createDepthStencilResult));
+
+		//context->OMSetDepthStencilState(depthStencilState, 1);
+
+
+
 		ID3D11Texture2D* depthTex;
 
 		// DEPTH TEXTURE
@@ -60,6 +90,7 @@ void RenderTarget::Initalize(ID3D11Device* device)
 		depthTexDesc.CPUAccessFlags = 0;
 		depthTexDesc.MiscFlags = 0;
 
+
 		hr = device->CreateTexture2D(&depthTexDesc, 0, &depthTex);
 		assert(SUCCEEDED(hr));
 
@@ -68,6 +99,8 @@ void RenderTarget::Initalize(ID3D11Device* device)
 		dsvDesc.Flags = 0;
 		dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		dsvDesc.Texture2D.MipSlice = 0;
+
+
 
 		hr = device->CreateDepthStencilView(depthTex, &dsvDesc, &dsv);
 		assert(SUCCEEDED(hr));
