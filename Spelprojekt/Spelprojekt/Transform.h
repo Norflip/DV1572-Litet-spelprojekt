@@ -20,6 +20,7 @@ public:
 
 	void SetPosition(DirectX::XMVECTOR position) { this->position = position; }
 	DirectX::XMVECTOR GetPosition() { return this->position; }
+	DirectX::XMVECTOR GetRotation() { return this->rotation; }
 
 	DirectX::XMVECTOR TransformDirection(DirectX::XMVECTOR dir) const;
 	DirectX::XMMATRIX GetWorldMatrix() const;

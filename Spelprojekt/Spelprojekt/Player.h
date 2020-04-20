@@ -27,6 +27,7 @@ private:
 	{
 		return a + f * (b - a);
 	}
-	void RotateCharacter(DirectX::XMFLOAT3 nextPosition);
+	float refVel = 0;
+	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 }; 
 

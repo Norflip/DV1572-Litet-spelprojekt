@@ -22,7 +22,7 @@ void Player::Update(const float& deltaTime)
 	UpdateHeight(deltaTime);
 }
 
-void Player::UpdateMovement(float FixedDeltaTime)
+void Player::UpdateMovement(float fixedDeltaTime)
 {
 
 
@@ -33,16 +33,16 @@ void Player::UpdateMovement(float FixedDeltaTime)
 	if (controller->GetState() == CameraController::State::Follow)
 	{
 		if (input->GetKey('w'))
-			nextPosition.z += FixedDeltaTime * movementspeed;
+			nextPosition.z += fixedDeltaTime * movementspeed;
 		if (input->GetKey('a'))
-			nextPosition.x -= FixedDeltaTime * movementspeed;
+			nextPosition.x -= fixedDeltaTime * movementspeed;
 		if (input->GetKey('s'))
-			nextPosition.z -= FixedDeltaTime * movementspeed;
+			nextPosition.z -= fixedDeltaTime * movementspeed;
 		if (input->GetKey('d'))
-			nextPosition.x += FixedDeltaTime * movementspeed;
+			nextPosition.x += fixedDeltaTime * movementspeed;
 		GetTransform().SetPosition({ nextPosition.x, nextPosition.y, nextPosition.z });
 		
-		RotateCharacter(nextPosition);
+		RotateCharacter(nextPosition, fixedDeltaTime);
 	}
 }
 
@@ -94,15 +94,21 @@ void Player::UpdateHeight(float FixedDeltaTime)
 
 }
 
-void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition)
+void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime)
 {
-	DirectX::XMFLOAT3 direction = { 0,0,0 };
-	if(currentPosition.x - nextPosition.x > 0.f)
-		direction.x =  
-	
-	//1st is forward 2nd is what we want
-	direction = {0,(1*3.14),0 };
-	GetTransform().Rotate( 0,(0.1f),0 );
-		//GetTransform().SetRotation(direction);
+	float temp = 0;
+	DirectX::XMVECTOR directionVector = { currentPosition.x - nextPosition.x,0, currentPosition.z - nextPosition.z };
+	float Y = atan2(DirectX::XMVectorGetByIndex(directionVector, 0) , DirectX::XMVectorGetByIndex(directionVector, 2));
+	if (Y != NAN)
+	{
+		if (Y < 0)
+		{
+			Y = 2*3.1415 + Y;
 
+		}
+		//DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1);
+		temp = MathHelper::SmoothDamp(DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1), Y, 0.2f, fixedDeltaTime, refVel);
+
+		GetTransform().SetRotation({ 0,temp,0 });
+	}
 }
