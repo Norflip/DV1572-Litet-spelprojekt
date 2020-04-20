@@ -58,5 +58,6 @@ void Object::UpdateLocalBounds()
 
 void Object::Render(Renderer* renderer, DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
 {
+
 	renderer->DrawMesh(mesh, transform.GetWorldMatrix(), view, projection);
 }

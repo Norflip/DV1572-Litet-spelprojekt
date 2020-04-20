@@ -22,10 +22,11 @@ private:
 	TerrainGenerator* terrain;
 	float scaleY;
 	float scaleXZ;
-
+	DirectX::XMFLOAT3 currentPosition;
 	float lerp(float a, float b, float f)
 	{
 		return a + f * (b - a);
 	}
+	void RotateCharacter(DirectX::XMFLOAT3 nextPosition);
 }; 
 

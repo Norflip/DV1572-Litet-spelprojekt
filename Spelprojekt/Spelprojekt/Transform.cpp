@@ -20,7 +20,7 @@ DirectX::XMVECTOR Transform::TransformDirection(DirectX::XMVECTOR dir) const
 DirectX::XMMATRIX Transform::GetWorldMatrix() const
 {
 	// apply rotation and scaling aswell
-	return DirectX::XMMatrixTranslationFromVector(this->position);
+	return (DirectX::XMMatrixMultiply(DirectX::XMMatrixRotationRollPitchYawFromVector(this->rotation), DirectX::XMMatrixTranslationFromVector(this->position)));
 }
 
 void Transform::Rotate(float pitch, float yaw, float roll)

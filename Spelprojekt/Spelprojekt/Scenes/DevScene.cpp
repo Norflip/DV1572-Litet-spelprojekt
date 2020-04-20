@@ -29,6 +29,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	sphere->GetTransform().Translate(0, 0, 6);
+
 	objects.push_back(sphere);
 
 	// ------- TERRAIN
@@ -44,7 +45,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), controller, &test);
 	player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
-
+	player->GetTransform().SetRotation({ 0, 0, 0 });
 	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
 	objects.push_back(player);
 

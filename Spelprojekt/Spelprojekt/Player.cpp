@@ -6,7 +6,8 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	this->scaleXZ = terrain->getXzScale();
 	this->movementspeed = 3;
 	this->input = controller->getInput();
-
+	this->currentPosition = { 0,0,0 };
+	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 
 }
 
@@ -23,20 +24,25 @@ void Player::Update(const float& deltaTime)
 
 void Player::UpdateMovement(float FixedDeltaTime)
 {
-	DirectX::XMFLOAT3 position;
-	DirectX::XMStoreFloat3(&position, GetTransform().GetPosition());
+
+
+	DirectX::XMFLOAT3 nextPosition;
+	DirectX::XMStoreFloat3(&nextPosition, GetTransform().GetPosition());
+	currentPosition = nextPosition;
 
 	if (controller->GetState() == CameraController::State::Follow)
 	{
 		if (input->GetKey('w'))
-			position.z += FixedDeltaTime * movementspeed;
+			nextPosition.z += FixedDeltaTime * movementspeed;
 		if (input->GetKey('a'))
-			position.x -= FixedDeltaTime * movementspeed;
+			nextPosition.x -= FixedDeltaTime * movementspeed;
 		if (input->GetKey('s'))
-			position.z -= FixedDeltaTime * movementspeed;
+			nextPosition.z -= FixedDeltaTime * movementspeed;
 		if (input->GetKey('d'))
-			position.x += FixedDeltaTime * movementspeed;
-		GetTransform().SetPosition({ position.x, position.y, position.z });
+			nextPosition.x += FixedDeltaTime * movementspeed;
+		GetTransform().SetPosition({ nextPosition.x, nextPosition.y, nextPosition.z });
+		
+		RotateCharacter(nextPosition);
 	}
 }
 
@@ -50,6 +56,13 @@ void Player::UpdateHeight(float FixedDeltaTime)
 
 	int col = (int)floorf(position.x);
 	int row = (int)floorf(position.z);
+
+	//		quick exit if we are out of the heightmap		//
+	if (row < 0 || col <0)
+	{
+		return;
+	}
+
 
 	bool bottomTriangle;
 	if ((howFarX + howFarZ)<= 1.f)
@@ -77,5 +90,19 @@ void Player::UpdateHeight(float FixedDeltaTime)
 	 }
 
 	GetTransform().SetPosition({ position.x, resultHeight + 1, position.z });
+
+
+}
+
+void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition)
+{
+	DirectX::XMFLOAT3 direction = { 0,0,0 };
+	if(currentPosition.x - nextPosition.x > 0.f)
+		direction.x =  
+	
+	//1st is forward 2nd is what we want
+	direction = {0,(1*3.14),0 };
+	GetTransform().Rotate( 0,(0.1f),0 );
+		//GetTransform().SetRotation(direction);
 
 }
