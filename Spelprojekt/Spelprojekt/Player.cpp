@@ -97,16 +97,21 @@ void Player::UpdateHeight(float FixedDeltaTime)
 void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime)
 {
 	float temp = 0;
+	float currentDir = DirectX::XMVectorGetByIndex(GetTransform().GetRotation(),1);
 	DirectX::XMVECTOR directionVector = { currentPosition.x - nextPosition.x,0, currentPosition.z - nextPosition.z };
 	float Y = atan2(DirectX::XMVectorGetByIndex(directionVector, 0) , DirectX::XMVectorGetByIndex(directionVector, 2));
 	if (Y != NAN)
 	{
-		if (Y < 0)
+		// if deltadirection > 180 öka istället för minska?
+		if ((currentDir - Y) > 3.14159)
 		{
-			Y = 2*3.1415 + Y;
-
+			DirectX::XMVectorSetByIndex(GetTransform().GetRotation(), currentDir +3.14159,1);
 		}
-		//DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1);
+		if ((currentDir - Y) < 3.14159)
+		{
+			DirectX::XMVectorSetByIndex(GetTransform().GetRotation(), currentDir +3.14159, 1);
+		}
+		// försöka göra att deltadirection alltid är < 180
 		temp = MathHelper::SmoothDamp(DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1), Y, 0.2f, fixedDeltaTime, refVel);
 
 		GetTransform().SetRotation({ 0,temp,0 });
