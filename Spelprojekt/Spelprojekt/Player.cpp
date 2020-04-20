@@ -24,7 +24,7 @@ void Player::Update(const float& deltaTime)
 
 void Player::UpdateMovement(float fixedDeltaTime)
 {
-
+	
 
 	DirectX::XMFLOAT3 nextPosition;
 	DirectX::XMStoreFloat3(&nextPosition, GetTransform().GetPosition());
@@ -96,24 +96,32 @@ void Player::UpdateHeight(float FixedDeltaTime)
 
 void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime)
 {
+	bool updateRot = false;
+	if (input->GetKey('w') || input->GetKey('a') || input->GetKey('s') || input->GetKey('d'))
+		updateRot = true;
+
 	float temp = 0;
+	float temp2 = 0;
 	float currentDir = DirectX::XMVectorGetByIndex(GetTransform().GetRotation(),1);
 	DirectX::XMVECTOR directionVector = { currentPosition.x - nextPosition.x,0, currentPosition.z - nextPosition.z };
 	float Y = atan2(DirectX::XMVectorGetByIndex(directionVector, 0) , DirectX::XMVectorGetByIndex(directionVector, 2));
-	if (Y != NAN)
-	{
-		// if deltadirection > 180 öka istället för minska?
-		if ((currentDir - Y) > 3.14159)
-		{
-			DirectX::XMVectorSetByIndex(GetTransform().GetRotation(), currentDir +3.14159,1);
-		}
-		if ((currentDir - Y) < 3.14159)
-		{
-			DirectX::XMVectorSetByIndex(GetTransform().GetRotation(), currentDir +3.14159, 1);
-		}
-		// försöka göra att deltadirection alltid är < 180
-		temp = MathHelper::SmoothDamp(DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1), Y, 0.2f, fixedDeltaTime, refVel);
+	float nextDir = atan2(DirectX::XMVectorGetByIndex(directionVector, 0), DirectX::XMVectorGetByIndex(directionVector, 2));
+	
 
-		GetTransform().SetRotation({ 0,temp,0 });
+
+		GetTransform().Rotate(0, shortestRoration(currentDir, nextDir)/10, 0);
+
+
+
+	std::cout << DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1);
+	// needs revesing
+	if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) < -MathHelper::PI*2)
+	{
+		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) + MathHelper::PI * 2, 0 });
+	}
+	// reveersed
+	if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) > MathHelper::PI * 2)
+	{
+		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) - MathHelper::PI * 2, 0 });
 	}
 }

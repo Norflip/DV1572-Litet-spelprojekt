@@ -22,6 +22,7 @@ private:
 	TerrainGenerator* terrain;
 	float scaleY;
 	float scaleXZ;
+
 	DirectX::XMFLOAT3 currentPosition;
 	float lerp(float a, float b, float f)
 	{
@@ -29,5 +30,13 @@ private:
 	}
 	float refVel = 0;
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
+	float shortestRoration(float currentDir, float nextDir)
+	{
+		if (abs(nextDir - currentDir) < MathHelper::PI)
+			return nextDir - currentDir;
+		else if (currentDir < nextDir)
+			return nextDir - currentDir - MathHelper::PI * 2.0f;
+		return nextDir - currentDir + MathHelper::PI * 2.0f;
+	}
 }; 
 
