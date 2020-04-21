@@ -3,7 +3,7 @@
 #include <math.h>
 #include <algorithm>
 #include "MathHelper.h"
-
+//#include "Input.h"
 class Transform
 {
 	const float maxPitch = (90.0f - 0.0001f) * MathHelper::ToRadians;
@@ -36,8 +36,10 @@ public:
 	void Translate(float x, float y, float z);
 	void Translate(DirectX::XMVECTOR translation);
 
+	void SmoothRotate(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime, bool changeDir);
 private:
 	DirectX::XMVECTOR position;
 	DirectX::XMVECTOR rotation;
 	DirectX::XMVECTOR scale;
+	float nextDir = 0;
 };

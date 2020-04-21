@@ -18,6 +18,7 @@ Player::~Player()
 
 void Player::Update(const float& deltaTime)
 {
+
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
 }
@@ -40,56 +41,23 @@ void Player::UpdateMovement(float fixedDeltaTime)
 			nextPosition.z -= fixedDeltaTime * movementspeed;
 		if (input->GetKey('d'))
 			nextPosition.x += fixedDeltaTime * movementspeed;
-		GetTransform().SetPosition({ nextPosition.x, nextPosition.y, nextPosition.z });
+		bool changedir = false;
+		if (input->GetKey('w') || input->GetKey('a') || input->GetKey('s') || input->GetKey('d'))
+			changedir = true;
 		
-		RotateCharacter(nextPosition, fixedDeltaTime);
+
+		GetTransform().SmoothRotate(nextPosition, fixedDeltaTime, changedir);
+		GetTransform().SetPosition({ nextPosition.x, nextPosition.y, nextPosition.z });
+		//RotateCharacter(nextPosition, fixedDeltaTime);
 	}
 }
 
 void Player::UpdateHeight(float FixedDeltaTime)
 {
-	DirectX::XMFLOAT3 position;
-	DirectX::XMStoreFloat3(&position, GetTransform().GetPosition());
+	float xFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 0);
+	float zFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 2);
 
-	float howFarX = position.x - (int)(position.x / scaleXZ);
-	float howFarZ = position.z - (int)(position.z / scaleXZ);
-
-	int col = (int)floorf(position.x);
-	int row = (int)floorf(position.z);
-
-	//		quick exit if we are out of the heightmap		//
-	if (row < 0 || col <0)
-	{
-		return;
-	}
-
-
-	bool bottomTriangle;
-	if ((howFarX + howFarZ)<= 1.f)
-		bottomTriangle = true;
-	else
-		bottomTriangle = false;
-	 
-	 float topRightHeight = terrain->getMesh()->vertexes.at(row* terrain->getWidth()+col).position.y;
-	 float topLeftHeight = terrain->getMesh()->vertexes.at(row * terrain->getWidth() + col+1).position.y;
-	 float bottomLeftHeight = terrain->getMesh()->vertexes.at((row+1) * terrain->getWidth() + col).position.y;
-	 float bottomRightTriangle = terrain->getMesh()->vertexes.at((row + 1) * terrain->getWidth() + col+1).position.y;
-
-	 float resultHeight = 0;
-	 if (bottomTriangle)
-	 {
-		 float uy = topLeftHeight - topRightHeight;
-		 float vy = bottomLeftHeight - topRightHeight;
-		 resultHeight = topRightHeight + howFarX * uy + howFarZ * vy;
-	 }
-	 else
-	 {
-		 float uy = bottomLeftHeight - bottomRightTriangle;
-		 float vy = topLeftHeight - bottomRightTriangle;
-		 resultHeight = bottomRightTriangle + (1.0f - howFarX) * uy + (1.0f - howFarZ) * vy;
-	 }
-
-	GetTransform().SetPosition({ position.x, resultHeight + 1, position.z });
+	GetTransform().SetPosition({ xFloat,(terrain->getHeight(xFloat, zFloat) + 1), zFloat});
 
 
 }
@@ -105,7 +73,8 @@ void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 		nextDir = atan2(DirectX::XMVectorGetByIndex(directionVector, 0), DirectX::XMVectorGetByIndex(directionVector, 2));
 
 		//Rotates to shortest angle(in rad)
-		GetTransform().Rotate(0, shortestRoration(currentDir, nextDir)/10, 0);
+		GetTransform().Rotate(0, MathHelper::ShortestRotation(currentDir, nextDir) / 10, 0);
+		//GetTransform().Rotate(0, shortestRoration(currentDir, nextDir)/10, 0);
 
 		//removes rotations bigger and smaller than 360 & -360
 	if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) < -MathHelper::PI*2)

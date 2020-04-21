@@ -17,6 +17,7 @@ public:
 	int getXzScale(){ return this->xzScale; };
 	int getVerticalScaling() { return this->verticalScaling; };
 	Mesh* getMesh() { return this->mesh; };
+	float getHeight(float x, float z);
 private:
 	float xzScale = 1; //defines how large plane to generate
 	float verticalScaling = 11.f; // height of the vertecies
