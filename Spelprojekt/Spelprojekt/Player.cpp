@@ -48,7 +48,6 @@ void Player::UpdateMovement(float fixedDeltaTime)
 
 		GetTransform().SmoothRotate(nextPosition, fixedDeltaTime, changedir);
 		GetTransform().SetPosition({ nextPosition.x, nextPosition.y, nextPosition.z });
-		//RotateCharacter(nextPosition, fixedDeltaTime);
 	}
 }
 
