@@ -70,7 +70,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HeightMapGenerator.cpp">
-    <Filter>Source Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
@@ -88,6 +88,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUISpriteObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -174,6 +177,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUISpriteObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

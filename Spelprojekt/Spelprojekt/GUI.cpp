@@ -13,9 +13,11 @@ void GUI::AddGUIObject(GUIObject *addObj)
 void GUI::DrawAll()
 {
 	spriteBatch->Begin();
+
 	for (auto i : GUIObjects)
 	{	
 		i->Draw(spriteBatch);
 	}
-	spriteBatch->End();
+
+	spriteBatch->End();	
 }

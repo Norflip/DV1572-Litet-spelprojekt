@@ -27,20 +27,21 @@ public:
 
 	void Update(const float& deltaTime) override;
 	void FixedUpdate(const float& fixedDeltaTime) override;
-
-	
+		
 	// update time function?
-
 
 	Scene* GetNextScene() const override;
 
 private:
 	float testFloat = 0.f;
 	std::vector<Object*> objects;
-	Camera* camera;
-	
+	Camera* camera;	
 	CameraController* controller;
+
 	GUITextObject* gametimerText;
+	GUISpriteObject* m_HealthFrame;
+	GUISpriteObject* m_Healthbar;
+
 	Player* player;
 
 	TerrainGenerator test;

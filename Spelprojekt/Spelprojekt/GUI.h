@@ -2,6 +2,10 @@
 #include <vector>
 #include <SpriteFont.h>
 #include "GUIObject.h"
+
+// New
+#include "GUISpriteObject.h"
+
 #include "DX11Handler.h"
 #include "Timer.h"
 
@@ -11,9 +15,11 @@ public:
 	GUI(DX11Handler&);
 	~GUI() {};
 	void AddGUIObject(GUIObject *addObj);
+
 	void DrawAll();
 private:
 	std::vector<GUIObject*> GUIObjects;
+
 	DirectX::SpriteBatch* spriteBatch;
 	DX11Handler& dx11;
 };
