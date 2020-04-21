@@ -2,7 +2,7 @@
 
 Renderer::Renderer(size_t width, size_t height, DX11Handler& dx11) : dx11(dx11), lights(nullptr)
 {
-	this->gbufferRenderTarget = new RenderTarget(3, width, height, true);
+	this->gbufferRenderTarget = new RenderTarget(4, width, height, true);
 	this->gbufferRenderTarget->Initalize(dx11.GetDevice());
 
 	this->backbufferRenderTarget = dx11.GetBackbuffer();

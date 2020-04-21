@@ -3,13 +3,10 @@
 
 RenderTarget::RenderTarget(ID3D11RenderTargetView* rtv, ID3D11ShaderResourceView* srv, ID3D11DepthStencilView* dsv, D3D11_VIEWPORT viewport) : bufferCount(1), viewport(viewport), dss(nullptr)
 {
-	this->rtv = new ID3D11RenderTargetView * [1];
-	this->rtv[0] = rtv;
-
-	this->srv = new ID3D11ShaderResourceView * [1];
-	this->srv[0] = srv;
-
+	this->rtv = new ID3D11RenderTargetView * [1]{ rtv };
+	this->srv = new ID3D11ShaderResourceView * [1]{ srv };
 	this->dsv = dsv;
+
 	this->bufferCount = 1;
 }
 

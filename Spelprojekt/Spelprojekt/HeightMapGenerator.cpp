@@ -82,6 +82,7 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 
 	DirectX::XMVECTOR edge1 = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	DirectX::XMVECTOR edge2 = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+
 	float vecX, vecY, vecZ;
 	for (int i = 0; i < NumFaces; ++i)
 	{

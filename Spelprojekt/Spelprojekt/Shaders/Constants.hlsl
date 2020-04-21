@@ -33,7 +33,7 @@ cbuffer MaterialBuffer : register (b2)
 	float4 mat_diffuse;
 	float4 mat_specular;
 
-	float shininess;
+	float mat_shininess;
 	float3 mb_pad;
 	//float reflectivity;
 

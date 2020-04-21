@@ -10,12 +10,14 @@
 Material::Material(Shader* shader, DX11Handler& dx11) : shader(shader)
 {
 	this->buffer = dx11.CreateBuffer<MaterialData>(materialData);
-	this->materialData.ambient = { 1,1,1,1 };
-	this->materialData.diffuse = { 1,1,1,1 };
-	this->materialData.specular = { 0,0,0,1 };
 
-	this->materialData.hasAlbedoTexture = false;
-	this->materialData.hasNormalTexture = false;
+	this->materialData.ambient = { 0.8f, 0.8f, 0.8f ,1 };
+	this->materialData.diffuse = { 0.8f, 0.8f, 0.8f ,1 };
+	this->materialData.specular = { 0.8f, 0.8f, 0.8f ,1 };
+	this->materialData.shininess = 32;
+
+	this->materialData.hasAlbedoTexture = true;
+	this->materialData.hasNormalTexture = true;
 }
 
 Material::~Material()

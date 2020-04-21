@@ -18,18 +18,22 @@ struct VS_OUTPUT
 struct GBUFFER
 {
 	float4 albedo	: SV_Target0;
-	float4 normal	: SV_Target1;
-	float4 position : SV_Target2;
+	float4 light	: SV_Target1;
+	float4 normal	: SV_Target2;
+	float4 position : SV_Target3;
 };
 
 GBUFFER main(VS_OUTPUT input) : SV_TARGET
 {
 	GBUFFER output;
-
-	//material.ambient* texture
-
-	output.albedo = float4(m_albedoMap.Sample(m_samplerState, input.uv));
+	output.albedo = mat_diffuse;
+	output.light = float4(mat_ambient.xyz, mat_shininess);
 	output.normal = float4(input.normal, 1.0f);
+
+	if (hasAlbedoTexture)
+	{
+		output.albedo *= float4(m_albedoMap.Sample(m_samplerState, input.uv));
+	}
 
 	if (hasNormalTexture)
 	{
