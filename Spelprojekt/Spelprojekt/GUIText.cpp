@@ -1,6 +1,6 @@
-#include "GUITextObject.h"
+#include "GUIText.h"
 
-GUITextObject::GUITextObject()
+GUIText::GUIText()
 {
 	this->dxhandler = nullptr;
 	this->spriteFont = 0;
@@ -10,7 +10,7 @@ GUITextObject::GUITextObject()
 	this->y = 0.0f;
 }
 
-GUITextObject::GUITextObject(DX11Handler& dx11, const std::string& display, float x, float y)
+GUIText::GUIText(DX11Handler& dx11, const std::string& display, float x, float y)
 {
 	this->x = x;
 	this->y = y;
@@ -18,7 +18,7 @@ GUITextObject::GUITextObject(DX11Handler& dx11, const std::string& display, floa
 	this->spriteFont = new DirectX::SpriteFont(dx11.GetDevice(), L"SpriteFonts/comic_sans_ms_16.spritefont");
 }
 
-GUITextObject::~GUITextObject()
+GUIText::~GUIText()
 {	
 	if (dxhandler != nullptr) {
 		dxhandler = nullptr;
@@ -29,7 +29,7 @@ GUITextObject::~GUITextObject()
 	}
 }
 
-void GUITextObject::Draw(DirectX::SpriteBatch* spriteBatch)
+void GUIText::Draw(DirectX::SpriteBatch* spriteBatch)
 {
 	spriteFont->DrawString(
 		spriteBatch,
@@ -42,28 +42,28 @@ void GUITextObject::Draw(DirectX::SpriteBatch* spriteBatch)
 	);
 }
 
-std::string GUITextObject::GetString() const
+std::string GUIText::GetString() const
 {
 	return text;
 }
 
-void GUITextObject::SetDXHandler(DX11Handler& dx11)
+void GUIText::SetDXHandler(DX11Handler& dx11)
 {
 	this->dxhandler = &dx11;
 }
 
-void GUITextObject::SetFont(const wchar_t* font)
+void GUIText::SetFont(const wchar_t* font)
 {
 	this->spriteFont = new DirectX::SpriteFont(this->dxhandler->GetDevice(), font);
 }
 
-void GUITextObject::SetString(const std::string& text)
+void GUIText::SetString(const std::string& text)
 {
 	txtDisplay = std::wstring(text.begin(), text.end());
 	this->text = text;
 }
 
-void GUITextObject::SetPosition(float x, float y)
+void GUIText::SetPosition(float x, float y)
 {
 	this->x = x;
 	this->y = y;

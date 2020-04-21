@@ -1,8 +1,8 @@
-#include "GUISpriteObject.h"
+#include "GUISprite.h"
 #include <WICTextureLoader.h>
 #include <DDSTextureLoader.h>
 
-//GUISpriteObject::GUISpriteObject()
+//GUISprite::GUISprite()
 //{
 //	//this->dxHandler = nullptr;
 //	this->SRV = nullptr;
@@ -20,32 +20,39 @@
 //	this->rot = 0.f;
 //}
 
-GUISpriteObject::GUISpriteObject(DX11Handler& dx11, float x, float y)
+GUISprite::GUISprite(DX11Handler& dx11, std::string spriteFile, float x, float y)
 {
 	// Store dxhandler
 	this->dxHandler = &dx11;
 	this->spritebatch = nullptr;
 
 	// Store position
-	this->m_XPosition = x;
-	this->m_YPosition = y;
+	this->xPosition = x;
+	this->yPosition = y;
 	// Set position
-	this->position = DirectX::XMVectorSet(this->m_XPosition, this->m_YPosition, 0, 0);
+	this->position = DirectX::XMVectorSet(this->xPosition, this->yPosition, 0, 0);
 
 	// Store scale
-	this->m_XScale = 1.0f;
-	this->m_YScale = 1.0f;
+	this->xScale = 1.0f;
+	this->yScale = 1.0f;
 	// Set scale
-	this->scale = DirectX::XMVectorSet(this->m_XScale, this->m_YScale, 1, 1);
+	this->scale = DirectX::XMVectorSet(this->xScale, this->yScale, 1, 1);
 	
 	// Needed for drawfunction //
-	this->m_Rot = 0.0f;									// NO USE RIGHT NOW
+	this->rotation = 0.0f;								// NO USE RIGHT NOW
 	this->color = DirectX::XMVectorSet(1, 1, 1, 1);		// NO USE RIGHT NOW
 	this->origin = DirectX::XMVectorSet(1, 1, 1, 1);	// NO USE RIGHT NOW
 	// - - - - - - - - - - - - //	
+
+	this->SRV = nullptr;
+
+	HRESULT result;
+	std::wstring wsConvert(spriteFile.begin(), spriteFile.end());
+	result = DirectX::CreateWICTextureFromFile(dx11.GetDevice(), wsConvert.c_str(), nullptr, &SRV);
+	assert(SUCCEEDED(result));
 }
 
-GUISpriteObject::~GUISpriteObject()
+GUISprite::~GUISprite()
 {
 	if (SRV != nullptr) {
 		SRV->Release();
@@ -58,19 +65,19 @@ GUISpriteObject::~GUISpriteObject()
 	}
 }
 
-void GUISpriteObject::Draw(DirectX::SpriteBatch* spritebatch)
+void GUISprite::Draw(DirectX::SpriteBatch* spritebatch)
 {	
-	spritebatch->Draw(SRV, this->position, nullptr, this->color, m_Rot, origin, scale,DirectX::SpriteEffects::SpriteEffects_None, 0.0f);
+	spritebatch->Draw(SRV, this->position, nullptr, this->color, rotation, origin, scale,DirectX::SpriteEffects::SpriteEffects_None, 0.0f);
 }
 
-void GUISpriteObject::SetPosition(float x, float y)
+void GUISprite::SetPosition(float x, float y)
 {
-	this->m_XPosition = x;
-	this->m_YPosition = y;
-	this->position = DirectX::XMVectorSet(this->m_XPosition, this->m_YPosition, 0, 0);
+	this->xPosition = x;
+	this->yPosition = y;
+	this->position = DirectX::XMVectorSet(this->xPosition, this->yPosition, 0, 0);
 }
 
-void GUISpriteObject::SetWICSprite(DX11Handler& dx11, std::string spriteFile)
+void GUISprite::SetWICSprite(DX11Handler& dx11, std::string spriteFile)
 {
 	if (this->SRV != nullptr)
 		this->SRV->Release();			
@@ -81,7 +88,7 @@ void GUISpriteObject::SetWICSprite(DX11Handler& dx11, std::string spriteFile)
 	assert(SUCCEEDED(result));
 }
 
-void GUISpriteObject::SetDDSSprite(DX11Handler& dx11, std::string spriteFile)
+void GUISprite::SetDDSSprite(DX11Handler& dx11, std::string spriteFile)
 {
 	if (this->SRV != nullptr)
 		this->SRV->Release();
@@ -92,10 +99,10 @@ void GUISpriteObject::SetDDSSprite(DX11Handler& dx11, std::string spriteFile)
 	assert(SUCCEEDED(result));
 }
 
-void GUISpriteObject::HealthBar(float maxHealth, float currentHealth)
+void GUISprite::HealthBar(float maxHealth, float currentHealth)
 {
-	this->m_XScale = currentHealth/maxHealth;
-	float xs = this->m_XScale;
+	this->xScale = currentHealth/maxHealth;
+	float xs = this->yScale;
 	this->scale = DirectX::XMVectorSet(xs, 1, 1, 1);
 }
 

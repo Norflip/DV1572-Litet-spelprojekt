@@ -1,12 +1,12 @@
 #pragma once
 #include "GUIObject.h"
 
-class GUITextObject : public GUIObject
+class GUIText : public GUIObject
 {
 public:
-	GUITextObject();
-	GUITextObject(DX11Handler&, const std::string& display, float x, float y);
-	~GUITextObject();
+	GUIText();
+	GUIText(DX11Handler&, const std::string& display, float x, float y);
+	~GUIText();
 	void Draw(DirectX::SpriteBatch*) override;	
 	void SetPosition(float x, float y) override;
 

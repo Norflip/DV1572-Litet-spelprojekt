@@ -1,13 +1,16 @@
 #include "Player.h"
-Player::Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain)
+Player::Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain, GUI* gui)
 	:controller(controller), terrain(terrain), Object(mesh,material)
 {
 	this->scaleY = terrain->getVerticalScaling();
 	this->scaleXZ = terrain->getXzScale();
 	this->movementspeed = 3;
 	this->input = controller->getInput();
-
-
+	this->coconutSprite = new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
+	this->gui = gui;
+	gui->AddGUIObject(this->coconutSprite);
+	this->leftNut = 1;
+	this->rightNut = 1;
 }
 
 Player::~Player()
@@ -19,6 +22,7 @@ void Player::Update(const float& deltaTime)
 {
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
+	HandleInput();
 }
 
 void Player::UpdateMovement(float FixedDeltaTime)
@@ -78,4 +82,24 @@ void Player::UpdateHeight(float FixedDeltaTime)
 
 	GetTransform().SetPosition({ position.x, resultHeight + 1, position.z });
 
+}
+
+void Player::TriggerAttack()
+{
+}
+
+void Player::HandleInput()
+{
+	if (input->GetMouseButtonDown(0) && leftNut > 0)
+	{
+		Logger::Write(LOG_LEVEL::Info, "Left click");
+		gui->RemoveGUIObject(coconutSprite);
+		leftNut--;
+	}
+
+	if (input->GetMouseButtonDown(1) && rightNut > 0)
+	{
+		Logger::Write(LOG_LEVEL::Info, "Right click");
+		//rightNut--;
+	}	
 }

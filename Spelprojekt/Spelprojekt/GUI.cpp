@@ -10,6 +10,15 @@ void GUI::AddGUIObject(GUIObject *addObj)
 	GUIObjects.push_back(addObj);
 }
 
+void GUI::RemoveGUIObject(GUIObject* removeObj)
+{
+	auto found = std::find(GUIObjects.begin(), GUIObjects.end(), removeObj);
+	if(found != GUIObjects.end())
+	{
+		GUIObjects.erase(found);
+	}
+}
+
 void GUI::DrawAll()
 {
 	spriteBatch->Begin();

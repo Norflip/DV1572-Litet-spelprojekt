@@ -1,13 +1,12 @@
 #pragma once
 #include <WICTextureLoader.h>
-#include <SpriteBatch.h>
 #include "GUIObject.h"
 
-class GUISpriteObject: public GUIObject
+class GUISprite: public GUIObject
 {
 public:
-	GUISpriteObject(DX11Handler&, float x, float y);
-	~GUISpriteObject();
+	GUISprite(DX11Handler&, std::string spriteFile, float x, float y);
+	~GUISprite();
 
 	void Draw(DirectX::SpriteBatch*) override;
 	void SetPosition(float x, float y) override;
@@ -22,9 +21,9 @@ private:
 	DirectX::SpriteBatch* spritebatch;	
 	ID3D11ShaderResourceView* SRV;
 
-	float m_XPosition, m_YPosition;
-	float m_XScale, m_YScale;
-	float m_Rot; 
+	float xPosition, yPosition;
+	float xScale, yScale;
+	float rotation; 
 
 	DirectX::XMVECTOR position, color, origin, scale; 
 };

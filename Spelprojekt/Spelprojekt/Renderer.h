@@ -11,7 +11,6 @@
 #include "Lights.h"
 
 #include "GUI.h"
-#include "GUITextObject.h"
 
 constexpr float CLEAR_COLOR[3] = { 0.4f,0.4f,0.4f };
 
