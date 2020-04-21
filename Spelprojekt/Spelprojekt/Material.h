@@ -23,7 +23,7 @@ public:
 	virtual ~Material();
 
 	void SetMaterialData(MaterialData materialData) { this->materialData = materialData; }
-	MaterialData GetMaterialData() const { return this->materialData; }
+	MaterialData& GetMaterialData() { return this->materialData; }
 
 	void SetTexture(size_t index, Texture* texture, PIXEL_TYPE type);
 	Texture* GetTexture(size_t index) const;

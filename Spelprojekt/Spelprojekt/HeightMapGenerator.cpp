@@ -23,6 +23,7 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 		{
 			test.position.x = x * xzScale; //Vertex locations on x and y axis loaded here.
 			test.position.z = z * xzScale;
+
 			test.position.y = (float)rgb_image[z * width + x + 0] / 255.f;  //Load in height of said vertex, only returns 0-1.
 			test.position.y *= verticalScaling;
 
@@ -31,6 +32,7 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 			test.tangent = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 			vertList.push_back(test);
+
 			if (z < height-1 && x < width-1)
 			{
 				// triangle 1
@@ -54,17 +56,18 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 	int k = 0;
 	int texUIndex = 0;
 	int texVIndex = 0;
+
 	for (int i = 0; i < width-1; i++)
 	{
 		for (int j = 0; j < height-1; j++)
 		{
 
-			vertList.at(i * height + j).uv = DirectX::XMFLOAT2(texUIndex + 0.0f, texVIndex + 1.0f);
+			/*vertList.at(i * height + j).uv = DirectX::XMFLOAT2(texUIndex + 0.0f, texVIndex + 1.0f);
 			vertList.at(i * height + j + 1).uv = DirectX::XMFLOAT2(texUIndex + 1.0f, texVIndex + 1.0f);
 			vertList.at((i + 1) * height + j).uv = DirectX::XMFLOAT2(texUIndex + 0.0f, texVIndex + 0.0f);
 			vertList.at((i + 1) * height + j).uv = DirectX::XMFLOAT2(texUIndex + 0.0f, texVIndex + 0.0f);
 			vertList.at(i * height + j + 1).uv = DirectX::XMFLOAT2(texUIndex + 1.0f, texVIndex + 1.0f);
-			vertList.at((i + 1) * height + j + 1).uv = DirectX::XMFLOAT2(texUIndex + 1.0f, texVIndex + 0.0f);
+			vertList.at((i + 1) * height + j + 1).uv = DirectX::XMFLOAT2(texUIndex + 1.0f, texVIndex + 0.0f);*/
 
 			k += 6; // next quad
 

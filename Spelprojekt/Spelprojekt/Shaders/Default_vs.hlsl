@@ -25,11 +25,8 @@ VS_OUTPUT main(VS_INPUT input)
 	output.worldPosition = mul(input.position, world).xyz;
 	output.position = mul(input.position, mvp);
 
-	float4 normal = float4(input.normal, 0);
-	output.normal = normalize(mul(normal, world).xyz);
-
-	float4 tangent = float4(input.tangent, 0);
-	output.tangent = normalize(mul(tangent, world).xyz);
+	output.normal = normalize(mul(input.normal, world).xyz);
+	output.tangent = normalize(mul(input.tangent, world).xyz);
 
 	return output;
 }

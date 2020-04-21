@@ -17,7 +17,15 @@ public:
 	virtual Scene* GetNextScene() const = 0;
 
 protected:
+	void AddObject(Object*);
+	void RemoveObject(Object*);
+	void SortObject(Object*);
+
+protected:
 	Renderer* renderer;
 	Window& window;
 	DX11Handler& dx11;
+
+	std::vector<Object*> allObjects;
+	std::unordered_map <Shader*, std::unordered_map<Material*, std::vector<Object*>>> sortedObjects;
 };

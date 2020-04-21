@@ -29,7 +29,9 @@ void Renderer::SetRenderTarget(RenderTarget* renderTarget)
 
 	dx11.GetContext()->RSSetViewports(1, &currentRenderTarget->GetViewport());
 	dx11.GetContext()->OMSetRenderTargets(currentRenderTarget->BufferCount(), currentRenderTarget->GetRenderTargetViews(), currentRenderTarget->GetDepthStencil());
-	dx11.GetContext()->OMSetDepthStencilState(currentRenderTarget->GetDepthStencilState(), 0);
+
+	if(currentRenderTarget->GetDepthStencilState() != nullptr)
+		dx11.GetContext()->OMSetDepthStencilState(currentRenderTarget->GetDepthStencilState(), 0);
 }
 
 void Renderer::ClearRenderTarget()

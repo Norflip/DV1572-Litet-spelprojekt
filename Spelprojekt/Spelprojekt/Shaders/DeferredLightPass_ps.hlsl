@@ -15,8 +15,12 @@ float4 main(PixelInputType input) : SV_TARGET
 {
 	float4 position = positionTexture.Load(float3(input.position.xy, 0), 0);
 	
+	/*
 	if (position.w == 0.0f)
 		discard;
+	*/
+
+
 
 	float4 albedo = albedoTexture.Load(float3(input.position.xy, 0), 0);
 	float3 normal = normalTexture.Load(float3(input.position.xy, 0), 0).xyz;
@@ -27,20 +31,19 @@ float4 main(PixelInputType input) : SV_TARGET
 	float3 sunDir = normalize(-sunDirection);
 
 	// diffuse shading
-	float diff = max(dot(normal, sunDir), 0.0);
+	float diff = saturate(dot(normal, sunDir));
 
 	// specular shading
 	float3 reflectDir = reflect(-sunDir, normal);
 
 	// SHINYNESS
 	float spec = pow(max(dot(viewDirection, reflectDir), 0.0), 32); 
-
 	float4 sun_color = sunColor * sunIntensity;
 
-	// 0.2f to lower the ambient lightning, need to insert it from somewhere
-	float4 ambient = albedo * 0.2f;
-	float4 diffuse = sun_color * diff;
-	float4 specular = sun_color * spec;
+	float4 ambient = albedo * sunIntensity;
+	float4 diffuse = albedo * sun_color * diff;
+	float4 specular = albedo * sun_color * spec;
+
 
 	float4 finalColor = ambient + diffuse + specular;
 
