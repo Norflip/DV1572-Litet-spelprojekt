@@ -120,18 +120,18 @@ namespace AssimpHandler
 		}
 
 		// Create a new texture and then return it
-		texture = Texture::CreateTexture(textureFile, dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+		texture = Texture::CreateTexture("Glasse_Color.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 		return texture;
 	}
 
-	/*inline Object* loadFbxObject(const char* filepath, ID3D11Device* device, DX11Handler dx11, Shader* shader)
+	inline Object* loadFbxObject(const char* filepath, ID3D11Device* device, DX11Handler dx11, Shader* shader)
 	{
 		Mesh* mesh = loadMesh(filepath, device);
 		Texture* texture = loadTextureFromFbx(filepath, dx11, shader);
 
-		Object* object = new Object(mesh, new Material(shader));
+		Object* object = new Object(mesh, new Material(shader, dx11));
 		object->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, texture, PIXEL_TYPE::PIXEL);
 
 		return object;
-	}*/
+	}
 }
