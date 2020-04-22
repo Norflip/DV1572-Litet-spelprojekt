@@ -1,8 +1,10 @@
 #include "Player.h"
-Player::Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain)
-	:controller(controller), terrain(terrain), Object(mesh,material)
+Player::Player(const char* stringName, CameraController* controller, TerrainGenerator* terrain, DX11Handler& dx11, Shader* defaultShader)
+	:controller(controller), terrain(terrain)
 {
-
+	Object* temp = AssimpHandler::loadFbxObject(stringName, dx11, defaultShader);
+	SetMesh(temp->GetMesh());
+	SetMaterial(temp->GetMaterial());
 	this->movementspeed = 3;
 	this->input = controller->getInput();
 	this->currentPosition = { 0,0,0 };
@@ -54,7 +56,7 @@ void Player::UpdateHeight(float FixedDeltaTime)
 	float xFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 0);
 	float zFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 2);
 
-	GetTransform().SetPosition({ xFloat,(terrain->getHeight(xFloat, zFloat) + 1), zFloat});
+	GetTransform().SetPosition({ xFloat,(terrain->getHeight(xFloat, zFloat) + playerHeight), zFloat});
 
 
 }

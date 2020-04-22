@@ -4,14 +4,16 @@
 #include "Input.h"
 #include "HeightMapGenerator.h"
 #include "CameraController.h"
+#include "assimpHandler.h"
+
 class Player : public Object
 {
 public:
-	Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain);
+	Player(const char* stringName, CameraController* controller, TerrainGenerator* terrain, DX11Handler& dx11, Shader* defaultShader);
 	~Player();
 
 	void Update(const float& deltaTime) override;
-
+	void SetHeight(float height) { this->playerHeight = height; };
 private:
 
 	Input* input;
@@ -27,6 +29,6 @@ private:
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 
 	float shortestRoration(float currentDir, float nextDir);
-
+	float playerHeight = 3;
 }; 
 
