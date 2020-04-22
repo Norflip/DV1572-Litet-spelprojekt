@@ -73,7 +73,7 @@ namespace AssimpHandler
 	inline Texture* loadTextureFromFbx(const char* FbxFilepath, DX11Handler& dx11, Shader* shader)
 	{
 		Texture* texture = nullptr;
-		std::string textureFile = "";
+		std::string fileName = "";
 
 		// Open the scene from the file
 		Assimp::Importer imp;
@@ -90,15 +90,24 @@ namespace AssimpHandler
 
 			// Get the textures from the scene
 			aiTexture** texture = scene->mTextures;
-			// Get the filepath and convert it to a regular string
-			aiString string2 = texture[0]->mFilename;
+
 			if (texture == nullptr)
 			{
 				Logger::Write("ERROR BLYAT");
 			}
 
-			textureFile = string2.C_Str();
-			Logger::Write(textureFile);
+			// Get the fileName from the texture at 0, will always be albedo (hopefully)..
+			aiString string2 = texture[0]->mFilename;
+			const char* textureFiles = string2.C_Str();
+			// Get embedded media
+			const aiTexture* embedded = scene->GetEmbeddedTexture(textureFiles);
+
+			// Convert the filename to a regular string and crop it so it will only be the name of the texture, and not the filepath
+			aiString embeddedName = embedded->mFilename;
+			std::string nameString = embeddedName.C_Str();
+			std::size_t pos = nameString.find_last_of("/\\");
+			fileName = nameString.substr(pos + 1);
+			Logger::Write(fileName);
 
 			// Different types of textures, could be used for normals?
 			aiTextureType diffuseType = aiTextureType_DIFFUSE;
@@ -120,13 +129,13 @@ namespace AssimpHandler
 		}
 
 		// Create a new texture and then return it
-		texture = Texture::CreateTexture(textureFile, dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+		texture = Texture::CreateTexture(fileName, dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 		return texture;
 	}
 
-	inline Object* loadFbxObject(const char* filepath, ID3D11Device* device, DX11Handler dx11, Shader* shader)
+	inline Object* loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader)
 	{
-		Mesh* mesh = loadMesh(filepath, device);
+		Mesh* mesh = loadMesh(filepath, dx11.GetDevice());
 		Texture* texture = loadTextureFromFbx(filepath, dx11, shader);
 
 		Object* object = new Object(mesh, new Material(shader));
