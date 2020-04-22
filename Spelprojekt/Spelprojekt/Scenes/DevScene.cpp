@@ -78,9 +78,9 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	renderer->SetGUI(gui);
 
 	// Testing fbx load using assimp
-	Object* cube = AssimpHandler::loadFbxObject("Models/testCube2.fbx", dx11.GetDevice(), dx11, defaultShader);
+	/*Object* cube = AssimpHandler::loadFbxObject("Models/testCube2.fbx", dx11.GetDevice(), dx11, defaultShader);
 	cube->GetTransform().Translate(15, 5, 10);
-	objects.push_back(cube);
+	objects.push_back(cube);*/
 
 	/*Object* glasse = AssimpHandler::loadFbxObject("Models/Glasse.fbx", dx11.GetDevice(), dx11, defaultShader);
 	objects.push_back(glasse);*/

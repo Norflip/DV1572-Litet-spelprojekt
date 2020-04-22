@@ -124,7 +124,7 @@ namespace AssimpHandler
 		return texture;
 	}
 
-	inline Object* loadFbxObject(const char* filepath, ID3D11Device* device, DX11Handler dx11, Shader* shader)
+	/*inline Object* loadFbxObject(const char* filepath, ID3D11Device* device, DX11Handler dx11, Shader* shader)
 	{
 		Mesh* mesh = loadMesh(filepath, device);
 		Texture* texture = loadTextureFromFbx(filepath, dx11, shader);
@@ -133,5 +133,5 @@ namespace AssimpHandler
 		object->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, texture, PIXEL_TYPE::PIXEL);
 
 		return object;
-	}
+	}*/
 }
