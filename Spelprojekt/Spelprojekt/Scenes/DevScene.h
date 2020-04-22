@@ -47,7 +47,7 @@ private:
 	GUISpriteObject* m_Healthbar;
 
 	Player* player;
-
+	
 	TerrainGenerator test;
 	Timer gametimer;
 };

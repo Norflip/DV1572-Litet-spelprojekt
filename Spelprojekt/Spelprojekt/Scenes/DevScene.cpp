@@ -87,14 +87,14 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	// Testing fbx
 	Object* chair = AssimpHandler::loadFbxObject("Models/SunChair.fbx", dx11, defaultShader);
 	chair->GetTransform().Translate(15, 5, 10);
-	objects.push_back(chair);
+	AddObject(chair);
 
 	Object* glasse = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader);
-	objects.push_back(glasse);
+	AddObject(glasse);
 
 	Object* palm = AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader);
 	palm->GetTransform().Translate(5, 5, 30);
-	objects.push_back(palm);
+	AddObject(palm);
 }
 
 DevScene::~DevScene()
