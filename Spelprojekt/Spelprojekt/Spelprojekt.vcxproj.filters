@@ -184,6 +184,9 @@
     </ClInclude>
     <ClInclude Include="GUISpriteObject.h">
       <Filter>Header Files</Filter>
+    </ClInclude> 
+    <ClInclude Include="assimpHandler.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
