@@ -29,9 +29,16 @@ cbuffer LightConstantBuffer : register(b1)
 
 cbuffer MaterialBuffer : register (b2)
 {
-	float4 ambient;
-	float4 diffuse;
-	float4 specular;
+	float4 mat_ambient;
+	float4 mat_diffuse;
+	float4 mat_specular;
+
+	float mat_shininess;
+	float3 mb_pad;
+	//float reflectivity;
 
 	// bools för vilka textures som används
+	bool hasAlbedoTexture;
+	bool hasNormalTexture;
+	
 }

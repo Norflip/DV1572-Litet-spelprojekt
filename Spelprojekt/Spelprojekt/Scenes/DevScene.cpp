@@ -7,11 +7,13 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	window.GetInput()->LockCursor(false);
 
 	Lights* lights = new Lights();
-	lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
-	lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);
-	lights->SetSunDirection({ 1,-1, 1 });
-	lights->SetSunColor({ 1,1,1,1 });
-	lights->SetSunIntensity(0.2f);
+	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
+	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);
+
+	lights->SetSunDirection({ 1, -1, 0 });
+	lights->SetSunColor({ 1,0,0,1 });
+	lights->SetSunIntensity(0.3f);
+
 	renderer->SetLights(lights);
 
 	// save the shaders somewhere, remember to clean it up
@@ -30,18 +32,18 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 
-	sphere->GetTransform().Translate(0, 0, 6);
-
-	objects.push_back(sphere);
+	sphere->GetTransform().Translate(0, 3, 6);
+	AddObject(sphere);
 
 	// ------- TERRAIN
 	Material* test_material = new Material(defaultShader, dx11);
 	Texture* m_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	test_material->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
+	test_material->GetMaterialData().hasNormalTexture = false;
 
 	Mesh* terrain = new Mesh();
 	test.generateFromHeightMap("Textures/heightmap.png", terrain, dx11.GetDevice());
-	objects.push_back(new Object(terrain, test_material));
+	AddObject(new Object(terrain, test_material));
 
 	// ------ PLAYER
 	player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), controller, &test);
@@ -49,8 +51,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 	player->GetTransform().SetRotation({ 0, 0, 0 });
 	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
-	objects.push_back(player);
-
+	AddObject(player);
 
 	//----- GUI SHIET
 
@@ -117,7 +118,7 @@ void DevScene::Update(const float& deltaTime)
 
 	controller->Update(deltaTime);
 
-	for (auto i : objects)
+	for (auto i : allObjects)
 	{
 		if (i->IsEnabled())
 		{
@@ -133,14 +134,18 @@ void DevScene::Update(const float& deltaTime)
 	DirectX::XMMATRIX view = camera->GetView();
 	DirectX::XMMATRIX projection = camera->GetProjection();
 
-	// loop objects in scene
-	for (auto i : objects)
+	for (auto shader : sortedObjects)
 	{
-		if (i->IsEnabled() && camera->IsBoundsInView(i->GetWorldBounds()))
+		shader.first->Bind(dx11.GetContext());
+
+		for (auto material : shader.second)
 		{
-			i->GetMaterial()->Bind(dx11.GetContext());
-			i->Render(renderer, view, projection);
-			i->GetMaterial()->Unbind(dx11.GetContext()); 			//unbind material after the use
+			material.first->Bind(dx11.GetContext());
+
+			for (auto object : material.second)
+				object->Render(renderer, view, projection);
+
+			material.first->Unbind(dx11.GetContext());
 		}
 	}
 
@@ -149,7 +154,7 @@ void DevScene::Update(const float& deltaTime)
 
 void DevScene::FixedUpdate(const float& fixedDeltaTime)
 {
-	for (auto i : objects)
+	for (auto i : allObjects)
 	{
 		i->FixedUpdate(fixedDeltaTime);
 	}

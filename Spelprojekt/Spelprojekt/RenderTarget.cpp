@@ -1,20 +1,17 @@
 #include "RenderTarget.h"
 #include <iostream>
 
-RenderTarget::RenderTarget(ID3D11RenderTargetView* rtv, ID3D11ShaderResourceView* srv, ID3D11DepthStencilView* dsv, D3D11_VIEWPORT viewport) : bufferCount(1), viewport(viewport)
+RenderTarget::RenderTarget(ID3D11RenderTargetView* rtv, ID3D11ShaderResourceView* srv, ID3D11DepthStencilView* dsv, D3D11_VIEWPORT viewport) : bufferCount(1), viewport(viewport), dss(nullptr)
 {
-	this->rtv = new ID3D11RenderTargetView * [1];
-	this->rtv[0] = rtv;
-
-	this->srv = new ID3D11ShaderResourceView * [1];
-	this->srv[0] = srv;
-
+	this->rtv = new ID3D11RenderTargetView * [1]{ rtv };
+	this->srv = new ID3D11ShaderResourceView * [1]{ srv };
 	this->dsv = dsv;
+
 	this->bufferCount = 1;
 }
 
 RenderTarget::RenderTarget(size_t bufferCount, size_t width, size_t height, bool createDepthBuffer) :
-	bufferCount(bufferCount), width(width), height(height), createDepthBuffer(createDepthBuffer)
+	bufferCount(bufferCount), width(width), height(height), createDepthBuffer(createDepthBuffer), dss(nullptr)
 {
 
 }
@@ -51,7 +48,7 @@ void RenderTarget::Initalize(ID3D11Device* device)
 		depthStencilStateDsc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 		depthStencilStateDsc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 
-		depthStencilStateDsc.StencilEnable = true;
+		depthStencilStateDsc.StencilEnable = false;
 		depthStencilStateDsc.StencilReadMask = 0xFF;
 		depthStencilStateDsc.StencilWriteMask = 0xFF;
 
@@ -101,6 +98,7 @@ void RenderTarget::Initalize(ID3D11Device* device)
 		dsvDesc.Texture2D.MipSlice = 0;
 
 
+		//ZeroMemory(&dsv, sizeof(ID3D11DepthStencilView));
 
 		hr = device->CreateDepthStencilView(depthTex, &dsvDesc, &dsv);
 		assert(SUCCEEDED(hr));

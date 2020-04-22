@@ -10,6 +10,14 @@
 Material::Material(Shader* shader, DX11Handler& dx11) : shader(shader)
 {
 	this->buffer = dx11.CreateBuffer<MaterialData>(materialData);
+
+	this->materialData.ambient = { 0.8f, 0.8f, 0.8f ,1 };
+	this->materialData.diffuse = { 0.8f, 0.8f, 0.8f ,1 };
+	this->materialData.specular = { 0.8f, 0.8f, 0.8f ,1 };
+	this->materialData.shininess = 32;
+
+	this->materialData.hasAlbedoTexture = true;
+	this->materialData.hasNormalTexture = true;
 }
 
 Material::~Material()
@@ -86,7 +94,7 @@ void Material::Unbind(ID3D11DeviceContext* context)
 
 void Material::Bind(ID3D11DeviceContext* context)
 {
-	this->shader->Bind(context);
+	//this->shader->Bind(context);
 	// update buffer
 
 	context->UpdateSubresource(buffer, 0, 0, &materialData, 0, 0);

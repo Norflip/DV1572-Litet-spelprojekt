@@ -2,7 +2,7 @@
 
 Renderer::Renderer(size_t width, size_t height, DX11Handler& dx11) : dx11(dx11), lights(nullptr)
 {
-	this->gbufferRenderTarget = new RenderTarget(3, width, height, true);
+	this->gbufferRenderTarget = new RenderTarget(4, width, height, true);
 	this->gbufferRenderTarget->Initalize(dx11.GetDevice());
 
 	this->backbufferRenderTarget = dx11.GetBackbuffer();
@@ -29,7 +29,9 @@ void Renderer::SetRenderTarget(RenderTarget* renderTarget)
 
 	dx11.GetContext()->RSSetViewports(1, &currentRenderTarget->GetViewport());
 	dx11.GetContext()->OMSetRenderTargets(currentRenderTarget->BufferCount(), currentRenderTarget->GetRenderTargetViews(), currentRenderTarget->GetDepthStencil());
-	dx11.GetContext()->OMSetDepthStencilState(currentRenderTarget->GetDepthStencilState(), 0);
+
+	if(currentRenderTarget->GetDepthStencilState() != nullptr)
+		dx11.GetContext()->OMSetDepthStencilState(currentRenderTarget->GetDepthStencilState(), 0);
 }
 
 void Renderer::ClearRenderTarget()

@@ -33,10 +33,13 @@ public:
 
 	Scene* GetNextScene() const override;
 
+
 private:
+
 	float testFloat = 0.f;
-	std::vector<Object*> objects;
-	Camera* camera;	
+
+	Camera* camera;
+	
 	CameraController* controller;
 
 	GUITextObject* gametimerText;

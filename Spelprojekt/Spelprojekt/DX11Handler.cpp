@@ -50,9 +50,9 @@ void DX11Handler::Initialize(const Window& window)
 #endif
 
 	D3D_FEATURE_LEVEL featureLevel[] = { D3D_FEATURE_LEVEL_11_0 };	// 
-
 	HRESULT resultCreateDevAndSwap = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, swapflags, featureLevel, 1, D3D11_SDK_VERSION, &swapChainDescription, &swapchain, &device, nullptr, &context);
 	assert(SUCCEEDED(resultCreateDevAndSwap));
+
 	/////////////////				END SWAPCHAIN INITIALIZE				/////////////////
 
 	CreateBackbufferRenderTarget(window.GetWidth(), window.GetHeight());
