@@ -8,6 +8,7 @@
 #include "../Input.h"
 #include "../CameraController.h"
 #include "../HeightMapGenerator.h"
+#include "../assimpHandler.h"
 
 // new
 #include "../Timer.h"
