@@ -11,7 +11,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
 	healthbar = new GUISprite(dx11, "Sprites/Healthbar.png", 10.0f, 700.0f);
-	healthbar->HealthBar(100.0f, 70.0f);
+	healthbar->HealthBar(100.0f, 50.0f);
 
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 700.0f);
 
@@ -23,10 +23,9 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	gui->AddGUIObject(healthbar);
 	gui->AddGUIObject(healthFrame);
 	gui->AddGUIObject(actionbarLeft);
+	
 	// Set GUI
 	renderer->SetGUI(gui);
-
-
 
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
 	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::Follow);
@@ -76,7 +75,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
 	objects.push_back(player);
 
-	
+
 }
 
 DevScene::~DevScene()

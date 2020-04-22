@@ -102,7 +102,7 @@ void GUISprite::SetDDSSprite(DX11Handler& dx11, std::string spriteFile)
 void GUISprite::HealthBar(float maxHealth, float currentHealth)
 {
 	this->xScale = currentHealth/maxHealth;
-	float xs = this->yScale;
+	float xs = this->xScale;
 	this->scale = DirectX::XMVectorSet(xs, 1, 1, 1);
 }
 

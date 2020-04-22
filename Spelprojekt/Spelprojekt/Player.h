@@ -5,6 +5,7 @@
 #include "HeightMapGenerator.h"
 #include "CameraController.h"
 #include "GUI.h"
+#include "SoundHandler.h"
 
 class Player : public Object
 {
@@ -28,6 +29,7 @@ private:
 	float scaleXZ;
 	int leftNut, rightNut;
 	GUI* gui;
+	SoundHandler* testSound;
 
 	GUIActionbar* coconutSprite;
 

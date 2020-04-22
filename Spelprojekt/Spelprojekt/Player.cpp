@@ -11,6 +11,9 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	gui->AddGUIObject(this->coconutSprite);
 	this->leftNut = 1;
 	this->rightNut = 1;
+	this->testSound = new SoundHandler();
+	this->testSound->LoadSound("Explosive","SoundEffects/Explo1.wav");
+
 }
 
 Player::~Player()
@@ -95,6 +98,7 @@ void Player::HandleInput()
 		Logger::Write(LOG_LEVEL::Info, "Left click");
 		gui->RemoveGUIObject(coconutSprite);
 		leftNut--;
+		testSound->PlaySound("Explosive");
 	}
 
 	if (input->GetMouseButtonDown(1) && rightNut > 0)
