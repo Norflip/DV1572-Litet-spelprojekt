@@ -2,8 +2,7 @@
 Player::Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain)
 	:controller(controller), terrain(terrain), Object(mesh,material)
 {
-	this->scaleY = terrain->getVerticalScaling();
-	this->scaleXZ = terrain->getXzScale();
+
 	this->movementspeed = 3;
 	this->input = controller->getInput();
 	this->currentPosition = { 0,0,0 };
@@ -18,7 +17,6 @@ Player::~Player()
 
 void Player::Update(const float& deltaTime)
 {
-
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
 }

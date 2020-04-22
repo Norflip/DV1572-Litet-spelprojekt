@@ -20,15 +20,9 @@ private:
 	void UpdateMovement(float FixedDeltaTime);
 	void UpdateHeight(float FixedDeltaTime);
 	TerrainGenerator* terrain;
-	float scaleY;
-	float scaleXZ;
+
 
 	DirectX::XMFLOAT3 currentPosition;
-	float lerp(float a, float b, float f)
-	{
-		return a + f * (b - a);
-	}
-	float refVel = 0;
 	float nextDir = 0;
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 
