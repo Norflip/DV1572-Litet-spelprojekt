@@ -14,8 +14,8 @@ public:
 	void generateFromHeightMap(std::string textureName, Mesh*& mesh, ID3D11Device* device);
 	int getHeight() { return this->height; };
 	int getWidth() { return this->width; };
-	int getXzScale(){ return this->xzScale; };
-	int getVerticalScaling() { return this->verticalScaling; };
+	float getXzScale(){ return this->xzScale; };
+	float getVerticalScaling() { return this->verticalScaling; };
 	Mesh* getMesh() { return this->mesh; };
 	float getHeight(float x, float z);
 private:
