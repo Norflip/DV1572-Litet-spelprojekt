@@ -49,6 +49,17 @@ namespace MathHelper
 
 		return output;
 	}
+	inline float ShortestRotation(float currentDir, float nextDir)
+	{
+		float returnValue = 0;
 
+		if (abs(nextDir - currentDir) < MathHelper::PI)
+			returnValue = nextDir - currentDir;
+		else if (currentDir < nextDir)
+			returnValue = nextDir - currentDir - MathHelper::PI * 2.0f;
+		else
+			returnValue = nextDir - currentDir + MathHelper::PI * 2.0f;
+		return returnValue;
+	}
 
 }

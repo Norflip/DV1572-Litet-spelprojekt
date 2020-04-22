@@ -112,3 +112,51 @@ void TerrainGenerator::generateFromHeightMap(std::string textureName, Mesh*& mes
 	mesh = MeshCreator::CreateMesh(vertList, indexList, device);
 	this->mesh = mesh;
 }
+
+float TerrainGenerator::getHeight(float x, float z)
+{
+	DirectX::XMFLOAT3 position = { x,0,z };
+	//DirectX::XMStoreFloat3(&position, GetTransform().GetPosition());
+
+	float howFarX = position.x - (int)(position.x / xzScale);
+	float howFarZ = position.z - (int)(position.z / xzScale);
+
+	int col = (int)floorf(position.x);
+	int row = (int)floorf(position.z);
+
+	//		quick exit if we are out of the heightmap		//
+	if (row < 0 || col < 0)
+	{
+		return 0;
+	}
+
+
+	bool bottomTriangle;
+	if ((howFarX + howFarZ) <= 1.f)
+		bottomTriangle = true;
+	else
+		bottomTriangle = false;
+
+	float topRightHeight = getMesh()->vertexes.at(row * getWidth() + col).position.y;
+	float topLeftHeight = getMesh()->vertexes.at(row * getWidth() + col + 1).position.y;
+	float bottomLeftHeight = getMesh()->vertexes.at((row + 1) * getWidth() + col).position.y;
+	float bottomRightTriangle = getMesh()->vertexes.at((row + 1) * getWidth() + col + 1).position.y;
+
+	float resultHeight = 0;
+	if (bottomTriangle)
+	{
+		float uy = topLeftHeight - topRightHeight;
+		float vy = bottomLeftHeight - topRightHeight;
+		resultHeight = topRightHeight + howFarX * uy + howFarZ * vy;
+	}
+	else
+	{
+		float uy = bottomLeftHeight - bottomRightTriangle;
+		float vy = topLeftHeight - bottomRightTriangle;
+		resultHeight = bottomRightTriangle + (1.0f - howFarX) * uy + (1.0f - howFarZ) * vy;
+	}
+
+	return resultHeight;
+
+
+}
