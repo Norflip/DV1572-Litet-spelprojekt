@@ -12,7 +12,7 @@
 
 // new
 #include "../Timer.h"
-#include "../GUITextObject.h"
+#include "../GUI.h"
 
 class DevScene : public Scene
 {
@@ -42,9 +42,11 @@ private:
 	
 	CameraController* controller;
 
-	GUITextObject* gametimerText;
-	GUISpriteObject* m_HealthFrame;
-	GUISpriteObject* m_Healthbar;
+	GUI* gui;
+	GUIText* gametimerText;
+	GUISprite* healthFrame;
+	GUISprite* healthbar;
+	GUIActionbar* actionbarLeft;
 
 	Player* player;
 	

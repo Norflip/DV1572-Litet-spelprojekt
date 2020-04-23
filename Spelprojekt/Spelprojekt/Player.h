@@ -5,11 +5,13 @@
 #include "HeightMapGenerator.h"
 #include "CameraController.h"
 #include "assimpHandler.h"
+#include "GUI.h"
+#include "SoundHandler.h"
 
 class Player : public Object
 {
 public:
-	Player(const char* stringName, CameraController* controller, TerrainGenerator* terrain, DX11Handler& dx11, Shader* defaultShader);
+	Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain, GUI* gui);
 	~Player();
 
 	void Update(const float& deltaTime) override;
@@ -21,7 +23,16 @@ private:
 	float movementspeed;
 	void UpdateMovement(float FixedDeltaTime);
 	void UpdateHeight(float FixedDeltaTime);
+	void TriggerAttack();
+	void HandleInput();
 	TerrainGenerator* terrain;
+	float scaleY;
+	float scaleXZ;
+	int leftNut, rightNut;
+	GUI* gui;
+	SoundHandler* testSound;
+
+	GUIActionbar* coconutSprite;
 
 
 	DirectX::XMFLOAT3 currentPosition;

@@ -1,6 +1,5 @@
 #pragma once
 #include <SpriteFont.h>
-#include <SpriteBatch.h>
 #include "DX11Handler.h"
 
 class GUIObject

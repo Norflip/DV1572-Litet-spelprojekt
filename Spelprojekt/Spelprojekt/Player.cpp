@@ -1,6 +1,6 @@
 #include "Player.h"
-Player::Player(const char* stringName, CameraController* controller, TerrainGenerator* terrain, DX11Handler& dx11, Shader* defaultShader)
-	:controller(controller), terrain(terrain)
+Player::Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain, GUI* gui)
+	:controller(controller), terrain(terrain), Object(mesh,material)
 {
 	Object* temp = AssimpHandler::loadFbxObject(stringName, dx11, defaultShader);
 	SetMesh(temp->GetMesh());
@@ -9,6 +9,13 @@ Player::Player(const char* stringName, CameraController* controller, TerrainGene
 	this->input = controller->getInput();
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
+	this->coconutSprite = new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
+	this->gui = gui;
+	gui->AddGUIObject(this->coconutSprite);
+	this->leftNut = 1;
+	this->rightNut = 1;
+	this->testSound = new SoundHandler();
+	this->testSound->LoadSound("Explosive","SoundEffects/Explo1.wav");
 
 }
 
@@ -21,6 +28,7 @@ void Player::Update(const float& deltaTime)
 {
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
+	HandleInput();
 }
 
 void Player::UpdateMovement(float fixedDeltaTime)
@@ -93,4 +101,25 @@ float Player::shortestRoration(float currentDir, float nextDir)
 		else
 			returnValue = nextDir - currentDir + MathHelper::PI * 2.0f;
 		return returnValue;
+}
+
+void Player::TriggerAttack()
+{
+}
+
+void Player::HandleInput()
+{
+	if (input->GetMouseButtonDown(0) && leftNut > 0)
+	{
+		Logger::Write(LOG_LEVEL::Info, "Left click");
+		gui->RemoveGUIObject(coconutSprite);
+		leftNut--;
+		testSound->PlaySound("Explosive", 0.1f);
+	}
+
+	if (input->GetMouseButtonDown(1) && rightNut > 0)
+	{
+		Logger::Write(LOG_LEVEL::Info, "Right click");
+		//rightNut--;
+	}	
 }

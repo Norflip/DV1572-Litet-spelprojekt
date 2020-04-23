@@ -1,10 +1,11 @@
 #pragma once
 #include <vector>
 #include <SpriteFont.h>
-#include "GUIObject.h"
 
 // New
-#include "GUISpriteObject.h"
+#include "GUISprite.h"
+#include "GUIText.h"
+#include "GUIActionbar.h"
 
 #include "DX11Handler.h"
 #include "Timer.h"
@@ -15,6 +16,8 @@ public:
 	GUI(DX11Handler&);
 	~GUI() {};
 	void AddGUIObject(GUIObject *addObj);
+	void RemoveGUIObject(GUIObject* removeObj);
+	DX11Handler& GetDXHandler() { return dx11; }
 
 	void DrawAll();
 private:
