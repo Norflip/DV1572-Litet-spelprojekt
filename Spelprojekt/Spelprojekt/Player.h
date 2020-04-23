@@ -5,7 +5,7 @@
 #include "HeightMapGenerator.h"
 #include "CameraController.h"
 #include "assimpHandler.h"
-
+#include "Weapon.h"
 class Player : public Object
 {
 public:
@@ -22,8 +22,8 @@ private:
 	void UpdateMovement(float FixedDeltaTime);
 	void UpdateHeight(float FixedDeltaTime);
 	TerrainGenerator* terrain;
-
-
+	Weapon* rightWeapon;
+	Weapon* leftWeapon;
 	DirectX::XMFLOAT3 currentPosition;
 	float nextDir = 0;
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
