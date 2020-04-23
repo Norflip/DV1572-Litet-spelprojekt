@@ -24,15 +24,25 @@ void SoundHandler::LoadSound(std::string key, std::string filePath)
 	}
 }
 
-void SoundHandler::PlaySound(std::string key)
+void SoundHandler::PlaySound(std::string key, float volume)
 {
 	if (HasKey(key))
 	{
-		soundMap[key]->Play();
+		soundMap[key]->Play(volume,0,0);
 	}	
 }
 
 bool SoundHandler::HasKey(std::string key) const
 {
 	return soundMap.find(key) != soundMap.end();
+}
+
+void SoundHandler::SetGlobalVolume(float volume)
+{
+	audioEngine->SetMasterVolume(volume);
+}
+
+float SoundHandler::GetGlobalVolume()
+{
+	return audioEngine->GetMasterVolume();
 }

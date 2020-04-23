@@ -7,8 +7,10 @@ class SoundHandler
 	public:
 		SoundHandler();
 		void LoadSound(std::string key, std::string filePath);
-		void PlaySound(std::string key);
+		void PlaySound(std::string key, float volume);
 		bool HasKey(std::string key) const;
+		void SetGlobalVolume(float volume);
+		float GetGlobalVolume();
 	private:
 		DirectX::AudioEngine* audioEngine;
 		DirectX::SoundEffect* soundEffect;	
