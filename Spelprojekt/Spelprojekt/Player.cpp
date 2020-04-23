@@ -1,8 +1,8 @@
 #include "Player.h"
-Player::Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain, GUI* gui)
+Player::Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain, GUI* gui, DX11Handler& dx11)
 	:controller(controller), terrain(terrain), Object(mesh,material)
 {
-	Object* temp = AssimpHandler::loadFbxObject(stringName, dx11, defaultShader);
+	Object* temp = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, material->GetShader());
 	SetMesh(temp->GetMesh());
 	SetMaterial(temp->GetMaterial());
 	this->movementspeed = 3;
@@ -11,7 +11,7 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 	this->coconutSprite = new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
 	this->gui = gui;
-	gui->AddGUIObject(this->coconutSprite);
+	this->gui->AddGUIObject(this->coconutSprite);
 	this->leftNut = 1;
 	this->rightNut = 1;
 	this->testSound = new SoundHandler();

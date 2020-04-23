@@ -11,7 +11,7 @@
 class Player : public Object
 {
 public:
-	Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain, GUI* gui);
+	Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain, GUI* gui, DX11Handler&);
 	~Player();
 
 	void Update(const float& deltaTime) override;

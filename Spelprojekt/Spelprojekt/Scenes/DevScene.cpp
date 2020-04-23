@@ -16,7 +16,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 700.0f);
 
 	// Create GUI for Devscene
-	gui = new GUI(dx11);
+	GUI* gui = new GUI(dx11);
 
 	// Add objects
 	gui->AddGUIObject(gametimerText);
@@ -71,37 +71,12 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	AddObject(new Object(terrain, test_material));
 
 	// ------ PLAYER
-	player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), controller, &test, gui);
+	player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), controller, &test, gui, dx11);
 	player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 
 	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
 	AddObject(player);
-
-	//----- GUI SHIET
-
-	// Create timer and set to textobject
-	gametimer.Start();
-	gametimerText = new GUITextObject(dx11, "Test", window.GetWidth() / 2.0f, 0);
-	
-	// New
-	m_HealthFrame = new GUISpriteObject(dx11, 10.0f, 700.0f);
-	m_HealthFrame->SetWICSprite(dx11, "Sprites/Frame.png");	
-
-	m_Healthbar = new GUISpriteObject(dx11, 10.0f, 700.0f);
-	m_Healthbar->SetWICSprite(dx11, "Sprites/Healthbar.png");
-	m_Healthbar->HealthBar(100.0f, 100.0f);
-
-	// Create GUI for Devscene
-	GUI* gui = new GUI(dx11);
-
-	// Add objects
-	gui->AddGUIObject(gametimerText);
-	gui->AddGUIObject(m_Healthbar);
-	gui->AddGUIObject(m_HealthFrame);	
-
-	// Set GUI
-	renderer->SetGUI(gui);
 
 
 	// Testing fbx load using assimp

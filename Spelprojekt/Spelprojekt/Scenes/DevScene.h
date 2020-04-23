@@ -42,7 +42,6 @@ private:
 	
 	CameraController* controller;
 
-	GUI* gui;
 	GUIText* gametimerText;
 	GUISprite* healthFrame;
 	GUISprite* healthbar;
