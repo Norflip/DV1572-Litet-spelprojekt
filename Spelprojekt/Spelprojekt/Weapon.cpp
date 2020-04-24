@@ -22,7 +22,7 @@ void Weapon::rangedAttack(float deltaTime)
 
 	DirectX::XMVECTOR resultPos = { xFloat + std::sinf(pitch) * deltaTime,0, zFloat + (-std::cosf(pitch)) * deltaTime };
 	GetTransform().SetPosition(resultPos);
-	GetTransform().SetRotation({ xRot + 000.3f * deltaTime ,yRot + 000.1f * deltaTime , zRot + 000.3f * deltaTime });
+	GetTransform().SetRotation({ xRot + (8.f * deltaTime) ,yRot + (8.f * deltaTime) , zRot });
 }
 
 void Weapon::meleeAttack(float deltaTime)

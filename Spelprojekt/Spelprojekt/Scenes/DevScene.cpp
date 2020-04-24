@@ -83,11 +83,11 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	objects.push_back(cube);*/
 
 	// Testing fbx
-	Object* chair = AssimpHandler::loadFbxObject("Models/SunChair.fbx", dx11, defaultShader);
+	Object* chair = AssimpHandler::loadFbxObject("Models/CuteChair.fbx", dx11, defaultShader);
 	chair->GetTransform().Translate(15, 5, 10);
 	AddObject(chair);
 
-	Projectile* testProj = new Projectile("Models/SunChair.fbx", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
+	Projectile* testProj = new Projectile("Models/CuteChair.fbx", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
 	//testProj->GetTransform().Translate(0, 0, 0);
 	AddObject(testProj);
 
