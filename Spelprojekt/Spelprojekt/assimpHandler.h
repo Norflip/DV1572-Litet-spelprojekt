@@ -21,6 +21,17 @@ namespace AssimpHandler
 		std::vector<DirectX::XMFLOAT2> uvs;
 		std::vector<DirectX::XMFLOAT3> normals;
 
+		std::unordered_map<std::string, int> boneMap;
+		std::unordered_map<int, int> bone_index_map1;
+		std::unordered_map<int, int> bone_index_map2;
+
+		for (int b = 0; b < scene->mMeshes[0]->mNumBones; b++)
+		{
+			aiBone* bone = scene->mMeshes[0]->mBones[b];
+			std::string boneName = bone->mName.C_Str();
+			boneMap.insert({ boneName, b });
+
+		}
 		// For every mesh in the scene
 		for (int i = 0; i < 1; i++)
 		{
@@ -139,10 +150,7 @@ namespace AssimpHandler
 			Texture* normalMap = nullptr;
 			Texture* texture = nullptr;
 			aiString path;
-			
-			aiString root = scene->mRootNode->mName;
-			std::string name = root.C_Str();
-			Logger::Write(name);
+
 			// Get the mesh from the file
 			Mesh* mesh = loadMesh(scene, dx11.GetDevice());
 
