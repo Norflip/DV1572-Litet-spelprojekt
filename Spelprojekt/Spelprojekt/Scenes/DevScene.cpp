@@ -89,7 +89,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	chair->GetTransform().Translate(15, 5, 10);
 	AddObject(chair);
 
-	Projectile* testProj = new Projectile("Models/CuteChair.fbx", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
+	Projectile* testProj = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
 	//testProj->GetTransform().Translate(0, 0, 0);
 	AddObject(testProj);
 
