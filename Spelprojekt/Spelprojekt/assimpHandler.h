@@ -67,7 +67,7 @@ namespace AssimpHandler
 		fileName += nameString.substr(pos + 1);
 
 		// Can be used for debug, print the name of the texture
-		//Logger::Write(fileName);
+		Logger::Write(fileName);
 
 		// Create a new texture and then return it
 		texture = Texture::CreateTexture(fileName, dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
@@ -140,6 +140,9 @@ namespace AssimpHandler
 			Texture* texture = nullptr;
 			aiString path;
 			
+			aiString root = scene->mRootNode->mName;
+			std::string name = root.C_Str();
+			Logger::Write(name);
 			// Get the mesh from the file
 			Mesh* mesh = loadMesh(scene, dx11.GetDevice());
 
@@ -151,7 +154,13 @@ namespace AssimpHandler
 			{
 				// Load the diffuseTexture and apply it to the object
 				texture = loadTextureFromFbx(dx11, path);
-				object->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, texture, PIXEL_TYPE::PIXEL);
+			}
+
+			// The app assumes there is a texture to every object, so if there is no texture in the file,
+			// add a simply greytexture to it
+			else
+			{
+				texture = Texture::CreateTexture("Textures/greyTexture.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 			}
 
 			// Check if the file contains a normalMap
@@ -162,6 +171,7 @@ namespace AssimpHandler
 				object->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, normalMap, PIXEL_TYPE::PIXEL);
 			}
 
+			object->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, texture, PIXEL_TYPE::PIXEL);
 			// Load the materialData from the file, such as specular, ambient e.tc. 
 			object->GetMaterial()->SetMaterialData(getMaterialFromFbx(scene));
 		}

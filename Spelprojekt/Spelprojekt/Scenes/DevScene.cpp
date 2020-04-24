@@ -84,6 +84,13 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
 	wagon->GetTransform().Translate(5, 5, 30);
 	AddObject(wagon);
+
+	Object* palm = AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader);
+	AddObject(palm);
+
+	// Testing animation
+	Object* animation = AssimpHandler::loadFbxObject("Models/animation.fbx", dx11, defaultShader);
+	AddObject(animation);
 }
 
 DevScene::~DevScene()
