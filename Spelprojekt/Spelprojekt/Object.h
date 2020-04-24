@@ -1,9 +1,10 @@
 #pragma once
 #include "Transform.h"
-#include "Renderer.h"
+//#include "Renderer.h"
 #include "Mesh.h"
 #include "Material.h"
 #include "AABB.h"
+class Renderer;
 
 class Object
 {

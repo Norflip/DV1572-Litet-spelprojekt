@@ -4,7 +4,7 @@
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-
+#include "Object.h"
 #include "Mesh.h"
 #include "../Spelprojekt/Logger.h"
 #include "Texture.h"

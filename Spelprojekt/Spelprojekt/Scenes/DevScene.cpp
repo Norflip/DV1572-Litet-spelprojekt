@@ -87,6 +87,11 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	chair->GetTransform().Translate(15, 5, 10);
 	AddObject(chair);
 
+
+	//Projectile* testProj = new Projectile("Models/monkey.obj", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,0,0 }), DirectX::XMVECTOR({ 0,0,0 }));
+	//testProj->GetTransform().Translate(15, 5, 10);
+	//AddObject(testProj);
+
 	Object* glasse = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader);
 	AddObject(glasse);
 

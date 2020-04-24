@@ -1,5 +1,5 @@
 #include "Object.h"
-
+#include "Renderer.h"
 Object::Object(Mesh* mesh, Material* material) : mesh(mesh), material(material), enabled(true)
 {
 	SetMesh(mesh);

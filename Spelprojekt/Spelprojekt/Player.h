@@ -1,11 +1,11 @@
 #pragma once
-#include "Object.h"
+#include "Weapon.h"
 #include "Scene.h"
 #include "Input.h"
 #include "HeightMapGenerator.h"
 #include "CameraController.h"
 #include "assimpHandler.h"
-#include "Weapon.h"
+
 class Player : public Object
 {
 public:
