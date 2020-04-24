@@ -1,8 +1,9 @@
 #include "Weapon.h"
 
 
-Weapon::Weapon() : currentPosition({ 0,0,0 }), currentDirection({ 0,0,0 })
+Weapon::Weapon()
 {
+	this->direction = { 0,0,0 };
 }
 
 Weapon::~Weapon()
@@ -13,11 +14,15 @@ void Weapon::rangedAttack(float deltaTime)
 {
 	float xFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 0);
 	float zFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 2);
-	float dirX = DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 0);
-	float dirZ = DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 2);
+	float pitch = DirectX::XMVectorGetByIndex(direction, 1);
 
-	DirectX::XMVECTOR resultPos = { xFloat + dirX * deltaTime,0, zFloat + dirZ * deltaTime };
+	float xRot = DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 0);
+	float yRot = DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1);
+	float zRot = DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 2);
+
+	DirectX::XMVECTOR resultPos = { xFloat + std::sinf(pitch) * deltaTime,0, zFloat + (-std::cosf(pitch)) * deltaTime };
 	GetTransform().SetPosition(resultPos);
+	//GetTransform().SetRotation({ xRot + 000.3f,yRot + 000.1f,zRot + 000.3f });
 }
 
 void Weapon::meleeAttack(float deltaTime)

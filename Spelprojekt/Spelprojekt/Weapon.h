@@ -15,8 +15,7 @@ public:
 	void rangedAttack (float deltaTime);
 	void meleeAttack(float deltaTime);
 	void Update(const float& deltaTime) override;
-	DirectX::XMVECTOR currentPosition; // get and set later
-	DirectX::XMVECTOR currentDirection;// get and set later
+	DirectX::XMVECTOR direction;
 private:
 
 };
