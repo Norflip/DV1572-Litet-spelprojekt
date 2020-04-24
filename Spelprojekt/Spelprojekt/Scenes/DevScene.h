@@ -9,7 +9,7 @@
 #include "../CameraController.h"
 #include "../HeightMapGenerator.h"
 #include "../assimpHandler.h"
-
+#include "../Projectile.h"
 // new
 #include "../Timer.h"
 #include "../GUITextObject.h"

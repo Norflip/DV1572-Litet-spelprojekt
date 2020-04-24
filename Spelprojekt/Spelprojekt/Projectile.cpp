@@ -18,3 +18,8 @@ Projectile::~Projectile()
 
 }
 
+void Projectile::Update(const float& deltaTime)
+{
+	rangedAttack(deltaTime);
+}
+
