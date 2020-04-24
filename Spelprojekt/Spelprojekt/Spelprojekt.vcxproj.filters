@@ -84,13 +84,19 @@
     <ClCompile Include="GUIObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GUITextObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GUISpriteObject.cpp">
+    <ClCompile Include="GUISprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIActionbar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Weapon.cpp">
@@ -179,16 +185,22 @@
     <ClInclude Include="GUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUITextObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MathHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUISpriteObject.h">
+    <ClInclude Include="GUIActionbar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUISprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="assimpHandler.h">
