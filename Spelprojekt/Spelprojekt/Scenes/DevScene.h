@@ -10,9 +10,9 @@
 #include "../HeightMapGenerator.h"
 #include "../assimpHandler.h"
 #include "../Projectile.h"
-// new
 #include "../Timer.h"
 #include "../GUI.h"
+#include "../AABB.h"
 
 class DevScene : public Scene
 {
@@ -48,6 +48,7 @@ private:
 	GUIActionbar* actionbarLeft;
 
 	Player* player;
+	Object* coconutPickUp;
 	
 	TerrainGenerator test;
 	Timer gametimer;

@@ -6,7 +6,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 
 	// Create timer and set to textobject
 	gametimer.Start();
-	gametimerText = new GUIText(dx11, "Test", window.GetWidth() / 2.0f, 0);
+	gametimerText = new GUIText(dx11, "Timer", window.GetWidth() / 2.0f, 0);
 
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
@@ -101,6 +101,10 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	Object* coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	AddObject(coconut);
 
+	this->coconutPickUp = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
+	this->coconutPickUp->GetTransform().Translate(2, 3, 3);
+	AddObject(this->coconutPickUp);
+
 	// Testing animation
 	Object* animation = AssimpHandler::loadFbxObject("Models/animation.fbx", dx11, defaultShader);
 	AddObject(animation);
@@ -122,6 +126,11 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {
+	if (coconutPickUp->GetWorldBounds().Overlaps(player->GetWorldBounds()))
+	{
+		//RemoveObject(coconutPickUp);
+		Logger::Write(LOG_LEVEL::Info, "Inside nut");
+	}
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 
 	Input* input = window.GetInput();
