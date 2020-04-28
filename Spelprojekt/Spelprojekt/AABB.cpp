@@ -72,6 +72,16 @@ bool AABB::Overlaps(const AABB& other)
 	/*(otherMax.x >= minf.x && otherMax.x <= maxf.x || otherMin.x >= minf.x && otherMin.x <= maxf.x) &&
 		(otherMax.z >= minf.z && otherMax.z <= maxf.z || otherMin.z >= minf.z && otherMin.z <= maxf.z)*/
 
-	return (otherMax.x >= minf.x && otherMax.x <= maxf.x || otherMin.x >= minf.x && otherMin.x <= maxf.x) &&
-		(otherMax.z >= minf.z && otherMax.z <= maxf.z || otherMin.z >= minf.z && otherMin.z <= maxf.z);
+	
+	if (maxf.x < otherMin.x || minf.x > otherMax.x) return false; 
+	//if (maxf.y < otherMin.y || minf.y > otherMax.y) return false; 
+	if (maxf.z < otherMin.z || minf.z > otherMax.z) return false;
+
+	return true;
+
+	/*
+	return (minf.x < otherMax.x && )
+	*/
+	/*return (otherMax.x >= minf.x && otherMax.x <= maxf.x || otherMin.x >= minf.x && otherMin.x <= maxf.x) &&
+		(otherMax.z >= minf.z && otherMax.z <= maxf.z || otherMin.z >= minf.z && otherMin.z <= maxf.z);*/
 }
