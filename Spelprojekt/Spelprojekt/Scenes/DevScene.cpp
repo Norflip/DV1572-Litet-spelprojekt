@@ -23,7 +23,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	gui->AddGUIObject(healthbar);
 	gui->AddGUIObject(healthFrame);
 	gui->AddGUIObject(actionbarLeft);
-	
+
 	// Set GUI
 	renderer->SetGUI(gui);
 
@@ -50,15 +50,15 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 
-	Object* sphere = new Object(dev_monkey_mesh, new Material(defaultShader, dx11));
+	//Object* sphere = new Object(dev_monkey_mesh, new Material(defaultShader, dx11));
 	Texture* monkey_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	Texture* monkey_normal = Texture::CreateTexture("Textures/rocks_normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 
-	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
+	/*sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 
 	sphere->GetTransform().Translate(0, 3, 6);
-	AddObject(sphere);
+	AddObject(sphere);*/
 
 	// ------- TERRAIN
 	Material* test_material = new Material(defaultShader, dx11);
@@ -72,25 +72,28 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 
 	// ------ PLAYER
 	player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), controller, &test, gui, dx11);
-	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
-	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
-
 	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
 	AddObject(player);
 
+	//// Testing fbx
+	//Object* chair = AssimpHandler::loadFbxObject("Models/CuteChair.fbx", dx11, defaultShader);
+	//chair->GetTransform().Translate(15, 5, 10);
+	//AddObject(chair);
+
+	//Projectile* testProj = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
+	////testProj->GetTransform().Translate(0, 0, 0);
+	//AddObject(testProj);
 
 
-	// Testing fbx
-	Object* chair = AssimpHandler::loadFbxObject("Models/CuteChair.fbx", dx11, defaultShader);
-	chair->GetTransform().Translate(15, 5, 10);
-	AddObject(chair);
 
-	Projectile* testProj = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
-	//testProj->GetTransform().Translate(0, 0, 0);
-	AddObject(testProj);
+	Mesh* waterMesh = ShittyOBJLoader::Load("Models/Plane1.obj", dx11.GetDevice());
 
-	Object* glasse = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader);
+	Object* water = new Object(waterMesh, new Material(defaultShader, dx11));
+	AddObject(water);
+
+	/*Object* glasse = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader);
 	AddObject(glasse);
+
 	Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
 	wagon->GetTransform().Translate(5, 5, 30);
 	AddObject(wagon);
@@ -101,9 +104,9 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	Object* coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	AddObject(coconut);
 
-	// Testing animation
+	 Testing animation
 	Object* animation = AssimpHandler::loadFbxObject("Models/animation.fbx", dx11, defaultShader);
-	AddObject(animation);
+	AddObject(animation);*/
 }
 
 DevScene::~DevScene()
@@ -142,7 +145,7 @@ void DevScene::Update(const float& deltaTime)
 		{
 			i->Update(deltaTime);
 		}
-	}	
+	}
 
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object
@@ -151,6 +154,7 @@ void DevScene::Update(const float& deltaTime)
 
 	DirectX::XMMATRIX view = camera->GetView();
 	DirectX::XMMATRIX projection = camera->GetProjection();
+	int count = 0;
 
 	for (auto shader : sortedObjects)
 	{
@@ -161,11 +165,19 @@ void DevScene::Update(const float& deltaTime)
 			material.first->Bind(dx11.GetContext());
 
 			for (auto object : material.second)
-				object->Render(renderer, view, projection);
+			{
+				if (object->IsEnabled() && camera->IsBoundsInView(object->GetWorldBounds()))
+				{
+					object->Render(renderer, view, projection);
+					count++;
+				}
+			}
 
 			material.first->Unbind(dx11.GetContext());
 		}
 	}
+
+	Logger::Write("things drawn: " + std::to_string(count));
 
 	renderer->DisplayFrame(camera->GetTransform().GetPosition());
 }

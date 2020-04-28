@@ -17,7 +17,7 @@ void Object::SetMesh(Mesh* mesh)
 
 AABB Object::GetWorldBounds() const
 {
-	DirectX::XMVECTOR min, max, ch;
+	DirectX::XMVECTOR min, max, corner;
 	DirectX::XMMATRIX worldTransform = transform.GetWorldMatrix();
 
 	DirectX::XMVECTOR corners[8];
@@ -25,14 +25,14 @@ AABB Object::GetWorldBounds() const
 
 	for (size_t i = 0; i < 8; i++)
 	{
-		ch = DirectX::XMVector3Transform(corners[i], worldTransform);
+		corner = DirectX::XMVector3Transform(corners[i], worldTransform);
 
 		if (i == 0)
-			min = max = corners[i];
+			min = max = corner;
 		else
 		{
-			min = DirectX::XMVectorMin(min, ch);
-			max = DirectX::XMVectorMax(max, ch);
+			min = DirectX::XMVectorMin(min, corner);
+			max = DirectX::XMVectorMax(max, corner);
 		}
 	}
 
@@ -56,6 +56,5 @@ void Object::UpdateLocalBounds()
 
 void Object::Render(Renderer* renderer, DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
 {
-
 	renderer->DrawMesh(mesh, transform.GetWorldMatrix(), view, projection);
 }

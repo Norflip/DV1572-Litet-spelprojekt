@@ -21,7 +21,7 @@ void AABB::GetCorners(DirectX::XMVECTOR corners[]) const
 	DirectX::XMStoreFloat3(&minf, min);
 	DirectX::XMStoreFloat3(&maxf, max);
 
-	float DirectX, dy, dz;
+	float dx, dy, dz;
 	size_t i = 0;
 
 	for (size_t z = 0; z <= 1; z++)
@@ -30,11 +30,11 @@ void AABB::GetCorners(DirectX::XMVECTOR corners[]) const
 		{
 			for (size_t x = 0; x <= 1; x++)
 			{
-				DirectX = minf.x + (maxf.x - minf.x) * (float)x;
+				dx = minf.x + (maxf.x - minf.x) * (float)x;
 				dy = minf.y + (maxf.y - minf.y) * (float)y;
 				dz = minf.z + (maxf.z - minf.z) * (float)z;
 
-				corners[i] = { DirectX, dy, dz };
+				corners[i] = { dx, dy, dz };
 				i++;
 			}
 		}
@@ -48,7 +48,7 @@ bool AABB::ContainsPoint(const DirectX::XMVECTOR& v) const
 	DirectX::XMStoreFloat3(&minf, min);
 	DirectX::XMStoreFloat3(&maxf, max);
 
-	return p.x >= minf.x && p.x <= maxf.x && p.y >= minf.y && p.y <= maxf.x && p.z >= minf.z && p.z <= maxf.z;
+	return p.x >= minf.x && p.x <= maxf.x && p.y >= minf.y && p.y <= maxf.y && p.z >= minf.z && p.z <= maxf.z;
 }
 
 DirectX::XMVECTOR AABB::GetSize() const
