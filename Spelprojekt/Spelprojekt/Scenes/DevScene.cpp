@@ -2,7 +2,7 @@
 
 DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scene(renderer, dx11, window)
 {
-	//----- GUI SHIET
+	//----- GUI SHIET |  Set gui last |
 
 	// Create timer and set to textobject
 	gametimer.Start();
@@ -10,8 +10,8 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
-	healthbar = new GUISprite(dx11, "Sprites/Healthbar.png", 10.0f, 700.0f);
-	healthbar->HealthBar(100.0f, 50.0f);
+	/*healthbar = new GUISprite(dx11, "Sprites/Healthbar.png", 10.0f, 700.0f);
+	healthbar->HealthBar(100.0f, 50.0f);*/
 
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 700.0f);
 
@@ -20,12 +20,15 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 
 	// Add objects
 	gui->AddGUIObject(gametimerText);
-	gui->AddGUIObject(healthbar);
+	//gui->AddGUIObject(healthbar);
 	gui->AddGUIObject(healthFrame);
 	gui->AddGUIObject(actionbarLeft);
 	
 	// Set GUI
 	renderer->SetGUI(gui);
+
+	//--------------------------------
+
 
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
 	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::Follow);
@@ -94,6 +97,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 
 	Object* palm = AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader);
 	palm->GetTransform().Translate(5, 5, 30);
+	palm->GetTransform().Scale(0.5, 0.5, 0.5);	// new
 	AddObject(palm);
 }
 

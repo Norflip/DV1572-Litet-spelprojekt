@@ -44,7 +44,7 @@ private:
 
 	GUIText* gametimerText;
 	GUISprite* healthFrame;
-	GUISprite* healthbar;
+	//GUISprite* healthbar;	// Möjligtvis sätta in igen
 	GUIActionbar* actionbarLeft;
 
 	Player* player;

@@ -16,6 +16,10 @@ public:
 
 	void Update(const float& deltaTime) override;
 	void SetHeight(float height) { this->playerHeight = height; };
+	// New
+	void TakeDamage();
+	//
+
 private:
 
 	Input* input;
@@ -31,7 +35,6 @@ private:
 	int leftNut, rightNut;
 	GUI* gui;
 	SoundHandler* testSound;
-
 	GUIActionbar* coconutSprite;
 
 
@@ -41,5 +44,10 @@ private:
 
 	float shortestRoration(float currentDir, float nextDir);
 	float playerHeight = 3;
+
+	// New
+	GUISprite* healthbar;
+	float PlayerHealth;
+	//
 }; 
 
