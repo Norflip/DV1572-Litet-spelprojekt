@@ -88,30 +88,30 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	water->GetTransform().Translate({ 10, 8, 10 });
 	AddObject(water);
 
-	// Testing fbx
-	Object* chair = AssimpHandler::loadFbxObject("Models/CuteChair.fbx", dx11, defaultShader);
-	chair->GetTransform().Translate(15, 5, 10);
-	AddObject(chair);
+	//// Testing fbx
+	//Object* chair = AssimpHandler::loadFbxObject("Models/CuteChair.fbx", dx11, defaultShader);
+	//chair->GetTransform().Translate(15, 5, 10);
+	//AddObject(chair);
 
-	Projectile* testProj = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
-	//testProj->GetTransform().Translate(0, 0, 0);
-	AddObject(testProj);
+	//Projectile* testProj = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
+	////testProj->GetTransform().Translate(0, 0, 0);
+	//AddObject(testProj);
 
-	Object* glasse = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader);
-	AddObject(glasse);
-	Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
-	wagon->GetTransform().Translate(5, 5, 30);
-	AddObject(wagon);
+	//Object* glasse = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader);
+	//AddObject(glasse);
+	//Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
+	//wagon->GetTransform().Translate(5, 5, 30);
+	//AddObject(wagon);
 
-	Object* palm = AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader);
-	AddObject(palm);
+	//Object* palm = AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader);
+	//AddObject(palm);
 
-	Object* coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
-	AddObject(coconut);
+	//Object* coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
+	//AddObject(coconut);
 
-	// Testing animation
-	Object* animation = AssimpHandler::loadFbxObject("Models/animation.fbx", dx11, defaultShader);
-	AddObject(animation);
+	//// Testing animation
+	//Object* animation = AssimpHandler::loadFbxObject("Models/animation.fbx", dx11, defaultShader);
+	//AddObject(animation);
 }
 
 DevScene::~DevScene()
