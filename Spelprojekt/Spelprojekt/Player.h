@@ -17,8 +17,8 @@ public:
 
 	void Update(const float& deltaTime) override;
 	void SetHeight(float height) { this->playerHeight = height; };
-	void TakeDamage();
-	
+	void TakeDamage();	
+	void NutOnPlayer(Object* obj);
 
 private:
 
@@ -30,6 +30,7 @@ private:
 	void HandleInput();
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 	float ShortestRotation(float currentDir, float nextDir);
+	
 
 private:
 
@@ -46,7 +47,7 @@ private:
 	Projectile* rightWeapon;
 	Projectile* leftWeapon;
 
-
+	Projectile* testProj;
 	
 	float scaleXZ, scaleY;
 	int leftNut, rightNut;

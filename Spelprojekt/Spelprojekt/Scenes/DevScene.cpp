@@ -35,6 +35,7 @@ void DevScene::Load()
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 700.0f);
+	actionbarRight = new GUIActionbar(dx11, "Sprites/Actionbar.png", 400.0f, 700.0f);
 
 	//--------------------------------
 	// Create GUI for Devscene
@@ -44,6 +45,7 @@ void DevScene::Load()
 	gui->AddGUIObject(gametimerText);
 	gui->AddGUIObject(healthFrame);
 	gui->AddGUIObject(actionbarLeft);
+	gui->AddGUIObject(actionbarRight);
 
 	// Set GUI
 	renderer->SetGUI(gui);
@@ -88,7 +90,8 @@ void DevScene::Load()
 
 	
 	this->enemy = new Enemy(dev_monkey_mesh, new Material(defaultShader, dx11), &test, dx11);
-	this->enemy->GetTransform().Translate(5, 5, 3);
+	this->enemy->GetTransform().Translate(5, 12, 3);
+	this->enemy->GetTransform().Scale(0.3, 0.3, 0.3);
 	this->enemy->SetTarget(this->player);
 	AddObject(this->enemy);
 
@@ -100,6 +103,11 @@ void DevScene::Load()
 	Object* water = new Object(waterPlane, new Material(waterShader, dx11));
 	water->GetTransform().Translate({ 10, -10, 10 });
 	AddObject(water);
+
+		
+	this->coconutPickUp = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
+	coconutPickUp->GetTransform().Translate(10, 5, 15);
+	AddObject(coconutPickUp);
 
 	//// Testing fbx
 	//Object* chair = AssimpHandler::loadFbxObject("Models/CuteChair.fbx", dx11, defaultShader);
@@ -137,19 +145,26 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {
-	UpdateAddRemoveSceneQueues();
-	//if (coconutPickUp->GetWorldBounds().Overlaps(player->GetWorldBounds()))
+	Input* input = window.GetInput();
+	
+	player->NutOnPlayer(coconutPickUp);
+	//if (coconutPickUp->IsEnabled() && coconutPickUp->GetWorldBounds().Overlaps(player->GetWorldBounds()))
 	//{
-	//	//RemoveObject(coconutPickUp);
-	//	Logger::Write(LOG_LEVEL::Info, "Inside nut");
-	//}
-	//else {
-	//	Logger::Write(LOG_LEVEL::Info, "NOT Inside nut");
+	//	if (input->GetKeyDown('q') ) {
+	//		
+	//		//player->Update(deltaTime);
+	//		RemoveObject(coconutPickUp);
+	//	}
+	//		
+	//	Logger::Write(LOG_LEVEL::Info, "Inside dick nut");
+	////}
+	////else {
+	////	Logger::Write(LOG_LEVEL::Info, "NOT Inside nut");
 	//}
 
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 
-	Input* input = window.GetInput();
+	
 
 	if (input->GetKeyDown(DEBUG_CAMERA_KEY))
 	{
@@ -219,6 +234,7 @@ void DevScene::Update(const float& deltaTime)
 		// shader unbind can become relevant if we add more then vs and ps shaders
 	}
 
+	UpdateAddRemoveSceneQueues();
 	renderer->DisplayFrame(camera->GetTransform().GetPosition());
 }
 

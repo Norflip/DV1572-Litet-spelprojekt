@@ -47,6 +47,8 @@ private:
 	GUISprite* healthFrame;
 	//GUISprite* healthbar;	// M�jligtvis s�tta in igen
 	GUIActionbar* actionbarLeft;
+	GUIActionbar* actionbarRight;
+	Object* coconutPickUp;
 
 	Player* player;
 	Enemy* enemy;
