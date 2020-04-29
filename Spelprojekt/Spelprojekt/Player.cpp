@@ -1,7 +1,6 @@
 #include "Player.h"
-
-Player::Player(Mesh* mesh, Material* material, CameraController* controller, Terrain* terrain, GUI* gui, DX11Handler& dx11)
-	:controller(controller), terrain(terrain), Object(mesh,material)
+Player::Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain, GUI* gui, DX11Handler& dx11, Scene* scene)
+	:controller(controller), terrain(terrain), Object(mesh, material), dx11(dx11)
 {
 	Object* temp = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, material->GetShader());
 	SetMesh(temp->GetMesh());
@@ -17,7 +16,8 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	this->rightNut = 1;
 	this->testSound = new SoundHandler();
 	this->testSound->LoadSound("Explosive","SoundEffects/Explo1.wav");
-
+	this->scene = scene;
+	rightWeapon = new Projectile("Models/Coconut.fbx", terrain, dx11, this->GetMaterial()->GetShader(), DirectX::XMVECTOR({ 0,this->GetTransform().GetPosition().m128_f32[1],0 }), this->GetTransform().GetRotation());
 }
 
 Player::~Player()
@@ -92,6 +92,12 @@ void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 
 }
 
+void Player::initWeapons()
+{
+
+
+}
+
 float Player::shortestRoration(float currentDir, float nextDir)
 {
 		float returnValue = 0;
@@ -110,11 +116,24 @@ void Player::TriggerAttack()
 
 void Player::HandleInput()
 {
-	if (input->GetMouseButtonDown(0) && leftNut > 0)
+	if (input->GetMouseButtonDown(0)/* && leftNut > 0*/)
 	{
-		Logger::Write(LOG_LEVEL::Info, "Left click");
+
+
+		
+		Projectile* testProj = new Projectile (*rightWeapon);
+
+		testProj->GetTransform().SetPosition(GetTransform().GetPosition());
+		testProj->GetTransform().SetRotation(GetTransform().GetRotation());
+		//testProj->SetMesh(GetMesh());
+		//testProj->SetMaterial(GetMaterial());
+		testProj->direction = GetTransform().GetRotation();
+		scene->AddObject(testProj);
+
+
+		/*Logger::Write(LOG_LEVEL::Info, "Left click");
 		gui->RemoveGUIObject(coconutSprite);
-		leftNut--;
+		leftNut--;*/
 		//testSound->PlaySound("Explosive", 0.1f);
 	}
 

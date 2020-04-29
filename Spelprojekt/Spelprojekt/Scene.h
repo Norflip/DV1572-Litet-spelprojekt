@@ -1,7 +1,7 @@
 #pragma once
 #include "Renderer.h"
 #include "Input.h"
-#include "Player.h"
+#include "Object.h"
 
 class Scene
 {
