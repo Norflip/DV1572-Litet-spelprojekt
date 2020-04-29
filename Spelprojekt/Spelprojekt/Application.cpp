@@ -4,7 +4,7 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 {
 	this->window.Initialize(); // initializes the win32 window
 	this->dx11.Initialize(this->window); // creates swapchain, device, deviceContext
-	this->deferredRenderer = new Renderer(this->window.GetWidth(), this->window.GetHeight(), dx11);
+	this->deferredRenderer = new Renderer(this->window.GetWidth(), this->window.GetHeight(), timer, dx11);
 
 	// Opens the console
 	Logger::Open();

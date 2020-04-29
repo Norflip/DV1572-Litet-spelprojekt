@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-Renderer::Renderer(size_t width, size_t height, DX11Handler& dx11) : dx11(dx11), lights(nullptr)
+Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11) : dx11(dx11), timer(timer), lights(nullptr)
 {
 	this->gbufferRenderTarget = new RenderTarget(4, width, height, true);
 	this->gbufferRenderTarget->Initalize(dx11.GetDevice());
@@ -47,6 +47,13 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 	// update the world buffer content
 	cb_world.mvp = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMMatrixMultiply(world, view), projection));
 	cb_world.world = DirectX::XMMatrixTranspose(world);
+
+	float elapsed = static_cast<float>(timer.GetMilisecondsElapsed()) / 1000.0f;
+
+	cb_world.time = elapsed;
+
+	Logger::Write("toawd: " + std::to_string(elapsed));
+
 
 	dx11.GetContext()->UpdateSubresource(worldBuffer_ptr, 0, 0, &cb_world, 0, 0);
 	dx11.GetContext()->VSSetConstantBuffers(0, 1, &worldBuffer_ptr);

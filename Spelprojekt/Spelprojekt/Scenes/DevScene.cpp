@@ -32,12 +32,12 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	window.GetInput()->LockCursor(false);
 
 	Lights* lights = new Lights();
+	lights->SetSunDirection({ 1, -1, 0 });
+	lights->SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
+	lights->SetSunIntensity(0.6f);
+
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);
-
-	lights->SetSunDirection({ 1, -1, 0 });
-	lights->SetSunColor({ 1,0,0,1 });
-	lights->SetSunIntensity(0.3f);
 
 	renderer->SetLights(lights);
 
@@ -67,7 +67,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	test_material->GetMaterialData().hasNormalTexture = false;
 
 	Mesh* terrain = new Mesh();
-	test.generateFromHeightMap("Textures/heightmap.png", terrain, dx11.GetDevice());
+	test.generateFromHeightMap("Textures/map_displacement_map_small.png", terrain, dx11.GetDevice());
 	AddObject(new Object(terrain, test_material));
 
 	// ------ PLAYER
@@ -79,31 +79,39 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	AddObject(player);
 
 
+	Shader* waterShader = new Shader();
+	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
+	waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
 
-	// Testing fbx
-	Object* chair = AssimpHandler::loadFbxObject("Models/CuteChair.fbx", dx11, defaultShader);
-	chair->GetTransform().Translate(15, 5, 10);
-	AddObject(chair);
+	Mesh* waterPlane = ShittyOBJLoader::Load("Models/Plane1.obj", dx11.GetDevice());
+	Object* water = new Object(waterPlane, new Material(waterShader, dx11));
+	water->GetTransform().Translate({ 10, 8, 10 });
+	AddObject(water);
 
-	Projectile* testProj = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
-	//testProj->GetTransform().Translate(0, 0, 0);
-	AddObject(testProj);
+	//// Testing fbx
+	//Object* chair = AssimpHandler::loadFbxObject("Models/CuteChair.fbx", dx11, defaultShader);
+	//chair->GetTransform().Translate(15, 5, 10);
+	//AddObject(chair);
 
-	Object* glasse = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader);
-	AddObject(glasse);
-	Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
-	wagon->GetTransform().Translate(5, 5, 30);
-	AddObject(wagon);
+	//Projectile* testProj = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
+	////testProj->GetTransform().Translate(0, 0, 0);
+	//AddObject(testProj);
 
-	Object* palm = AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader);
-	AddObject(palm);
+	//Object* glasse = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader);
+	//AddObject(glasse);
+	//Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
+	//wagon->GetTransform().Translate(5, 5, 30);
+	//AddObject(wagon);
 
-	Object* coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
-	AddObject(coconut);
+	//Object* palm = AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader);
+	//AddObject(palm);
 
-	// Testing animation
-	Object* animation = AssimpHandler::loadFbxObject("Models/animation.fbx", dx11, defaultShader);
-	AddObject(animation);
+	//Object* coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
+	//AddObject(coconut);
+
+	//// Testing animation
+	//Object* animation = AssimpHandler::loadFbxObject("Models/animation.fbx", dx11, defaultShader);
+	//AddObject(animation);
 }
 
 DevScene::~DevScene()

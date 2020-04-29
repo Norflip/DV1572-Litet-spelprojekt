@@ -114,7 +114,7 @@ void Player::HandleInput()
 		Logger::Write(LOG_LEVEL::Info, "Left click");
 		gui->RemoveGUIObject(coconutSprite);
 		leftNut--;
-		testSound->PlaySound("Explosive", 0.1f);
+		//testSound->PlaySound("Explosive", 0.1f);
 	}
 
 	if (input->GetMouseButtonDown(1) && rightNut > 0)

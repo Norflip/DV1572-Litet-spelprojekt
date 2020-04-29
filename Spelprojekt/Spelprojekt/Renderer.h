@@ -17,9 +17,9 @@ constexpr float CLEAR_COLOR[3] = { 0.4f,0.4f,0.4f };
 class Renderer
 {
 public:
-	Renderer(size_t width, size_t height, DX11Handler&);
+	Renderer(size_t width, size_t height, Timer&, DX11Handler&);
 	virtual ~Renderer();
-	
+
 	void SetDeferredRenderTarget();
 	void SetRenderTarget(RenderTarget* renderTarget);
 
@@ -29,7 +29,7 @@ public:
 	Lights* GetLights() const { return this->lights; }
 	void SetLights(Lights* lights);
 
-	void SetGUI(GUI* gui) { this->gui = gui; }	
+	void SetGUI(GUI* gui) { this->gui = gui; }
 	void DisplayFrame(DirectX::XMVECTOR eye);
 
 private:
@@ -37,10 +37,12 @@ private:
 
 private:
 	DX11Handler& dx11;
+	Timer& timer;
+
 	Shader* lightpass;
 	Mesh* screenQuad;
 	Lights* lights;
-	
+
 	Material* meshMat;
 	GUI* gui;
 
