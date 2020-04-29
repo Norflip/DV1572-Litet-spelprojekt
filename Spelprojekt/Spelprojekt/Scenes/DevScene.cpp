@@ -15,6 +15,30 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 700.0f);
 
+
+
+	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
+	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::Follow);
+	window.GetInput()->LockCursor(false);
+
+	Lights& lights = renderer->GetLights();
+	lights.SetSunDirection({ 1, -1, 0 });
+	lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
+	lights.SetSunIntensity(0.6f);
+
+	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
+	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);
+
+}
+
+DevScene::~DevScene()
+{
+	delete controller;
+	delete camera;
+}
+
+void DevScene::Load()
+{	
 	// Create GUI for Devscene
 	GUI* gui = new GUI(dx11);
 
@@ -26,20 +50,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 
 	// Set GUI
 	renderer->SetGUI(gui);
-
-	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
-	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::Follow);
-	window.GetInput()->LockCursor(false);
-
-	Lights* lights = new Lights();
-	lights->SetSunDirection({ 1, -1, 0 });
-	lights->SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
-	lights->SetSunIntensity(0.6f);
-
-	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
-	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);
-
-	renderer->SetLights(lights);
 
 	// save the shaders somewhere, remember to clean it up
 	Shader* defaultShader = new Shader();
@@ -86,6 +96,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	Mesh* waterPlane = ShittyOBJLoader::Load("Models/Plane1.obj", dx11.GetDevice());
 	Object* water = new Object(waterPlane, new Material(waterShader, dx11));
 	water->GetTransform().Translate({ 10, 8, 10 });
+	
 	AddObject(water);
 
 	//// Testing fbx
@@ -114,18 +125,9 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	//AddObject(animation);
 }
 
-DevScene::~DevScene()
-{
-	delete controller;
-	delete camera;
-}
-
-void DevScene::Load()
-{
-}
-
 void DevScene::Unload()
 {
+	// @TODO
 }
 
 void DevScene::Update(const float& deltaTime)

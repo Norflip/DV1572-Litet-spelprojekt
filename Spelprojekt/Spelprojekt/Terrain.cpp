@@ -42,7 +42,7 @@ void Terrain::GenerateMesh(std::string texturePath, ID3D11Device* device)
 
 			vertList.push_back(vertex);
 
-			if (z < height-1 && x < width-1)
+			if (z < height - 1 && x < width - 1)
 			{
 				// triangle 1
 				indexList.push_back((amountOfIndecies + width));
@@ -65,8 +65,8 @@ void Terrain::GenerateMesh(std::string texturePath, ID3D11Device* device)
 	DirectX::XMVECTOR edge1 = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	DirectX::XMVECTOR edge2 = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	int NumFaces = (width - 1) * (height - 1) * 2;
-
 	float vecX, vecY, vecZ;
+
 	for (size_t i = 0; i < NumFaces; ++i)
 	{
 		vecX = vertList.at(indexList.at(i * 3)).position.x - vertList.at(indexList.at((i * 3) + 2)).position.x;

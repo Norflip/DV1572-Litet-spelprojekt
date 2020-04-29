@@ -24,13 +24,11 @@ public:
 	float GetVerticalScaling() { return this->verticalScaling; };
 
 	Mesh* GetMesh () { return this->mesh; };
-
 	float SampleHeight(float x, float z);
 
 private:
 	float verticalScaling = 11.f; // height of the vertecies
-	
-	int width;
-	int height;
+	int width, height;
 	Mesh* mesh;
+
 };

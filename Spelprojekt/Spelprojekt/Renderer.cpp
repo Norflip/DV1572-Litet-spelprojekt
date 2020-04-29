@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11) : dx11(dx11), timer(timer), lights(nullptr)
+Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11) : dx11(dx11), timer(timer), lights()
 {
 	this->gbufferRenderTarget = new RenderTarget(4, width, height, true);
 	this->gbufferRenderTarget->Initalize(dx11.GetDevice());
@@ -13,6 +13,8 @@ Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11)
 
 	screenQuad = MeshCreator::CreateScreenQuad(dx11.GetDevice());
 	worldBuffer_ptr = dx11.CreateBuffer<WorldData>(cb_world);
+
+	lights.Initialize(dx11);
 }
 
 Renderer::~Renderer() {}
@@ -30,7 +32,7 @@ void Renderer::SetRenderTarget(RenderTarget* renderTarget)
 	dx11.GetContext()->RSSetViewports(1, &currentRenderTarget->GetViewport());
 	dx11.GetContext()->OMSetRenderTargets(currentRenderTarget->BufferCount(), currentRenderTarget->GetRenderTargetViews(), currentRenderTarget->GetDepthStencil());
 
-	if(currentRenderTarget->GetDepthStencilState() != nullptr)
+	if (currentRenderTarget->GetDepthStencilState() != nullptr)
 		dx11.GetContext()->OMSetDepthStencilState(currentRenderTarget->GetDepthStencilState(), 0);
 }
 
@@ -47,13 +49,7 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 	// update the world buffer content
 	cb_world.mvp = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMMatrixMultiply(world, view), projection));
 	cb_world.world = DirectX::XMMatrixTranspose(world);
-
-	float elapsed = static_cast<float>(timer.GetMilisecondsElapsed()) / 1000.0f;
-
-	cb_world.time = elapsed;
-
-	//Logger::Write("toawd: " + std::to_string(elapsed));
-
+	cb_world.time = static_cast<float>(timer.GetMilisecondsElapsed()) / 1000.0f;
 
 	dx11.GetContext()->UpdateSubresource(worldBuffer_ptr, 0, 0, &cb_world, 0, 0);
 	dx11.GetContext()->VSSetConstantBuffers(0, 1, &worldBuffer_ptr);
@@ -61,22 +57,13 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 	DrawMesh(mesh);
 }
 
-void Renderer::SetLights(Lights* lights)
-{
-	this->lights = lights;
-	this->lights->Initialize(dx11);
-}
-
 void Renderer::DisplayFrame(DirectX::XMVECTOR eye)
 {
 	//Uppdate light constant buffer here
-	if (lights != nullptr)
-	{
-		DirectX::XMFLOAT3 eyePosition;
-		DirectX::XMStoreFloat3(&eyePosition, eye);
-		lights->UpdateConstantBuffer(eyePosition, dx11.GetContext());
-	}
-	
+	DirectX::XMFLOAT3 eyePosition;
+	DirectX::XMStoreFloat3(&eyePosition, eye);
+	lights.UpdateConstantBuffer(eyePosition, dx11.GetContext());
+
 	SetRenderTarget(backbufferRenderTarget);
 	ClearRenderTarget();
 
@@ -85,10 +72,10 @@ void Renderer::DisplayFrame(DirectX::XMVECTOR eye)
 
 	DrawMesh(screenQuad);
 
-	if(gui != nullptr)
+	if (gui != nullptr)
 		gui->DrawAll();
 
-	dx11.GetSwapChain()->Present(1, 0);	
+	dx11.GetSwapChain()->Present(1, 0);
 }
 
 void Renderer::DrawMesh(Mesh* mesh)

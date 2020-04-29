@@ -26,8 +26,7 @@ public:
 	void ClearRenderTarget();
 	void DrawMesh(Mesh*, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection);
 
-	Lights* GetLights() const { return this->lights; }
-	void SetLights(Lights* lights);
+	Lights& GetLights() { return this->lights; }
 
 	void SetGUI(GUI* gui) { this->gui = gui; }
 	void DisplayFrame(DirectX::XMVECTOR eye);
@@ -38,10 +37,10 @@ private:
 private:
 	DX11Handler& dx11;
 	Timer& timer;
+	Lights lights;
 
 	Shader* lightpass;
 	Mesh* screenQuad;
-	Lights* lights;
 
 	Material* meshMat;
 	GUI* gui;
