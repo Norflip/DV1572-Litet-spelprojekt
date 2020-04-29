@@ -168,15 +168,9 @@ void DevScene::Update(const float& deltaTime)
 
 	for (auto shaderKey : sortedObjects)
 	{
-<<<<<<< Updated upstream
-		for (auto matKey : shaderKey.second)
-		{
-			for (auto object : matKey.second)
-=======
-		for (auto materialKey : shader.second)
+		for (auto materialKey : shaderKey.second)
 		{
 			for (auto object : materialKey.second)
->>>>>>> Stashed changes
 			{
 				if (object->IsEnabled() && camera->IsBoundsInView(object->GetWorldBounds()))
 				{
