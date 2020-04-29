@@ -8,25 +8,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	gametimer.Start();
 	gametimerText = new GUIText(dx11, "Test", window.GetWidth() / 2.0f, 0);
 
-	// HEALTH
-	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
-	/*healthbar = new GUISprite(dx11, "Sprites/Healthbar.png", 10.0f, 700.0f);
-	healthbar->HealthBar(100.0f, 50.0f);*/
-
-	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 700.0f);
-
-
-	// Add objects
-	gui->AddGUIObject(gametimerText);
-	//gui->AddGUIObject(healthbar);
-	gui->AddGUIObject(healthFrame);
-	gui->AddGUIObject(actionbarLeft);
-	
-	// Set GUI
-	renderer->SetGUI(gui);
-
-	//--------------------------------
-
 
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
 	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::Follow);
@@ -50,12 +31,17 @@ DevScene::~DevScene()
 
 void DevScene::Load()
 {	
+
+	// HEALTH
+	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
+	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 700.0f);
+
+	//--------------------------------
 	// Create GUI for Devscene
 	GUI* gui = new GUI(dx11);
 
 	// Add objects
 	gui->AddGUIObject(gametimerText);
-	gui->AddGUIObject(healthbar);
 	gui->AddGUIObject(healthFrame);
 	gui->AddGUIObject(actionbarLeft);
 

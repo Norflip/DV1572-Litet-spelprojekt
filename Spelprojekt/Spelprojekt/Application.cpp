@@ -12,7 +12,7 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 
 	// default scene.. devScene at the moment. Different sceness for the actual game, main menu, game over(?) etc 
 	this->currentScene = new DevScene(this->deferredRenderer, this->dx11, this->window);
-
+	this->currentScene->Load();
 }
 
 Application::~Application()
