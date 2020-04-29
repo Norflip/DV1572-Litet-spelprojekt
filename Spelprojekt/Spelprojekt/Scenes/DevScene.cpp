@@ -102,6 +102,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	AddObject(palm);
 
 	Object* coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
+	coconut->GetTransform().Translate(10, 5, 15);
 	AddObject(coconut);
 
 	// Testing animation
@@ -125,6 +126,15 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {
+	if (coconutPickUp->GetWorldBounds().Overlaps(player->GetWorldBounds()))
+	{
+		//RemoveObject(coconutPickUp);
+		Logger::Write(LOG_LEVEL::Info, "Inside nut");
+	}
+	else {
+		Logger::Write(LOG_LEVEL::Info, "NOT Inside nut");
+	}
+
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 
 	Input* input = window.GetInput();
