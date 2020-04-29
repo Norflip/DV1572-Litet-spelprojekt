@@ -37,8 +37,6 @@ void Player::Update(const float& deltaTime)
 
 void Player::UpdateMovement(float fixedDeltaTime)
 {
-	
-
 	DirectX::XMFLOAT3 nextPosition;
 	DirectX::XMStoreFloat3(&nextPosition, GetTransform().GetPosition());
 	currentPosition = nextPosition;

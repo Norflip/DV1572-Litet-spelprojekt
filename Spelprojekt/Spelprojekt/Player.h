@@ -35,8 +35,14 @@ private:
 	float movementspeed;
 	
 	Terrain* terrain;
-	Weapon* rightWeapon;
-	Weapon* leftWeapon;
+
+	/*Weapon* rightWeapon;
+	Weapon* leftWeapon;*/
+
+	Projectile* rightWeapon;
+	Projectile* leftWeapon;
+
+
 	
 	float scaleXZ, scaleY;
 	int leftNut, rightNut;
@@ -46,9 +52,6 @@ private:
 	Scene* scene;
 	GUIActionbar* coconutSprite;
 	
-	Projectile* rightWeapon;
-	Projectile* leftWeapon;
-
 	DirectX::XMFLOAT3 currentPosition;
 	float nextDir = 0;
 	
