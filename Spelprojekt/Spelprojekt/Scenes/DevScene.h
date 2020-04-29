@@ -3,13 +3,13 @@
 #include "../Logger.h"
 #include "../Camera.h"
 #include <vector>
-#include "../Object.h"
 #include "../ShittyOBJLoader.h"
 #include "../Input.h"
 #include "../CameraController.h"
 #include "../HeightMapGenerator.h"
 #include "../assimpHandler.h"
 #include "../Projectile.h"
+#include "../Player.h"
 // new
 #include "../Timer.h"
 #include "../GUI.h"
