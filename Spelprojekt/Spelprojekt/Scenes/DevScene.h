@@ -37,7 +37,6 @@ public:
 private:
 
 	float testFloat = 0.f;
-
 	Camera* camera;
 	
 	CameraController* controller;

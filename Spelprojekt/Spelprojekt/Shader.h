@@ -21,6 +21,8 @@ public:
 	Shader();
 	virtual ~Shader();
 
+	size_t GetID() const { return this->id; }
+
 	void LoadPixelShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device);
 	ID3D11PixelShader* GetPixelShader() const { return this->pixelShader; }
 	
@@ -34,9 +36,11 @@ private:
 	void PrintShaderError(ID3DBlob* errorBlob);
 
 private:
-
+	size_t id;
 	DWORD flags;
 	ID3D11PixelShader* pixelShader;
 	ID3D11VertexShader* vertexShader;
 	ID3D11InputLayout* inputLayout;
 };
+
+static size_t shader_id_counter = 0;

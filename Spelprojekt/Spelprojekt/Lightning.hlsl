@@ -20,8 +20,3 @@ float4 CalculatePointLight(PointLight light, float3 normal, float3 position, flo
 
 	return (ambient+diffuse + specular);
 }
-
-float4 CalculatePhongLightning()
-{
-
-}

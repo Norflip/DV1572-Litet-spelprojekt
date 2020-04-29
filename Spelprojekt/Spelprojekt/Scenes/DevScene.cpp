@@ -32,12 +32,12 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	window.GetInput()->LockCursor(false);
 
 	Lights* lights = new Lights();
+	lights->SetSunDirection({ 1, -1, 0 });
+	lights->SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
+	lights->SetSunIntensity(0.6f);
+
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);
-
-	lights->SetSunDirection({ 1, -1, 0 });
-	lights->SetSunColor({ 1,0,0,1 });
-	lights->SetSunIntensity(0.3f);
 
 	renderer->SetLights(lights);
 
@@ -67,7 +67,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	test_material->GetMaterialData().hasNormalTexture = false;
 
 	Mesh* terrain = new Mesh();
-	test.generateFromHeightMap("Textures/heightmap.png", terrain, dx11.GetDevice());
+	test.generateFromHeightMap("Textures/map_displacement_map_small.png", terrain, dx11.GetDevice());
 	AddObject(new Object(terrain, test_material));
 
 	// ------ PLAYER
@@ -79,6 +79,14 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	AddObject(player);
 
 
+	Shader* waterShader = new Shader();
+	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
+	waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
+
+	Mesh* waterPlane = ShittyOBJLoader::Load("Models/Plane1.obj", dx11.GetDevice());
+	Object* water = new Object(waterPlane, new Material(waterShader, dx11));
+	water->GetTransform().Translate({ 10, 8, 10 });
+	AddObject(water);
 
 	// Testing fbx
 	Object* chair = AssimpHandler::loadFbxObject("Models/CuteChair.fbx", dx11, defaultShader);
@@ -122,6 +130,7 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {
+	UpdateAddRemoveSceneQueues();
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 
 	Input* input = window.GetInput();
@@ -129,10 +138,10 @@ void DevScene::Update(const float& deltaTime)
 	if (input->GetKeyDown(DEBUG_CAMERA_KEY))
 	{
 		input->LockCursor(!input->IsCursorLocked());
+
 		bool following = controller->GetState() == CameraController::State::Follow;
 		controller->SetState(following ? CameraController::State::Free : CameraController::State::Follow);
 	}
-
 
 	controller->Update(deltaTime);
 
@@ -144,6 +153,7 @@ void DevScene::Update(const float& deltaTime)
 		}
 	}
 
+
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object
 	renderer->SetDeferredRenderTarget();
@@ -152,24 +162,47 @@ void DevScene::Update(const float& deltaTime)
 	DirectX::XMMATRIX view = camera->GetView();
 	DirectX::XMMATRIX projection = camera->GetProjection();
 
+	size_t lastShaderID = -1;
+	size_t lastMaterialID = -1;
+	Material* currentMaterial = nullptr;
+
 	for (auto shader : sortedObjects)
 	{
-		shader.first->Bind(dx11.GetContext());
-
 		for (auto material : shader.second)
 		{
-			material.first->Bind(dx11.GetContext());
-
 			for (auto object : material.second)
 			{
 				if (object->IsEnabled() && camera->IsBoundsInView(object->GetWorldBounds()))
 				{
+					Material* material = object->GetMaterial();
+					size_t shaderID = material->GetShader()->GetID();
+
+					if (lastShaderID != shaderID)
+					{
+						material->GetShader()->Bind(dx11.GetContext());
+						lastShaderID = shaderID;
+					}
+
+					if (lastMaterialID != material->GetID())
+					{
+						if (currentMaterial != nullptr)
+							currentMaterial->Unbind(dx11.GetContext());
+						
+						currentMaterial = material;
+
+						material->Bind(dx11.GetContext());
+						lastMaterialID = material->GetID();
+					}
+
 					object->Render(renderer, view, projection);
-				}
+
+				}					
 			}
 
-			material.first->Unbind(dx11.GetContext());
+			//material.first->Unbind(dx11.GetContext());
 		}
+
+		// shader unbind can become relevant if we add more then vs and ps shaders
 	}
 
 	renderer->DisplayFrame(camera->GetTransform().GetPosition());

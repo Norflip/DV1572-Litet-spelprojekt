@@ -7,6 +7,8 @@ struct WorldData
 {
 	DirectX::XMMATRIX mvp;
 	DirectX::XMMATRIX world;
+	float time;
+	float pad[3];
 };
 
 __declspec(align(16))
