@@ -1,10 +1,13 @@
 #include "Player.h"
-Player::Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain, GUI* gui, DX11Handler& dx11, Scene* scene)
+Player::Player(Mesh* mesh, Material* material, CameraController* controller, Terrain* terrain, GUI* gui, DX11Handler& dx11, Scene* scene)
 	:controller(controller), terrain(terrain), Object(mesh, material), dx11(dx11)
 {
+	
+	
 	Object* temp = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, material->GetShader());
 	SetMesh(temp->GetMesh());
 	SetMaterial(temp->GetMaterial());
+
 	this->movementspeed = 3;
 	this->input = controller->getInput();
 	this->currentPosition = { 0,0,0 };
@@ -92,13 +95,13 @@ void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 
 }
 
-void Player::initWeapons()
+void Player::InitWeapons()
 {
 
 
 }
 
-float Player::shortestRoration(float currentDir, float nextDir)
+float Player::ShortestRotation(float currentDir, float nextDir)
 {
 		float returnValue = 0;
 		if (abs(nextDir - currentDir) < MathHelper::PI)

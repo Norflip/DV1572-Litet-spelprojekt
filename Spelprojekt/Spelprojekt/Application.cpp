@@ -10,7 +10,6 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 	Logger::Open();
 	Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
 
-
 	// default scene.. devScene at the moment. Different sceness for the actual game, main menu, game over(?) etc 
 	this->currentScene = new DevScene(this->deferredRenderer, this->dx11, this->window);
 
