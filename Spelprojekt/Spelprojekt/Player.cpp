@@ -21,6 +21,14 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	this->testSound->LoadSound("Explosive","SoundEffects/Explo1.wav");
 	this->scene = scene;
 	rightWeapon = new Projectile("Models/Coconut.fbx", terrain, dx11, this->GetMaterial()->GetShader(), DirectX::XMVECTOR({ 0,this->GetTransform().GetPosition().m128_f32[1],0 }), this->GetTransform().GetRotation());
+
+	// new
+	this->PlayerHealth = 100.0f;
+	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 700.0f);
+	this->healthbar->HealthBar(100.0f, 100.0f);
+	this->gui->AddGUIObject(this->healthbar);
+	//
+
 }
 
 Player::~Player()
@@ -33,7 +41,21 @@ void Player::Update(const float& deltaTime)
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
 	HandleInput();
+
+	//New
+	TakeDamage();
+	//
 }
+
+//New
+void Player::TakeDamage()
+{
+	if (input->GetMouseButtonDown(1) && PlayerHealth != 0.0f) {
+		this->PlayerHealth -= 10.0f;
+		healthbar->HealthBar(100.0f, this->PlayerHealth);
+	}
+}
+//
 
 void Player::UpdateMovement(float fixedDeltaTime)
 {

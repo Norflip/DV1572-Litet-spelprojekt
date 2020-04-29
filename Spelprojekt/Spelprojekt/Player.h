@@ -17,6 +17,10 @@ public:
 
 	void Update(const float& deltaTime) override;
 	void SetHeight(float height) { this->playerHeight = height; };
+	void TakeDamage();
+	
+
+private:
 
 private:
 	void InitWeapons();
@@ -57,5 +61,10 @@ private:
 	
 	std::vector<Weapon*> weapons;
 	float playerHeight = 3;
+
+	// New
+	GUISprite* healthbar;
+	float PlayerHealth;
+	//
 }; 
 

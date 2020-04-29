@@ -36,6 +36,11 @@ public:
 	void Translate(float x, float y, float z);
 	void Translate(DirectX::XMVECTOR translation);
 
+	// new
+	void Scale(float x, float y, float z);
+	void Scale(DirectX::XMVECTOR scale);
+
+
 	void SmoothRotate(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime, bool changeDir);
 private:
 	DirectX::XMVECTOR position;

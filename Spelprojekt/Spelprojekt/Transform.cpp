@@ -20,7 +20,7 @@ DirectX::XMVECTOR Transform::TransformDirection(DirectX::XMVECTOR dir) const
 DirectX::XMMATRIX Transform::GetWorldMatrix() const
 {
 	// apply rotation and scaling aswell
-	return (DirectX::XMMatrixMultiply(DirectX::XMMatrixRotationRollPitchYawFromVector(this->rotation), DirectX::XMMatrixTranslationFromVector(this->position)));
+	return (DirectX::XMMatrixMultiply(DirectX::XMMatrixScalingFromVector(this->scale), DirectX::XMMatrixRotationRollPitchYawFromVector(this->rotation) * DirectX::XMMatrixTranslationFromVector(this->position)));
 }
 
 void Transform::Rotate(float pitch, float yaw, float roll)
@@ -54,6 +54,20 @@ void Transform::Translate(DirectX::XMVECTOR translation)
 {
 	this->position = DirectX::XMVectorAdd(this->position, translation);
 }
+
+
+//New
+void Transform::Scale(float x, float y, float z)
+{
+	Scale({ x,y,z });
+}
+
+void Transform::Scale(DirectX::XMVECTOR scale)
+{
+	this->scale = DirectX::XMVectorMultiply(this->scale, scale);
+}
+//
+
 
 void Transform::SmoothRotate(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime, bool changeDir)
 {

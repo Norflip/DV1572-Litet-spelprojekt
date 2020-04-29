@@ -2,7 +2,7 @@
 
 DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scene(renderer, dx11, window)
 {
-	//----- GUI SHIET
+	//----- GUI SHIET |  Set gui last |
 
 	// Create timer and set to textobject
 	gametimer.Start();
@@ -10,11 +10,22 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
-	healthbar = new GUISprite(dx11, "Sprites/Healthbar.png", 10.0f, 700.0f);
-	healthbar->HealthBar(100.0f, 50.0f);
+	/*healthbar = new GUISprite(dx11, "Sprites/Healthbar.png", 10.0f, 700.0f);
+	healthbar->HealthBar(100.0f, 50.0f);*/
 
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 700.0f);
 
+
+	// Add objects
+	gui->AddGUIObject(gametimerText);
+	//gui->AddGUIObject(healthbar);
+	gui->AddGUIObject(healthFrame);
+	gui->AddGUIObject(actionbarLeft);
+	
+	// Set GUI
+	renderer->SetGUI(gui);
+
+	//--------------------------------
 
 
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
@@ -106,7 +117,7 @@ void DevScene::Load()
 	//Projectile* testProj = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
 	////testProj->GetTransform().Translate(0, 0, 0);
 	//AddObject(testProj);
-
+	
 	//Object* glasse = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader);
 	//AddObject(glasse);
 	//Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
@@ -114,6 +125,8 @@ void DevScene::Load()
 	//AddObject(wagon);
 
 	//Object* palm = AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader);
+		//palm->GetTransform().Translate(5, 5, 30);
+	//palm->GetTransform().Scale(0.5, 0.5, 0.5);	// new
 	//AddObject(palm);
 
 	//Object* coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
