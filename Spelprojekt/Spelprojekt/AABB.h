@@ -19,6 +19,8 @@ public:
 	DirectX::XMVECTOR GetSize() const;
 	DirectX::XMVECTOR GetCenter() const;
 
+	bool Overlaps(const AABB& other);
+
 private:
 	DirectX::XMVECTOR min;
 	DirectX::XMVECTOR max;

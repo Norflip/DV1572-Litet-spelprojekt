@@ -13,6 +13,8 @@
 // new
 #include "../Timer.h"
 #include "../GUI.h"
+#include "../AABB.h"
+#include "../Enemy.h"
 
 class DevScene : public Scene
 {
@@ -43,10 +45,11 @@ private:
 
 	GUIText* gametimerText;
 	GUISprite* healthFrame;
-	//GUISprite* healthbar;	// Möjligtvis sätta in igen
+	//GUISprite* healthbar;	// Mï¿½jligtvis sï¿½tta in igen
 	GUIActionbar* actionbarLeft;
 
 	Player* player;
+	Enemy* enemy;
 	
 	Terrain test;
 	Timer gametimer;

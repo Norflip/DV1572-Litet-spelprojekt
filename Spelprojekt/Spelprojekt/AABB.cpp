@@ -60,3 +60,20 @@ DirectX::XMVECTOR AABB::GetCenter() const
 {
 	return DirectX::XMVectorAdd(min, DirectX::XMVectorScale(DirectX::XMVectorSubtract(max, min), 0.5f));
 }
+
+bool AABB::Overlaps(const AABB& other)
+{
+	DirectX::XMFLOAT3 minf, maxf, otherMin, otherMax;
+	DirectX::XMStoreFloat3(&minf, GetMin());
+	DirectX::XMStoreFloat3(&maxf, GetMax());
+	DirectX::XMStoreFloat3(&otherMin, other.GetMin());
+	DirectX::XMStoreFloat3(&otherMax, other.GetMax());
+	if (maxf.x <= otherMin.x || minf.x >= otherMax.x)
+		return false;
+	if (maxf.y <= otherMin.y || minf.y >= otherMax.y)
+		return false;
+	if (maxf.z <= otherMin.z || minf.z >= otherMax.z)
+		return false;
+
+	return true;
+}
