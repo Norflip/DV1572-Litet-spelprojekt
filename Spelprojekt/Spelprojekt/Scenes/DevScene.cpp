@@ -23,7 +23,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	gui->AddGUIObject(healthbar);
 	gui->AddGUIObject(healthFrame);
 	gui->AddGUIObject(actionbarLeft);
-	
+
 	// Set GUI
 	renderer->SetGUI(gui);
 
@@ -130,6 +130,7 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {
+	UpdateAddRemoveSceneQueues();
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 
 	Input* input = window.GetInput();
@@ -137,10 +138,10 @@ void DevScene::Update(const float& deltaTime)
 	if (input->GetKeyDown(DEBUG_CAMERA_KEY))
 	{
 		input->LockCursor(!input->IsCursorLocked());
+
 		bool following = controller->GetState() == CameraController::State::Follow;
 		controller->SetState(following ? CameraController::State::Free : CameraController::State::Follow);
 	}
-
 
 	controller->Update(deltaTime);
 
@@ -150,7 +151,8 @@ void DevScene::Update(const float& deltaTime)
 		{
 			i->Update(deltaTime);
 		}
-	}	
+	}
+
 
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object
@@ -160,19 +162,47 @@ void DevScene::Update(const float& deltaTime)
 	DirectX::XMMATRIX view = camera->GetView();
 	DirectX::XMMATRIX projection = camera->GetProjection();
 
+	size_t lastShaderID = -1;
+	size_t lastMaterialID = -1;
+	Material* currentMaterial = nullptr;
+
 	for (auto shader : sortedObjects)
 	{
-		shader.first->Bind(dx11.GetContext());
-
 		for (auto material : shader.second)
 		{
-			material.first->Bind(dx11.GetContext());
-
 			for (auto object : material.second)
-				object->Render(renderer, view, projection);
+			{
+				if (object->IsEnabled() && camera->IsBoundsInView(object->GetWorldBounds()))
+				{
+					Material* material = object->GetMaterial();
+					size_t shaderID = material->GetShader()->GetID();
 
-			material.first->Unbind(dx11.GetContext());
+					if (lastShaderID != shaderID)
+					{
+						material->GetShader()->Bind(dx11.GetContext());
+						lastShaderID = shaderID;
+					}
+
+					if (lastMaterialID != material->GetID())
+					{
+						if (currentMaterial != nullptr)
+							currentMaterial->Unbind(dx11.GetContext());
+						
+						currentMaterial = material;
+
+						material->Bind(dx11.GetContext());
+						lastMaterialID = material->GetID();
+					}
+
+					object->Render(renderer, view, projection);
+
+				}					
+			}
+
+			//material.first->Unbind(dx11.GetContext());
 		}
+
+		// shader unbind can become relevant if we add more then vs and ps shaders
 	}
 
 	renderer->DisplayFrame(camera->GetTransform().GetPosition());

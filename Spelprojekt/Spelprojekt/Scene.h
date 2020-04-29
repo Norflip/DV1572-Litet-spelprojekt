@@ -16,16 +16,25 @@ public:
 	virtual void FixedUpdate(const float& fixedDeltaTime) = 0;
 	virtual Scene* GetNextScene() const = 0;
 
-protected:
 	void AddObject(Object*);
 	void RemoveObject(Object*);
+
+protected:
+	void m_AddObjectToScene(Object*);
+	void m_RemoveObjectFromScene(Object*);
+
 	void SortObject(Object*);
+	void UpdateAddRemoveSceneQueues();
 
 protected:
 	Renderer* renderer;
 	Window& window;
 	DX11Handler& dx11;
 
+	std::vector<Object*> objectsToAdd;
+	std::vector<Object*> objectsToRemove;
+
+	// shader holds a map with diffrent material and a list of objects
+	std::unordered_map <size_t, std::unordered_map<size_t, std::vector<Object*>>> sortedObjects;
 	std::vector<Object*> allObjects;
-	std::unordered_map <Shader*, std::unordered_map<Material*, std::vector<Object*>>> sortedObjects;
 };

@@ -52,7 +52,7 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 
 	cb_world.time = elapsed;
 
-	Logger::Write("toawd: " + std::to_string(elapsed));
+	//Logger::Write("toawd: " + std::to_string(elapsed));
 
 
 	dx11.GetContext()->UpdateSubresource(worldBuffer_ptr, 0, 0, &cb_world, 0, 0);

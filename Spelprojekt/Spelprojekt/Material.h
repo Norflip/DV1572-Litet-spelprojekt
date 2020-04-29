@@ -22,6 +22,8 @@ public:
 	Material(Shader* shader, DX11Handler& dx11);
 	virtual ~Material();
 
+	size_t GetID() const { return this->id; }
+
 	void SetMaterialData(MaterialData materialData) { this->materialData = materialData; }
 	MaterialData& GetMaterialData() { return this->materialData; }
 
@@ -33,10 +35,13 @@ public:
 	void Unbind(ID3D11DeviceContext*);
 
 private:
-	Shader* shader;
 
+	size_t id;
+	Shader* shader;
 	ID3D11Buffer* buffer;
 	MaterialData materialData;
 
 	std::unordered_map<size_t, std::pair<Texture*, PIXEL_TYPE>> textureMap;
 };
+
+static size_t material_id_counter = 0;
