@@ -7,6 +7,7 @@
 #include "GUI.h"
 #include "SoundHandler.h"
 #include "Projectile.h"
+#include <vector>
 class Player : public Object
 {
 public:
@@ -36,9 +37,9 @@ private:
 	DirectX::XMFLOAT3 currentPosition;
 	float nextDir = 0;
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
-
+	void initWeapons();
+	std::vector<Weapon*> weapons;
 	float shortestRoration(float currentDir, float nextDir);
 	float playerHeight = 3;
-
 }; 
 

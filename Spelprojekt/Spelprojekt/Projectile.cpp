@@ -12,6 +12,18 @@ Projectile::Projectile(const char* name, TerrainGenerator* terrain, DX11Handler&
 	this->direction = rotation; // makes us shoot in the direction of the object initial rotation
 }
 
+Projectile::Projectile(const Projectile& other)
+{
+
+	GetTransform().SetPosition(other.GetTransform().GetPosition());
+	GetTransform().SetRotation(other.GetTransform().GetRotation());
+	this->SetMesh(other.GetMesh());
+	this->SetMaterial(other.GetMaterial());
+	this->direction = other.direction;
+
+
+}
+
 
 
 

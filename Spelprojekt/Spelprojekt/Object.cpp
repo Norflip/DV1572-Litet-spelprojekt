@@ -6,7 +6,7 @@ Object::Object(Mesh* mesh, Material* material) : mesh(mesh), material(material),
 }
 
 Object::Object() : Object(nullptr, nullptr) {}
-Object::Object(const Object& other) : Object(other.mesh, other.material) {}
+Object::Object(const Object& other) : Object(other.mesh, other.material) { this->enabled = other.enabled; }
 Object::~Object() {}
 
 void Object::SetMesh(Mesh* mesh)

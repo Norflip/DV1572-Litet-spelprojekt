@@ -19,8 +19,8 @@ public:
 	virtual ~Transform();
 
 	void SetPosition(DirectX::XMVECTOR position) { this->position = position; }
-	DirectX::XMVECTOR GetPosition() { return this->position; }
-	DirectX::XMVECTOR GetRotation() { return this->rotation; }
+	DirectX::XMVECTOR GetPosition()const  { return this->position; }
+	DirectX::XMVECTOR GetRotation()const { return this->rotation; }
 
 	DirectX::XMVECTOR TransformDirection(DirectX::XMVECTOR dir) const;
 	DirectX::XMMATRIX GetWorldMatrix() const;

@@ -17,7 +17,7 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	this->testSound = new SoundHandler();
 	this->testSound->LoadSound("Explosive","SoundEffects/Explo1.wav");
 	this->scene = scene;
-
+	rightWeapon = new Projectile("Models/Coconut.fbx", terrain, dx11, this->GetMaterial()->GetShader(), DirectX::XMVECTOR({ 0,this->GetTransform().GetPosition().m128_f32[1],0 }), this->GetTransform().GetRotation());
 }
 
 Player::~Player()
@@ -92,6 +92,12 @@ void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 
 }
 
+void Player::initWeapons()
+{
+
+
+}
+
 float Player::shortestRoration(float currentDir, float nextDir)
 {
 		float returnValue = 0;
@@ -112,9 +118,16 @@ void Player::HandleInput()
 {
 	if (input->GetMouseButtonDown(0)/* && leftNut > 0*/)
 	{
-		Projectile* testProj = new Projectile("Models/Coconut.fbx", terrain, dx11, this->GetMaterial()->GetShader(), DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
-		testProj->GetTransform().Translate(0, 0, 0);
 
+
+		
+		Projectile* testProj = new Projectile (*rightWeapon);
+
+		testProj->GetTransform().SetPosition(GetTransform().GetPosition());
+		testProj->GetTransform().SetRotation(GetTransform().GetRotation());
+		//testProj->SetMesh(GetMesh());
+		//testProj->SetMaterial(GetMaterial());
+		testProj->direction = GetTransform().GetRotation();
 		scene->AddObject(testProj);
 
 
