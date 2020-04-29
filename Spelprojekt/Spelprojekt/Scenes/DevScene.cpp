@@ -166,11 +166,11 @@ void DevScene::Update(const float& deltaTime)
 	size_t lastMaterialID = -1;
 	Material* currentMaterial = nullptr;
 
-	for (auto shader : sortedObjects)
+	for (auto shaderKey : sortedObjects)
 	{
-		for (auto material : shader.second)
+		for (auto matKey : shaderKey.second)
 		{
-			for (auto object : material.second)
+			for (auto object : matKey.second)
 			{
 				if (object->IsEnabled() && camera->IsBoundsInView(object->GetWorldBounds()))
 				{
@@ -189,13 +189,11 @@ void DevScene::Update(const float& deltaTime)
 							currentMaterial->Unbind(dx11.GetContext());
 						
 						currentMaterial = material;
-
 						material->Bind(dx11.GetContext());
 						lastMaterialID = material->GetID();
 					}
 
 					object->Render(renderer, view, projection);
-
 				}					
 			}
 
