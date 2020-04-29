@@ -149,20 +149,23 @@ void Player::HandleInput()
 {
 	if (input->GetMouseButtonDown(0) && leftNut > 0)
 	{
-		testProj = new Projectile(*rightWeapon);
 
-		testProj->GetTransform().SetPosition(GetTransform().GetPosition());
-		testProj->GetTransform().SetRotation(GetTransform().GetRotation());
-		//testProj->SetMesh(GetMesh());
-		//testProj->SetMaterial(GetMaterial());
-		testProj->direction = GetTransform().GetRotation();
-		scene->AddObject(testProj);
-		gui->RemoveGUIObject(coconutSprite);
-		leftNut--;
-		/*Logger::Write(LOG_LEVEL::Info, "Left click");
-		gui->RemoveGUIObject(coconutSprite);
-		leftNut--;*/
-		testSound->PlaySound("Explosive", 0.1f);
+	
+			testProj = new Projectile(*rightWeapon);
+
+			testProj->GetTransform().SetPosition(GetTransform().GetPosition());
+			testProj->GetTransform().SetRotation(GetTransform().GetRotation());
+			//testProj->SetMesh(GetMesh());
+			//testProj->SetMaterial(GetMaterial());
+			testProj->direction = GetTransform().GetRotation();
+			scene->AddObject(testProj);
+			gui->RemoveGUIObject(coconutSprite);
+			leftNut--;
+			/*Logger::Write(LOG_LEVEL::Info, "Left click");
+			gui->RemoveGUIObject(coconutSprite);
+			leftNut--;*/
+			testSound->PlaySound("Explosive", 0.1f);
+
 	}
 	//
 	//if(input->GetKeyDown('q') && leftNut == 0)

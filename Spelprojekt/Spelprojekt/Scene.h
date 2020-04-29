@@ -16,6 +16,11 @@ public:
 	virtual void FixedUpdate(const float& fixedDeltaTime) = 0;
 	virtual Scene* GetNextScene() const = 0;
 
+
+	//--FPS STUFF
+
+
+
 	void AddObject(Object*);
 	void RemoveObject(Object*);
 

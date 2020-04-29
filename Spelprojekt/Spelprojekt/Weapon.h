@@ -17,6 +17,6 @@ public:
 	void Update(const float& deltaTime) override;
 	DirectX::XMVECTOR direction;
 private:
-
+	DirectX::XMVECTOR nextPos;
 };
 

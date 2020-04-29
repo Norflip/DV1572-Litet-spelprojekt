@@ -7,7 +7,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	// Create timer and set to textobject
 	gametimer.Start();
 	gametimerText = new GUIText(dx11, "Timer", window.GetWidth() / 2.0f, 0);
-
+	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f, 30);
 
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
 	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::Follow);
@@ -43,6 +43,7 @@ void DevScene::Load()
 
 	// Add objects
 	gui->AddGUIObject(gametimerText);
+	gui->AddGUIObject(fpsText);
 	gui->AddGUIObject(healthFrame);
 	gui->AddGUIObject(actionbarLeft);
 	gui->AddGUIObject(actionbarRight);
@@ -145,6 +146,9 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {
+	//FPS STUFF
+	fpsTimer.Start();
+
 	Input* input = window.GetInput();
 	
 	player->NutOnPlayer(coconutPickUp);
@@ -236,6 +240,10 @@ void DevScene::Update(const float& deltaTime)
 
 	UpdateAddRemoveSceneQueues();
 	renderer->DisplayFrame(camera->GetTransform().GetPosition());
+
+	fpsTimer.Stop();
+	fpsText->SetString("FPS: " + std::to_string( (int)(1/((fpsTimer.GetMicrosecondsElapsed()/1000000)))));
+	fpsTimer.Restart();
 }
 
 void DevScene::FixedUpdate(const float& fixedDeltaTime)

@@ -44,6 +44,7 @@ private:
 	CameraController* controller;
 
 	GUIText* gametimerText;
+	GUIText* fpsText;
 	GUISprite* healthFrame;
 	//GUISprite* healthbar;	// M�jligtvis s�tta in igen
 	GUIActionbar* actionbarLeft;
@@ -55,4 +56,5 @@ private:
 	
 	Terrain test;
 	Timer gametimer;
+	Timer fpsTimer;
 };
