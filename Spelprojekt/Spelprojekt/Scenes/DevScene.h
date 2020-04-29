@@ -13,6 +13,7 @@
 #include "../Timer.h"
 #include "../GUI.h"
 #include "../AABB.h"
+#include "../Enemy.h"
 
 class DevScene : public Scene
 {
@@ -48,7 +49,7 @@ private:
 	GUIActionbar* actionbarLeft;
 
 	Player* player;
-	Object* coconutPickUp;
+	Enemy* enemy;
 	
 	TerrainGenerator test;
 	Timer gametimer;

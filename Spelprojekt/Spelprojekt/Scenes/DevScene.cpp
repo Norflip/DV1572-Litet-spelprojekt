@@ -71,14 +71,17 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	AddObject(new Object(terrain, test_material));
 
 	// ------ PLAYER
-	player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), controller, &test, gui, dx11);
+	this->player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), controller, &test, gui, dx11);
 	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 
-	controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
+	this->controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
 	AddObject(player);
 
-
+	this->enemy = new Enemy(dev_monkey_mesh, new Material(defaultShader, dx11), &test, dx11);
+	this->enemy->GetTransform().Translate(5, 5, 3);
+	this->enemy->SetTarget(this->player);
+	AddObject(this->enemy);
 
 	// Testing fbx
 	Object* chair = AssimpHandler::loadFbxObject("Models/CuteChair.fbx", dx11, defaultShader);
@@ -101,10 +104,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	Object* coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	AddObject(coconut);
 
-	this->coconutPickUp = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
-	this->coconutPickUp->GetTransform().Translate(2, 3, 3);
-	AddObject(this->coconutPickUp);
-
 	// Testing animation
 	Object* animation = AssimpHandler::loadFbxObject("Models/animation.fbx", dx11, defaultShader);
 	AddObject(animation);
@@ -126,11 +125,6 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {
-	if (coconutPickUp->GetWorldBounds().Overlaps(player->GetWorldBounds()))
-	{
-		//RemoveObject(coconutPickUp);
-		Logger::Write(LOG_LEVEL::Info, "Inside nut");
-	}
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 
 	Input* input = window.GetInput();

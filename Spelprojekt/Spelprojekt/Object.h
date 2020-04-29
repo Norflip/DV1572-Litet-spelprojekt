@@ -16,7 +16,6 @@ public:
 	virtual ~Object();
 
 	Transform& GetTransform() { return this->transform; }
-
 	void SetMaterial(Material* material) { this->material = material; }
 	Material* GetMaterial() const { return this->material; }
 

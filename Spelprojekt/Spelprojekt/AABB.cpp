@@ -68,10 +68,12 @@ bool AABB::Overlaps(const AABB& other)
 	DirectX::XMStoreFloat3(&maxf, GetMax());
 	DirectX::XMStoreFloat3(&otherMin, other.GetMin());
 	DirectX::XMStoreFloat3(&otherMax, other.GetMax());
+	if (maxf.x <= otherMin.x || minf.x >= otherMax.x)
+		return false;
+	if (maxf.y <= otherMin.y || minf.y >= otherMax.y)
+		return false;
+	if (maxf.z <= otherMin.z || minf.z >= otherMax.z)
+		return false;
 
-	/*(otherMax.x >= minf.x && otherMax.x <= maxf.x || otherMin.x >= minf.x && otherMin.x <= maxf.x) &&
-		(otherMax.z >= minf.z && otherMax.z <= maxf.z || otherMin.z >= minf.z && otherMin.z <= maxf.z)*/
-
-	return (otherMax.x >= minf.x && otherMax.x <= maxf.x || otherMin.x >= minf.x && otherMin.x <= maxf.x) &&
-		(otherMax.z >= minf.z && otherMax.z <= maxf.z || otherMin.z >= minf.z && otherMin.z <= maxf.z);
+	return true;
 }
