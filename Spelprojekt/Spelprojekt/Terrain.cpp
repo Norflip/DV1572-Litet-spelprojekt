@@ -107,8 +107,8 @@ float Terrain::SampleHeight(float x, float z)
 	float howFarX = position.x - (int)(position.x / XZScale);
 	float howFarZ = position.z - (int)(position.z / XZScale);
 
-	size_t col = (size_t)floorf(position.x);
-	size_t row = (size_t)floorf(position.z);
+	int col = (int)floorf(position.x);
+	int row = (int)floorf(position.z);
 
 	//quick exit if we are out of the heightmap		//
 	if (row < 0 || col < 0)

@@ -1,6 +1,6 @@
 #include "Enemy.h"
 
-Enemy::Enemy(Mesh* mesh, Material* material, TerrainGenerator* terrain, DX11Handler& dx11)
+Enemy::Enemy(Mesh* mesh, Material* material, Terrain* terrain, DX11Handler& dx11)
 	: terrain(terrain), Object(mesh, material)
 {
 	Object* temp = AssimpHandler::loadFbxObject("Models/IcecreamEnemy.fbx", dx11, material->GetShader());
@@ -56,5 +56,5 @@ void Enemy::UpdateHeight(float fixedDeltaTime)
 	float xFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 0);
 	float zFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 2);
 
-	GetTransform().SetPosition({ xFloat,(terrain->getHeight(xFloat, zFloat) + enemyHeight), zFloat });
+	GetTransform().SetPosition({ xFloat,(terrain->SampleHeight(xFloat, zFloat) + enemyHeight), zFloat });
 }

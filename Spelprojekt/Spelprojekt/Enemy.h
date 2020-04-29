@@ -1,13 +1,14 @@
 #pragma once
 #include "Scene.h"
-#include "HeightMapGenerator.h"
+#include "Terrain.h"
 #include "assimpHandler.h"
 #include "SoundHandler.h"
+#include "Player.h"
 
 class Enemy : public Object
 {
 	public: 
-		Enemy(Mesh * mesh, Material * material, TerrainGenerator * terrain, DX11Handler&);
+		Enemy(Mesh * mesh, Material * material, Terrain* terrain, DX11Handler&);
 		~Enemy();
 
 		void Update(const float& deltaTime) override;
@@ -17,7 +18,7 @@ class Enemy : public Object
 		float movementspeed;
 		void UpdateHeight(float fixedDeltaTime);
 		void UpdateMovement(float fixedDeltaTime);
-		TerrainGenerator* terrain;
+		Terrain* terrain;
 		float scaleY;
 		float scaleXZ;
 		Player* player;

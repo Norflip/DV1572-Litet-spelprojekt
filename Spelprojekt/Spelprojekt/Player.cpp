@@ -20,7 +20,7 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	this->testSound = new SoundHandler();
 	this->testSound->LoadSound("Explosive","SoundEffects/Explo1.wav");
 	this->scene = scene;
-	rightWeapon = new Projectile("Models/Coconut.fbx", terrain, dx11, this->GetMaterial()->GetShader(), DirectX::XMVECTOR({ 0,this->GetTransform().GetPosition().m128_f32[1],0 }), this->GetTransform().GetRotation());
+	rightWeapon = new Projectile("Models/Coconut.fbx", terrain, dx11, this->GetMaterial()->GetShader(), DirectX::XMVECTOR({ 0,this->currentPosition.y,0 }), this->GetTransform().GetRotation());
 
 	// new
 	this->PlayerHealth = 100.0f;
