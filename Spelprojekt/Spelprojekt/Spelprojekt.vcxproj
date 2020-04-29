@@ -166,7 +166,7 @@
     <ClCompile Include="DX11Handler.cpp" />
     <ClCompile Include="GUIActionbar.cpp" />
     <ClCompile Include="GUISprite.cpp" />
-    <ClCompile Include="HeightMapGenerator.cpp" />
+    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="GUIObject.cpp" />
     <ClCompile Include="GUIText.cpp" />
@@ -206,7 +206,7 @@
     <ClInclude Include="DX11Handler.h" />
     <ClInclude Include="GUIActionbar.h" />
     <ClInclude Include="GUISprite.h" />
-    <ClInclude Include="HeightMapGenerator.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIObject.h" />
     <ClInclude Include="GUIText.h" />

@@ -1,7 +1,7 @@
 #pragma once
 #include "assimpHandler.h"
 #include "DX11Handler.h"
-#include "HeightMapGenerator.h"
+#include "Terrain.h"
 #include "Object.h"
 
 

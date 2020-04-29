@@ -2,7 +2,7 @@
 #include "Weapon.h"
 #include "Scene.h"
 #include "Input.h"
-#include "HeightMapGenerator.h"
+#include "Terrain.h"
 #include "CameraController.h"
 #include "assimpHandler.h"
 #include "GUI.h"
@@ -11,7 +11,7 @@
 class Player : public Object
 {
 public:
-	Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain, GUI* gui, DX11Handler&);
+	Player(Mesh* mesh, Material* material, CameraController* controller, Terrain* terrain, GUI* gui, DX11Handler&);
 	~Player();
 
 	void Update(const float& deltaTime) override;
@@ -25,7 +25,7 @@ private:
 	void UpdateHeight(float FixedDeltaTime);
 	void TriggerAttack();
 	void HandleInput();
-	TerrainGenerator* terrain;
+	Terrain* terrain;
 	Weapon* rightWeapon;
 	Weapon* leftWeapon;
 	float scaleY;

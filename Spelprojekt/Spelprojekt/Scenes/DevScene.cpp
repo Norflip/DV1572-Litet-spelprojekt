@@ -66,9 +66,9 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	test_material->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
 	test_material->GetMaterialData().hasNormalTexture = false;
 
-	Mesh* terrain = new Mesh();
-	test.generateFromHeightMap("Textures/map_displacement_map_small.png", terrain, dx11.GetDevice());
-	AddObject(new Object(terrain, test_material));
+	test.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice());
+	AddObject(new Object(test.GetMesh(), test_material));
+
 
 	// ------ PLAYER
 	player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), controller, &test, gui, dx11);
@@ -168,9 +168,15 @@ void DevScene::Update(const float& deltaTime)
 
 	for (auto shaderKey : sortedObjects)
 	{
+<<<<<<< Updated upstream
 		for (auto matKey : shaderKey.second)
 		{
 			for (auto object : matKey.second)
+=======
+		for (auto materialKey : shader.second)
+		{
+			for (auto object : materialKey.second)
+>>>>>>> Stashed changes
 			{
 				if (object->IsEnabled() && camera->IsBoundsInView(object->GetWorldBounds()))
 				{

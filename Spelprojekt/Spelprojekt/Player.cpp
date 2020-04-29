@@ -1,5 +1,6 @@
 #include "Player.h"
-Player::Player(Mesh* mesh, Material* material, CameraController* controller, TerrainGenerator* terrain, GUI* gui, DX11Handler& dx11)
+
+Player::Player(Mesh* mesh, Material* material, CameraController* controller, Terrain* terrain, GUI* gui, DX11Handler& dx11)
 	:controller(controller), terrain(terrain), Object(mesh,material)
 {
 	Object* temp = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, material->GetShader());
@@ -64,7 +65,7 @@ void Player::UpdateHeight(float FixedDeltaTime)
 	float xFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 0);
 	float zFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 2);
 
-	GetTransform().SetPosition({ xFloat,(terrain->getHeight(xFloat, zFloat) + playerHeight), zFloat});
+	GetTransform().SetPosition({ xFloat,(terrain->SampleHeight(xFloat, zFloat) + playerHeight), zFloat});
 
 
 }

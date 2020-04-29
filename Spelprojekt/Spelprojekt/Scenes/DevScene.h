@@ -7,7 +7,7 @@
 #include "../ShittyOBJLoader.h"
 #include "../Input.h"
 #include "../CameraController.h"
-#include "../HeightMapGenerator.h"
+#include "../Terrain.h"
 #include "../assimpHandler.h"
 #include "../Projectile.h"
 // new
@@ -48,6 +48,6 @@ private:
 
 	Player* player;
 	
-	TerrainGenerator test;
+	Terrain test;
 	Timer gametimer;
 };

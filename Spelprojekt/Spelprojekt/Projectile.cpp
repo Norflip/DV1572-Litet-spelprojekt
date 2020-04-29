@@ -1,7 +1,7 @@
 #include "Projectile.h"
 
 
-Projectile::Projectile(const char* name, TerrainGenerator* terrain, DX11Handler& dx11, Shader* defaultShader, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation)
+Projectile::Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, Shader* defaultShader, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation)
 {	
 	GetTransform().SetPosition(position);
 	GetTransform().SetRotation(rotation);
