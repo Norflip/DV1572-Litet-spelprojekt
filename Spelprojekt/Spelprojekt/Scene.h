@@ -23,6 +23,7 @@ public:
 	std::string getName() { return this->sceneName; };
 	void AddObject(Object*);
 	void RemoveObject(Object*);
+	Scene* nextScene;
 
 protected:
 	void m_AddObjectToScene(Object*);
@@ -43,6 +44,7 @@ protected:
 	std::unordered_map <size_t, std::unordered_map<size_t, std::vector<Object*>>> sortedObjects;
 	std::vector<Object*> allObjects;
 	std::string sceneName;
+
 private:
 	
 };

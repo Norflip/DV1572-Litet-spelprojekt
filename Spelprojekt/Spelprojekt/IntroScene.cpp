@@ -6,6 +6,7 @@ IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, st
 {
 	sceneName = "IntroScene";
 	this->scenes = scenes;
+
 }
 
 IntroScene::~IntroScene()
@@ -23,10 +24,8 @@ void IntroScene::Unload()
 
 void IntroScene::Update(const float& deltaTime)
 {
-	if (input->GetKeyDown('h'))
-	{
 
-	}
+	checkForNextScene();
 }
 
 void IntroScene::FixedUpdate(const float& fixedDeltaTime)
@@ -36,5 +35,19 @@ void IntroScene::FixedUpdate(const float& fixedDeltaTime)
 
 Scene* IntroScene::GetNextScene() const
 {
-	return nullptr;
+	return nextScene;
+}
+
+void IntroScene::checkForNextScene()
+{
+
+	// Change scene logic
+	if (input->GetKeyDown('h'))
+	{
+		for (int i = 0; i < scenes.size(); i++)
+		{
+			if (scenes[i]->getName() == "DevScene")
+				nextScene = scenes[i];
+		}
+	}
 }

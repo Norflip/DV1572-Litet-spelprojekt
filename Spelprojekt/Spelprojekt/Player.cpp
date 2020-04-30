@@ -147,6 +147,7 @@ void Player::TriggerAttack()
 
 void Player::HandleInput()
 {
+
 	if (input->GetMouseButtonDown(0) && leftNut > 0)
 	{
 

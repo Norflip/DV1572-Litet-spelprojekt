@@ -21,5 +21,6 @@ public:
 private:
 	Input* input;
 	std::vector<Scene*> scenes;
+	void checkForNextScene();
 };
 
