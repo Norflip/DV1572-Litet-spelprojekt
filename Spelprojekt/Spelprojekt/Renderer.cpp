@@ -6,7 +6,7 @@ Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11)
 	this->gbufferRenderTarget->Initalize(dx11.GetDevice());
 
 	this->backbufferRenderTarget = dx11.GetBackbuffer();
-
+	this->gui = nullptr;
 	this->lightpass = new Shader();
 	this->lightpass->LoadPixelShader(L"Shaders/DeferredLightPass_ps.hlsl", "main", dx11.GetDevice());
 	this->lightpass->LoadVertexShader(L"Shaders/DeferredLightPass_vs.hlsl", "main", dx11.GetDevice());

@@ -15,7 +15,7 @@
 #include "../GUI.h"
 #include "../AABB.h"
 #include "../Enemy.h"
-
+//#include <string>
 class DevScene : public Scene
 {
 	const char DEBUG_CAMERA_KEY = 'f';
@@ -34,10 +34,9 @@ public:
 	// update time function?
 
 	Scene* GetNextScene() const override;
-
+	std::string getName() { return this->sceneName; };
 
 private:
-
 	float testFloat = 0.f;
 	Camera* camera;
 	

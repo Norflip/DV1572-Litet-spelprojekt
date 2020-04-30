@@ -20,9 +20,10 @@ public:
 	//--FPS STUFF
 
 
-
+	std::string getName() { return this->sceneName; };
 	void AddObject(Object*);
 	void RemoveObject(Object*);
+	Scene* nextScene;
 
 protected:
 	void m_AddObjectToScene(Object*);
@@ -42,4 +43,8 @@ protected:
 	// shader holds a map with diffrent material and a list of objects
 	std::unordered_map <size_t, std::unordered_map<size_t, std::vector<Object*>>> sortedObjects;
 	std::vector<Object*> allObjects;
+	std::string sceneName;
+
+private:
+	
 };

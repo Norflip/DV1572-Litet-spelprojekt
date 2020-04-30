@@ -2,6 +2,7 @@
 
 DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scene(renderer, dx11, window)
 {
+	this->sceneName = "DevScene";
 	//----- GUI SHIET |  Set gui last |
 
 	// Create timer and set to textobject
