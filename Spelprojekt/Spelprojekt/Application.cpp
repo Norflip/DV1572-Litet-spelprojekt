@@ -11,8 +11,17 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 	Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
 
 	// default scene.. devScene at the moment. Different sceness for the actual game, main menu, game over(?) etc 
-	this->currentScene = new DevScene(this->deferredRenderer, this->dx11, this->window);
-	this->currentScene->Load();
+	
+	this->gameOverScene = new DevScene(this->deferredRenderer, this->dx11, this->window );
+	scenes.push_back(gameOverScene);
+	this->introScene = new IntroScene(this->deferredRenderer, this->dx11, this->window, scenes);
+	scenes.push_back(introScene);
+	this->gameScene = new DevScene(this->deferredRenderer, this->dx11, this->window);
+	scenes.push_back(gameScene);
+	introScene->Load();
+
+	currentScene = introScene;
+
 }
 
 Application::~Application()
@@ -61,7 +70,9 @@ void Application::Run()
 					fixedTimeAccumulation -= TARGET_FIXED_DELTA;
 				}
 
+
 				Scene* next = currentScene->GetNextScene();
+
 				if (next != nullptr)
 				{
 					currentScene->Unload();

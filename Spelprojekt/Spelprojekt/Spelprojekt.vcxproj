@@ -167,6 +167,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GUIActionbar.cpp" />
     <ClCompile Include="GUISprite.cpp" />
+    <ClCompile Include="IntroScene.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="GUIObject.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="assimpHandler.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="IntroScene.h" />
     <ClInclude Include="SoundHandler.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraController.h" />
