@@ -150,8 +150,6 @@ void Player::HandleInput()
 
 	if (input->GetMouseButtonDown(0) && leftNut > 0)
 	{
-
-	
 			testProj = new Projectile(*rightWeapon);
 
 			testProj->GetTransform().SetPosition(GetTransform().GetPosition());

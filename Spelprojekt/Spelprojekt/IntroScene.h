@@ -1,5 +1,9 @@
 #pragma once
 #include "Scene.h"
+#include "ShittyOBJLoader.h"
+#include "Camera.h"
+#include "CameraController.h"
+#include "assimpHandler.h"
 class IntroScene : public Scene
 {
 	const char DEBUG_CAMERA_KEY = 'f';
@@ -17,7 +21,10 @@ public:
 	// update time function?
 
 	Scene* GetNextScene() const override;
+	Camera* camera;
 
+	CameraController* controller;
+	GUISprite* healthFrame;
 private:
 	Input* input;
 	std::vector<Scene*> scenes;
