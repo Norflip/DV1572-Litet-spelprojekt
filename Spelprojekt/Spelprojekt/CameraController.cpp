@@ -16,6 +16,14 @@ void CameraController::SetFollow(Transform* target, DirectX::XMVECTOR offset)
 
 void CameraController::Update(const float& deltaTime)
 {
+	if (input->GetKeyDown(DEBUG_CAMERA_KEY))
+	{
+		input->LockCursor(!input->IsCursorLocked());
+		bool following = GetState() == CameraController::State::Follow;
+		SetState(following ? CameraController::State::Free : CameraController::State::Follow);
+	}
+
+
 	switch (currentState)
 	{
 	case CameraController::State::Follow:

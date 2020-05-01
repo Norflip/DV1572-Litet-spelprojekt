@@ -1,8 +1,7 @@
 #include "DevScene.h"
 
-DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scene(renderer, dx11, window)
+DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scene("DevScene", renderer, dx11, window)
 {
-	this->sceneName = "DevScene";
 	//----- GUI SHIET |  Set gui last |
 
 	// Create timer and set to textobject
@@ -10,8 +9,8 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	gametimerText = new GUIText(dx11, "Timer", window.GetWidth() / 2.0f, 0);
 	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f, 30);
 
-	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
-	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::Follow);
+
+	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
 	window.GetInput()->LockCursor(false);
 
 	Lights& lights = renderer->GetLights();
@@ -27,7 +26,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 DevScene::~DevScene()
 {
 	delete controller;
-	delete camera;
 }
 
 void DevScene::Load()
@@ -147,12 +145,13 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {
+
+	Scene::Update(deltaTime);
+
 	//FPS STUFF
 	fpsTimer.Start();
-
-	Input* input = window.GetInput();
-	
 	player->NutOnPlayer(coconutPickUp);
+
 	//if (coconutPickUp->IsEnabled() && coconutPickUp->GetWorldBounds().Overlaps(player->GetWorldBounds()))
 	//{
 	//	if (input->GetKeyDown('q') ) {
@@ -168,91 +167,11 @@ void DevScene::Update(const float& deltaTime)
 	//}
 
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
-
-	
-
-	if (input->GetKeyDown(DEBUG_CAMERA_KEY))
-	{
-		input->LockCursor(!input->IsCursorLocked());
-
-		bool following = controller->GetState() == CameraController::State::Follow;
-		controller->SetState(following ? CameraController::State::Free : CameraController::State::Follow);
-	}
-
 	controller->Update(deltaTime);
-
-	for (auto i : allObjects)
-	{
-		if (i->IsEnabled())
-		{
-			i->Update(deltaTime);
-		}
-	}
-
-
-	// itererats through the objects and passes the renderer to the object.
-	// sorts the objects based on shader -> material properties -> object
-	renderer->SetDeferredRenderTarget();
-	renderer->ClearRenderTarget();
-
-	DirectX::XMMATRIX view = camera->GetView();
-	DirectX::XMMATRIX projection = camera->GetProjection();
-
-	size_t lastShaderID = -1;
-	size_t lastMaterialID = -1;
-	Material* currentMaterial = nullptr;
-
-	for (auto shaderKey : sortedObjects)
-	{
-		for (auto materialKey : shaderKey.second)
-		{
-			for (auto object : materialKey.second)
-			{
-				if (object->IsEnabled() && camera->IsBoundsInView(object->GetWorldBounds()))
-				{
-					Material* material = object->GetMaterial();
-					size_t shaderID = material->GetShader()->GetID();
-
-					if (lastShaderID != shaderID)
-					{
-						material->GetShader()->Bind(dx11.GetContext());
-						lastShaderID = shaderID;
-					}
-
-					if (lastMaterialID != material->GetID())
-					{
-						if (currentMaterial != nullptr)
-							currentMaterial->Unbind(dx11.GetContext());
-						
-						currentMaterial = material;
-						material->Bind(dx11.GetContext());
-						lastMaterialID = material->GetID();
-					}
-
-					object->Render(renderer, view, projection);
-				}					
-			}
-
-			//material.first->Unbind(dx11.GetContext());
-		}
-
-		// shader unbind can become relevant if we add more then vs and ps shaders
-	}
-
-	UpdateAddRemoveSceneQueues();
-	renderer->DisplayFrame(camera->GetTransform().GetPosition());
-
+	
 	fpsTimer.Stop();
 	fpsText->SetString("FPS: " + std::to_string( (int)(1/((fpsTimer.GetMicrosecondsElapsed()/1000000)))));
 	fpsTimer.Restart();
-}
-
-void DevScene::FixedUpdate(const float& fixedDeltaTime)
-{
-	for (auto i : allObjects)
-	{
-		i->FixedUpdate(fixedDeltaTime);
-	}
 }
 
 Scene* DevScene::GetNextScene() const

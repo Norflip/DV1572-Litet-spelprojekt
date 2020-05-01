@@ -29,17 +29,11 @@ public:
 	void Unload() override;
 
 	void Update(const float& deltaTime) override;
-	void FixedUpdate(const float& fixedDeltaTime) override;
 		
 	// update time function?
-
 	Scene* GetNextScene() const override;
-	std::string getName() { return this->sceneName; };
 
 private:
-	float testFloat = 0.f;
-	Camera* camera;
-	
 	CameraController* controller;
 
 	GUIText* gametimerText;
@@ -48,6 +42,7 @@ private:
 	//GUISprite* healthbar;	// M�jligtvis s�tta in igen
 	GUIActionbar* actionbarLeft;
 	GUIActionbar* actionbarRight;
+
 	Object* coconutPickUp;
 
 	Player* player;

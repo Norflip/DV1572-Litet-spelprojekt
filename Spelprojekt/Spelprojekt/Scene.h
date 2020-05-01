@@ -2,27 +2,32 @@
 #include "Renderer.h"
 #include "Input.h"
 #include "Object.h"
+#include "Camera.h"
 
 class Scene
 {
 public:
-	Scene(Renderer* renderer, DX11Handler& dx11, Window& window);
+	Scene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window);
 	virtual ~Scene();
 
 	virtual void Load() = 0;
 	virtual void Unload() = 0;
 
-	virtual void Update(const float& deltaTime) = 0;
-	virtual void FixedUpdate(const float& fixedDeltaTime) = 0;
+	virtual void Update(const float& deltaTime);
+	virtual void FixedUpdate(const float& fixedDeltaTime);
+	virtual void Render();
+
 	virtual Scene* GetNextScene() const = 0;
 
+	Camera* GetSceneCamera() const { return this->camera; }
 
 	//--FPS STUFF
 
+	std::string GetName() { return this->sceneName; };
 
-	std::string getName() { return this->sceneName; };
 	void AddObject(Object*);
 	void RemoveObject(Object*);
+
 	Scene* nextScene;
 
 protected:
@@ -33,6 +38,7 @@ protected:
 	void UpdateAddRemoveSceneQueues();
 
 protected:
+	Camera* camera;
 	Renderer* renderer;
 	Window& window;
 	DX11Handler& dx11;
@@ -44,7 +50,5 @@ protected:
 	std::unordered_map <size_t, std::unordered_map<size_t, std::vector<Object*>>> sortedObjects;
 	std::vector<Object*> allObjects;
 	std::string sceneName;
-
-private:
 	
 };

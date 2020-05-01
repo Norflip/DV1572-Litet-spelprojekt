@@ -5,6 +5,8 @@
 
 class CameraController
 {
+	const char DEBUG_CAMERA_KEY = 'f';
+
 public:
 
 	enum class State

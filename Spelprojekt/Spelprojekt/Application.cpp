@@ -21,7 +21,6 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 	introScene->Load();
 
 	currentScene = introScene;
-
 }
 
 Application::~Application()
@@ -63,6 +62,7 @@ void Application::Run()
 			{
 				fixedTimeAccumulation += deltaTime;
 				currentScene->Update(deltaTime);
+				currentScene->Render();
 
 				while (fixedTimeAccumulation >= TARGET_FIXED_DELTA)
 				{
