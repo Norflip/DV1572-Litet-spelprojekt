@@ -92,11 +92,18 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scen
 	//testProj->GetTransform().Translate(0, 0, 0);
 	AddObject(testProj);
 
+<<<<<<< Updated upstream
 	Object* glasse = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader);
 	AddObject(glasse);
 	Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
 	wagon->GetTransform().Translate(5, 5, 30);
 	AddObject(wagon);
+=======
+		
+	this->coconutPickUp = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
+	coconutPickUp->GetTransform().Translate(10, 3, 15);
+	AddObject(coconutPickUp);
+>>>>>>> Stashed changes
 
 	Object* palm = AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader);
 	AddObject(palm);
