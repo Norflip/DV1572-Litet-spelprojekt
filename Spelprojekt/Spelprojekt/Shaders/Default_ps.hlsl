@@ -32,6 +32,7 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 
 	if (hasAlbedoTexture)
 	{
+		
 		output.albedo *= float4(m_albedoMap.Sample(m_samplerState, input.uv));
 	}
 

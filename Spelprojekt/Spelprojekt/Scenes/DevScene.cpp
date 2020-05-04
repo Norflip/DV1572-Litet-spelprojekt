@@ -70,13 +70,33 @@ void DevScene::Load()
 	AddObject(sphere);
 
 	// ------- TERRAIN
-	Material* test_material = new Material(defaultShader, dx11);
+
+	Shader* terrainShader = new Shader();
+	terrainShader->LoadPixelShader(L"Shaders/Terrain_ps.hlsl", "main", dx11.GetDevice());
+	terrainShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
+
+	Texture* grass_texture = Texture::CreateTexture("Textures/TMP_Grass_COLOR.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	Texture* grass_normal = Texture::CreateTexture("Textures/TMP_Grass_NORM.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+
+
+	Texture* sand_texture = Texture::CreateTexture("Textures/TMP_Sand_COLOR.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);	
+	Texture* sand_normal = Texture::CreateTexture("Textures/TMP_Sand_NORM.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	
+	Material* terrainMat = new Material(terrainShader, dx11);
+	terrainMat->SetTexture(0, grass_texture, PIXEL_TYPE::PIXEL);
+	terrainMat->SetTexture(1, sand_texture, PIXEL_TYPE::PIXEL);
+
+	terrainMat->SetTexture(2, grass_normal, PIXEL_TYPE::PIXEL);
+	terrainMat->SetTexture(3, sand_normal, PIXEL_TYPE::PIXEL);
+	terrainMat->GetMaterialData().hasNormalTexture = true;
+
+	/*Material* test_material = new Material(terrainShader, dx11);
 	Texture* m_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	test_material->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
-	test_material->GetMaterialData().hasNormalTexture = false;
+	test_material->GetMaterialData().hasNormalTexture = false;*/
 
 	test.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice());
-	AddObject(new Object(test.GetMesh(), test_material));
+	AddObject(new Object(test.GetMesh(), terrainMat));
 
 
 	// ------ PLAYER
