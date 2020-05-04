@@ -17,10 +17,9 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 	scenes.push_back(gameOverScene);
 	this->introScene = new IntroScene(this->deferredRenderer, this->dx11, this->window, scenes);
 	scenes.push_back(introScene);
-
-	introScene->Load();
-
-	currentScene = introScene;
+	//introScene->Load();
+	gameScene->Load();
+	currentScene = gameScene;
 
 }
 
