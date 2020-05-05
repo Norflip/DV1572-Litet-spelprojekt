@@ -287,17 +287,34 @@ void DevScene::CreateSceneObjects()
 	
 	// Balls left beachside
 	Object* redball = AssimpHandler::loadFbxObject("Models/Redball.fbx", dx11, defaultShader);
+	Object* redballs[2];
+	for (int i = 0; i < 2; i++)
+		redballs[i] = new Object(*redball);
 
-	redball->GetTransform().Scale(1, 1, 1);
-	redball->GetTransform().Translate(25, 5.8, 65);
-	redball->GetTransform().Rotate(0.2f, -5, 0);
-	AddObject(redball);
+	redballs[0]->GetTransform().Scale(1, 1, 1);
+	redballs[0]->GetTransform().Translate(25, 5.8, 65);
+	redballs[0]->GetTransform().Rotate(0.2f, -5, 0);
+	AddObject(redballs[0]);
+
+	redballs[1]->GetTransform().Scale(1, 1, 1);
+	redballs[1]->GetTransform().Translate(125, 6, 155);
+	redballs[1]->GetTransform().Rotate(0.2f, -5, 0);
+	AddObject(redballs[1]);
 	
 	Object* blueball = AssimpHandler::loadFbxObject("Models/Blueball.fbx", dx11, defaultShader);
-	blueball->GetTransform().Scale(1, 1, 1);
-	blueball->GetTransform().Translate(15, 6.5, 90);
-	blueball->GetTransform().Rotate(0.2f, -5, 0);
-	AddObject(blueball);
+	Object* blueballs[2];
+	for (int i = 0; i < 2; i++)
+		blueballs[i] = new Object(*blueball);
+
+	blueballs[0]->GetTransform().Scale(1, 1, 1);
+	blueballs[0]->GetTransform().Translate(15, 6.5, 90);
+	blueballs[0]->GetTransform().Rotate(0.2f, -5, 0);
+	AddObject(blueballs[0]);
+
+	blueballs[1]->GetTransform().Scale(1, 1, 1);
+	blueballs[1]->GetTransform().Translate(130, 6.5, 150);
+	blueballs[1]->GetTransform().Rotate(0.2f, -5, 0);
+	AddObject(blueballs[1]);
 
 	// Palms left beach side 
 	Object* palm = AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader);
