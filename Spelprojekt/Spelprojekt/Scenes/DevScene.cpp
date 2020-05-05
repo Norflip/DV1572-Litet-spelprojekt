@@ -213,6 +213,12 @@ void DevScene::CreateSceneObjects()
 	boat->GetTransform().SetRotation({ 0, 1.6, 0 });
 	AddObject(boat);
 
+	// Rocks
+	Object* rocks = AssimpHandler::loadFbxObject("Models/Rocks.fbx", dx11, defaultShader);
+	rocks->GetTransform().Scale(1, 1, 1);
+	rocks->GetTransform().Translate(145, 7.5, 65);
+	AddObject(rocks);
+
 
 
 
