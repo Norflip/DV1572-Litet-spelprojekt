@@ -19,8 +19,28 @@ namespace ImportLibTA
 		float position[3], texCoord[2], normal[3], tangent[3], biTangent[3];
 	};
 
+	struct ReadMaterialHeader {
+		int index;
+		char materialName[100];
+		float ambient[3], diffuse[3], specular[3], emissive[3], opacity, shininess, reflectivity;
+
+		//
+		float lambertAmbient[3], lambertDiffuse[3], lambertEmissive[3], lambertOpaque;
+		//
+
+		unsigned char shadingModel[100];
+		bool hasTexture;
+
+		
+	};
+
+	struct ReadTextureHeader {
+		int index;
+		char textureName[100], texturePath[100];
+	};
+
 	struct ReadLightHeader {
-		char lightType[20], lightName[20], decayType[20];
+		char lightType[12], lightName[20], decayType[20];
 		float lightPos[3], diffuseLight[3], direction[3], intensity, range, innerAngle, outerAngle;
 	};
 
