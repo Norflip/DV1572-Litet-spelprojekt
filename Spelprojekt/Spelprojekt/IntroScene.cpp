@@ -28,6 +28,7 @@ void IntroScene::Load()
 	//healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
 	GUI* gui = new GUI(dx11);
 	//gui->AddGUIObject(healthFrame);
+	IntroGUI* introGUI = new IntroGUI(gui, dx11);
 	renderer->SetGUI(gui);
 	// save the shaders somewhere, remember to clean it up
 	Shader* defaultShader = new Shader();

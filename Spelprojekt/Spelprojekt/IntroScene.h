@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "CameraController.h"
 #include "assimpHandler.h"
+#include "IntroGui.h"
 class IntroScene : public Scene
 {
 	const char DEBUG_CAMERA_KEY = 'f';
@@ -26,6 +27,7 @@ public:
 	CameraController* controller;
 	GUISprite* healthFrame;
 private:
+
 	Input* input;
 	std::vector<Scene*> scenes;
 	void checkForNextScene();

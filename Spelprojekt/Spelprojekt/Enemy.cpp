@@ -48,7 +48,7 @@ void Enemy::UpdateMovement(float fixedDeltaTime)
 
 void Enemy::SetTarget(Player* player)
 {
-	this->player = player;
+		this->player = player;
 }
 
 void Enemy::UpdateHeight(float fixedDeltaTime)
