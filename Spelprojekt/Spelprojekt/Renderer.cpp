@@ -75,7 +75,7 @@ void Renderer::DisplayFrame(DirectX::XMVECTOR eye)
 	if (gui != nullptr)
 		gui->DrawAll();
 
-	dx11.GetSwapChain()->Present(0, 0);
+	dx11.GetSwapChain()->Present(1, 0);
 }
 
 void Renderer::DrawMesh(Mesh* mesh)

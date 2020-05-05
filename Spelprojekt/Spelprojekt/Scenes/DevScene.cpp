@@ -119,9 +119,9 @@ void DevScene::Load()
 	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
 	waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
 
-	Mesh* waterPlane = ShittyOBJLoader::Load("Models/Plane1.obj", dx11.GetDevice());
+	Mesh* waterPlane = ShittyOBJLoader::Load("Models/Water_Plane.obj", dx11.GetDevice());
 	Object* water = new Object(waterPlane, new Material(waterShader, dx11));
-	water->GetTransform().Translate({ 100, 0.9, 100 });
+	water->GetTransform().Translate({ 100, 6.0f, 100 });
 	water->GetTransform().Scale(2, 2, 2);
 	AddObject(water);
 

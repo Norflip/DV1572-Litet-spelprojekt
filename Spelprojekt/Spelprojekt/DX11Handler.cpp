@@ -31,7 +31,7 @@ void DX11Handler::Initialize(const Window& window)
 	swapChainDescription.BufferDesc.Width = window.GetWidth();
 	swapChainDescription.BufferDesc.Height = window.GetHeight();
 	swapChainDescription.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	swapChainDescription.BufferDesc.RefreshRate.Numerator = 0; // sets framerate to 60 as max
+	swapChainDescription.BufferDesc.RefreshRate.Numerator = 60; // sets framerate to 60 as max
 	swapChainDescription.BufferDesc.RefreshRate.Denominator = 1;
 	swapChainDescription.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	swapChainDescription.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;

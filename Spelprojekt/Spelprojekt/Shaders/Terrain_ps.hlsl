@@ -36,8 +36,8 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 	output.light = float4(mat_ambient.xyz, mat_shininess);
 	output.normal = float4(input.normal, 1.0f);
 
-	const float grassHeightLevel = 7.5f;
-	const float blendHeight = 0.5f;
+	const float grassHeightLevel = 7.0f;
+	const float blendHeight = 2.0f;
 
 	float from = grassHeightLevel + blendHeight / 2.0f;
 	float to = grassHeightLevel - blendHeight / 2.0f;
