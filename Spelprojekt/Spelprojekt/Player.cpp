@@ -8,7 +8,7 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	SetMesh(temp->GetMesh());
 	SetMaterial(temp->GetMaterial());
 
-	this->movementspeed = 3;
+	this->movementspeed = 7;
 	this->input = controller->getInput();
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());

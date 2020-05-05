@@ -9,6 +9,12 @@ class Weapon
 	: public Object
 {
 public:
+	enum class Weapons
+	{
+		Coconut,
+		Slev
+	};
+
 	Weapon();
 	~Weapon();
 

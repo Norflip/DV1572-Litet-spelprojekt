@@ -33,6 +33,10 @@ public:
 	// update time function?
 	Scene* GetNextScene() const override;
 
+	void CreateSceneObjects();
+	// level design
+	void AddSceneObject(Object*);
+
 private:
 	CameraController* controller;
 
@@ -44,6 +48,9 @@ private:
 	GUIActionbar* actionbarRight;
 
 	Object* coconutPickUp;
+
+	// Level design
+	std::vector<Object*>LevelObjects;
 
 	Player* player;
 	Enemy* enemy;
