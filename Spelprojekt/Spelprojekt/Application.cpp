@@ -19,8 +19,6 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 	scenes.push_back(introScene);
 	introScene->Load();
 	currentScene = introScene;
-
-	currentScene = gameScene;
 }
 
 Application::~Application()
@@ -77,8 +75,6 @@ void Application::Run()
 				{
 					
 					currentScene->Unload();
-					
-
 					currentScene = next;
 					currentScene->Load();
 					currentScene->nextScene = nullptr;

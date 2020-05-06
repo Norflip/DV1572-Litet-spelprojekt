@@ -1,6 +1,6 @@
 #include "DevScene.h"
 
-DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes) : Scene(renderer, dx11, window), scenes(scenes)
+DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes) : Scene("DevScene", renderer, dx11, window), scenes(scenes)
 {
 	//----- GUI SHIET |  Set gui last |
 
@@ -181,14 +181,18 @@ void DevScene::Update(const float& deltaTime)
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 	controller->Update(deltaTime);
 	
+
+
+
 	fpsTimer.Stop();
-	fpsText->SetString("FPS: " + std::to_string( (int)(1/((fpsTimer.GetMicrosecondsElapsed()/1000000)))));
+	fpsText->SetString("FPS: " + std::to_string((int)(1 / ((fpsTimer.GetMicrosecondsElapsed() / 1000000)))));
 	fpsTimer.Restart();
+	checkForNextScene();
 }
 
 Scene* DevScene::GetNextScene() const
 {
-	return nullptr;
+	return nextScene;
 }
 
 void DevScene::CreateSceneObjects()
@@ -465,19 +469,12 @@ void DevScene::CreateSceneObjects()
 
 
 
-	fpsTimer.Stop();
-	fpsText->SetString("FPS: " + std::to_string( (int)(1/((fpsTimer.GetMicrosecondsElapsed()/1000000)))));
-	fpsTimer.Restart();
-	checkForNextScene();
-}
 
 }
 
 void DevScene::AddSceneObject(Object* obj)
 {
 
-	// Change scene logic
-	return nextScene;
 }
 
 void DevScene::checkForNextScene()
@@ -487,7 +484,7 @@ void DevScene::checkForNextScene()
 	{
 		for (int i = 0; i < scenes.size(); i++)
 		{
-			if (scenes[i]->getName() == "IntroScene")
+			if (scenes[i]->GetName() == "IntroScene")
 				nextScene = scenes[i];
 		}
 	}

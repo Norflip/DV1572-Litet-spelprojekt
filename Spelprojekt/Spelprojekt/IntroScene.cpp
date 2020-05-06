@@ -2,7 +2,7 @@
 
 
 
-IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes) : Scene(renderer, dx11, window), scenes(scenes)
+IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes) : Scene("IntroScene",renderer, dx11, window), scenes(scenes)
 {
 	sceneName = "IntroScene";
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());

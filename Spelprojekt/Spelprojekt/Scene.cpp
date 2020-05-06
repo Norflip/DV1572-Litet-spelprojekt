@@ -15,6 +15,14 @@ Scene::~Scene()
 	delete camera;
 }
 
+void Scene::Unload()
+{
+	for (auto i = allObjects.rbegin(); i < allObjects.rend(); i++)
+	{
+		delete *i;
+	}
+}
+
 void Scene::Update(const float& deltaTime)
 {
 	UpdateAddRemoveSceneQueues();
