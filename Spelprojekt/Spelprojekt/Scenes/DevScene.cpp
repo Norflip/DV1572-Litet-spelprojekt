@@ -4,8 +4,8 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 {
 	//----- GUI SHIET |  Set gui last |
 
-	gametimerText = new GUIText(dx11, "Time until extraction", window.GetWidth() / 2.0f, 0);
-	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f, 30);
+	gametimerText = new GUIText(dx11, "Time until extraction", window.GetWidth() / 2.0f - 150.0f, 0);
+	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f - 100.0f, 30);
 
 
 	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
@@ -130,7 +130,7 @@ void DevScene::Load()
 
 	//// Testing fbx
 	
-	//CreateSceneObjects();
+	CreateSceneObjects();
 	//Projectile* testProj = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
 	////testProj->GetTransform().Translate(0, 0, 0);
 	//AddObject(testProj);
@@ -185,24 +185,30 @@ void DevScene::Update(const float& deltaTime)
 	fpsTimer.Restart();
 	checkForNextScene();
 
-	gametimerText->SetString("Time until extraction: " + std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd) /*- std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))*/)));
+	gametimerText->SetString("Time until extraction: " + std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd))));
 	controller->Update(deltaTime);
 
 
 	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f)
 	{
 		gametimerText->SetString("Move to exit");
+		gametimerText->SetPosition(window.GetWidth() / 2.0f - 80.0f, 0.0f);
 		canWin = true;
 	}
 
 	if (player->GetPlayerHealth() <= 0.0f)
 	{
+		gametimerText->SetString("You lost");
+		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(false);
 	}
 
-	if (canWin && player->GetWorldBounds().Overlaps(allObjects[6]->GetWorldBounds()))
+	int size = allObjects.size();
+
+	if (canWin && player->GetWorldBounds().Overlaps(allObjects[size-1]->GetWorldBounds()))
 	{
 		gametimerText->SetString("You won");
+		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(true);
 	}
 }
