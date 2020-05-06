@@ -4,11 +4,12 @@
 #include "Camera.h"
 #include "CameraController.h"
 #include "assimpHandler.h"
+#include "IntroGui.h"
 class IntroScene : public Scene
 {
 
 public:
-	IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*> scenes);
+	IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes);
 	virtual ~IntroScene();
 
 	void Load() override;
@@ -24,6 +25,10 @@ private:
 
 	CameraController* controller;
 	GUISprite* healthFrame;
-	std::vector<Scene*> scenes;
+private:
+	IntroGUI* introGUI;
+	Input* input;
+	std::vector<Scene*>& scenes;
+	void checkForNextScene();
 };
 

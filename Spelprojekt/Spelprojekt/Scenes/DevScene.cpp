@@ -1,6 +1,6 @@
 #include "DevScene.h"
 
-DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scene("DevScene", renderer, dx11, window)
+DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes) : Scene(renderer, dx11, window), scenes(scenes)
 {
 	//----- GUI SHIET |  Set gui last |
 
@@ -41,11 +41,11 @@ void DevScene::Load()
 	GUI* gui = new GUI(dx11);
 
 	// Add objects
-	gui->AddGUIObject(gametimerText);
-	gui->AddGUIObject(fpsText);
-	gui->AddGUIObject(healthFrame);
-	gui->AddGUIObject(actionbarLeft);
-	gui->AddGUIObject(actionbarRight);
+	gui->AddGUIObject(gametimerText, "gametimerText" );
+	gui->AddGUIObject(fpsText, "fpsText");
+	gui->AddGUIObject(healthFrame, "healthFrame");
+	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
+	gui->AddGUIObject(actionbarRight, "actionbarRight");
 
 	// Set GUI
 	renderer->SetGUI(gui);
@@ -356,7 +356,7 @@ void DevScene::CreateSceneObjects()
 	Object* middlePalms[5];
 	for (int i = 0; i < 5; i++)
 		middlePalms[i] = new Object(*palm);
-	// 2 stycken över mitten berget
+	// 2 stycken ï¿½ver mitten berget
 	middlePalms[0]->GetTransform().Translate(55, 8, 145);
 	middlePalms[0]->GetTransform().Scale(0.3, 0.3, 0.3);
 	AddObject(middlePalms[0]);
@@ -378,7 +378,7 @@ void DevScene::CreateSceneObjects()
 	middlePalms[4]->GetTransform().Scale(0.3, 0.3, 0.3);
 	AddObject(middlePalms[4]);
 
-	// palmer högra sidan
+	// palmer hï¿½gra sidan
 	Object* rightPalms[3];
 	for (int i = 0; i < 3; i++)
 		rightPalms[i] = new Object(*palm);
@@ -465,10 +465,30 @@ void DevScene::CreateSceneObjects()
 
 
 
+	fpsTimer.Stop();
+	fpsText->SetString("FPS: " + std::to_string( (int)(1/((fpsTimer.GetMicrosecondsElapsed()/1000000)))));
+	fpsTimer.Restart();
+	checkForNextScene();
+}
 
 }
 
 void DevScene::AddSceneObject(Object* obj)
 {
-	LevelObjects.push_back(obj);
+
+	// Change scene logic
+	return nextScene;
+}
+
+void DevScene::checkForNextScene()
+{
+	// Change scene logic
+	if (controller->getInput()->GetKeyDown('i'))
+	{
+		for (int i = 0; i < scenes.size(); i++)
+		{
+			if (scenes[i]->getName() == "IntroScene")
+				nextScene = scenes[i];
+		}
+	}
 }

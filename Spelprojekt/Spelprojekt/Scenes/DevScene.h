@@ -22,7 +22,7 @@ class DevScene : public Scene
 
 public:
 	
-	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window);
+	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes);
 	virtual ~DevScene();
 
 	void Load() override;
@@ -37,6 +37,8 @@ public:
 	// level design
 	void AddSceneObject(Object*);
 
+	std::string getName() { return this->sceneName; };
+	void checkForNextScene();
 private:
 	CameraController* controller;
 
@@ -52,6 +54,7 @@ private:
 	// Level design
 	std::vector<Object*>LevelObjects;
 
+	std::vector<Scene*>& scenes;
 	Player* player;
 	Enemy* enemy;
 	

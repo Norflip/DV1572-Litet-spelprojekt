@@ -2,12 +2,13 @@
 
 
 
-IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*> scenes) : Scene("IntroScene", renderer, dx11, window)
+IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes) : Scene(renderer, dx11, window), scenes(scenes)
 {
-	this->scenes = scenes;
-	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
+	sceneName = "IntroScene";
+	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
+	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::Follow);
 	window.GetInput()->LockCursor(false);
-
+	this->nextScene = nullptr;
 	//Lights& lights = renderer->GetLights();
 	//lights.SetSunDirection({ 1, -1, 0 });
 	//lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
@@ -24,6 +25,7 @@ void IntroScene::Load()
 	//healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
 	GUI* gui = new GUI(dx11);
 	//gui->AddGUIObject(healthFrame);
+	introGUI = new IntroGUI(gui, dx11, controller);
 	renderer->SetGUI(gui);
 	// save the shaders somewhere, remember to clean it up
 	Shader* defaultShader = new Shader();
