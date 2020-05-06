@@ -128,6 +128,11 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 	return returnValue;
 }
 
+float Player::GetPlayerHealth()
+{
+	return this->PlayerHealth;
+}
+
 void Player::NutOnPlayer(Object* obj)
 {
 	if (obj->IsEnabled() && obj->GetWorldBounds().Overlaps(this->GetWorldBounds()))

@@ -9,6 +9,7 @@
 #include <stack>
 #include "Timer.h"
 #include <vector>
+#include "EndScene.h"
 class Application
 {
 	const float TARGET_FIXED_DELTA = 1.0f / 50.0f;
@@ -35,6 +36,7 @@ private:
 	Scene* gameScene;
 	Scene* introScene;
 	Scene* gameOverScene;
+	Scene* winScene;
 	std::vector<Scene*>scenes;
 
 	Renderer* deferredRenderer;

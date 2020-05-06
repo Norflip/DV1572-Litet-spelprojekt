@@ -164,6 +164,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="DX11Handler.cpp" />
+    <ClCompile Include="EndScene.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GUIActionbar.cpp" />
     <ClCompile Include="GUISprite.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="AABB.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="assimpHandler.h" />
+    <ClInclude Include="EndScene.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="IntroGUI.h" />
     <ClInclude Include="IntroScene.h" />

@@ -39,6 +39,7 @@ public:
 
 	std::string getName() { return this->sceneName; };
 	void checkForNextScene();
+	void SetNextScene(bool winOrLose);
 private:
 	CameraController* controller;
 
@@ -61,4 +62,6 @@ private:
 	Terrain test;
 	Timer gametimer;
 	Timer fpsTimer;
+	float timeUntilEnd;
+	bool canWin;
 };
