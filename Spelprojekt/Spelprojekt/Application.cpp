@@ -11,11 +11,11 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 	Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
 
 	// default scene.. devScene at the moment. Different sceness for the actual game, main menu, game over(?) etc 
-	this->gameScene = new DevScene(this->deferredRenderer, this->dx11, this->window);
-	scenes.push_back(gameScene);
-	this->gameOverScene = new DevScene(this->deferredRenderer, this->dx11, this->window );
-	scenes.push_back(gameOverScene);
+	this->gameScene = new DevScene(this->deferredRenderer, this->dx11, this->window, scenes);
+	this->gameOverScene = new DevScene(this->deferredRenderer, this->dx11, this->window, scenes );
 	this->introScene = new IntroScene(this->deferredRenderer, this->dx11, this->window, scenes);
+	scenes.push_back(gameOverScene);
+	scenes.push_back(gameScene);
 	scenes.push_back(introScene);
 	introScene->Load();
 	currentScene = introScene;
@@ -73,11 +73,13 @@ void Application::Run()
 
 				if (next != nullptr)
 				{
+					
 					currentScene->Unload();
-					delete currentScene;
+					
 
 					currentScene = next;
 					currentScene->Load();
+					currentScene->nextScene = nullptr;
 				}
 			}
 

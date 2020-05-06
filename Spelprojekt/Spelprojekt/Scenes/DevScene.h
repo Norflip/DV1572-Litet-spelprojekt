@@ -22,7 +22,7 @@ class DevScene : public Scene
 
 public:
 	
-	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window);
+	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes);
 	virtual ~DevScene();
 
 	void Load() override;
@@ -35,7 +35,7 @@ public:
 
 	Scene* GetNextScene() const override;
 	std::string getName() { return this->sceneName; };
-
+	void checkForNextScene();
 private:
 	float testFloat = 0.f;
 	Camera* camera;
@@ -49,7 +49,7 @@ private:
 	GUIActionbar* actionbarLeft;
 	GUIActionbar* actionbarRight;
 	Object* coconutPickUp;
-
+	std::vector<Scene*>& scenes;
 	Player* player;
 	Enemy* enemy;
 	

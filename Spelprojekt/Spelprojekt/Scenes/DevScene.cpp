@@ -1,6 +1,6 @@
 #include "DevScene.h"
 
-DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window) : Scene(renderer, dx11, window)
+DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes) : Scene(renderer, dx11, window), scenes(scenes)
 {
 	this->sceneName = "DevScene";
 	//----- GUI SHIET |  Set gui last |
@@ -43,11 +43,11 @@ void DevScene::Load()
 	GUI* gui = new GUI(dx11);
 
 	// Add objects
-	gui->AddGUIObject(gametimerText);
-	gui->AddGUIObject(fpsText);
-	gui->AddGUIObject(healthFrame);
-	gui->AddGUIObject(actionbarLeft);
-	gui->AddGUIObject(actionbarRight);
+	gui->AddGUIObject(gametimerText, "gametimerText" );
+	gui->AddGUIObject(fpsText, "fpsText");
+	gui->AddGUIObject(healthFrame, "healthFrame");
+	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
+	gui->AddGUIObject(actionbarRight, "actionbarRight");
 
 	// Set GUI
 	renderer->SetGUI(gui);
@@ -245,6 +245,7 @@ void DevScene::Update(const float& deltaTime)
 	fpsTimer.Stop();
 	fpsText->SetString("FPS: " + std::to_string( (int)(1/((fpsTimer.GetMicrosecondsElapsed()/1000000)))));
 	fpsTimer.Restart();
+	checkForNextScene();
 }
 
 void DevScene::FixedUpdate(const float& fixedDeltaTime)
@@ -257,5 +258,20 @@ void DevScene::FixedUpdate(const float& fixedDeltaTime)
 
 Scene* DevScene::GetNextScene() const
 {
-	return nullptr;
+
+	// Change scene logic
+	return nextScene;
+}
+
+void DevScene::checkForNextScene()
+{
+	// Change scene logic
+	if (controller->getInput()->GetKeyDown('i'))
+	{
+		for (int i = 0; i < scenes.size(); i++)
+		{
+			if (scenes[i]->getName() == "IntroScene")
+				nextScene = scenes[i];
+		}
+	}
 }

@@ -14,7 +14,7 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 	this->coconutSprite = new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
 	this->gui = gui;
-	this->gui->AddGUIObject(this->coconutSprite);
+	this->gui->AddGUIObject(this->coconutSprite, "testWeapon");
 	this->leftNut = 1;
 	this->rightNut = 1;
 	this->testSound = new SoundHandler();
@@ -26,7 +26,7 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	this->PlayerHealth = 100.0f;
 	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 700.0f);
 	this->healthbar->HealthBar(100.0f, 100.0f);
-	this->gui->AddGUIObject(this->healthbar);
+	this->gui->AddGUIObject(this->healthbar, "healthbar");
 
 
 
@@ -135,7 +135,7 @@ void Player::NutOnPlayer(Object* obj)
 		if (input->GetKeyDown('q') && leftNut == 0)
 		{
 			this->coconutSprite = new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
-			this->gui->AddGUIObject(this->coconutSprite);
+			this->gui->AddGUIObject(this->coconutSprite, "testWeapon");
 			scene->RemoveObject(obj);
 			obj->SetEnabled(false);
 			leftNut++;
@@ -161,7 +161,7 @@ void Player::HandleInput()
 			//testProj->SetMaterial(GetMaterial());
 			testProj->direction = GetTransform().GetRotation();
 			scene->AddObject(testProj);
-			gui->RemoveGUIObject(coconutSprite);
+			gui->RemoveGUIObject("testWeapon");
 			leftNut--;
 			/*Logger::Write(LOG_LEVEL::Info, "Left click");
 			gui->RemoveGUIObject(coconutSprite);
