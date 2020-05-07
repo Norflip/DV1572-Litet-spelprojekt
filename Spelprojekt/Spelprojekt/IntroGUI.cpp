@@ -22,7 +22,7 @@ void IntroGUI::Update()
         break;
     case Menu::options:
         if (first)
-            LoadStart();
+            LoadOptions();
         Options();
         break;
     case Menu::quit:
@@ -36,18 +36,26 @@ void IntroGUI::Update()
 
 void IntroGUI::Start()
 {
-    // DO SOME MOUSEOVER SHIT HERE
  
-        GUISprite* temp = static_cast<GUISprite*>(gui->GetGUIList()->at("test"));
-        if (temp->Clicked(input))
+    // gotta fix if static cast fails
+        GUISprite* play = static_cast<GUISprite*>(gui->GetGUIList()->at("play"));
+        if (play->Clicked(input))
         {
+            //ClearGUI();
             currentScene->setNextScene();
         }
-        GUISprite* temp2 = static_cast<GUISprite*>(gui->GetGUIList()->at("test2"));
-        if (temp2->Clicked(input))
+        GUISprite* quit = static_cast<GUISprite*>(gui->GetGUIList()->at("quit"));
+        if (quit->Clicked(input))
         {
-            ClearGUI();
+            //ClearGUI();
             menu = Menu::quit;
+            first = true;
+        }
+        GUISprite* options = static_cast<GUISprite*>(gui->GetGUIList()->at("options"));
+        if (options->Clicked(input))
+        {
+            //ClearGUI();
+            menu = Menu::options;
             first = true;
         }
 
@@ -55,40 +63,57 @@ void IntroGUI::Start()
 
 void IntroGUI::LoadStart()
 {
-
+    ClearGUI();
     //LOAD ALL GUI OBJECTS FOR START, ONCE
-    GUISprite* StartGameSprite = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 300.0f);
-    gui->AddGUIObject(StartGameSprite, "test");
-    StartGameSprite = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 500.0f);
-    gui->AddGUIObject(StartGameSprite, "test2");
-    StartGameSprite = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
-    gui->AddGUIObject(StartGameSprite, "test3");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 100.0f), "play");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/quit.png", 100.0f, 300.0f), "quit");  
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 500.0f), "options");
     first = false;
 }
 
 void IntroGUI::Options()
 {
+    GUISprite* temp2 = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
+    if (temp2->Clicked(input))
+    {
+        ClearGUI();
+        menu = Menu::start;
+        LoadStart();
 
+    }
 }
 
 void IntroGUI::LoadOptions()
 {
+    ClearGUI();
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsync.png", 100.0f, 100.0f), "vsync");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 300.0f), "backtointro");
+    first = false;
 }
 
 void IntroGUI::Quit()
 {
 
-    GUISprite* temp2 = static_cast<GUISprite*>(gui->GetGUIList()->at("quitButton"));
+    GUISprite* temp2 = static_cast<GUISprite*>(gui->GetGUIList()->at("imsure"));
     if (temp2->Clicked(input))
     {
         currentScene->exitGame = true;
+    }
+    temp2 = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
+    if (temp2->Clicked(input))
+    {
+        ClearGUI();
+        menu = Menu::start;
+        LoadStart();
+
     }
 }
 
 void IntroGUI::LoadQuit()
 {
-    GUISprite* StartGameSprite = new GUISprite(dx11, "Sprites/Frame.png", 400.0f, 300.0f);
-    gui->AddGUIObject(StartGameSprite, "quitButton");
+    ClearGUI();
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/imsure.png", 400.0f, 300.0f), "imsure");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 10.0f, 300.0f), "backtointro");
     first = false;
 }
 
