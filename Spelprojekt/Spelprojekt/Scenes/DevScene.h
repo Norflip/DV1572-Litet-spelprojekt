@@ -15,6 +15,7 @@
 #include "../GUI.h"
 #include "../AABB.h"
 #include "../Enemy.h"
+#include "../SpawnObjects.h"
 //#include <string>
 class DevScene : public Scene
 {
@@ -64,4 +65,6 @@ private:
 	Timer fpsTimer;
 	float timeUntilEnd;
 	bool canWin;
+
+	SpawnObjects* spawnObjects;
 };
