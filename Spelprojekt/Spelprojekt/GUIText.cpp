@@ -8,6 +8,8 @@ GUIText::GUIText()
 	this->txtDisplay = L"";	
 	this->x = 0.0f;
 	this->y = 0.0f;
+	this->fontColor = DirectX::Colors::White;
+	this->fontSize = DirectX::XMFLOAT2(1.0f, 1.0f);
 }
 
 GUIText::GUIText(DX11Handler& dx11, const std::string& display, float x, float y)
@@ -16,6 +18,8 @@ GUIText::GUIText(DX11Handler& dx11, const std::string& display, float x, float y
 	this->y = y;
 	this->SetString(display);
 	this->spriteFont = new DirectX::SpriteFont(dx11.GetDevice(), L"SpriteFonts/comic_sans_ms_16.spritefont");
+	this->fontColor = DirectX::Colors::White;
+	this->fontSize = DirectX::XMFLOAT2(1.0f, 1.0f);
 }
 
 GUIText::~GUIText()
@@ -35,10 +39,10 @@ void GUIText::Draw(DirectX::SpriteBatch* spriteBatch)
 		spriteBatch,
 		txtDisplay.c_str(),
 		DirectX::XMFLOAT2(x, y),
-		DirectX::Colors::White,
+		this->fontColor,
 		0.0f,
 		DirectX::XMFLOAT2(0.0f, 0.0f),
-		DirectX::XMFLOAT2(1.0f, 1.0f)
+		this->fontSize
 	);
 }
 
@@ -61,6 +65,16 @@ void GUIText::SetString(const std::string& text)
 {
 	txtDisplay = std::wstring(text.begin(), text.end());
 	this->text = text;
+}
+
+void GUIText::SetFontSize(DirectX::XMFLOAT2 fontSize)
+{
+	this->fontSize = fontSize;
+}
+
+void GUIText::SetFontColor(DirectX::XMVECTORF32 fontColor)
+{
+	this->fontColor = fontColor;
 }
 
 void GUIText::SetPosition(float x, float y)

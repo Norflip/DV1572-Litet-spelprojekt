@@ -4,10 +4,8 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 {
 	//----- GUI SHIET |  Set gui last |
 
-	// Create timer and set to textobject
-	gametimer.Start();
-	gametimerText = new GUIText(dx11, "Timer", window.GetWidth() / 2.0f, 0);
-	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f, 30);
+	gametimerText = new GUIText(dx11, "Time until extraction", window.GetWidth() / 2.0f - 150.0f, 0);
+	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f - 100.0f, 30);
 
 
 	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
@@ -20,7 +18,8 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
-
+	this->timeUntilEnd = 10.0f;
+	this->canWin = false;
 }
 
 DevScene::~DevScene()
@@ -30,7 +29,6 @@ DevScene::~DevScene()
 
 void DevScene::Load()
 {	
-
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 700.0f);
@@ -144,7 +142,7 @@ void DevScene::Load()
 	wagon->GetTransform().Rotate(0.05f, -5, 0);
 	AddObject(wagon);
 
-
+	gametimer.Start();
 	//// Testing animation
 	//Object* animation = AssimpHandler::loadFbxObject("Models/animation.fbx", dx11, defaultShader);
 	//AddObject(animation);
@@ -153,6 +151,8 @@ void DevScene::Load()
 void DevScene::Unload()
 {
 	// @TODO
+	gametimer.Restart();
+	gametimer.Stop();
 }
 
 void DevScene::Update(const float& deltaTime)
@@ -178,16 +178,39 @@ void DevScene::Update(const float& deltaTime)
 	////	Logger::Write(LOG_LEVEL::Info, "NOT Inside nut");
 	//}
 
-	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
-	controller->Update(deltaTime);
+	//gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 	
-
-
-
 	fpsTimer.Stop();
 	fpsText->SetString("FPS: " + std::to_string((int)(1 / ((fpsTimer.GetMicrosecondsElapsed() / 1000000)))));
 	fpsTimer.Restart();
 	checkForNextScene();
+
+	gametimerText->SetString("Time until extraction: " + std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd))));
+	controller->Update(deltaTime);
+
+
+	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f)
+	{
+		gametimerText->SetString("Move to exit");
+		gametimerText->SetPosition(window.GetWidth() / 2.0f - 80.0f, 0.0f);
+		canWin = true;
+	}
+
+	if (player->GetPlayerHealth() <= 0.0f)
+	{
+		gametimerText->SetString("You lost");
+		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
+		SetNextScene(false);
+	}
+
+	int size = allObjects.size();
+
+	if (canWin && player->GetWorldBounds().Overlaps(allObjects[size-1]->GetWorldBounds()))
+	{
+		gametimerText->SetString("You won");
+		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
+		SetNextScene(true);
+	}
 }
 
 Scene* DevScene::GetNextScene() const
@@ -484,8 +507,39 @@ void DevScene::checkForNextScene()
 	{
 		for (int i = 0; i < scenes.size(); i++)
 		{
-			if (scenes[i]->GetName() == "IntroScene")
+			if (scenes[i]->GetName() == "GameOverScene")
+			{
 				nextScene = scenes[i];
+			}
+
+			if (scenes[i]->GetName() == "WinScene")
+			{
+				nextScene = scenes[i];
+			}
+
 		}
 	}
 }
+
+void DevScene::SetNextScene(bool winOrLose)
+{
+
+	for (int i = 0; i < scenes.size(); i++)
+	{
+		if (winOrLose == false)
+		{
+			if (scenes[i]->GetName() == "GameOverScene")
+			{
+				nextScene = scenes[i];
+			}
+		}
+		else if (winOrLose ==  true)
+		{
+			if (scenes[i]->GetName() == "WinScene")
+			{
+				nextScene = scenes[i];
+			}
+		}
+	}
+}
+

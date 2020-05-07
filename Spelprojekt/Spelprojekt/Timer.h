@@ -7,6 +7,7 @@ public:
 	Timer();
 	double GetMilisecondsElapsed();
 	double GetMicrosecondsElapsed();
+	double GetTimeUntilEnd(float maxTime);
 	void Restart();
 	bool Stop();
 	bool Start();

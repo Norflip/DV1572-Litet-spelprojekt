@@ -19,6 +19,7 @@ public:
 	void SetHeight(float height) { this->playerHeight = height; };
 	void TakeDamage();	
 	void NutOnPlayer(Object* obj);
+	float GetPlayerHealth();
 
 private:
 
@@ -30,7 +31,6 @@ private:
 	void HandleInput();
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 	float ShortestRotation(float currentDir, float nextDir);
-	
 
 private:
 
