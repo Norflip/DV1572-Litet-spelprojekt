@@ -23,13 +23,10 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	rightWeapon = new Projectile("Models/Coconut.fbx", terrain, dx11, this->GetMaterial()->GetShader(), DirectX::XMVECTOR({ 0,this->currentPosition.y,0 }), this->GetTransform().GetRotation());
 
 
-	this->PlayerHealth = 100.0f;
+	this->playerHealth = 100.0f;
 	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 700.0f);
 	this->healthbar->HealthBar(100.0f, 100.0f);
 	this->gui->AddGUIObject(this->healthbar, "healthbar");
-
-
-
 }
 
 Player::~Player()
@@ -50,9 +47,9 @@ void Player::Update(const float& deltaTime)
 
 void Player::TakeDamage()
 {
-	if (input->GetMouseButtonDown(1) && PlayerHealth != 0.0f) {
-		this->PlayerHealth -= 10.0f;
-		healthbar->HealthBar(100.0f, this->PlayerHealth);
+	if (input->GetMouseButtonDown(1) && playerHealth != 0.0f) {
+		playerHealth -= 10.0f;
+		healthbar->HealthBar(100.0f, playerHealth);
 	}
 }
 
@@ -156,6 +153,11 @@ void Player::NutOnPlayer(Object* obj)
 			leftNut++;
 		}
 	}
+}
+
+float Player::GetPlayerHealth()
+{
+	return playerHealth;
 }
 
 void Player::SetEnemy(Enemy* enemy)

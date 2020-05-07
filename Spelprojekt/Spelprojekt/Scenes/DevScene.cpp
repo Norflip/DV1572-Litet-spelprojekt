@@ -192,12 +192,12 @@ void DevScene::Update(const float& deltaTime)
 
 	int size = allObjects.size();
 
-	if (canWin && player->GetWorldBounds().Overlaps(allObjects[size-1]->GetWorldBounds()))
+	/*if (canWin && player->GetWorldBounds().Overlaps(allObjects[size-1]->GetWorldBounds()))
 	{
 		gametimerText->SetString("You won");
 		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(true);
-	}
+	}*/
 }
 
 Scene* DevScene::GetNextScene() const

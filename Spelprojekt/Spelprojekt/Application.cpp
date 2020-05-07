@@ -19,8 +19,8 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 	scenes.push_back(gameScene);
 	scenes.push_back(introScene);
 	scenes.push_back(winScene);
-	introScene->Load();
-	currentScene = introScene;
+	gameScene->Load();
+	currentScene = gameScene;
 }
 
 Application::~Application()

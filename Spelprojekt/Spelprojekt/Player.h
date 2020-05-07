@@ -72,7 +72,7 @@ private:
 
 	// New
 	GUISprite* healthbar;
-	float PlayerHealth;
+	float playerHealth;
 	//
 
 	Enemy* enemy;
