@@ -37,13 +37,13 @@ void IntroGUI::Update()
 void IntroGUI::Start()
 {
     // DO SOME MOUSEOVER SHIT HERE
-
-        GUISprite* temp = static_cast<GUISprite*>(gui->GetGUIList().at("test"));
+ 
+        GUISprite* temp = static_cast<GUISprite*>(gui->GetGUIList()->at("test"));
         if (temp->Clicked(input))
         {
             currentScene->setNextScene();
         }
-        GUISprite* temp2 = static_cast<GUISprite*>(gui->GetGUIList().at("test2"));
+        GUISprite* temp2 = static_cast<GUISprite*>(gui->GetGUIList()->at("test2"));
         if (temp2->Clicked(input))
         {
             ClearGUI();
@@ -78,7 +78,7 @@ void IntroGUI::LoadOptions()
 void IntroGUI::Quit()
 {
 
-    GUISprite* temp2 = static_cast<GUISprite*>(gui->GetGUIList().at("quitButton"));
+    GUISprite* temp2 = static_cast<GUISprite*>(gui->GetGUIList()->at("quitButton"));
     if (temp2->Clicked(input))
     {
         currentScene->exitGame = true;
@@ -89,12 +89,19 @@ void IntroGUI::LoadQuit()
 {
     GUISprite* StartGameSprite = new GUISprite(dx11, "Sprites/Frame.png", 400.0f, 300.0f);
     gui->AddGUIObject(StartGameSprite, "quitButton");
+    first = false;
 }
 
 void IntroGUI::ClearGUI()
 {
 
-    gui->GetGUIList().clear();
 
+    for (auto& it : *gui->GetGUIList()) 
+    {
+        // Do stuff
+        GUIObject* test = it.second;
+        delete test;
+    }
+    gui->GetGUIList()->clear();
 }
 
