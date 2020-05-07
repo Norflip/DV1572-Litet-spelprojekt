@@ -2,7 +2,7 @@
 
 
 
-IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool& exitGame) : Scene(renderer, dx11, window), scenes(scenes), exitGame(exitGame)
+IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool& exitGame) : Scene(name, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
 {
 	sceneName = "IntroScene";
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
@@ -63,7 +63,7 @@ void IntroScene::Update(const float& deltaTime)
 {
 	Scene::Update(deltaTime);
 	controller->Update(deltaTime);
-	CheckForNextScene();
+	introGUI->Update();
 
 	for (auto i : allObjects)
 	{
@@ -71,68 +71,6 @@ void IntroScene::Update(const float& deltaTime)
 		{
 			i->Update(deltaTime);
 		}
-	}
-
-
-	// itererats through the objects and passes the renderer to the object.
-	// sorts the objects based on shader -> material properties -> object
-	renderer->SetDeferredRenderTarget();
-	renderer->ClearRenderTarget();
-
-	DirectX::XMMATRIX view = camera->GetView();
-	DirectX::XMMATRIX projection = camera->GetProjection();
-
-	size_t lastShaderID = -1;
-	size_t lastMaterialID = -1;
-	Material* currentMaterial = nullptr;
-
-	for (auto shaderKey : sortedObjects)
-	{
-		for (auto materialKey : shaderKey.second)
-		{
-			for (auto object : materialKey.second)
-			{
-				if (object->IsEnabled() && camera->IsBoundsInView(object->GetWorldBounds()))
-				{
-					Material* material = object->GetMaterial();
-					size_t shaderID = material->GetShader()->GetID();
-
-					if (lastShaderID != shaderID)
-					{
-						material->GetShader()->Bind(dx11.GetContext());
-						lastShaderID = shaderID;
-					}
-
-					if (lastMaterialID != material->GetID())
-					{
-						if (currentMaterial != nullptr)
-							currentMaterial->Unbind(dx11.GetContext());
-
-						currentMaterial = material;
-						material->Bind(dx11.GetContext());
-						lastMaterialID = material->GetID();
-					}
-
-					object->Render(renderer, view, projection);
-				}
-			}
-
-			//material.first->Unbind(dx11.GetContext());
-		}
-
-		// shader unbind can become relevant if we add more then vs and ps shaders
-	}
-
-	UpdateAddRemoveSceneQueues();
-	renderer->DisplayFrame(camera->GetTransform().GetPosition());
-
-}
-
-void IntroScene::FixedUpdate(const float& fixedDeltaTime)
-{
-	for (auto i : allObjects)
-	{
-		i->FixedUpdate(fixedDeltaTime);
 	}
 }
 

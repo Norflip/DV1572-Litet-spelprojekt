@@ -10,7 +10,7 @@ class IntroScene : public Scene
 {
 
 public:
-	IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool &exitGame);
+	IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool &exitGame);
 	virtual ~IntroScene();
 
 	void Load() override;
@@ -19,10 +19,8 @@ public:
 	void Update(const float& deltaTime) override;
 	Scene* GetNextScene() const override;
 
-private:
-	void CheckForNextScene();
 
-private:
+
 
 	CameraController* controller;
 	GUISprite* healthFrame;
