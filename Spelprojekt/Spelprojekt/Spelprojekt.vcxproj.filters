@@ -238,7 +238,7 @@
     </ClInclude>
     <ClInclude Include="EndScene.h">
       <Filter>Header Files</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="SpawnObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
