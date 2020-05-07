@@ -7,6 +7,7 @@
 #include "GUI.h"
 #include "SoundHandler.h"
 #include "Projectile.h"
+#include "Spoon.h"
 #include <vector>
 
 class Enemy;
@@ -24,9 +25,10 @@ public:
 	void TakeDamage();	
 	void NutOnPlayer(Object* obj);
 	float GetPlayerHealth();
-
 	void SetEnemy(Enemy* enemy);
-private:
+	void UpdateHands(Weapon* obj);
+	void UseWeapon();
+	Weapon* CheckWeaponType(Weapon* obj);
 
 private:
 	void InitWeapons();
@@ -36,37 +38,37 @@ private:
 	void HandleInput();
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 	float ShortestRotation(float currentDir, float nextDir);
-	void UpdateHitEnemy();
+	void UpdateHitEnemy();	
+
 	
+
+	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
+	float ShortestRotation(float currentDir, float nextDir);	
 
 private:
 
 	Input* input;
 	DX11Handler& dx11;
 	CameraController* controller;
-	float movementspeed;
-	
+	float movementspeed;	
 	Terrain* terrain;
 
-	/*Weapon* rightWeapon;
-	Weapon* leftWeapon;*/
+	// Weapon shit
+	Weapon* rightWeapon;
+	Weapon* leftWeapon;	
+	//Projectile* projectileWeapon;
+	//Spoon* spoonWeapon;
+	GUIActionbar* leftActionbar;
+	GUIActionbar* rightActionbar;
+	bool lefthandFull, righthandFull;
+	//
 
-	Projectile* rightWeapon;
-	Projectile* leftWeapon;
-
-	Projectile* testProj;
-	
-	float scaleXZ, scaleY;
-	int leftNut, rightNut;
-	
+	float scaleXZ, scaleY;		
 	GUI* gui;
 	SoundHandler* testSound;
-	Scene* scene;
-	GUIActionbar* coconutSprite;
-	
+	Scene* scene;		
 	DirectX::XMFLOAT3 currentPosition;
-	float nextDir = 0;
-	
+	float nextDir = 0;	
 	std::vector<Weapon*> weapons;
 	float playerHeight = 3;
 

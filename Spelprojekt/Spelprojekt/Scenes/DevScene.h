@@ -8,7 +8,10 @@
 #include "../CameraController.h"
 #include "../Terrain.h"
 #include "../assimpHandler.h"
+
 #include "../Projectile.h"
+#include "../Spoon.h"
+
 #include "../Player.h"
 // new
 #include "../Timer.h"
@@ -17,6 +20,7 @@
 #include "../Enemy.h"
 #include "../SpawnObjects.h"
 //#include <string>
+
 class DevScene : public Scene
 {
 	const char DEBUG_CAMERA_KEY = 'f';
@@ -34,27 +38,33 @@ public:
 	// update time function?
 	Scene* GetNextScene() const override;
 
-	void CreateSceneObjects();
 	// level design
+	void CreateSceneObjects();
 	void AddSceneObject(Object*);
 
 	std::string getName() { return this->sceneName; };
 	void checkForNextScene();
 	void SetNextScene(bool winOrLose);
+
+	void AddPickups(Object*);
+	void RemovePickup(Object*);
+
 private:
 	CameraController* controller;
 
 	GUIText* gametimerText;
 	GUIText* fpsText;
 	GUISprite* healthFrame;
-	//GUISprite* healthbar;	// M�jligtvis s�tta in igen
+		
 	GUIActionbar* actionbarLeft;
 	GUIActionbar* actionbarRight;
 
-	Object* coconutPickUp;
+	Projectile* coconuts[5];
+	Spoon* spoons[5];
 
 	// Level design
-	std::vector<Object*>LevelObjects;
+	std::vector<Object*> pickups;
+	std::vector<Object*> levelObjects;
 
 	std::vector<Scene*>& scenes;
 	Player* player;

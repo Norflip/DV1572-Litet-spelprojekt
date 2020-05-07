@@ -67,8 +67,23 @@ void DevScene::Load()
 	sphere->GetTransform().Translate(0, 3, 6);
 	AddObject(sphere);
 
-	// ------- TERRAIN
 
+	// ------- water shader
+	
+	Shader* waterShader = new Shader();
+	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
+	waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
+
+	Mesh* waterPlane = ShittyOBJLoader::Load("Models/Water_Plane.obj", dx11.GetDevice());
+	Object* water = new Object(waterPlane, new Material(waterShader, dx11));
+	water->GetTransform().Translate({ 100, 6.0f, 100 });
+	water->GetTransform().Scale(2, 2, 2);
+	AddObject(water);
+
+	water->isWater = true;
+
+
+	// ------- TERRAIN
 	Shader* terrainShader = new Shader();
 	terrainShader->LoadPixelShader(L"Shaders/Terrain_ps.hlsl", "main", dx11.GetDevice());
 	terrainShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
@@ -96,7 +111,6 @@ void DevScene::Load()
 	test.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice());
 	AddObject(new Object(test.GetMesh(), terrainMat));
 
-
 	// ------ PLAYER
 	this->player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), controller, &test, gui, dx11, static_cast<Scene*>(this));
 	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
@@ -111,6 +125,13 @@ void DevScene::Load()
 	/*this->enemy = new Enemy(dev_monkey_mesh, new Material(defaultShader, dx11), &test, dx11);
 	this->enemy->GetTransform().Translate(5, 12, 15);
 	this->enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
+	this->controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
+	AddObject(player);
+
+	// ------ ENEMY
+	this->enemy = new Enemy(dev_monkey_mesh, new Material(defaultShader, dx11), &test, dx11);
+	this->enemy->GetTransform().Translate(5, 12, 3);
+	this->enemy->GetTransform().Scale(0.3, 0.3, 0.3);
 	this->enemy->SetTarget(this->player);
 	AddObject(this->enemy);*/
 	this->player->SetEnemy(spawnObjects->GetEnemy());
@@ -126,18 +147,41 @@ void DevScene::Load()
 	AddObject(water);
 
 		
-	this->coconutPickUp = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
+	/*this->coconutPickUp = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	coconutPickUp->GetTransform().Translate(10, 2, 15);
-	AddObject(coconutPickUp);
+	AddObject(coconutPickUp);*/
+	
+	// ------ WEAPONS
 
-	//// Testing fbx
+	// Coconuts
+	for(int i = 0; i < 5; i++)
+		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
 	
-	CreateSceneObjects();
-	//Projectile* testProj = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, DirectX::XMVECTOR({ 0,5,0 }), DirectX::XMVECTOR({ 0,0/*MathHelper::PI/2*/,0 }));
-	////testProj->GetTransform().Translate(0, 0, 0);
-	//AddObject(testProj);
+	coconuts[0]->GetTransform().Translate(35, 10, 25);
+	coconuts[1]->GetTransform().Translate(40, 10, 25);
+	coconuts[2]->GetTransform().Translate(45, 10, 25);
+	coconuts[3]->GetTransform().Translate(50, 10, 25);
+	coconuts[4]->GetTransform().Translate(55, 10, 25);
+	for (int i = 0; i < 5; i++)
+		AddObject(coconuts[i]);
+	
+			
+	// Spoon
+	for(int i = 0; i < 5; i++)
+		this->spoons[i] = new Spoon("Models/Spoon.fbx", &test, dx11, defaultShader, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
+	spoons[0]->GetTransform().Translate(35, 10, 30);
+	spoons[1]->GetTransform().Translate(40, 10, 30);
+	spoons[2]->GetTransform().Translate(45, 10, 30);
+	spoons[3]->GetTransform().Translate(50, 10, 30);
+	spoons[4]->GetTransform().Translate(55, 10, 30);
+	for (int i = 0; i < 5; i++)
+		AddObject(spoons[i]);
 	
 	
+	// ------ Leveldesign
+	CreateSceneObjects();	
+	
+	// Exit Wagon
 	Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
 	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
 	wagon->GetTransform().Translate(50, 9.5, 50);
@@ -160,12 +204,21 @@ void DevScene::Unload()
 void DevScene::Update(const float& deltaTime)
 {
 	spawnObjects->SpawnEnemy();
-
+	
 	Scene::Update(deltaTime);
 
 	//FPS STUFF
-	fpsTimer.Start();
-	player->NutOnPlayer(coconutPickUp);
+	fpsTimer.Start();			
+	
+	// Change all weapons to vector
+	for(auto i : coconuts)
+		player->UpdateHands(i);
+	for (auto i : spoons)
+		player->UpdateHands(i);
+	//
+		
+	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
+	controller->Update(deltaTime);
 	
 	fpsTimer.Stop();
 	fpsText->SetString("FPS: " + std::to_string((int)(1 / ((fpsTimer.GetMicrosecondsElapsed() / 1000000)))));
@@ -506,6 +559,16 @@ void DevScene::checkForNextScene()
 
 		}
 	}
+	//LevelObjects.push_back(obj);
+}
+
+void DevScene::AddPickups(Object* obj)
+{
+	//pickups.push_back(obj);
+}
+
+void DevScene::RemovePickup(Object* obj)
+{
 }
 
 void DevScene::SetNextScene(bool winOrLose)

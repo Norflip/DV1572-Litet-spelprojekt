@@ -118,6 +118,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SpawnObjects.cpp">
+    <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Spoon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -240,6 +243,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SpawnObjects.h">
+    <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Spoon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

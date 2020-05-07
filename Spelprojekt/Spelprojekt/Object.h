@@ -34,6 +34,8 @@ public:
 
 	void SetEnabled(bool enabled) { this->enabled = enabled; }
 	bool IsEnabled() const { return this->enabled; }
+
+	bool isWater = false;
 	
 private:
 	Transform transform;
