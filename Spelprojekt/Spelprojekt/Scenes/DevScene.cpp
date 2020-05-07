@@ -37,17 +37,7 @@ void DevScene::Load()
 	//--------------------------------
 	// Create GUI for Devscene
 	GUI* gui = new GUI(dx11);
-
-	// Add objects
-	gui->AddGUIObject(gametimerText, "gametimerText" );
-	gui->AddGUIObject(fpsText, "fpsText");
-	gui->AddGUIObject(healthFrame, "healthFrame");
-	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
-	gui->AddGUIObject(actionbarRight, "actionbarRight");
-
-	// Set GUI
-	renderer->SetGUI(gui);
-
+	
 	// save the shaders somewhere, remember to clean it up
 	Shader* defaultShader = new Shader();
 	defaultShader->LoadPixelShader(L"Shaders/Default_ps.hlsl", "main", dx11.GetDevice());
@@ -178,6 +168,20 @@ void DevScene::Load()
 	wagon->GetTransform().Translate(50, 9.5, 50);
 	wagon->GetTransform().Rotate(0.05f, -5, 0);
 	AddObject(wagon);
+
+
+	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
+
+	// Add objects
+	gui->AddGUIObject(gametimerText, "gametimerText");
+	gui->AddGUIObject(fpsText, "fpsText");
+	gui->AddGUIObject(healthFrame, "healthFrame");
+	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
+	gui->AddGUIObject(actionbarRight, "actionbarRight");
+
+	// Set GUI
+	renderer->SetGUI(gui);
+
 
 	gametimer.Start();
 	//// Testing animation
