@@ -29,11 +29,35 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 	output.albedo = mat_diffuse;
 	output.light = float4(mat_ambient.xyz, mat_shininess);
 	output.normal = float4(input.normal, 1.0f);
+	// The direction of the diffuse light
+	float3 DiffuseLightDirection = -sunDirection;
 
+	// The color of the diffuse light
+	float4 DiffuseColor = float4(1, 1, 1, 1);
+	// The intensity of the diffuse light
+	float DiffuseIntensity = 1.0;
 	if (hasAlbedoTexture)
 	{
-
 		output.albedo *= float4(m_albedoMap.Sample(m_samplerState, input.uv));
+
+		float intensity = dot(normalize(input.normal), DiffuseLightDirection );
+		if (intensity < 0)
+			intensity = 0;
+
+
+		float4 testColor = float4(m_albedoMap.Sample(m_samplerState, input.uv));
+		// Discretize the intensity, based on a few cutoff points
+		if (intensity > 0.95)
+			testColor = float4(1.0, 1, 1, 1.0) * testColor;
+		else if (intensity > 0.5)
+			testColor = float4(0.8, 0.8, 0.8, 1.0) * testColor;
+		else if (intensity > 0.05)
+			testColor = float4(0.5, 0.5, 0.5, 1.0) * testColor;
+		else
+			testColor = float4(0.3, 0.3, 0.3, 1.0) * testColor;
+
+		//testColor = round(intensity * 5) / 5 * testColor;
+		output.albedo = testColor;
 	}
 
 	if (hasNormalTexture)

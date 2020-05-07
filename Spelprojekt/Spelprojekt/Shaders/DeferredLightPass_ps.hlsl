@@ -45,8 +45,9 @@ float4 main(PixelInputType input) : SV_TARGET
 	float4 diffuse = albedo * sun_color * diff;
 	float4 specular = albedo * sun_color * spec;
 
+	//diffuse = round(diffuse * 5) / 5;
 
-	float4 finalColor = ambient + diffuse + specular;
+	float4 finalColor = ambient + diffuse;
 
 	for (int i = 0; i < pointLightCount; i++)
 	{

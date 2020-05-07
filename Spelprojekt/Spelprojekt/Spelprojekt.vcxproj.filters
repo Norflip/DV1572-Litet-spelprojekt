@@ -238,7 +238,7 @@
     </ClInclude>
     <ClInclude Include="EndScene.h">
       <Filter>Header Files</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="SpawnObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -269,6 +269,12 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\Terrain_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\ToonShader_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\ToonShader_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

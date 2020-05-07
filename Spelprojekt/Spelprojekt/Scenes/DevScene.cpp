@@ -12,7 +12,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	window.GetInput()->LockCursor(false);
 
 	Lights& lights = renderer->GetLights();
-	lights.SetSunDirection({ 1, -1, 0 });
+	lights.SetSunDirection({ 1, -2, 1 });
 	lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
 	lights.SetSunIntensity(0.6f);
 
