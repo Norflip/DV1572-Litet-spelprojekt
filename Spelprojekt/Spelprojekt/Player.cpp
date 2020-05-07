@@ -152,7 +152,7 @@ void Player::UpdateHands(Weapon* obj)
 			
 			this->leftActionbar = new GUIActionbar(*obj->GetWeaponSprite());
 			this->leftActionbar->SetPosition(325.0f, 700.0f);
-			this->gui->AddGUIObject(this->leftActionbar);
+			this->gui->AddGUIObject(this->leftActionbar, "Left Actionbar");
 
 			scene->RemoveObject(obj);
 			
@@ -165,7 +165,7 @@ void Player::UpdateHands(Weapon* obj)
 			
 			this->rightActionbar = new GUIActionbar(*obj->GetWeaponSprite());
 			this->rightActionbar->SetPosition(400.0f, 700.0f);
-			this->gui->AddGUIObject(this->rightActionbar);
+			this->gui->AddGUIObject(this->rightActionbar, "Right Actionbar");
 
 			scene->RemoveObject(obj);
 			
@@ -186,7 +186,7 @@ void Player::UseWeapon()
 		leftWeapon->direction = GetTransform().GetRotation();
 
 		scene->AddObject(leftWeapon);		
-		gui->RemoveGUIObject(leftActionbar);
+		gui->RemoveGUIObject("Left Actionbar");
 		testSound->PlaySound("Explosive", 0.1f);	
 
 		leftWeapon = nullptr;
@@ -198,7 +198,7 @@ void Player::UseWeapon()
 		rightWeapon->direction = GetTransform().GetRotation();
 		
 		scene->AddObject(rightWeapon);
-		gui->RemoveGUIObject(rightActionbar);
+		gui->RemoveGUIObject("Right Actionbar");
 		testSound->PlaySound("Explosive", 0.1f);
 
 		rightWeapon = nullptr;
@@ -235,48 +235,48 @@ void Player::TriggerAttack()
 {
 }
 
-void Player::HandleInput()
-{
-	/*if (input->GetMouseButtonDown(0) && lefthandFull) {
-		std::cout << "Shot left hand" << std::endl;
-		leftWeapon = new Projectile("Models/Coconut.fbx", terrain, dx11, this->GetMaterial()->GetShader(), DirectX::XMVECTOR({ 0,this->currentPosition.y,0 }), this->GetTransform().GetRotation());
-		
-		leftWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
-		leftWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
-		leftWeapon->direction = GetTransform().GetRotation();
-		scene->AddObject(leftWeapon);
-		gui->RemoveGUIObject(leftActionbar);
-		testSound->PlaySound("Explosive", 0.1f);
-
-		lefthandFull = false;
-	}
-
-	if (input->GetMouseButtonDown(0) && leftNut > 0)
-	{
-			testProj = new Projectile(*rightWeapon);
-
-			testProj->GetTransform().SetPosition(GetTransform().GetPosition());
-			testProj->GetTransform().SetRotation(GetTransform().GetRotation());
-			//testProj->SetMesh(GetMesh());
-			//testProj->SetMaterial(GetMaterial());
-			testProj->direction = GetTransform().GetRotation();
-			scene->AddObject(testProj);
-			gui->RemoveGUIObject("testWeapon");
-			leftNut--;
-			/*Logger::Write(LOG_LEVEL::Info, "Left click");
-			gui->RemoveGUIObject(coconutSprite);
-			leftNut--;*/
-			
-	}
-	//
-	//if(input->GetKeyDown('q') && leftNut == 0)
-	//{
-	//	this->coconutSprite = new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
-	//	this->gui->AddGUIObject(this->coconutSprite);
-	//	scene->RemoveObject(testProj);
-	//	//delete testProj;
-	//	testProj->SetEnabled(false);
-	//	leftNut++;
-	//}
-	
-}
+//void Player::HandleInput()
+//{
+//	/*if (input->GetMouseButtonDown(0) && lefthandFull) {
+//		std::cout << "Shot left hand" << std::endl;
+//		leftWeapon = new Projectile("Models/Coconut.fbx", terrain, dx11, this->GetMaterial()->GetShader(), DirectX::XMVECTOR({ 0,this->currentPosition.y,0 }), this->GetTransform().GetRotation());
+//		
+//		leftWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
+//		leftWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
+//		leftWeapon->direction = GetTransform().GetRotation();
+//		scene->AddObject(leftWeapon);
+//		gui->RemoveGUIObject(leftActionbar);
+//		testSound->PlaySound("Explosive", 0.1f);
+//
+//		lefthandFull = false;
+//	}
+//
+//	if (input->GetMouseButtonDown(0) && leftNut > 0)
+//	{
+//			testProj = new Projectile(*rightWeapon);
+//
+//			testProj->GetTransform().SetPosition(GetTransform().GetPosition());
+//			testProj->GetTransform().SetRotation(GetTransform().GetRotation());
+//			//testProj->SetMesh(GetMesh());
+//			//testProj->SetMaterial(GetMaterial());
+//			testProj->direction = GetTransform().GetRotation();
+//			scene->AddObject(testProj);
+//			gui->RemoveGUIObject("testWeapon");
+//			leftNut--;
+//			/*Logger::Write(LOG_LEVEL::Info, "Left click");
+//			gui->RemoveGUIObject(coconutSprite);
+//			leftNut--;*/
+//			
+//	}
+//	//
+//	//if(input->GetKeyDown('q') && leftNut == 0)
+//	//{
+//	//	this->coconutSprite = new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
+//	//	this->gui->AddGUIObject(this->coconutSprite);
+//	//	scene->RemoveObject(testProj);
+//	//	//delete testProj;
+//	//	testProj->SetEnabled(false);
+//	//	leftNut++;
+//	//}
+//	
+//}

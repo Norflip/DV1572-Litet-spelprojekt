@@ -135,16 +135,7 @@ void DevScene::Load()
 	this->enemy->SetTarget(this->player);
 	AddObject(this->enemy);*/
 	this->player->SetEnemy(spawnObjects->GetEnemy());
-
-	Shader* waterShader = new Shader();
-	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
-	waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
-
-	Mesh* waterPlane = ShittyOBJLoader::Load("Models/Water_Plane.obj", dx11.GetDevice());
-	Object* water = new Object(waterPlane, new Material(waterShader, dx11));
-	water->GetTransform().Translate({ 100, 6.0f, 100 });
-	water->GetTransform().Scale(2, 2, 2);
-	AddObject(water);
+	
 
 		
 	/*this->coconutPickUp = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
@@ -226,7 +217,7 @@ void DevScene::Update(const float& deltaTime)
 	checkForNextScene();
 
 	gametimerText->SetString("Time until extraction: " + std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd))));
-	controller->Update(deltaTime);
+	
 
 
 	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f)

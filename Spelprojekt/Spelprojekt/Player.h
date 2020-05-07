@@ -23,7 +23,7 @@ public:
 	void Update(const float& deltaTime) override;
 	void SetHeight(float height) { this->playerHeight = height; };
 	void TakeDamage();	
-	void NutOnPlayer(Object* obj);
+	//void NutOnPlayer(Object* obj);
 	float GetPlayerHealth();
 	void SetEnemy(Enemy* enemy);
 	void UpdateHands(Weapon* obj);
@@ -35,15 +35,11 @@ private:
 	void UpdateMovement(float FixedDeltaTime);
 	void UpdateHeight(float FixedDeltaTime);
 	void TriggerAttack();
-	void HandleInput();
+	//void HandleInput();
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 	float ShortestRotation(float currentDir, float nextDir);
 	void UpdateHitEnemy();	
-
 	
-
-	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
-	float ShortestRotation(float currentDir, float nextDir);	
 
 private:
 
@@ -56,6 +52,7 @@ private:
 	// Weapon shit
 	Weapon* rightWeapon;
 	Weapon* leftWeapon;	
+	Projectile* testProj;
 	//Projectile* projectileWeapon;
 	//Spoon* spoonWeapon;
 	GUIActionbar* leftActionbar;
