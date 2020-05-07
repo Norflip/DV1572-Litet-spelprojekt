@@ -13,9 +13,9 @@ Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(fal
 	// default scene.. devScene at the moment. Different sceness for the actual game, main menu, game over(?) etc 
 	this->gameScene = new DevScene(this->deferredRenderer, this->dx11, this->window, scenes);
 	this->gameOverScene = new EndScene(this->deferredRenderer, this->dx11, this->window, scenes, "GameOverScene");
-	this->introScene = new IntroScene(this->deferredRenderer, this->dx11, this->window, scenes);
+	this->introScene = new IntroScene(this->deferredRenderer, this->dx11, this->window, scenes, exitGame);
 	this->winScene = new EndScene(this->deferredRenderer, this->dx11, this->window, scenes, "WinScene");
-
+	
 	scenes.push_back(gameOverScene);
 	scenes.push_back(gameScene);
 	scenes.push_back(introScene);
@@ -49,6 +49,8 @@ void Application::Run()
 			DispatchMessage(&msg);
 
 			if (msg.message == WM_QUIT)
+				break;
+			if (exitGame)
 				break;
 		}
 		else

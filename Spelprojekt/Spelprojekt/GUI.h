@@ -18,7 +18,7 @@ public:
 	void AddGUIObject(GUIObject *addObj, std::string name);
 	void RemoveGUIObject(std::string name);
 	DX11Handler& GetDXHandler() { return dx11; }
-	std::unordered_map<std::string, GUIObject*>  GetGUIList() { return this->GUIObjects; };
+	std::unordered_map<std::string, GUIObject*>*  GetGUIList() { return &this->GUIObjects; };
 	void DrawAll();
 private:
 

@@ -28,6 +28,7 @@ public:
 	bool IsPaused() const { return this->pauseGame; }
 	void SetPaused(bool pause) { this->pauseGame = pause; }
 
+	bool exitGame = false;
 private:
 	//Variables
 	Window window;

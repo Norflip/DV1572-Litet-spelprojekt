@@ -2,10 +2,12 @@
 #include "GUI.h"
 #include "DirectXHelpers.h"
 #include "CameraController.h"
+class IntroScene;
+#include "IntroScene.h"
 class IntroGUI
 {
 public:
-	IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController);
+	IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scenes);
 	~IntroGUI();
 	enum class Menu
 	{
@@ -31,4 +33,5 @@ private:
 	DX11Handler& dx11;
 	GUI* gui;
 	Input* input;
+	IntroScene* currentScene;
 };
