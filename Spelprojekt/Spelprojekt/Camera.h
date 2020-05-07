@@ -6,7 +6,7 @@
 
 class Camera : public Object
 {
-	const float nearZ = 0.001f;
+	const float nearZ = 0.1f;
 	const float farZ = 1000.0f;
 
 public:
