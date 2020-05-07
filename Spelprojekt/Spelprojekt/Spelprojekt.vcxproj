@@ -170,6 +170,7 @@
     <ClCompile Include="GUISprite.cpp" />
     <ClCompile Include="IntroGUI.cpp" />
     <ClCompile Include="IntroScene.cpp" />
+    <ClCompile Include="SpawnObjects.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="GUIObject.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="DX11Handler.h" />
     <ClInclude Include="GUIActionbar.h" />
     <ClInclude Include="GUISprite.h" />
+    <ClInclude Include="SpawnObjects.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIObject.h" />
