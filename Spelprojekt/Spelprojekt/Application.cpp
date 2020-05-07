@@ -1,6 +1,6 @@
 #include "Application.h"
 
-Application::Application(HINSTANCE hInstance) : window(hInstance)
+Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(false)
 {
 	this->window.Initialize(); // initializes the win32 window
 	this->dx11.Initialize(this->window); // creates swapchain, device, deviceContext
@@ -15,6 +15,7 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 	this->gameOverScene = new EndScene(this->deferredRenderer, this->dx11, this->window, scenes, "GameOverScene");
 	this->introScene = new IntroScene(this->deferredRenderer, this->dx11, this->window, scenes);
 	this->winScene = new EndScene(this->deferredRenderer, this->dx11, this->window, scenes, "WinScene");
+
 	scenes.push_back(gameOverScene);
 	scenes.push_back(gameScene);
 	scenes.push_back(introScene);
@@ -58,7 +59,7 @@ void Application::Run()
 			window.GetInput()->UpdateState();
 
 			// call update function
-			if (currentScene != nullptr)
+			if (currentScene != nullptr && !pauseGame)
 			{
 				fixedTimeAccumulation += deltaTime;
 				currentScene->Update(deltaTime);
@@ -70,13 +71,12 @@ void Application::Run()
 					fixedTimeAccumulation -= TARGET_FIXED_DELTA;
 				}
 
-
 				Scene* next = currentScene->GetNextScene();
 
 				if (next != nullptr)
-				{
-					
+				{					
 					currentScene->Unload();
+
 					currentScene = next;
 					currentScene->Load();
 					currentScene->nextScene = nullptr;

@@ -25,11 +25,13 @@ public:
 	Scene* GetCurrentScene() const { return this->currentScene; }
 	Window& GetWindow() { return this->window; }
 
+	bool IsPaused() const { return this->pauseGame; }
+	void SetPaused(bool pause) { this->pauseGame = pause; }
+
 private:
 	//Variables
 	Window window;
 	DX11Handler dx11;
-
 
 	//Scenes for the game
 	Scene* currentScene;
@@ -41,6 +43,7 @@ private:
 
 	Renderer* deferredRenderer;
 
+	bool pauseGame = true;
 	Timer timer;
 };
 
