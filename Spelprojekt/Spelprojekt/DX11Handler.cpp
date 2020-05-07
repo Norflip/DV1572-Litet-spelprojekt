@@ -56,7 +56,7 @@ void DX11Handler::Initialize(const Window& window)
 	/////////////////				END SWAPCHAIN INITIALIZE				/////////////////
 
 	CreateBackbufferRenderTarget(window.GetWidth(), window.GetHeight());
-	SetWireframeMode(false);
+	SetWireframeMode(true);
 }
 
 void DX11Handler::SetWireframeMode(bool useWireframe)
@@ -74,14 +74,20 @@ void DX11Handler::SetWireframeMode(bool useWireframe)
 	///* Filips nasty shit >:D
 	rasterizerDescription.DepthClipEnable = true;
 	rasterizerDescription.FrontCounterClockwise = false;
-	rasterizerDescription.MultisampleEnable = false;
-	rasterizerDescription.ScissorEnable = true;
+	rasterizerDescription.ScissorEnable = false;
 	rasterizerDescription.DepthBias = 0;
 	rasterizerDescription.DepthBiasClamp = 0.0f;
 	
-
 	HRESULT resultCreateRasterizer = device->CreateRasterizerState(&rasterizerDescription, &rasterizerState);
 	assert(SUCCEEDED(resultCreateRasterizer));
+
+	//ZeroMemory(&rasterizerDescription, sizeof(D3D11_RASTERIZER_DESC));
+	rasterizerDescription.DepthBias = -50;
+	//rasterizerDescription.DepthBiasClamp = 100;
+
+	resultCreateRasterizer = device->CreateRasterizerState(&rasterizerDescription, &waterRaster);
+	assert(SUCCEEDED(resultCreateRasterizer));
+
 	context->RSSetState(rasterizerState);
 }
 
