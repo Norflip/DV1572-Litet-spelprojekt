@@ -27,6 +27,8 @@ public:
 	IDXGISwapChain* GetSwapChain() const { return this->swapchain; }
 	RenderTarget* GetBackbuffer() const { return this->backbuffer; }
 
+	ID3D11RasterizerState* GetWaterRasterizer() { return this->waterRaster; }
+	ID3D11RasterizerState* GetRasterizer() { return this->rasterizerState; }
 	template <typename T>
 	ID3D11Buffer* CreateBuffer (T& data);
 
@@ -43,6 +45,7 @@ private:
 	ID3D11DeviceContext* context;
 	IDXGISwapChain* swapchain;
 	ID3D11RasterizerState* rasterizerState;
+	ID3D11RasterizerState* waterRaster;
 	
 	DXGI_SWAP_CHAIN_DESC swapChainDescription;
 	RenderTarget* backbuffer;

@@ -9,9 +9,14 @@ public:
 
 	~Projectile();
 	void Update(const float& deltaTime) override;
-	//void* operator new(std::size_t count);
-private:
 
-	float movementspeed = 3;
+	GUIActionbar* GetWeaponSprite() override { return this->weaponSprite; } 	
+	std::string GetWeaponTypename() override { return this->WeaponTypeName; }
+	float DamageGiven() override { return this->damage; }
+	void HasAttacked(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;		
+	void rangedAttack(float deltaTime);
+
+private:		
+	int movementspeed = 3;
 };
 
