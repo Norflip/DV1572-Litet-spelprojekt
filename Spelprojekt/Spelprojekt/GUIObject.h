@@ -11,5 +11,6 @@ public:
 	virtual void SetPosition(float x, float y) = 0;
 
 private:
+	std::string name;
 };
 

@@ -13,7 +13,8 @@ public:
 	void SetDXHandler(DX11Handler&);
 	void SetFont(const wchar_t* font);
 	void SetString(const std::string& text);
-
+	void SetFontSize(DirectX::XMFLOAT2 fontSize);
+	void SetFontColor(DirectX::XMVECTORF32 fontColor);
 	std::string GetString() const;
 
 private:
@@ -22,4 +23,6 @@ private:
 	std::string text;
 	std::wstring txtDisplay;
 	float x, y;
+	DirectX::XMFLOAT2 fontSize;
+	DirectX::XMVECTORF32 fontColor;
 };

@@ -8,13 +8,13 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	SetMesh(temp->GetMesh());
 	SetMaterial(temp->GetMaterial());
 
-	this->movementspeed = 3;
+	this->movementspeed = 7;
 	this->input = controller->getInput();
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 	this->coconutSprite = new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
 	this->gui = gui;
-	this->gui->AddGUIObject(this->coconutSprite);
+	this->gui->AddGUIObject(this->coconutSprite, "testWeapon");
 	this->leftNut = 1;
 	this->rightNut = 1;
 	this->testSound = new SoundHandler();
@@ -23,10 +23,10 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	rightWeapon = new Projectile("Models/Coconut.fbx", terrain, dx11, this->GetMaterial()->GetShader(), DirectX::XMVECTOR({ 0,this->currentPosition.y,0 }), this->GetTransform().GetRotation());
 
 
-	this->PlayerHealth = 100.0f;
+	this->playerHealth = 100.0f;
 	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 700.0f);
 	this->healthbar->HealthBar(100.0f, 100.0f);
-	this->gui->AddGUIObject(this->healthbar);
+	this->gui->AddGUIObject(this->healthbar, "healthbar");
 }
 
 Player::~Player()
@@ -38,6 +38,7 @@ void Player::Update(const float& deltaTime)
 {
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
+	UpdateHitEnemy();
 	HandleInput();
 
 	TakeDamage();
@@ -46,9 +47,9 @@ void Player::Update(const float& deltaTime)
 
 void Player::TakeDamage()
 {
-	if (input->GetMouseButtonDown(1) && PlayerHealth != 0.0f) {
-		this->PlayerHealth -= 10.0f;
-		healthbar->HealthBar(100.0f, this->PlayerHealth);
+	if (input->GetMouseButtonDown(1) && playerHealth != 0.0f) {
+		playerHealth -= 10.0f;
+		healthbar->HealthBar(100.0f, playerHealth);
 	}
 }
 
@@ -125,6 +126,20 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 	return returnValue;
 }
 
+void Player::UpdateHitEnemy()
+{
+	if (enemy != nullptr && testProj != nullptr)
+	{
+		if (testProj->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
+		{
+			scene->RemoveObject(enemy);
+			enemy = nullptr;
+			scene->RemoveObject(testProj);
+			testProj = nullptr;
+		}
+	}
+}
+
 void Player::NutOnPlayer(Object* obj)
 {
 	if (obj->IsEnabled() && obj->GetWorldBounds().Overlaps(this->GetWorldBounds()))
@@ -132,13 +147,22 @@ void Player::NutOnPlayer(Object* obj)
 		if (input->GetKeyDown('q') && leftNut == 0)
 		{
 			this->coconutSprite = new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
-			this->gui->AddGUIObject(this->coconutSprite);
+			this->gui->AddGUIObject(this->coconutSprite, "testWeapon");
 			scene->RemoveObject(obj);
 			obj->SetEnabled(false);
 			leftNut++;
 		}
 	}
+}
 
+float Player::GetPlayerHealth()
+{
+	return playerHealth;
+}
+
+void Player::SetEnemy(Enemy* enemy)
+{
+	this->enemy = enemy;
 }
 
 void Player::TriggerAttack()
@@ -158,13 +182,12 @@ void Player::HandleInput()
 			//testProj->SetMaterial(GetMaterial());
 			testProj->direction = GetTransform().GetRotation();
 			scene->AddObject(testProj);
-			gui->RemoveGUIObject(coconutSprite);
+			gui->RemoveGUIObject("testWeapon");
 			leftNut--;
 			/*Logger::Write(LOG_LEVEL::Info, "Left click");
 			gui->RemoveGUIObject(coconutSprite);
 			leftNut--;*/
 			testSound->PlaySound("Explosive", 0.1f);
-
 	}
 	//
 	//if(input->GetKeyDown('q') && leftNut == 0)

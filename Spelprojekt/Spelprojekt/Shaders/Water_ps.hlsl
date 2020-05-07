@@ -21,7 +21,7 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 {
 	GBUFFER output;
 
-output.albedo = float4(input.normal, 1.0f);// float4(0.1f, 0.1f, 1.0f, 1.0f);
+	output.albedo = float4(0.30f, 0.63f, 0.93f, 1.0f);
 	output.light = float4(mat_ambient.xyz, mat_shininess);
 	output.normal = float4(input.normal, 1.0f);
 	output.position = float4(input.worldPosition, 1.0f);

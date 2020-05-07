@@ -34,6 +34,20 @@ double Timer::GetMicrosecondsElapsed()
 	}
 }
 
+double Timer::GetTimeUntilEnd(float maxTime)
+{
+	if (isrunning)
+	{
+		auto elapsed = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start);
+		return maxTime - elapsed.count();
+	}
+	else
+	{
+		auto elapsed = std::chrono::duration<double>(stop - start);
+		return maxTime - elapsed.count();
+	}
+}
+
 void Timer::Restart()
 {
 	isrunning = true;
