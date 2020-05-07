@@ -4,7 +4,7 @@
 #include <wrl.h>
 
 
-GUISprite::GUISprite(DX11Handler& dx11, std::string spriteFile, float x, float y)
+GUISprite::GUISprite( DX11Handler& dx11, std::string spriteFile, float x, float y) 
 {
 	// Store dxhandler
 	this->dxHandler = &dx11;
@@ -100,12 +100,21 @@ void GUISprite::SetDDSSprite(DX11Handler& dx11, std::string spriteFile)
 
 bool GUISprite::Clicked(Input* input)
 {
-	return false;
+	if (MouseOver(input) && input->GetMouseButtonDown(0))
+		return true;
+	else
+		return false;
 }
 
 bool GUISprite::MouseOver(Input* input)
 {
-	return false;
+	if ((input->GetMousePosition().x > xPosition && input->GetMousePosition().x < xPosition + width) && (input->GetMousePosition().y > yPosition && input->GetMousePosition().y < yPosition + height))
+	{
+		return true;
+	}
+	else
+		return false;
+
 }
 
 void GUISprite::HealthBar(float maxHealth, float currentHealth)

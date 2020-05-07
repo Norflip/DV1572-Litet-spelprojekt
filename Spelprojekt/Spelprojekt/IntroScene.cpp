@@ -2,7 +2,7 @@
 
 
 
-IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes) : Scene(renderer, dx11, window), scenes(scenes)
+IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool& exitGame) : Scene(renderer, dx11, window), scenes(scenes), exitGame(exitGame)
 {
 	sceneName = "IntroScene";
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
@@ -27,7 +27,7 @@ void IntroScene::Load()
 	//healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
 	GUI* gui = new GUI(dx11);
 	//gui->AddGUIObject(healthFrame);
-	introGUI = new IntroGUI(gui, dx11, controller);
+	introGUI = new IntroGUI(gui, dx11, controller, this);
 	renderer->SetGUI(gui);
 	// save the shaders somewhere, remember to clean it up
 	Shader* defaultShader = new Shader();
@@ -139,9 +139,6 @@ void IntroScene::Update(const float& deltaTime)
 	UpdateAddRemoveSceneQueues();
 	renderer->DisplayFrame(camera->GetTransform().GetPosition());
 
-
-
-	checkForNextScene();
 }
 
 void IntroScene::FixedUpdate(const float& fixedDeltaTime)
@@ -157,16 +154,13 @@ Scene* IntroScene::GetNextScene() const
 	return nextScene;
 }
 
-void IntroScene::checkForNextScene()
+void IntroScene::setNextScene()
 {
 
 	// Change scene logic
-	if (input->GetKeyDown('h'))
-	{
 		for (int i = 0; i < scenes.size(); i++)
 		{
 			if (scenes[i]->getName() == "DevScene")
 				nextScene = scenes[i];
 		}
-	}
 }

@@ -23,7 +23,7 @@ public:
 	void Run();
 	Scene* GetCurrentScene() const { return this->currentScene; }
 	Window& GetWindow() { return this->window; }
-
+	bool exitGame = false;
 private:
 	//Variables
 	Window window;
