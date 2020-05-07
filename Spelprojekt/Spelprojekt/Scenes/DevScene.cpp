@@ -80,20 +80,22 @@ void DevScene::Load()
 
 
 	// ------ PLAYER
-	player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), controller, &test, gui, dx11, static_cast<Scene*>(this));
+	this->player = new Player(dev_monkey_mesh, new Material(defaultShader, dx11), controller, &test, gui, dx11, static_cast<Scene*>(this));
 	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 
-	this->controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
-	AddObject(player);
-
+	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
+	AddObject(this->player);
 
 	
-	this->enemy = new Enemy(dev_monkey_mesh, new Material(defaultShader, dx11), &test, dx11);
-	this->enemy->GetTransform().Translate(5, 12, 3);
-	this->enemy->GetTransform().Scale(0.3, 0.3, 0.3);
+	spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &test, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
+	spawnObjects->SpawnEnemy();
+	/*this->enemy = new Enemy(dev_monkey_mesh, new Material(defaultShader, dx11), &test, dx11);
+	this->enemy->GetTransform().Translate(5, 12, 15);
+	this->enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	this->enemy->SetTarget(this->player);
-	AddObject(this->enemy);
+	AddObject(this->enemy);*/
+	this->player->SetEnemy(spawnObjects->GetEnemy());
 
 	Shader* waterShader = new Shader();
 	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
@@ -106,7 +108,7 @@ void DevScene::Load()
 
 		
 	this->coconutPickUp = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
-	coconutPickUp->GetTransform().Translate(10, 5, 15);
+	coconutPickUp->GetTransform().Translate(10, 2, 15);
 	AddObject(coconutPickUp);
 
 	//// Testing fbx
@@ -145,26 +147,13 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {
+	spawnObjects->SpawnEnemy();
 
 	Scene::Update(deltaTime);
 
 	//FPS STUFF
 	fpsTimer.Start();
 	player->NutOnPlayer(coconutPickUp);
-
-	//if (coconutPickUp->IsEnabled() && coconutPickUp->GetWorldBounds().Overlaps(player->GetWorldBounds()))
-	//{
-	//	if (input->GetKeyDown('q') ) {
-	//		
-	//		//player->Update(deltaTime);
-	//		RemoveObject(coconutPickUp);
-	//	}
-	//		
-	//	Logger::Write(LOG_LEVEL::Info, "Inside dick nut");
-	////}
-	////else {
-	////	Logger::Write(LOG_LEVEL::Info, "NOT Inside nut");
-	//}
 
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 	controller->Update(deltaTime);

@@ -3,10 +3,10 @@
 Enemy::Enemy(Mesh* mesh, Material* material, Terrain* terrain, DX11Handler& dx11)
 	: terrain(terrain), Object(mesh, material)
 {
-	Object* temp = AssimpHandler::loadFbxObject("Models/IcecreamEnemy.fbx", dx11, material->GetShader());
-	SetMesh(temp->GetMesh());
-	SetMaterial(temp->GetMaterial());
-	this->movementspeed = 2;
+	FBXModel = AssimpHandler::loadFbxObject("Models/IcecreamEnemy.fbx", dx11, material->GetShader());
+	SetMesh(FBXModel->GetMesh());
+	SetMaterial(FBXModel->GetMaterial());
+	this->movementspeed = 2.0f;
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 }
@@ -49,6 +49,11 @@ void Enemy::UpdateMovement(float fixedDeltaTime)
 void Enemy::SetTarget(Player* player)
 {
 	this->player = player;
+}
+
+Object* Enemy::GetFBXModel()
+{
+	return FBXModel;
 }
 
 void Enemy::UpdateHeight(float fixedDeltaTime)

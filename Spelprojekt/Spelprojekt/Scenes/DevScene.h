@@ -15,6 +15,7 @@
 #include "../GUI.h"
 #include "../AABB.h"
 #include "../Enemy.h"
+#include "../SpawnObjects.h"
 //#include <string>
 class DevScene : public Scene
 {
@@ -51,4 +52,6 @@ private:
 	Terrain test;
 	Timer gametimer;
 	Timer fpsTimer;
+
+	SpawnObjects* spawnObjects;
 };

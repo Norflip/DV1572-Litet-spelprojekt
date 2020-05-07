@@ -9,6 +9,10 @@
 #include "Projectile.h"
 #include <vector>
 
+class Enemy;
+#include "Enemy.h"
+
+
 class Player : public Object
 {
 public:
@@ -19,7 +23,7 @@ public:
 	void SetHeight(float height) { this->playerHeight = height; };
 	void TakeDamage();	
 	void NutOnPlayer(Object* obj);
-
+	void SetEnemy(Enemy* enemy);
 private:
 
 private:
@@ -30,6 +34,7 @@ private:
 	void HandleInput();
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 	float ShortestRotation(float currentDir, float nextDir);
+	void UpdateHitEnemy();
 	
 
 private:
@@ -67,5 +72,7 @@ private:
 	GUISprite* healthbar;
 	float PlayerHealth;
 	//
+
+	Enemy* enemy;
 }; 
 

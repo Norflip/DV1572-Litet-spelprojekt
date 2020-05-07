@@ -38,6 +38,7 @@ void Player::Update(const float& deltaTime)
 {
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
+	UpdateHitEnemy();
 	HandleInput();
 
 	TakeDamage();
@@ -125,6 +126,20 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 	return returnValue;
 }
 
+void Player::UpdateHitEnemy()
+{
+	if (enemy != nullptr && testProj != nullptr)
+	{
+		if (testProj->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
+		{
+			scene->RemoveObject(enemy);
+			enemy = nullptr;
+			scene->RemoveObject(testProj);
+			testProj = nullptr;
+		}
+	}
+}
+
 void Player::NutOnPlayer(Object* obj)
 {
 	if (obj->IsEnabled() && obj->GetWorldBounds().Overlaps(this->GetWorldBounds()))
@@ -138,7 +153,11 @@ void Player::NutOnPlayer(Object* obj)
 			leftNut++;
 		}
 	}
+}
 
+void Player::SetEnemy(Enemy* enemy)
+{
+	this->enemy = enemy;
 }
 
 void Player::TriggerAttack()
@@ -164,7 +183,6 @@ void Player::HandleInput()
 			gui->RemoveGUIObject(coconutSprite);
 			leftNut--;*/
 			testSound->PlaySound("Explosive", 0.1f);
-
 	}
 	//
 	//if(input->GetKeyDown('q') && leftNut == 0)

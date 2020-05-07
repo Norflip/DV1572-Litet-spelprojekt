@@ -3,6 +3,9 @@
 #include "Terrain.h"
 #include "assimpHandler.h"
 #include "SoundHandler.h"
+
+class Player;
+
 #include "Player.h"
 
 class Enemy : public Object
@@ -14,6 +17,7 @@ class Enemy : public Object
 		void Update(const float& deltaTime) override;
 		void SetHeight(float height) { this->enemyHeight = height; };
 		void SetTarget(Player* player);
+		Object* GetFBXModel();
 	private:
 		float movementspeed;
 		void UpdateHeight(float fixedDeltaTime);
@@ -22,9 +26,9 @@ class Enemy : public Object
 		float scaleY;
 		float scaleXZ;
 		Player* player;
+		Object* FBXModel;
 
 		DirectX::XMFLOAT3 currentPosition;
-		float nextDir = 0;
-		float enemyHeight = 3;
-		
+		float nextDir = 0.0f;
+		float enemyHeight = 4.65f;	
 };
