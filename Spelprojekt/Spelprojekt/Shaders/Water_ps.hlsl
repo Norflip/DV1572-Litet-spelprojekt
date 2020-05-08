@@ -31,14 +31,16 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 
 	float4 testColor = float4(0.30f, 0.63f, 0.93f, 1.0f);
 	// Discretize the intensity, based on a few cutoff points
-	if (intensity > 0.8)
+	if (intensity > 0.9)
 	testColor = float4(1.0, 1, 1, 1.0) * testColor;
-	else if (intensity > 0.75)
+	else if (intensity > 0.85)
 	testColor = float4(0.95, 0.95, 0.95, 1.0) * testColor;
-	else if (intensity > 0.7)
-	testColor = float4(0.88, 0.88, 0.88, 1.0) * testColor;
+	else if (intensity > 0.8)
+		testColor = float4(0.90, 0.90, 0.90, 1.0) * testColor;
+	else if (intensity > 0.75)
+	testColor = float4(0.85, 0.85, 0.85, 1.0) * testColor;
 	else
-	testColor = float4(0.1, 0.8, 0.8, 1.0) * testColor;
+	testColor = float4(0.8, 0.8, 0.8, 1.0) * testColor;
 
 //testColor = round(intensity * 5) / 5 * testColor;
 	output.albedo = testColor;
