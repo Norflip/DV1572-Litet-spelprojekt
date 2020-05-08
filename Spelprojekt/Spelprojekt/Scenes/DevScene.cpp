@@ -37,17 +37,7 @@ void DevScene::Load()
 	//--------------------------------
 	// Create GUI for Devscene
 	GUI* gui = new GUI(dx11);
-
-	// Add objects
-	gui->AddGUIObject(gametimerText, "gametimerText" );
-	gui->AddGUIObject(fpsText, "fpsText");
-	gui->AddGUIObject(healthFrame, "healthFrame");
-	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
-	gui->AddGUIObject(actionbarRight, "actionbarRight");
-
-	// Set GUI
-	renderer->SetGUI(gui);
-
+	
 	// save the shaders somewhere, remember to clean it up
 	Shader* defaultShader = new Shader();
 	defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
@@ -195,6 +185,20 @@ void DevScene::Load()
 	
 
 
+
+	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
+
+	// Add objects
+	gui->AddGUIObject(gametimerText, "gametimerText");
+	gui->AddGUIObject(fpsText, "fpsText");
+	gui->AddGUIObject(healthFrame, "healthFrame");
+	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
+	gui->AddGUIObject(actionbarRight, "actionbarRight");
+
+	// Set GUI
+	renderer->SetGUI(gui);
+
+
 	gametimer.Start();
 	//// Testing animation
 	//Object* animation = AssimpHandler::loadFbxObject("Models/animation.fbx", dx11, defaultShader);
@@ -276,17 +280,14 @@ void DevScene::CreateSceneObjects()
 		defaultShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
 
 		// Left beach stand
-		Object* beachstand = AssimpHandler::loadFbxObject("Models/BeachstandChips.fbx", dx11, defaultShader);
-		beachstand->GetTransform().Scale(0.5, 0.5, 0.5);
+		Object* beachstand = AssimpHandler::loadFbxObject("Models/Beachstand.fbx", dx11, defaultShader);
 		beachstand->GetTransform().Translate(35, 8, 75);
 		beachstand->GetTransform().SetRotation({ 0, 1.6, 0 });
 		AddObject(beachstand);
 
-
 		// Boat
 		Object* boat = AssimpHandler::loadFbxObject("Models/Boat.fbx", dx11, defaultShader);
-		boat->GetTransform().Scale(2.5, 2.5, 2.5);
-		boat->GetTransform().Translate(160, 7.5, 30);
+		boat->GetTransform().Translate(160, 8.0f, 30);
 		boat->GetTransform().SetRotation({ 0, 1.6, 0 });
 		AddObject(boat);
 
@@ -296,36 +297,30 @@ void DevScene::CreateSceneObjects()
 		rocks->GetTransform().Translate(145, 7.5, 65);
 		AddObject(rocks);
 
-
-
+		
 
 		// Chairs Left beachside
-		Object* chair = AssimpHandler::loadFbxObject("Models/CuteChair.fbx", dx11, defaultShader);
+		Object* chair = AssimpHandler::loadFbxObject("Models/Sunchair.fbx", dx11, defaultShader);
 		Object* chairs[5];
 		for (int i = 0; i < 5; i++)
 			chairs[i] = new Object(*chair);
-
-		chairs[0]->GetTransform().Scale(1.25, 1.25, 1.25);
+				
 		chairs[0]->GetTransform().Translate(15, 7.5f, 55);
 		chairs[0]->GetTransform().Rotate(0.2f, -5, 0);
 		AddObject(chairs[0]);
-
-		chairs[1]->GetTransform().Scale(1.25, 1.25, 1.25);
+		
 		chairs[1]->GetTransform().Translate(14, 7.0f, 58);
 		chairs[1]->GetTransform().Rotate(0.2f, -5, 0);
 		AddObject(chairs[1]);
-
-		chairs[2]->GetTransform().Scale(1.25, 1.25, 1.25);
+		
 		chairs[2]->GetTransform().Translate(13, 6.9f, 61);
 		chairs[2]->GetTransform().Rotate(0.2f, -5, 0);
 		AddObject(chairs[2]);
-
-		chairs[3]->GetTransform().Scale(1.25, 1.25, 1.25);
+		
 		chairs[3]->GetTransform().Translate(14, 7.0f, 68);
 		chairs[3]->GetTransform().Rotate(0.2f, -5, 0);
 		AddObject(chairs[3]);
-
-		chairs[4]->GetTransform().Scale(1.25, 1.25, 1.25);
+		
 		chairs[4]->GetTransform().Translate(13, 6.9f, 71);
 		chairs[4]->GetTransform().Rotate(0.2f, -5, 0);
 		AddObject(chairs[4]);
@@ -335,60 +330,52 @@ void DevScene::CreateSceneObjects()
 		Object* benches[2];
 		for (int i = 0; i < 2; i++)
 			benches[i] = new Object(*bench);
-
-		benches[0]->GetTransform().Scale(0.3, 0.3, 0.3);
+				
 		benches[0]->GetTransform().Translate(29, 7, 50);
 		benches[0]->GetTransform().SetRotation({ 0,2,0 });
 		AddObject(benches[0]);
-
-		benches[1]->GetTransform().Scale(0.3, 0.3, 0.3);
+				
 		benches[1]->GetTransform().Translate(25, 7, 95);
 		benches[1]->GetTransform().SetRotation({ 0,0.9,0 });
 		AddObject(benches[1]);
 
 		// Parasoll left beachside
-		Object* parasoll = AssimpHandler::loadFbxObject("Models/Parasoll.fbx", dx11, defaultShader);
+		Object* parasoll = AssimpHandler::loadFbxObject("Models/Umbrella_BlueRed.fbx", dx11, defaultShader);
 		Object* parasolls[2];
 		for (int i = 0; i < 2; i++)
 			parasolls[i] = new Object(*parasoll);
 
 		parasolls[0]->GetTransform().Translate(20, 5.4, 60);
-		parasolls[0]->GetTransform().Scale(0.5, 0.5, 0.5);
 		parasolls[0]->GetTransform().Rotate(0.1, 0, -0.1);
 		AddObject(parasolls[0]);
 
 		parasolls[1]->GetTransform().Translate(17, 3.7, 80);
-		parasolls[1]->GetTransform().Scale(0.5, 0.5, 0.5);
 		parasolls[1]->GetTransform().Rotate(0, 0, -0.2);
 		AddObject(parasolls[1]);
 
 		// Balls left beachside
-		Object* redball = AssimpHandler::loadFbxObject("Models/Redball.fbx", dx11, defaultShader);
+		Object* redball = AssimpHandler::loadFbxObject("Models/Beachball_Red.fbx", dx11, defaultShader);
 		Object* redballs[2];
 		for (int i = 0; i < 2; i++)
 			redballs[i] = new Object(*redball);
-
-		redballs[0]->GetTransform().Scale(1, 1, 1);
+				
 		redballs[0]->GetTransform().Translate(25, 5.8, 65);
 		redballs[0]->GetTransform().Rotate(0.2f, -5, 0);
 		AddObject(redballs[0]);
-
-		redballs[1]->GetTransform().Scale(1, 1, 1);
+				
 		redballs[1]->GetTransform().Translate(125, 6, 155);
 		redballs[1]->GetTransform().Rotate(0.2f, -5, 0);
 		AddObject(redballs[1]);
 
-		Object* blueball = AssimpHandler::loadFbxObject("Models/Blueball.fbx", dx11, defaultShader);
+		Object* blueball = AssimpHandler::loadFbxObject("Models/Beachball_Blue.fbx", dx11, defaultShader);
 		Object* blueballs[2];
 		for (int i = 0; i < 2; i++)
 			blueballs[i] = new Object(*blueball);
-
-		blueballs[0]->GetTransform().Scale(1, 1, 1);
+				
 		blueballs[0]->GetTransform().Translate(15, 6.5, 90);
 		blueballs[0]->GetTransform().Rotate(0.2f, -5, 0);
 		AddObject(blueballs[0]);
-
-		blueballs[1]->GetTransform().Scale(1, 1, 1);
+				
 		blueballs[1]->GetTransform().Translate(130, 6.5, 150);
 		blueballs[1]->GetTransform().Rotate(0.2f, -5, 0);
 		AddObject(blueballs[1]);
@@ -399,16 +386,13 @@ void DevScene::CreateSceneObjects()
 		for (int i = 0; i < 3; i++)
 			palms[i] = new Object(*palm);
 
-		palms[0]->GetTransform().Translate(30, 9, 55);
-		palms[0]->GetTransform().Scale(0.3, 0.3, 0.3);
+		palms[0]->GetTransform().Translate(40, 9.5, 55);
 		AddObject(palms[0]);
 
-		palms[1]->GetTransform().Translate(35, 8, 75);
-		palms[1]->GetTransform().Scale(0.3, 0.3, 0.3);
+		palms[1]->GetTransform().Translate(45, 8, 75);
 		AddObject(palms[1]);
 
-		palms[2]->GetTransform().Translate(30, 8, 90);
-		palms[2]->GetTransform().Scale(0.3, 0.3, 0.3);
+		palms[2]->GetTransform().Translate(45, 8, 90);
 		AddObject(palms[2]);
 
 		// Mountains
@@ -419,13 +403,11 @@ void DevScene::CreateSceneObjects()
 
 		// Middle mountain
 		mountains[0]->GetTransform().Translate(100, 7, 110);
-		mountains[0]->GetTransform().Scale(5, 5, 5);
 		AddObject(mountains[0]);
 
 		// Top left mountain
 		mountains[1]->GetTransform().Translate(30, 4, 170);
 		mountains[1]->GetTransform().Rotate(0, 180, 0);
-		mountains[1]->GetTransform().Scale(5, 5, 5);
 		AddObject(mountains[1]);
 
 
@@ -434,25 +416,20 @@ void DevScene::CreateSceneObjects()
 		for (int i = 0; i < 5; i++)
 			middlePalms[i] = new Object(*palm);
 		// 2 stycken �ver mitten berget
-		middlePalms[0]->GetTransform().Translate(55, 8, 145);
-		middlePalms[0]->GetTransform().Scale(0.3, 0.3, 0.3);
+		middlePalms[0]->GetTransform().Translate(65, 8, 140);
 		AddObject(middlePalms[0]);
 
-		middlePalms[1]->GetTransform().Translate(75, 8.2, 155);
-		middlePalms[1]->GetTransform().Scale(0.3, 0.3, 0.3);
+		middlePalms[1]->GetTransform().Translate(85, 8.2, 145);
 		AddObject(middlePalms[1]);
 
 		// 3 under mitten berget
 		middlePalms[2]->GetTransform().Translate(110, 9, 55);
-		middlePalms[2]->GetTransform().Scale(0.3, 0.3, 0.3);
 		AddObject(middlePalms[2]);
 
 		middlePalms[3]->GetTransform().Translate(105, 8, 75);
-		middlePalms[3]->GetTransform().Scale(0.3, 0.3, 0.3);
 		AddObject(middlePalms[3]);
 
 		middlePalms[4]->GetTransform().Translate(115, 8, 90);
-		middlePalms[4]->GetTransform().Scale(0.3, 0.3, 0.3);
 		AddObject(middlePalms[4]);
 
 		// palmer h�gra sidan
@@ -461,15 +438,12 @@ void DevScene::CreateSceneObjects()
 			rightPalms[i] = new Object(*palm);
 
 		rightPalms[0]->GetTransform().Translate(150, 8, 160);
-		rightPalms[0]->GetTransform().Scale(0.3, 0.3, 0.3);
 		AddObject(rightPalms[0]);
 
 		rightPalms[1]->GetTransform().Translate(155, 8, 150);
-		rightPalms[1]->GetTransform().Scale(0.3, 0.3, 0.3);
 		AddObject(rightPalms[1]);
 
 		rightPalms[2]->GetTransform().Translate(157, 8, 130);
-		rightPalms[2]->GetTransform().Scale(0.3, 0.3, 0.3);
 		AddObject(rightPalms[2]);
 
 		// Grass
