@@ -77,7 +77,7 @@ void DevScene::Load()
 	Mesh* waterPlane = ShittyOBJLoader::Load("Models/Water_Plane.obj", dx11.GetDevice());
 	Object* water = new Object(waterPlane, new Material(waterShader, dx11));
 	water->GetTransform().Translate({ 100, 6.0f, 100 });
-	water->GetTransform().Scale(2, 2, 2);
+	water->GetTransform().Scale(3, 3, 3);
 	AddObject(water);
 
 	water->isWater = true;
@@ -119,7 +119,7 @@ void DevScene::Load()
 	this->player = new Player(dev_monkey_mesh, new Material(toonShader, dx11), controller, &test, gui, dx11, static_cast<Scene*>(this));
 	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
-
+	this->player->GetTransform().SetPosition({ 30, 7, 30 });
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
 	AddObject(this->player);
 
