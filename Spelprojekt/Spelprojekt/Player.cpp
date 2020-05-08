@@ -28,7 +28,7 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	this->scene = scene;	
 
 	this->playerHealth = 100.0f;
-	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 700.0f);
+	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 650.0f);
 	this->healthbar->HealthBar(100.0f, 100.0f);
 	this->gui->AddGUIObject(this->healthbar, "healthbar");
 }

@@ -30,9 +30,9 @@ DevScene::~DevScene()
 void DevScene::Load()
 {	
 	// HEALTH
-	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
-	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 700.0f);
-	actionbarRight = new GUIActionbar(dx11, "Sprites/Actionbar.png", 400.0f, 700.0f);
+	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
+	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
+	actionbarRight = new GUIActionbar(dx11, "Sprites/Actionbar.png", 400.0f, 650.0f);
 
 	//--------------------------------
 	// Create GUI for Devscene
