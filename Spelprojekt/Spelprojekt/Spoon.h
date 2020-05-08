@@ -15,6 +15,7 @@ public:
 	float DamageGiven() override { return this->damage; }
 	void HasAttacked(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;	
 	void MeleeAttack(float deltaTime);
+	void FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);
 
 private:
 	//int movementspeeds = 3;
