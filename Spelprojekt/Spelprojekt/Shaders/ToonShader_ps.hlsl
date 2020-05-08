@@ -26,8 +26,12 @@ struct GBUFFER
 GBUFFER main(VS_OUTPUT input) : SV_TARGET
 {
 	GBUFFER output;
-	output.albedo = mat_diffuse;
+
+
+	//
 	output.light = float4(mat_ambient.xyz, mat_shininess);
+
+
 	output.normal = float4(input.normal, 1.0f);
 	// The direction of the diffuse light
 	float3 DiffuseLightDirection = -sunDirection;
@@ -38,7 +42,7 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 	float DiffuseIntensity = 1.0;
 	if (hasAlbedoTexture)
 	{
-		output.albedo *= float4(m_albedoMap.Sample(m_samplerState, input.uv));
+		//output.albedo *= float4(m_albedoMap.Sample(m_samplerState, input.uv));
 
 		float intensity = dot(normalize(input.normal), DiffuseLightDirection );
 		if (intensity < 0)

@@ -50,8 +50,8 @@ void DevScene::Load()
 
 	// save the shaders somewhere, remember to clean it up
 	Shader* defaultShader = new Shader();
-	defaultShader->LoadPixelShader(L"Shaders/Default_ps.hlsl", "main", dx11.GetDevice());
-	defaultShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
+	defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+	defaultShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 
 	// object = mesh + material
 
@@ -76,19 +76,6 @@ void DevScene::Load()
 	AddObject(sphere);
 
 
-	// ------- water shader
-	
-	Shader* waterShader = new Shader();
-	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
-	waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
-
-	Mesh* waterPlane = ShittyOBJLoader::Load("Models/Water_Plane.obj", dx11.GetDevice());
-	Object* water = new Object(waterPlane, new Material(waterShader, dx11));
-	water->GetTransform().Translate({ 100, 6.0f, 100 });
-	water->GetTransform().Scale(3, 3, 3);
-	AddObject(water);
-
-	water->isWater = true;
 
 
 	// ------- TERRAIN
@@ -118,6 +105,28 @@ void DevScene::Load()
 
 	test.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice());
 	AddObject(new Object(test.GetMesh(), terrainMat));
+
+
+	// ------- water shader
+
+	Shader* waterShader = new Shader();
+	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
+	waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
+	std::cout << "test";
+	Texture* heightMapTexture = Texture::CreateTexture("Textures/map_displacement_for_water.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	Material* waterMat = new Material(waterShader, dx11);
+	
+	waterMat->SetTexture(0, heightMapTexture, PIXEL_TYPE::PIXEL);
+
+	Mesh* waterPlane = ShittyOBJLoader::Load("Models/Water_Plane.obj", dx11.GetDevice());
+	Object* water = new Object(waterPlane, waterMat);
+	water->GetTransform().Translate({ 102, 6.0f, 102 });
+	water->GetTransform().SetRotation({ 0,0,0 });
+	water->GetTransform().Scale(2*1.2, 2 * 1.2, 2 * 1.2);
+	AddObject(water);
+
+	water->isWater = true;
+
 
 	// ------ PLAYER
 	Shader* toonShader = new Shader();

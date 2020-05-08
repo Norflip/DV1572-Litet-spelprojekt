@@ -5,7 +5,6 @@ cbuffer WorldConstantBuffer : register(b0)
 {
 	matrix mvp;
 	matrix world;
-
 	float time;
 
 	float3 wvb_pad0;
