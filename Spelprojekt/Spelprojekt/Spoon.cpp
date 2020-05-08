@@ -50,6 +50,12 @@ void Spoon::MeleeAttack(float deltaTime)
 	GetTransform().SetPosition(nextPos);
 }
 
+void Spoon::FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
+{
+	GetTransform().SetPosition(pos);
+	GetTransform().SetRotation(rot);
+}
+
 void Spoon::Update(const float& deltaTime)
 {	
 	//if (attack)

@@ -211,6 +211,7 @@ void DevScene::Update(const float& deltaTime)
 	for (auto i : spoons)
 		player->UpdateHands(i);
 	//
+	
 		
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 	controller->Update(deltaTime);
