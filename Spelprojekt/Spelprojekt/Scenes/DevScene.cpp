@@ -55,6 +55,14 @@ void DevScene::Load()
 
 	// object = mesh + material
 
+	// Exit Wagon
+	Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
+	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
+	wagon->GetTransform().Translate(50, 9.5, 50);
+	wagon->GetTransform().Rotate(0.05f, -5, 0);
+	AddObject(wagon);
+
+
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 
 	Object* sphere = new Object(dev_monkey_mesh, new Material(defaultShader, dx11));
@@ -176,12 +184,7 @@ void DevScene::Load()
 	// ------ Leveldesign
 	CreateSceneObjects();	
 	
-	// Exit Wagon
-	Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
-	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
-	wagon->GetTransform().Translate(50, 9.5, 50);
-	wagon->GetTransform().Rotate(0.05f, -5, 0);
-	AddObject(wagon);
+
 
 	gametimer.Start();
 	//// Testing animation
@@ -241,12 +244,12 @@ void DevScene::Update(const float& deltaTime)
 
 	int size = allObjects.size();
 
-	/*if (canWin && player->GetWorldBounds().Overlaps(allObjects[size-1]->GetWorldBounds()))
+	if (canWin && player->GetWorldBounds().Overlaps(allObjects[0]->GetWorldBounds()))
 	{
 		gametimerText->SetString("You won");
 		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(true);
-	}*/
+	}
 }
 
 Scene* DevScene::GetNextScene() const
