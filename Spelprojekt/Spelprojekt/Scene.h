@@ -16,7 +16,7 @@ public:
 	virtual void Update(const float& deltaTime);
 	virtual void FixedUpdate(const float& fixedDeltaTime);
 	virtual void Render();
-
+	virtual Renderer* getRenderer() { return this->renderer; };
 	virtual Scene* GetNextScene() const = 0;
 
 	Camera* GetSceneCamera() const { return this->camera; }
@@ -27,7 +27,7 @@ public:
 
 	void AddObject(Object*);
 	void RemoveObject(Object*);
-
+	Window& getWindow() { return this->window; };
 	Scene* nextScene;
 
 protected:

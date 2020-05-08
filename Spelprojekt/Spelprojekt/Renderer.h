@@ -30,11 +30,12 @@ public:
 
 	void SetGUI(GUI* gui) { this->gui = gui; }
 	void DisplayFrame(DirectX::XMVECTOR eye);
-
+	void setVsync(bool vsync) { this->vSync = vSync; }
 private:
 	void DrawMesh(Mesh*);
 
 private:
+	bool vSync = false;
 	DX11Handler& dx11;
 	Timer& timer;
 	Lights lights;

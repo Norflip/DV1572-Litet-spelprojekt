@@ -93,14 +93,14 @@ void DX11Handler::SetWireframeMode(bool useWireframe)
 
 void DX11Handler::CreateBackbufferRenderTarget(size_t width, size_t height)
 {
-	ID3D11Texture2D* backBufferPtr;
+	this->backBufferPtr;
 	swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
 
 	// assert backbufferPtr instead
 
 	if (backBufferPtr != nullptr)
 	{
-		ID3D11RenderTargetView* backbufferRTV;
+		backbufferRTV;
 		device->CreateRenderTargetView(backBufferPtr, nullptr, &backbufferRTV);
 		backBufferPtr->Release();
 
