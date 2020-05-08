@@ -41,7 +41,7 @@ void DX11Handler::Initialize(const Window& window)
 	swapChainDescription.SampleDesc.Count = 1;
 	swapChainDescription.SampleDesc.Quality = 0;
 	swapChainDescription.Windowed = TRUE;
-	swapChainDescription.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swapChainDescription.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
 	swapChainDescription.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	UINT swapflags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;

@@ -28,7 +28,7 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	this->scene = scene;	
 
 	this->playerHealth = 100.0f;
-	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 700.0f);
+	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 650.0f);
 	this->healthbar->HealthBar(100.0f, 100.0f);
 	this->gui->AddGUIObject(this->healthbar, "healthbar");
 }
@@ -45,6 +45,7 @@ void Player::Update(const float& deltaTime)
 	UpdateHitEnemy();
 	//HandleInput();
 
+	UpdateMeleeWeaponPosition();	// If spoon is equiped
 	UseWeapon();
 	TakeDamage();
 }
@@ -138,6 +139,7 @@ void Player::UpdateHitEnemy()
 			scene->RemoveObject(enemy);
 			enemy = nullptr;
 			scene->RemoveObject(testProj);
+			testProj->SetEnabled(false); // new
 			testProj = nullptr;
 		}
 	}
@@ -151,20 +153,18 @@ void Player::UpdateHands(Weapon* obj)
 			leftWeapon = CheckWeaponType(obj);	//check type
 			
 			this->leftActionbar = new GUIActionbar(*obj->GetWeaponSprite());
-			this->leftActionbar->SetPosition(325.0f, 700.0f);
+			this->leftActionbar->SetPosition(325.0f, 650.0f);
 			this->gui->AddGUIObject(this->leftActionbar, "Left Actionbar");
 
-			scene->RemoveObject(obj);
-			
+			scene->RemoveObject(obj);			
 			obj->SetEnabled(false);
-
 			lefthandFull = true;
 		}
 		else if (lefthandFull && !righthandFull) {
 			rightWeapon = CheckWeaponType(obj); //check type
 			
 			this->rightActionbar = new GUIActionbar(*obj->GetWeaponSprite());
-			this->rightActionbar->SetPosition(400.0f, 700.0f);
+			this->rightActionbar->SetPosition(400.0f, 650.0f);
 			this->gui->AddGUIObject(this->rightActionbar, "Right Actionbar");
 
 			scene->RemoveObject(obj);
@@ -175,8 +175,27 @@ void Player::UpdateHands(Weapon* obj)
 		else {
 			
 		}
-	}	
+	}		
 
+}
+
+void Player::UpdateMeleeWeaponPosition()
+{
+	if (lefthandFull) {
+		if (leftWeapon->GetWeaponTypename() == "Slev") {
+			leftWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
+			leftWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
+			leftWeapon->direction = GetTransform().GetRotation();
+		}
+	}
+
+	if (righthandFull) {
+		if (rightWeapon->GetWeaponTypename() == "Slev") {
+			rightWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
+			rightWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
+			rightWeapon->direction = GetTransform().GetRotation();
+		}
+	}	
 }
 
 void Player::UseWeapon()
@@ -184,8 +203,16 @@ void Player::UseWeapon()
 	if (input->GetMouseButtonDown(0) && lefthandFull) {
 		leftWeapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());		
 		leftWeapon->direction = GetTransform().GetRotation();
+				
+		if(leftWeapon->GetWeaponTypename() != "Slev")
+			scene->AddObject(leftWeapon);
 
-		scene->AddObject(leftWeapon);		
+		// TEMPORÄRT stuff
+		Projectile* duck = static_cast<Projectile*>(leftWeapon);
+		testProj = duck;
+		scene->AddObject(testProj);
+		//
+
 		gui->RemoveGUIObject("Left Actionbar");
 		testSound->PlaySound("Explosive", 0.1f);	
 
@@ -197,7 +224,9 @@ void Player::UseWeapon()
 		rightWeapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());
 		rightWeapon->direction = GetTransform().GetRotation();
 		
-		scene->AddObject(rightWeapon);
+		if (rightWeapon->GetWeaponTypename() != "Slev")
+			scene->AddObject(rightWeapon);
+
 		gui->RemoveGUIObject("Right Actionbar");
 		testSound->PlaySound("Explosive", 0.1f);
 
@@ -226,6 +255,7 @@ Weapon* Player::CheckWeaponType(Weapon* obj)
 	if (obj->GetWeaponTypename() == "Slev") {
 		Spoon* spoonweap = static_cast<Spoon*>(obj);
 		curr = new Spoon(*spoonweap);
+		scene->AddObject(curr);
 	}
 	return curr;
 }
