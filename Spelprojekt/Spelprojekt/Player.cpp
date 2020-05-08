@@ -206,6 +206,12 @@ void Player::UseWeapon()
 		if(leftWeapon->GetWeaponTypename() != "Slev")
 			scene->AddObject(leftWeapon);
 
+		// TEMPORÄRT stuff
+		Projectile* duck = static_cast<Projectile*>(leftWeapon);
+		testProj = duck;
+		scene->AddObject(testProj);
+		//
+
 		gui->RemoveGUIObject("Left Actionbar");
 		testSound->PlaySound("Explosive", 0.1f);	
 
