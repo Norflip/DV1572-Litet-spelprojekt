@@ -139,6 +139,7 @@ void Player::UpdateHitEnemy()
 			scene->RemoveObject(enemy);
 			enemy = nullptr;
 			scene->RemoveObject(testProj);
+			testProj->SetEnabled(false); // new
 			testProj = nullptr;
 		}
 	}
@@ -152,7 +153,7 @@ void Player::UpdateHands(Weapon* obj)
 			leftWeapon = CheckWeaponType(obj);	//check type
 			
 			this->leftActionbar = new GUIActionbar(*obj->GetWeaponSprite());
-			this->leftActionbar->SetPosition(325.0f, 700.0f);
+			this->leftActionbar->SetPosition(325.0f, 650.0f);
 			this->gui->AddGUIObject(this->leftActionbar, "Left Actionbar");
 
 			scene->RemoveObject(obj);			
@@ -163,7 +164,7 @@ void Player::UpdateHands(Weapon* obj)
 			rightWeapon = CheckWeaponType(obj); //check type
 			
 			this->rightActionbar = new GUIActionbar(*obj->GetWeaponSprite());
-			this->rightActionbar->SetPosition(400.0f, 700.0f);
+			this->rightActionbar->SetPosition(400.0f, 650.0f);
 			this->gui->AddGUIObject(this->rightActionbar, "Right Actionbar");
 
 			scene->RemoveObject(obj);

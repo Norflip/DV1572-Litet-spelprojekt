@@ -256,7 +256,7 @@ Scene* DevScene::GetNextScene() const
 
 void DevScene::CreateSceneObjects()
 {
-	if (false)
+	if (true)
 	{
 		// save the shaders somewhere, remember to clean it up
 		Shader* defaultShader = new Shader();
