@@ -492,24 +492,21 @@ void DevScene::CreateSceneObjects()
 		//
 
 		// Surdboards
-		Object* sunsetSurfboard = AssimpHandler::loadFbxObject("Models/surfboardSunset.fbx", dx11, defaultShader);
-		Object* surfboard = AssimpHandler::loadFbxObject("Models/surfboard.fbx", dx11, defaultShader);
-		Object* surfboardTrippy = AssimpHandler::loadFbxObject("Models/surfboardTrippy.fbx", dx11, defaultShader);
+		Object* SurfboardBlue = AssimpHandler::loadFbxObject("Models/SurfboardBlue.fbx", dx11, defaultShader);
+		Object* SurfboardOrange = AssimpHandler::loadFbxObject("Models/SurfboardOrange.fbx", dx11, defaultShader);
+		Object* SurfboardTrippy = AssimpHandler::loadFbxObject("Models/SurfboardTrippy.fbx", dx11, defaultShader);
 
-		sunsetSurfboard->GetTransform().Translate(150, 8.5, 30);
-		sunsetSurfboard->GetTransform().Scale(1, 1, 1);
-		sunsetSurfboard->GetTransform().SetRotation({ 0, 0, 0 });
-		AddObject(sunsetSurfboard);
+		SurfboardBlue->GetTransform().Translate(150, 8.5, 30);
+		SurfboardBlue->GetTransform().SetRotation({ 0, 0, 0 });
+		AddObject(SurfboardBlue);
 
-		surfboard->GetTransform().Translate(148, 8.5, 28);
-		surfboard->GetTransform().Scale(1, 1, 1);
-		surfboard->GetTransform().SetRotation({ 0, 0, 0 });
-		AddObject(surfboard);
+		SurfboardOrange->GetTransform().Translate(148, 8.5, 28);
+		SurfboardOrange->GetTransform().SetRotation({ 0, 0, 0 });
+		AddObject(SurfboardOrange);
 
-		surfboardTrippy->GetTransform().Translate(146, 8.5, 30);
-		surfboardTrippy->GetTransform().Scale(1, 1, 1);
-		surfboardTrippy->GetTransform().SetRotation({ 0, 0, 0 });
-		AddObject(surfboardTrippy);
+		SurfboardTrippy->GetTransform().Translate(146, 8.5, 30);
+		SurfboardTrippy->GetTransform().SetRotation({ 0, 0, 0 });
+		AddObject(SurfboardTrippy);
 
 		//this->controller->SetFollow(&boat->GetTransform(), { 0, 10.0f, -10.0f });
 
