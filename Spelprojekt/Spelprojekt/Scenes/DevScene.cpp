@@ -19,7 +19,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 	this->timeUntilEnd = 10.0f;
-	this->canWin = false;
 }
 
 DevScene::~DevScene()
@@ -29,6 +28,7 @@ DevScene::~DevScene()
 
 void DevScene::Load()
 {	
+	this->canWin = false;
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
@@ -254,8 +254,6 @@ void DevScene::Update(const float& deltaTime)
 		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(false);
 	}
-
-	int size = allObjects.size();
 
 	if (canWin && player->GetWorldBounds().Overlaps(allObjects[0]->GetWorldBounds()))
 	{
@@ -526,6 +524,8 @@ void DevScene::AddSceneObject(Object* obj)
 
 void DevScene::checkForNextScene()
 {
+	// Används inte längre
+
 	// Change scene logic
 	if (controller->getInput()->GetKeyDown('i'))
 	{
@@ -560,19 +560,10 @@ void DevScene::SetNextScene(bool winOrLose)
 
 	for (int i = 0; i < scenes.size(); i++)
 	{
-		if (winOrLose == false)
+		if (scenes[i]->GetName() == "EndScene")
 		{
-			if (scenes[i]->GetName() == "GameOverScene")
-			{
-				nextScene = scenes[i];
-			}
-		}
-		else if (winOrLose ==  true)
-		{
-			if (scenes[i]->GetName() == "WinScene")
-			{
-				nextScene = scenes[i];
-			}
+			scenes[i]->setWinOrLose(winOrLose);
+			nextScene = scenes[i];
 		}
 	}
 }

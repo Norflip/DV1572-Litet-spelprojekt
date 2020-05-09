@@ -29,7 +29,7 @@ public:
 	void RemoveObject(Object*);
 	Window& getWindow() { return this->window; };
 	Scene* nextScene;
-
+	void setWinOrLose(bool didWin);
 protected:
 	void m_AddObjectToScene(Object*);
 	void m_RemoveObjectFromScene(Object*);
@@ -50,5 +50,5 @@ protected:
 	std::unordered_map <size_t, std::unordered_map<size_t, std::vector<Object*>>> sortedObjects;
 	std::vector<Object*> allObjects;
 	std::string sceneName;
-	
+	bool didWin;
 };
