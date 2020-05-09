@@ -132,15 +132,15 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 
 void Player::UpdateHitEnemy()
 {
-	if (enemy != nullptr && testProj != nullptr)
+	if (enemy != nullptr && testWeapon != nullptr)
 	{
-		if (testProj->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
+		if (testWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
 		{
 			scene->RemoveObject(enemy);
 			enemy = nullptr;
-			scene->RemoveObject(testProj);
-			testProj->SetEnabled(false); // new
-			testProj = nullptr;
+			scene->RemoveObject(testWeapon);
+			testWeapon->SetEnabled(false); // new
+			testWeapon = nullptr;
 		}
 	}
 }
@@ -204,14 +204,13 @@ void Player::UseWeapon()
 		leftWeapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());		
 		leftWeapon->direction = GetTransform().GetRotation();
 				
-		if(leftWeapon->GetWeaponTypename() != "Slev")
+		if (leftWeapon->GetWeaponTypename() != "Slev") {
 			scene->AddObject(leftWeapon);
-
-		// TEMPORÄRT stuff
-		Projectile* duck = static_cast<Projectile*>(leftWeapon);
-		testProj = duck;
-		scene->AddObject(testProj);
-		//
+			// TEMPORÄRT stuff			
+			testWeapon = static_cast<Weapon*>(leftWeapon);;
+			scene->AddObject(testWeapon);
+			//
+		}		
 
 		gui->RemoveGUIObject("Left Actionbar");
 		testSound->PlaySound("Explosive", 0.1f);	

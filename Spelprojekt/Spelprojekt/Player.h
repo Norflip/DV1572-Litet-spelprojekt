@@ -54,7 +54,7 @@ private:
 	// Weapon shit
 	Weapon* rightWeapon;
 	Weapon* leftWeapon;	
-	Projectile* testProj;
+	Weapon* testWeapon;
 	//Projectile* projectileWeapon;
 	//Spoon* spoonWeapon;
 	GUIActionbar* leftActionbar;
