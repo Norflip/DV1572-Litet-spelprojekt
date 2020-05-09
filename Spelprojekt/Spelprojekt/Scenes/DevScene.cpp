@@ -508,8 +508,12 @@ void DevScene::CreateSceneObjects()
 		SurfboardTrippy->GetTransform().SetRotation({ 0, 0, 0 });
 		AddObject(SurfboardTrippy);
 
-		//this->controller->SetFollow(&boat->GetTransform(), { 0, 10.0f, -10.0f });
+		Object* bungalow = AssimpHandler::loadFbxObject("Models/Bungalow.fbx", dx11, defaultShader);
+		bungalow->GetTransform().Translate(110, 7.5, 140);
+		bungalow->GetTransform().SetRotation({ 0, -2, 0 });
+		AddObject(bungalow);
 
+		//this->controller->SetFollow(&boat->GetTransform(), { 0, 10.0f, -10.0f });	
 
 
 	}
