@@ -38,8 +38,7 @@ private:
 	Scene* currentScene;
 	Scene* gameScene;
 	Scene* introScene;
-	Scene* gameOverScene;
-	Scene* winScene;
+	Scene* endScene;
 	std::vector<Scene*>scenes;
 
 	Renderer* deferredRenderer;

@@ -4,6 +4,7 @@ Scene::Scene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& wi
 {
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
 	this->nextScene = nullptr;
+	this->didWin = false;
 }
 
 
@@ -120,6 +121,11 @@ void Scene::AddObject(Object* obj)
 void Scene::RemoveObject(Object* obj)
 {
 	objectsToRemove.push_back(obj);
+}
+
+void Scene::setWinOrLose(bool didWin)
+{
+	this->didWin = didWin;
 }
 
 void Scene::m_AddObjectToScene(Object* obj)
