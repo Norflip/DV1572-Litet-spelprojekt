@@ -17,6 +17,8 @@ public:
 	void MeleeAttack(float deltaTime);
 	void FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);
 
+	void PlaySoundEffect() override { weaponSound->PlaySound("Swoosh", 0.1f); }
+
 private:
 	//int movementspeeds = 3;
 

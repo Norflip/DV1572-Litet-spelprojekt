@@ -3,7 +3,7 @@
 #include "Input.h"
 #include "Object.h"
 #include "Camera.h"
-
+#include "SoundHandler.h"
 class Scene
 {
 public:

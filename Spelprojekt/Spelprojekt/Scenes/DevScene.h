@@ -19,6 +19,8 @@
 #include "../AABB.h"
 #include "../Enemy.h"
 #include "../SpawnObjects.h"
+
+
 //#include <string>
 
 class DevScene : public Scene
@@ -51,6 +53,8 @@ public:
 
 private:
 	CameraController* controller;
+
+	SoundHandler* levelMusic;
 
 	GUIText* gametimerText;
 	GUIText* fpsText;

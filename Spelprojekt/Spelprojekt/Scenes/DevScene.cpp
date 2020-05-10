@@ -20,6 +20,8 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 	this->timeUntilEnd = 10.0f;
 	this->canWin = false;
+
+	
 }
 
 DevScene::~DevScene()
@@ -28,7 +30,10 @@ DevScene::~DevScene()
 }
 
 void DevScene::Load()
-{	
+{		
+	//this->levelMusic->LoadSound("Grass", "SoundEffects/Greengrass.wav");
+	//this->levelMusic->PlaySound("Grass", 0.1f);
+
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
@@ -203,6 +208,12 @@ void DevScene::Load()
 	//// Testing animation
 	//Object* animation = AssimpHandler::loadFbxObject("Models/animation.fbx", dx11, defaultShader);
 	//AddObject(animation);
+
+
+	// Music last thing to load
+	this->levelMusic = new SoundHandler();
+	this->levelMusic->LoadSound("Levelsound", "SoundEffects/Ben.wav");
+	this->levelMusic->PlaySound("Levelsound", 0.05f);
 }
 
 void DevScene::Unload()
@@ -210,10 +221,12 @@ void DevScene::Unload()
 	// @TODO
 	gametimer.Restart();
 	gametimer.Stop();
+		
+	this->levelMusic->StopSound();
 }
 
 void DevScene::Update(const float& deltaTime)
-{
+{	
 	spawnObjects->SpawnEnemy();
 	
 	Scene::Update(deltaTime);

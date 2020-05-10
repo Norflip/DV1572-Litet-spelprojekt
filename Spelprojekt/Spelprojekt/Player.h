@@ -54,9 +54,7 @@ private:
 	// Weapon shit
 	Weapon* rightWeapon;
 	Weapon* leftWeapon;	
-	Weapon* testWeapon;
-	//Projectile* projectileWeapon;
-	//Spoon* spoonWeapon;
+	Weapon* testWeapon;	
 	GUIActionbar* leftActionbar;
 	GUIActionbar* rightActionbar;
 	bool lefthandFull, righthandFull;
@@ -64,7 +62,7 @@ private:
 
 	float scaleXZ, scaleY;		
 	GUI* gui;
-	SoundHandler* testSound;
+
 	Scene* scene;		
 	DirectX::XMFLOAT3 currentPosition;
 	float nextDir = 0;	

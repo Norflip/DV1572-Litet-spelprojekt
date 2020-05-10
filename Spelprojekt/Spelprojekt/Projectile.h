@@ -1,5 +1,6 @@
 #pragma once
 #include "Weapon.h"
+#include "SoundHandler.h"
 class Projectile :
 	public Weapon 
 {
@@ -14,8 +15,9 @@ public:
 	std::string GetWeaponTypename() override { return this->WeaponTypeName; }
 	float DamageGiven() override { return this->damage; }
 	void HasAttacked(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;		
-	void rangedAttack(float deltaTime);
-
+	void rangedAttack(float deltaTime);	
+	void PlaySoundEffect() override { weaponSound->PlaySound("Explo", 0.1f); }
+	
 private:		
 	int movementspeed = 3;
 };
