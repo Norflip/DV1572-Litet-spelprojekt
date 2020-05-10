@@ -14,6 +14,8 @@ Spoon::Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, Shader* defa
 	this->attack = false;
 	this->damage = 5.0f;
 	this->WeaponTypeName = "Slev";
+
+	this->weaponSound->LoadSound("Swoosh", "SoundEffects/Swoosh.wav");
 }
 
 Spoon::Spoon(const Spoon& other)
@@ -28,6 +30,7 @@ Spoon::Spoon(const Spoon& other)
 	this->attack = false;
 	this->damage = other.damage;
 	this->WeaponTypeName = other.WeaponTypeName;
+	this->weaponSound = other.weaponSound;
 }
 
 Spoon::~Spoon()

@@ -21,10 +21,7 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	this->righthandFull = false;
 	this->leftWeapon = nullptr;
 	this->rightWeapon = nullptr;	
-	//
-
-	this->testSound = new SoundHandler();
-	this->testSound->LoadSound("Explosive", "SoundEffects/Explo1.wav");
+		
 	this->scene = scene;	
 
 	this->playerHealth = 100.0f;
@@ -35,7 +32,6 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 
 Player::~Player()
 {
-
 }
 
 void Player::Update(const float& deltaTime)
@@ -167,8 +163,7 @@ void Player::UpdateHands(Weapon* obj)
 			this->rightActionbar->SetPosition(400.0f, 650.0f);
 			this->gui->AddGUIObject(this->rightActionbar, "Right Actionbar");
 
-			scene->RemoveObject(obj);
-			
+			scene->RemoveObject(obj);			
 			obj->SetEnabled(false);
 			righthandFull = true;
 		}
@@ -203,18 +198,17 @@ void Player::UseWeapon()
 	if (input->GetMouseButtonDown(0) && lefthandFull) {
 		leftWeapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());		
 		leftWeapon->direction = GetTransform().GetRotation();
-				
+		leftWeapon->PlaySoundEffect();
+		
 		if (leftWeapon->GetWeaponTypename() != "Slev") {
 			scene->AddObject(leftWeapon);
 			// TEMPORÄRT stuff			
 			testWeapon = static_cast<Weapon*>(leftWeapon);;
-			scene->AddObject(testWeapon);
-			//
-		}		
-
+			scene->AddObject(testWeapon);		
+		}
+		
 		gui->RemoveGUIObject("Left Actionbar");
-		testSound->PlaySound("Explosive", 0.1f);	
-
+		
 		leftWeapon = nullptr;
 		lefthandFull = false;
 	}
@@ -222,13 +216,17 @@ void Player::UseWeapon()
 	if (input->GetMouseButtonDown(1) && righthandFull) {		
 		rightWeapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());
 		rightWeapon->direction = GetTransform().GetRotation();
-		
+		rightWeapon->PlaySoundEffect();
+
 		if (rightWeapon->GetWeaponTypename() != "Slev")
-			scene->AddObject(rightWeapon);
-
+		{
+			scene->AddObject(rightWeapon);		
+			testWeapon = static_cast<Weapon*>(rightWeapon);;
+			scene->AddObject(testWeapon);
+		}
+		
 		gui->RemoveGUIObject("Right Actionbar");
-		testSound->PlaySound("Explosive", 0.1f);
-
+		
 		rightWeapon = nullptr;
 		righthandFull = false;
 	}
