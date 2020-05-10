@@ -128,15 +128,29 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 
 void Player::UpdateHitEnemy()
 {
-	if (enemy != nullptr && testWeapon != nullptr)
+	if (enemy != nullptr && leftWeapon != nullptr)
 	{
-		if (testWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
+		if (leftWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
 		{
+			enemy->HitSound();
+			scene->RemoveObject(enemy);			
+			enemy = nullptr;
+			scene->RemoveObject(leftWeapon);
+			leftWeapon->SetEnabled(false); // new
+			leftWeapon = nullptr;
+		}
+	}
+
+	if (enemy != nullptr && rightWeapon != nullptr)
+	{
+		if (rightWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
+		{
+			enemy->HitSound();
 			scene->RemoveObject(enemy);
 			enemy = nullptr;
-			scene->RemoveObject(testWeapon);
-			testWeapon->SetEnabled(false); // new
-			testWeapon = nullptr;
+			scene->RemoveObject(rightWeapon);
+			rightWeapon->SetEnabled(false); // new
+			rightWeapon = nullptr;
 		}
 	}
 }
@@ -199,17 +213,17 @@ void Player::UseWeapon()
 		leftWeapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());		
 		leftWeapon->direction = GetTransform().GetRotation();
 		leftWeapon->PlaySoundEffect();
-		
-		if (leftWeapon->GetWeaponTypename() != "Slev") {
-			scene->AddObject(leftWeapon);
+		scene->AddObject(leftWeapon);
+		/*if (leftWeapon->GetWeaponTypename() != "Slev") {
+			
 			// TEMPORÄRT stuff			
 			testWeapon = static_cast<Weapon*>(leftWeapon);;
 			scene->AddObject(testWeapon);		
-		}
+		}*/
 		
 		gui->RemoveGUIObject("Left Actionbar");
-		
-		leftWeapon = nullptr;
+		//scene->AddObject(leftWeapon);
+		//leftWeapon = nullptr;
 		lefthandFull = false;
 	}
 
@@ -217,17 +231,18 @@ void Player::UseWeapon()
 		rightWeapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());
 		rightWeapon->direction = GetTransform().GetRotation();
 		rightWeapon->PlaySoundEffect();
+		scene->AddObject(rightWeapon);
 
-		if (rightWeapon->GetWeaponTypename() != "Slev")
+		/*if (rightWeapon->GetWeaponTypename() != "Slev")
 		{
 			scene->AddObject(rightWeapon);		
 			testWeapon = static_cast<Weapon*>(rightWeapon);;
 			scene->AddObject(testWeapon);
-		}
+		}*/
 		
 		gui->RemoveGUIObject("Right Actionbar");
 		
-		rightWeapon = nullptr;
+		//rightWeapon = nullptr;
 		righthandFull = false;
 	}
 }
@@ -257,53 +272,6 @@ Weapon* Player::CheckWeaponType(Weapon* obj)
 	return curr;
 }
 
-
 void Player::TriggerAttack()
 {
 }
-
-//void Player::HandleInput()
-//{
-//	/*if (input->GetMouseButtonDown(0) && lefthandFull) {
-//		std::cout << "Shot left hand" << std::endl;
-//		leftWeapon = new Projectile("Models/Coconut.fbx", terrain, dx11, this->GetMaterial()->GetShader(), DirectX::XMVECTOR({ 0,this->currentPosition.y,0 }), this->GetTransform().GetRotation());
-//		
-//		leftWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
-//		leftWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
-//		leftWeapon->direction = GetTransform().GetRotation();
-//		scene->AddObject(leftWeapon);
-//		gui->RemoveGUIObject(leftActionbar);
-//		testSound->PlaySound("Explosive", 0.1f);
-//
-//		lefthandFull = false;
-//	}
-//
-//	if (input->GetMouseButtonDown(0) && leftNut > 0)
-//	{
-//			testProj = new Projectile(*rightWeapon);
-//
-//			testProj->GetTransform().SetPosition(GetTransform().GetPosition());
-//			testProj->GetTransform().SetRotation(GetTransform().GetRotation());
-//			//testProj->SetMesh(GetMesh());
-//			//testProj->SetMaterial(GetMaterial());
-//			testProj->direction = GetTransform().GetRotation();
-//			scene->AddObject(testProj);
-//			gui->RemoveGUIObject("testWeapon");
-//			leftNut--;
-//			/*Logger::Write(LOG_LEVEL::Info, "Left click");
-//			gui->RemoveGUIObject(coconutSprite);
-//			leftNut--;*/
-//			
-//	}
-//	//
-//	//if(input->GetKeyDown('q') && leftNut == 0)
-//	//{
-//	//	this->coconutSprite = new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
-//	//	this->gui->AddGUIObject(this->coconutSprite);
-//	//	scene->RemoveObject(testProj);
-//	//	//delete testProj;
-//	//	testProj->SetEnabled(false);
-//	//	leftNut++;
-//	//}
-//	
-//}
