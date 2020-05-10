@@ -16,10 +16,11 @@ public:
 	void HasAttacked(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;	
 	void MeleeAttack(float deltaTime);
 	void FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);
-
+	int CheckUsage() { return this->used; }
 	void PlaySoundEffect() override { weaponSound->PlaySound("Swoosh", 0.1f); }
 
 private:
+	int used;
 	//int movementspeeds = 3;
 
 };

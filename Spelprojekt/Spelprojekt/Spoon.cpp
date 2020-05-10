@@ -16,6 +16,8 @@ Spoon::Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, Shader* defa
 	this->WeaponTypeName = "Slev";
 
 	this->weaponSound->LoadSound("Swoosh", "SoundEffects/Swoosh.wav");
+
+	this->used = 0;
 }
 
 Spoon::Spoon(const Spoon& other)
@@ -42,7 +44,7 @@ void Spoon::HasAttacked(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 {
 	GetTransform().SetPosition(pos);
 	GetTransform().SetRotation(rot);	
-
+	this->used += 1;
 	this->attack = true;
 }
 
@@ -61,6 +63,6 @@ void Spoon::FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 
 void Spoon::Update(const float& deltaTime)
 {	
-	//if (attack)
+	//if (attack && used == 3)
 	//	MeleeAttack(deltaTime);
 }
