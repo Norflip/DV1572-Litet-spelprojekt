@@ -38,8 +38,6 @@ void Player::Update(const float& deltaTime)
 {
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
-	UpdateHitEnemy();
-	//HandleInput();
 
 	UpdateMeleeWeaponPosition();	// If spoon is equiped
 	UseWeapon();
@@ -126,35 +124,6 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 	return returnValue;
 }
 
-void Player::UpdateHitEnemy()
-{
-	if (enemy != nullptr && testWeapon != nullptr)
-	{
-		if (testWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
-		{
-			enemy->HitSound();
-			scene->RemoveObject(enemy);			
-			enemy = nullptr;
-			scene->RemoveObject(testWeapon);
-			testWeapon->SetEnabled(false); // new
-			testWeapon = nullptr;
-		}
-	}
-
-	//if (enemy != nullptr && rightWeapon != nullptr)
-	//{
-	//	if (rightWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
-	//	{
-	//		enemy->HitSound();
-	//		scene->RemoveObject(enemy);
-	//		enemy = nullptr;
-	//		scene->RemoveObject(rightWeapon);
-	//		rightWeapon->SetEnabled(false); // new
-	//		rightWeapon = nullptr;
-	//	}
-	//}
-}
-
 void Player::UpdateHands(Weapon* obj)
 {
 	if (input->GetKeyDown('e') && obj->IsEnabled() && obj->GetWorldBounds().Overlaps(this->GetWorldBounds()))
@@ -214,22 +183,18 @@ void Player::UseWeapon()
 		leftWeapon->direction = GetTransform().GetRotation();
 		leftWeapon->PlaySoundEffect();
 		scene->AddObject(leftWeapon);
-		if (leftWeapon->GetWeaponTypename() != "Slev") {
-			
-			// TEMPOR�RT stuff			
-			testWeapon = static_cast<Weapon*>(leftWeapon);;
 		
 		if (leftWeapon->GetWeaponTypename() != "Slev") {
-			testWeapon = static_cast<Weapon*>(leftWeapon);
-			scene->AddObject(testWeapon);		
+			activeWeapon = static_cast<Weapon*>(leftWeapon);
+			scene->AddObject(activeWeapon);	
+			weapons.push_back(activeWeapon);
 		}
 		else {
-			scene->AddObject(leftWeapon);
+			scene->AddObject(leftWeapon);			
+			weapons.push_back(leftWeapon);
 		}
 		
 		gui->RemoveGUIObject("Left Actionbar");
-		//scene->AddObject(leftWeapon);
-		//leftWeapon = nullptr;
 		lefthandFull = false;
 	}
 
@@ -241,16 +206,17 @@ void Player::UseWeapon()
 		if (rightWeapon->GetWeaponTypename() != "Slev")
 		{
 			scene->AddObject(rightWeapon);		
-			testWeapon = static_cast<Weapon*>(rightWeapon);;
-			scene->AddObject(testWeapon);
+			activeWeapon = static_cast<Weapon*>(rightWeapon);;
+			scene->AddObject(activeWeapon);
+			weapons.push_back(activeWeapon);
 		}
 		else {
 			scene->AddObject(rightWeapon);
+			weapons.push_back(rightWeapon);
 		}
 		
 		gui->RemoveGUIObject("Right Actionbar");
 		
-		//rightWeapon = nullptr;
 		righthandFull = false;
 	}
 }
@@ -258,11 +224,6 @@ void Player::UseWeapon()
 float Player::GetPlayerHealth()
 {
 	return playerHealth;
-}
-
-void Player::SetEnemy(Enemy* enemy)
-{
-	this->enemy = enemy;	
 }
 
 Weapon* Player::CheckWeaponType(Weapon* obj)
@@ -278,6 +239,16 @@ Weapon* Player::CheckWeaponType(Weapon* obj)
 		scene->AddObject(curr);
 	}
 	return curr;
+}
+
+Weapon* Player::GetActiveWeapon() const
+{
+	return activeWeapon;
+}
+
+void Player::SetActiveWeapon(Weapon* weapon)
+{
+	activeWeapon = weapon;
 }
 
 void Player::TriggerAttack()

@@ -20,6 +20,7 @@ class SpawnObjects : public Object
 		Enemy* GetEnemy();
 	private:
 		void UpdateSpawnEnemy();
+		void UpdateRemoveEnemy();
 
 		DX11Handler& dx11;
 		Terrain* terrain;
@@ -30,7 +31,8 @@ class SpawnObjects : public Object
 		Enemy* enemy;
 		Object* object;
 
-		int nrOfEnemies;
+		int nrOfEnemies = 0;
+		float spawnOffset = 0;
 
-		std::unordered_map<int, Enemy*> enemyList;
+		std::vector<Enemy*> enemies;
 };

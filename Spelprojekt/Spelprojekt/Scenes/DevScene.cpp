@@ -94,11 +94,6 @@ void DevScene::Load()
 	terrainMat->SetTexture(3, sand_normal, PIXEL_TYPE::PIXEL);
 	terrainMat->GetMaterialData().hasNormalTexture = true;
 
-	/*Material* test_material = new Material(terrainShader, dx11);
-	Texture* m_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	test_material->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
-	test_material->GetMaterialData().hasNormalTexture = false;*/
-
 	test.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice());
 	AddObject(new Object(test.GetMesh(), terrainMat));
 
@@ -130,8 +125,6 @@ void DevScene::Load()
 	toonShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 
 	this->player = new Player(dev_monkey_mesh, new Material(toonShader, dx11), controller, &test, gui, dx11, static_cast<Scene*>(this));
-	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
-	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 	this->player->GetTransform().SetPosition({ 30, 7, 30 });
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
 	AddObject(this->player);
@@ -139,39 +132,7 @@ void DevScene::Load()
 	
 	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &test, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
 	AddObject(this->spawnObjects);
-	/*this->enemy = new Enemy(dev_monkey_mesh, new Material(defaultShader, dx11), &test, dx11);
-	this->enemy->GetTransform().Translate(5, 12, 15);
-	this->enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
-	this->controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
-	AddObject(player);
-
-	// ------ ENEMY
-	this->enemy = new Enemy(dev_monkey_mesh, new Material(defaultShader, dx11), &test, dx11);
-	this->enemy->GetTransform().Translate(5, 12, 3);
-	this->enemy->GetTransform().Scale(0.3, 0.3, 0.3);
-	this->enemy->SetTarget(this->player);
-	AddObject(this->enemy);*/
-	//this->player->SetEnemy(spawnObjects->GetEnemy());
-
-	Shader* waterShader = new Shader();
-	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
-	waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
-
-	Mesh* waterPlane = ShittyOBJLoader::Load("Models/Plane1.obj", dx11.GetDevice());
-	Object* water = new Object(waterPlane, new Material(waterShader, dx11));
-	water->GetTransform().Translate({ 10, -10, 10 });
-	AddObject(water);
-	this->player->SetEnemy(spawnObjects->GetEnemy());
 	
-
-		
-	/*this->coconutPickUp = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
-	coconutPickUp->GetTransform().Translate(10, 2, 15);
-	AddObject(coconutPickUp);*/
-	
-	// ------ WEAPONS
-
-	// Coconuts
 	for(int i = 0; i < 5; i++)
 		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
 	
@@ -238,8 +199,6 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {	
-	spawnObjects->SpawnEnemy();
-	
 	Scene::Update(deltaTime);
 
 	//FPS STUFF

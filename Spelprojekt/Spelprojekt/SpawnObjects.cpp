@@ -9,13 +9,13 @@ SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Me
 	this->material = material;
 	this->player = player;
 	this->enemy = nullptr;
-	this->nrOfEnemies = 0;
 	SetVisible(false);
 }
 
 void SpawnObjects::Update(const float& deltaTime)
 {
 	UpdateSpawnEnemy();
+	UpdateRemoveEnemy();
 }
 
 void SpawnObjects::SetPlayer(Player* player)
@@ -35,30 +35,42 @@ void SpawnObjects::SetObject(Object* object)
 
 void SpawnObjects::AddEnemy(Enemy* enemy)
 {
-	enemyList.insert({ nrOfEnemies,enemy });
-	nrOfEnemies++;
+	enemies.push_back(enemy);
 }
 
 void SpawnObjects::RemoveEnemy(Enemy* enemy)
 {
-	auto temp = enemyList.find(nrOfEnemies);
-
-	if (temp != enemyList.end())
-	{
-		enemyList.erase(temp);
-	}
-	scene->RemoveObject(enemy);
+	
 }
 
 void SpawnObjects::UpdateSpawnEnemy()
 {
-	if (enemy == nullptr)
+	if (nrOfEnemies <= 2)
 	{
 		enemy = new Enemy(mesh, material, terrain, dx11);
-		enemy->GetTransform().Translate(5, 12, 15);
+		enemy->GetTransform().Translate(30, 7, 35 + spawnOffset);
 		enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 		enemy->SetTarget(player);
 		scene->AddObject(enemy);
+		AddEnemy(enemy);
+		nrOfEnemies++;
+		spawnOffset += 5;
+	}
+}
+
+void SpawnObjects::UpdateRemoveEnemy()
+{
+	if (enemy != nullptr && player->GetActiveWeapon() != nullptr)
+	{
+		if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
+		{
+			enemy->HitSound();
+			scene->RemoveObject(enemy);
+			enemy = nullptr;
+			scene->RemoveObject(player->GetActiveWeapon());
+			player->GetActiveWeapon()->SetEnabled(false); // new
+			player->SetActiveWeapon(nullptr);
+		}
 	}
 }
 
