@@ -11,7 +11,7 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 
-	// weapon shit
+	// weapon is shit
 	this->leftActionbar = nullptr; //  new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
 	this->rightActionbar = nullptr;
 	this->gui = gui;

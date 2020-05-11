@@ -93,6 +93,7 @@ void Terrain::GenerateMesh(std::string texturePath, ID3D11Device* device)
 	for (size_t i = 0; i < vertList.size(); ++i)
 	{
 		DirectX::XMFLOAT3 temp = vertList.at(i).normal;
+		//EVERYTHING IS WRONG FLIP NORMALS
 		DirectX::XMStoreFloat3(&vertList.at(i).normal, DirectX::XMVector3Normalize({ -temp.x,-temp.y,-temp.z }));
 	}
 
