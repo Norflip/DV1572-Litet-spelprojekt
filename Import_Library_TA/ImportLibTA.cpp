@@ -41,7 +41,7 @@ namespace ImportLibTA
 			std::cout << std::endl;
 
 			meshCounter++;
-			ReadVertexHeader RVHeader[21]; // behöber nå sätt att dynamsikt sätta värden här. bör vara RMHeader[i].nrOfPolygons ( 21 polygoner totalt)
+			ReadVertexHeader RVHeader[21]; // behöver nå sätt att dynamsikt sätta värden här. bör vara RMHeader[i].nrOfPolygons ( 21 polygoner totalt, 12 på den ena, 9 på den andra)
 			reader.read((char*)&RVHeader, sizeof(ReadVertexHeader) * RMHeader[i].nrOfPolygons);
 
 			for (int k = 0; k < RMHeader[i].nrOfPolygons; k++) {
