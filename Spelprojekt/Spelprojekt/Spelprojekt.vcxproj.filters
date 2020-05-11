@@ -124,6 +124,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Entities.cpp">
+		<Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EndGUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -252,6 +255,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Entities.h">
+	<Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EndGUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -41,7 +41,7 @@ void DX11Handler::Initialize(const Window& window)
 	swapChainDescription.SampleDesc.Count = 1;
 	swapChainDescription.SampleDesc.Quality = 0;
 	swapChainDescription.Windowed = TRUE;
-	swapChainDescription.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swapChainDescription.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
 	swapChainDescription.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	UINT swapflags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
@@ -93,14 +93,14 @@ void DX11Handler::SetWireframeMode(bool useWireframe)
 
 void DX11Handler::CreateBackbufferRenderTarget(size_t width, size_t height)
 {
-	ID3D11Texture2D* backBufferPtr;
+	this->backBufferPtr;
 	swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
 
 	// assert backbufferPtr instead
 
 	if (backBufferPtr != nullptr)
 	{
-		ID3D11RenderTargetView* backbufferRTV;
+		backbufferRTV;
 		device->CreateRenderTargetView(backBufferPtr, nullptr, &backbufferRTV);
 		backBufferPtr->Release();
 

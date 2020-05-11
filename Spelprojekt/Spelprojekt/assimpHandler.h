@@ -105,7 +105,7 @@ namespace AssimpHandler
 	//	return normalMap;
 	//}
 
-	inline MaterialData getMaterialFromFbx(const aiScene* scene)
+	inline MaterialData* getMaterialFromFbx(const aiScene* scene)
 	{
 		aiMaterial** materialArray = scene->mMaterials;
 		aiColor4D aiSpecular, aiDiffuse, aiAmbient;
@@ -123,13 +123,11 @@ namespace AssimpHandler
 		diffuse.x = aiDiffuse.r; diffuse.y = aiDiffuse.g; diffuse.z = aiDiffuse.b; diffuse.w = aiDiffuse.a;
 		ambient.x = aiAmbient.r; ambient.y = aiAmbient.g; ambient.z = aiAmbient.b; ambient.w = aiAmbient.a;
 
-		MaterialData material;
-		material.diffuse = diffuse;
-		material.ambient = ambient;
-		material.specular = specular;
-		material.shininess = aiShininess;
-		material.hasAlbedoTexture = true;
-		material.hasNormalTexture = true;
+		MaterialData* material = new MaterialData();
+		material->diffuse = diffuse;
+		material->ambient = ambient;
+		material->specular = specular;
+		material->shininess = aiShininess;
 		return material;
 	}
 
@@ -157,11 +155,15 @@ namespace AssimpHandler
 			// Create a new object with the new mesh
 			object = new Object(mesh, new Material(shader, dx11));
 
+			MaterialData* temp = getMaterialFromFbx(scene);
+			object->GetMaterial()->SetMaterialData(*temp);
+
 			// Check if the file contains a diffuseTexture
 			if (scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
 			{
 				// Load the diffuseTexture and apply it to the object
 				texture = loadTextureFromFbx(dx11, path);
+				object->GetMaterial()->GetMaterialData().hasAlbedoTexture = true;
 			}
 
 			// The app assumes there is a texture to every object, so if there is no texture in the file,
@@ -177,11 +179,12 @@ namespace AssimpHandler
 				// Load the normalMap and apply it to the object
 				normalMap = loadTextureFromFbx(dx11, path);
 				object->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, normalMap, PIXEL_TYPE::PIXEL);
+				object->GetMaterial()->GetMaterialData().hasNormalTexture = true;
+				
 			}
 
 			object->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, texture, PIXEL_TYPE::PIXEL);
-			// Load the materialData from the file, such as specular, ambient e.tc. 
-			object->GetMaterial()->SetMaterialData(getMaterialFromFbx(scene));
+
 		}
 		
 		return object;

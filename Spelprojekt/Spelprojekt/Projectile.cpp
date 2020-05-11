@@ -14,6 +14,8 @@ Projectile::Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, Sh
 	this->attack = false;
 	this->damage = 10.0f;
 	this->WeaponTypeName = "Coconut";
+
+	this->weaponSound->LoadSound("Explo", "SoundEffects/Explo1.wav");
 }
 
 Projectile::Projectile(const Projectile& other)
@@ -28,6 +30,7 @@ Projectile::Projectile(const Projectile& other)
 	this->attack = false;
 	this->damage = other.damage;
 	WeaponTypeName = other.WeaponTypeName;
+	this->weaponSound = other.weaponSound;
 }
 
 Projectile::~Projectile()
@@ -39,8 +42,8 @@ void Projectile::HasAttacked(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 {
 	GetTransform().SetPosition(pos);
 	GetTransform().SetRotation(rot); 	
-
-	this->attack = true;
+	
+	this->attack = true;	
 }
 
 void Projectile::rangedAttack(float deltaTime)
