@@ -6,6 +6,8 @@
 #include "assimpHandler.h"
 class IntroGUI;
 #include "IntroGui.h"
+#include "SoundHandler.h"
+
 class IntroScene : public Scene
 {
 
@@ -31,6 +33,7 @@ private:
 	IntroGUI* introGUI;
 	Input* input;
 	std::vector<Scene*>& scenes;
-	
+
+	SoundHandler* mainMusic;
 };
 

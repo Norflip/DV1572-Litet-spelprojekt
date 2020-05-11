@@ -4,6 +4,7 @@
 #include "CameraController.h"
 class IntroScene;
 #include "IntroScene.h"
+#include "SoundHandler.h"
 class IntroGUI
 {
 public:
@@ -34,4 +35,6 @@ private:
 	GUI* gui;
 	Input* input;
 	IntroScene* currentScene;
+
+	
 };
