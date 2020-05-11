@@ -60,16 +60,20 @@ void SpawnObjects::UpdateSpawnEnemy()
 
 void SpawnObjects::UpdateRemoveEnemy()
 {
-	if (enemy != nullptr && player->GetActiveWeapon() != nullptr)
+	for (auto i : enemies)
 	{
-		if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
+		if (i != nullptr && player->GetActiveWeapon() != nullptr)
 		{
-			enemy->HitSound();
-			scene->RemoveObject(enemy);
-			enemy = nullptr;
-			scene->RemoveObject(player->GetActiveWeapon());
-			player->GetActiveWeapon()->SetEnabled(false); // new
-			player->SetActiveWeapon(nullptr);
+			if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(i->GetWorldBounds()))
+			{
+				i->HitSound();
+				scene->RemoveObject(i);
+				i = nullptr;
+				scene->RemoveObject(player->GetActiveWeapon());
+				player->GetActiveWeapon()->SetEnabled(false); // new
+				player->SetActiveWeapon(nullptr);
+				nrOfEnemies--;
+			}
 		}
 	}
 }
