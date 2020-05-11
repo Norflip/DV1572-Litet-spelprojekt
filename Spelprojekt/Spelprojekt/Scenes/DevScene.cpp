@@ -287,9 +287,11 @@ void DevScene::CreateSceneObjects()
 
 	// save the shaders somewhere, remember to clean it up
 	Shader* billboard = new Shader();
+
+
+	billboard->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 	billboard->LoadGeometryShader(L"Shaders/Billboard.hlsl", "main", dx11.GetDevice());
 	billboard->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
-	billboard->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 	Object* plane = AssimpHandler::loadFbxObject("Models/Plane.fbx", dx11, billboard);
 	plane->GetTransform().Translate(33, 15, 33);
 	plane->GetTransform().Scale(3, 3, 3);

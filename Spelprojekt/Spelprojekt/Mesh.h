@@ -14,14 +14,6 @@ struct MeshVertex
 	MeshVertex(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT3 normal, DirectX::XMFLOAT3 tangent) 
 		: position(position), uv(uv), normal(normal), tangent(tangent) {}
 };
-struct Gbuffer
-{
-	DirectX::XMFLOAT3 position;
-	DirectX::XMFLOAT2 uv;
-	DirectX::XMFLOAT3 normal;
-	DirectX::XMFLOAT3 tangent;
-	float pad;
-};
 struct Mesh
 {
 	ID3D11Buffer* vertexBuffer;

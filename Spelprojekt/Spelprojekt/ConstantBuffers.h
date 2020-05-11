@@ -11,6 +11,7 @@ struct WorldData
 	float pad[3];
 };
 
+
 __declspec(align(16))
 struct PointLight
 {
@@ -48,4 +49,20 @@ struct MaterialData
 	bool hasAlbedoTexture;
 	bool hasNormalTexture;
 
+};
+
+__declspec(align(16))
+struct GeometryCBuffer
+{
+	DirectX::XMFLOAT3 position;
+	float pad0;
+
+	DirectX::XMFLOAT2 uv;
+	DirectX::XMFLOAT2 pad;
+
+	DirectX::XMFLOAT3 normal;
+	float pad1;
+
+	DirectX::XMFLOAT3 tangent;
+	float pad2;
 };

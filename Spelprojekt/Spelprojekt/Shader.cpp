@@ -120,14 +120,17 @@ void Shader::LoadGeometryShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device
 		errorBlob->Release();
 	}
 
-	HRESULT psCompileResult = device->CreateGeometryShader(geometryShaderBlob->GetBufferPointer(), geometryShaderBlob->GetBufferSize(), nullptr, &this->geometryShader);
-	assert(SUCCEEDED(psCompileResult));
+	HRESULT gsCompileResult = device->CreateGeometryShader(geometryShaderBlob->GetBufferPointer(), geometryShaderBlob->GetBufferSize(), nullptr, &this->geometryShader);
+	assert(SUCCEEDED(gsCompileResult));
 
 }
 void Shader::Bind(ID3D11DeviceContext* context)
 {
 	// sets the vertex shader and layout
 	context->IASetInputLayout(inputLayout);
+
+	/*if (geometryShader != nullptr)
+		std::cout << "GEO TIME" << std::endl;*/
 	context->GSSetShader(geometryShader, 0, 0);
 
 	context->VSSetShader(vertexShader, 0, 0);

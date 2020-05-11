@@ -44,3 +44,17 @@ cbuffer MaterialBuffer : register (b2)
 	bool hasNormalTexture;
 	
 }
+cbuffer GeometryCBuffer : register(b3)
+{
+	float3 position;
+	float gcb_pad0;
+
+	float2 uv;
+	float2 gcb_pad1;
+
+	float3 normal;
+	float gcb_pad2;
+
+	float3 tangent;
+	float gcb_pad3;
+};
