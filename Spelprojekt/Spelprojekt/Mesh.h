@@ -10,7 +10,6 @@ struct MeshVertex
 	DirectX::XMFLOAT2 uv;
 	DirectX::XMFLOAT3 normal;
 	DirectX::XMFLOAT3 tangent;
-	float pad;
 	MeshVertex() : position(0, 0, 0), uv(0, 0), normal(0, 0, 0), tangent(0, 0, 0) {}
 	MeshVertex(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT3 normal, DirectX::XMFLOAT3 tangent) 
 		: position(position), uv(uv), normal(normal), tangent(tangent) {}
@@ -70,7 +69,7 @@ namespace MeshCreator
 		
 		//CREATE GEO BUFFER
 		
-		D3D11_BUFFER_DESC constGeometryDesc;
+	/*	D3D11_BUFFER_DESC constGeometryDesc;
 		int temp =  sizeof(Gbuffer)/16;
 		constGeometryDesc.ByteWidth = sizeof(MeshVertex);
 		constGeometryDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -83,7 +82,7 @@ namespace MeshCreator
 		ID3D11Buffer* constantGeometryBuffer = NULL;
 		HRESULT buffPSucc = device->CreateBuffer(&constGeometryDesc, NULL,
 			&mesh->geometryBuffer);
-		assert(SUCCEEDED(buffPSucc));
+		assert(SUCCEEDED(buffPSucc));*/
 		//device->GSSetConstantBuffers(0, 1, &constantGeometryBuffer);
 
 		//GSConstBuff = constantGeometryBuffer;
