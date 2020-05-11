@@ -90,7 +90,6 @@ void Material::Unbind(ID3D11DeviceContext* context)
 
 			context->VSSetShaderResources(index, 1, pSRV);
 		}
-
 		iterator++;
 	}
 }
@@ -129,7 +128,6 @@ void Material::Bind(ID3D11DeviceContext* context)
 
 			context->VSSetShaderResources(index, 1, &srv);
 		}
-
 		iterator++;
 	}
 }

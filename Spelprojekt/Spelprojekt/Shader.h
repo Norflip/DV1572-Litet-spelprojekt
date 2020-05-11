@@ -25,7 +25,8 @@ public:
 
 	void LoadPixelShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device);
 	ID3D11PixelShader* GetPixelShader() const { return this->pixelShader; }
-	
+	void LoadGeometryShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device);
+	ID3D11GeometryShader* GetGeometryShader() const { return this->geometryShader; }
 	void LoadVertexShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device);
 	ID3D11VertexShader* GetVertexShader() const { return this->vertexShader; }
 	ID3D11InputLayout* GetInputLayout() const { return this->inputLayout; }
@@ -40,6 +41,7 @@ private:
 	DWORD flags;
 	ID3D11PixelShader* pixelShader;
 	ID3D11VertexShader* vertexShader;
+	ID3D11GeometryShader* geometryShader;
 	ID3D11InputLayout* inputLayout;
 };
 

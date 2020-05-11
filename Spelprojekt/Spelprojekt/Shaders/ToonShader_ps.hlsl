@@ -6,7 +6,7 @@ Texture2D m_normMap : register(t1);
 SamplerState m_samplerState: register(s0);
 SamplerState m_normSamplerState : register(s1);
 
-struct VS_OUTPUT
+struct GS_OUTPUT
 {
 	float4 position		 : SV_POSITION;
 	float3 normal		 : NORMAL;
@@ -23,7 +23,7 @@ struct GBUFFER
 	float4 position : SV_Target3;
 };
 
-GBUFFER main(VS_OUTPUT input) : SV_TARGET
+GBUFFER main(GS_OUTPUT input) : SV_TARGET
 {
 	GBUFFER output;
 
@@ -64,15 +64,15 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 		output.albedo = testColor;
 	}
 
-	if (hasNormalTexture)
-	{
-		float4 normalSample = m_normMap.Sample(m_normSamplerState, input.uv);
-		normalSample = ((normalSample * 2.0f) - 1.0f);
+	//if (hasNormalTexture)
+	//{
+	//	float4 normalSample = m_normMap.Sample(m_normSamplerState, input.uv);
+	//	normalSample = ((normalSample * 2.0f) - 1.0f);
 
-		float3 bitangent = cross(input.tangent, input.normal);
-		float3x3 TBN = float3x3(input.tangent, bitangent, input.normal);
-		output.normal = float4(normalize(mul(normalSample.xyz, TBN)), 1.0f);
-	}
+	//	float3 bitangent = cross(input.tangent, input.normal);
+	//	float3x3 TBN = float3x3(input.tangent, bitangent, input.normal);
+	//	output.normal = float4(normalize(mul(normalSample.xyz, TBN)), 1.0f);
+	//}
 
 	output.position = float4(input.worldPosition, 1.0f);
 	return output;

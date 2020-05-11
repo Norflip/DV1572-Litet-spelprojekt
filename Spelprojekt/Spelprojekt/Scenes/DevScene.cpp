@@ -155,31 +155,31 @@ void DevScene::Load()
 	
 	// ------ WEAPONS
 
-	// Coconuts
-	for(int i = 0; i < 5; i++)
-		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
-	
-	coconuts[0]->GetTransform().Translate(35, 10, 25);
-	coconuts[1]->GetTransform().Translate(40, 10, 25);
-	coconuts[2]->GetTransform().Translate(45, 10, 25);
-	coconuts[3]->GetTransform().Translate(50, 10, 25);
-	coconuts[4]->GetTransform().Translate(55, 10, 25);
-	for (int i = 0; i < 5; i++)
-		AddObject(coconuts[i]);
-	
-			
-	// Spoon
-	for(int i = 0; i < 5; i++)
-		this->spoons[i] = new Spoon("Models/Spoon.fbx", &test, dx11, defaultShader, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
-	spoons[0]->GetTransform().Translate(35, 10, 30);
-	spoons[1]->GetTransform().Translate(40, 10, 30);
-	spoons[2]->GetTransform().Translate(45, 10, 30);
-	spoons[3]->GetTransform().Translate(50, 10, 30);
-	spoons[4]->GetTransform().Translate(55, 10, 30);
-	for (int i = 0; i < 5; i++)
-		AddObject(spoons[i]);
-	
-	
+	//// Coconuts
+	//for(int i = 0; i < 5; i++)
+	//	this->coconuts[i] = new Projectile("Models/Coconut.fbx", &test, dx11, defaultShader, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
+	//
+	//coconuts[0]->GetTransform().Translate(35, 10, 25);
+	//coconuts[1]->GetTransform().Translate(40, 10, 25);
+	//coconuts[2]->GetTransform().Translate(45, 10, 25);
+	//coconuts[3]->GetTransform().Translate(50, 10, 25);
+	//coconuts[4]->GetTransform().Translate(55, 10, 25);
+	//for (int i = 0; i < 5; i++)
+	//	AddObject(coconuts[i]);
+	//
+	//		
+	//// Spoon
+	//for(int i = 0; i < 5; i++)
+	//	this->spoons[i] = new Spoon("Models/Spoon.fbx", &test, dx11, defaultShader, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
+	//spoons[0]->GetTransform().Translate(35, 10, 30);
+	//spoons[1]->GetTransform().Translate(40, 10, 30);
+	//spoons[2]->GetTransform().Translate(45, 10, 30);
+	//spoons[3]->GetTransform().Translate(50, 10, 30);
+	//spoons[4]->GetTransform().Translate(55, 10, 30);
+	//for (int i = 0; i < 5; i++)
+	//	AddObject(spoons[i]);
+	//
+	//
 	// ------ Leveldesign
 	CreateSceneObjects();	
 	
@@ -272,18 +272,38 @@ Scene* DevScene::GetNextScene() const
 
 void DevScene::CreateSceneObjects()
 {
+
+	// save the shaders somewhere, remember to clean it up
+	Shader* billboard = new Shader();
+	billboard->LoadGeometryShader(L"Shaders/Billboard.hlsl", "main", dx11.GetDevice());
+	billboard->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+	billboard->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
+	Object* plane = AssimpHandler::loadFbxObject("Models/Plane.fbx", dx11, billboard);
+	plane->GetTransform().Translate(33, 15, 33);
+	plane->GetTransform().Scale(3, 3, 3);
+	plane->GetTransform().SetRotation({ 0,0, 0 });
+	AddObject(plane);
+
+	Shader* defaultShader = new Shader();
+	defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+	defaultShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
+	Object* plane2 = AssimpHandler::loadFbxObject("Models/Plane.fbx", dx11, defaultShader);
+	plane2->GetTransform().Translate(43, 15, 33);
+	plane2->GetTransform().Scale(3, 3, 3);
+	plane2->GetTransform().SetRotation({ 0, 0, 0 });
+	AddObject(plane2);
+
 	if (true)
 	{
-		// save the shaders somewhere, remember to clean it up
-		Shader* defaultShader = new Shader();
-		defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
-		defaultShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
+		
 
 		// Left beach stand
 		Object* beachstand = AssimpHandler::loadFbxObject("Models/Beachstand.fbx", dx11, defaultShader);
 		beachstand->GetTransform().Translate(35, 8, 75);
 		beachstand->GetTransform().SetRotation({ 0, 1.6, 0 });
 		AddObject(beachstand);
+
+	
 
 		// Boat
 		Object* boat = AssimpHandler::loadFbxObject("Models/Boat.fbx", dx11, defaultShader);

@@ -13,7 +13,7 @@ Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11)
 
 	screenQuad = MeshCreator::CreateScreenQuad(dx11.GetDevice());
 	worldBuffer_ptr = dx11.CreateBuffer<WorldData>(cb_world);
-
+	//geoBuffer_ptr = dx11.CreateBuffer<WorldData>()
 	lights.Initialize(dx11);
 }
 
@@ -82,10 +82,8 @@ void Renderer::DrawMesh(Mesh* mesh)
 {
 	UINT stride = sizeof(MeshVertex);
 	UINT offset = 0;
-
 	dx11.GetContext()->IASetVertexBuffers(0, 1, &mesh->vertexBuffer, &stride, &offset);
 	dx11.GetContext()->IASetIndexBuffer(mesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
 	dx11.GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	dx11.GetContext()->DrawIndexed(mesh->indices.size(), 0, 0);
 }

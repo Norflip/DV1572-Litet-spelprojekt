@@ -2,24 +2,32 @@
 #include <d3d11.h>  
 #include <DirectXMath.h>
 #include <vector>
-
+#include <assert.h>
+#include <iostream>
 struct MeshVertex
 {
 	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT2 uv;
 	DirectX::XMFLOAT3 normal;
 	DirectX::XMFLOAT3 tangent;
-
+	float pad;
 	MeshVertex() : position(0, 0, 0), uv(0, 0), normal(0, 0, 0), tangent(0, 0, 0) {}
 	MeshVertex(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT3 normal, DirectX::XMFLOAT3 tangent) 
 		: position(position), uv(uv), normal(normal), tangent(tangent) {}
 };
-
+struct Gbuffer
+{
+	DirectX::XMFLOAT3 position;
+	DirectX::XMFLOAT2 uv;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT3 tangent;
+	float pad;
+};
 struct Mesh
 {
 	ID3D11Buffer* vertexBuffer;
 	std::vector<MeshVertex> vertexes;
-
+	ID3D11Buffer* geometryBuffer;
 	ID3D11Buffer* indexBuffer;
 	std::vector<unsigned int> indices;
 
@@ -39,6 +47,7 @@ namespace MeshCreator
 		Mesh* mesh = new Mesh();
 
 		mesh->vertexBuffer = nullptr;
+		mesh->geometryBuffer = nullptr;
 		mesh->vertexes = vertices;
 		mesh->indexBuffer = nullptr;
 		mesh->indices = indices;
@@ -58,6 +67,32 @@ namespace MeshCreator
 
 		HRESULT vertexBufferResult = device->CreateBuffer(&vertexBufferDescription, &vertexBuffer_subResource, &mesh->vertexBuffer);
 		assert(SUCCEEDED(vertexBufferResult));
+		
+		//CREATE GEO BUFFER
+		
+		D3D11_BUFFER_DESC constGeometryDesc;
+		int temp =  sizeof(Gbuffer)/16;
+		constGeometryDesc.ByteWidth = sizeof(MeshVertex);
+		constGeometryDesc.Usage = D3D11_USAGE_DEFAULT;
+
+		constGeometryDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		constGeometryDesc.CPUAccessFlags = 0;
+		constGeometryDesc.MiscFlags = 0;
+		constGeometryDesc.StructureByteStride = 0;
+
+		ID3D11Buffer* constantGeometryBuffer = NULL;
+		HRESULT buffPSucc = device->CreateBuffer(&constGeometryDesc, NULL,
+			&mesh->geometryBuffer);
+		assert(SUCCEEDED(buffPSucc));
+		//device->GSSetConstantBuffers(0, 1, &constantGeometryBuffer);
+
+		//GSConstBuff = constantGeometryBuffer;
+		//assert(SUCCEEDED(buffPSucc));
+
+
+	
+
+
 
 		// creates index buffer
 		D3D11_BUFFER_DESC indexBufferDescription;

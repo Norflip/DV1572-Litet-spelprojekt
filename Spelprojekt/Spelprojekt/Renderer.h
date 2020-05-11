@@ -47,6 +47,7 @@ private:
 	GUI* gui;
 
 	ID3D11Buffer* worldBuffer_ptr;
+	ID3D11Buffer* geoBuffer_ptr;
 	WorldData cb_world;
 
 	RenderTarget* backbufferRenderTarget;
