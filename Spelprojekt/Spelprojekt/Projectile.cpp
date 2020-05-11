@@ -4,7 +4,7 @@ Projectile::Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, Sh
 {	
 	GetTransform().SetPosition(position);
 	GetTransform().SetRotation(rotation);
-	Object* temp = AssimpHandler::loadFbxObject(name, dx11, defaultShader);
+	Object* temp = AssimpHandler::loadFbxObject(name, ObjectLayer::Projectile, dx11, defaultShader);
 	SetMesh(temp->GetMesh());
 	SetMaterial(temp->GetMaterial());
 	this->movementspeed = 3;

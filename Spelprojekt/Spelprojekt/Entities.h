@@ -3,11 +3,12 @@
 #include <unordered_map>
 #include "Object.h"
 #include "Camera.h"
+#include "QuadTree.h"
 
 class Entities
 {
 public:
-	Entities();
+	Entities(AABB worldBounds);
 	virtual ~Entities();
 
 	void InsertObject(Object*);
@@ -19,9 +20,8 @@ public:
 	std::vector<Object*> GetObjectsInView(Camera* camera);
 
 private:
-
-
-private:
+	QuadTree quadtree;
+	std::vector<Object*> allEntities;
 	std::unordered_map<ObjectLayer, std::vector<Object*>> objectsInLayerMap;
 	std::unordered_map<Object*, ObjectLayer> objectToLayerMap;
 };

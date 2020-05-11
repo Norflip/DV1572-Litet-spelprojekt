@@ -4,6 +4,9 @@
 #include "Object.h"
 #include "Camera.h"
 #include "SoundHandler.h"
+#include "Entities.h"
+#include <string>
+
 class Scene
 {
 public:
@@ -30,6 +33,7 @@ public:
 	Window& getWindow() { return this->window; };
 	Scene* nextScene;
 	void setWinOrLose(bool didWin);
+
 protected:
 	void m_AddObjectToScene(Object*);
 	void m_RemoveObjectFromScene(Object*);
@@ -38,6 +42,7 @@ protected:
 	void UpdateAddRemoveSceneQueues();
 
 protected:
+	Entities* entities;
 	Camera* camera;
 	Renderer* renderer;
 	Window& window;

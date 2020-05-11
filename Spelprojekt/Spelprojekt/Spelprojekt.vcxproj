@@ -172,6 +172,7 @@
     <ClCompile Include="GUISprite.cpp" />
     <ClCompile Include="IntroGUI.cpp" />
     <ClCompile Include="IntroScene.cpp" />
+    <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="SpawnObjects.cpp" />
     <ClCompile Include="Spoon.cpp" />
     <ClCompile Include="Terrain.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="Entities.h" />
     <ClInclude Include="IntroGUI.h" />
     <ClInclude Include="IntroScene.h" />
+    <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Spoon.h" />
     <ClInclude Include="SoundHandler.h" />
     <ClInclude Include="Camera.h" />

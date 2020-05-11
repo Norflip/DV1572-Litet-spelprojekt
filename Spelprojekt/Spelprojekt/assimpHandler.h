@@ -131,7 +131,7 @@ namespace AssimpHandler
 		return material;
 	}
 
-	inline Object* loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader)
+	inline Object* loadFbxObject(const char* filepath, ObjectLayer layer, DX11Handler& dx11, Shader* shader)
 	{
 		// Open the scene from the file
 		Assimp::Importer imp;
@@ -153,7 +153,7 @@ namespace AssimpHandler
 			Mesh* mesh = loadMesh(scene, dx11.GetDevice());
 
 			// Create a new object with the new mesh
-			object = new Object(mesh, new Material(shader, dx11));
+			object = new Object(layer, mesh, new Material(shader, dx11));
 
 			MaterialData* temp = getMaterialFromFbx(scene);
 			object->GetMaterial()->SetMaterialData(*temp);

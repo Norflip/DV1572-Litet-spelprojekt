@@ -4,7 +4,7 @@ Spoon::Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, Shader* defa
 {
 	GetTransform().SetPosition(position);
 	GetTransform().SetRotation(rotation);
-	Object* slev = AssimpHandler::loadFbxObject(name, dx11, defaultShader);
+	Object* slev = AssimpHandler::loadFbxObject(name, ObjectLayer::Pickups, dx11, defaultShader);
 	SetMesh(slev->GetMesh());
 	SetMaterial(slev->GetMaterial());
 	//this->movementspeeds = 3;
