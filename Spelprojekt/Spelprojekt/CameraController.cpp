@@ -45,7 +45,7 @@ void CameraController::UpdateFree(const float& deltaTime)
 	POINTS delta = input->GetMouseDelta();
 	transform.Rotate(delta.y *  deltaTime, delta.x * deltaTime, 0);
 
-	const float cameraSpeed = 12.0f;
+	const float cameraSpeed = 55.0f;	// 12.0f innan
 	float forwardDelta = 0.0f;
 	float rightDelta = 0.0f;
 

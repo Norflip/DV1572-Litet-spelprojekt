@@ -7,6 +7,7 @@
 #include "GUI.h"
 #include "SoundHandler.h"
 #include "Projectile.h"
+#include "Spoon.h"
 #include <vector>
 
 class Enemy;
@@ -21,22 +22,19 @@ public:
 	void Update(const float& deltaTime) override;
 	void SetHeight(float height) { this->playerHeight = height; };
 	void TakeDamage();	
-	void NutOnPlayer(Object* obj);
-<<<<<<< Updated upstream
-	void SetEnemy(Enemy* enemy);
-=======
-	float GetPlayerHealth();
-
 	void SetEnemy(Enemy*);
->>>>>>> Stashed changes
-private:
-
+	float GetPlayerHealth();
+	void UpdateHands(Weapon* obj);
+	void UpdateMeleeWeaponPosition();
+	void UseWeapon();
+	Weapon* CheckWeaponType(Weapon* obj);
+	
 private:
 	void InitWeapons();
 	void UpdateMovement(float FixedDeltaTime);
 	void UpdateHeight(float FixedDeltaTime);
 	void TriggerAttack();
-	void HandleInput();
+	//void HandleInput();
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 	float ShortestRotation(float currentDir, float nextDir);
 	void UpdateHitEnemy();
@@ -47,35 +45,30 @@ private:
 	Input* input;
 	DX11Handler& dx11;
 	CameraController* controller;
-	float movementspeed;
-	
+	float movementspeed;	
 	Terrain* terrain;
 
-	/*Weapon* rightWeapon;
-	Weapon* leftWeapon;*/
+	// Weapon shit
+	Weapon* rightWeapon;
+	Weapon* leftWeapon;	
+	Weapon* testWeapon;	
+	GUIActionbar* leftActionbar;
+	GUIActionbar* rightActionbar;
+	bool lefthandFull, righthandFull;
+	//
 
-	Projectile* rightWeapon;
-	Projectile* leftWeapon;
-
-	Projectile* testProj;
-	
-	float scaleXZ, scaleY;
-	int leftNut, rightNut;
-	
+	float scaleXZ, scaleY;		
 	GUI* gui;
-	SoundHandler* testSound;
-	Scene* scene;
-	GUIActionbar* coconutSprite;
-	
+
+	Scene* scene;		
 	DirectX::XMFLOAT3 currentPosition;
-	float nextDir = 0;
-	
-	//std::vector<Weapon*>& firedWeapon;
+	float nextDir = 0;	
+	std::vector<Weapon*> weapons;
 	float playerHeight = 3;
 
 	// New
 	GUISprite* healthbar;
-	float PlayerHealth;
+	float playerHealth;
 	//
 
 	Enemy* enemy;

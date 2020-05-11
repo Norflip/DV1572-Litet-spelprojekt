@@ -9,6 +9,9 @@ Enemy::Enemy(Mesh* mesh, Material* material, Terrain* terrain, DX11Handler& dx11
 	this->movementspeed = 2.0f;
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
+
+	this->hitSound = new SoundHandler();
+	this->hitSound->LoadSound("Hit", "SoundEffects/Kick.wav");
 }
 
 Enemy::~Enemy()
@@ -48,7 +51,7 @@ void Enemy::UpdateMovement(float fixedDeltaTime)
 
 void Enemy::SetTarget(Player* player)
 {
-	this->player = player;
+		this->player = player;
 }
 
 Object* Enemy::GetFBXModel()

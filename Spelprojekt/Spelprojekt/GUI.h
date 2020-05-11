@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <SpriteFont.h>
-
+#include <unordered_map>
 // New
 #include "GUISprite.h"
 #include "GUIText.h"
@@ -15,13 +15,15 @@ class GUI
 public:
 	GUI(DX11Handler&);
 	~GUI() {};
-	void AddGUIObject(GUIObject *addObj);
-	void RemoveGUIObject(GUIObject* removeObj);
+	void AddGUIObject(GUIObject *addObj, std::string name);
+	void RemoveGUIObject(std::string name);
 	DX11Handler& GetDXHandler() { return dx11; }
-
+	std::unordered_map<std::string, GUIObject*>*  GetGUIList() { return &this->GUIObjects; };
 	void DrawAll();
 private:
-	std::vector<GUIObject*> GUIObjects;
+
+	std::unordered_map<std::string, GUIObject*> GUIObjects;
+	//std::vector<GUIObject*> GUIObjects;
 
 	DirectX::SpriteBatch* spriteBatch;
 	DX11Handler& dx11;

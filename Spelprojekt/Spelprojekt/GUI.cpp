@@ -5,17 +5,19 @@ GUI::GUI(DX11Handler& dx11) : dx11(dx11)
 	spriteBatch = new DirectX::SpriteBatch(dx11.GetContext());
 }
 
-void GUI::AddGUIObject(GUIObject *addObj)
+void GUI::AddGUIObject(GUIObject *addObj, std::string name)
 {
-	GUIObjects.push_back(addObj);
+	GUIObjects.insert({ name,addObj });
+	//GUIObjects[name] = addObj;
 }
 
-void GUI::RemoveGUIObject(GUIObject* removeObj)
+void GUI::RemoveGUIObject(std::string name)
 {
-	auto found = std::find(GUIObjects.begin(), GUIObjects.end(), removeObj);
-	if(found != GUIObjects.end())
+	auto temp =   GUIObjects.find(name);
+
+	if(temp != GUIObjects.end())
 	{
-		GUIObjects.erase(found);
+		GUIObjects.erase(temp);
 	}
 }
 
@@ -25,7 +27,7 @@ void GUI::DrawAll()
 
 	for (auto i : GUIObjects)
 	{	
-		i->Draw(spriteBatch);
+		i.second->Draw(spriteBatch);
 	}
 
 	spriteBatch->End();	

@@ -31,7 +31,7 @@ void DX11Handler::Initialize(const Window& window)
 	swapChainDescription.BufferDesc.Width = window.GetWidth();
 	swapChainDescription.BufferDesc.Height = window.GetHeight();
 	swapChainDescription.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	swapChainDescription.BufferDesc.RefreshRate.Numerator = 0; // sets framerate to 60 as max
+	swapChainDescription.BufferDesc.RefreshRate.Numerator = 60; // sets framerate to 60 as max
 	swapChainDescription.BufferDesc.RefreshRate.Denominator = 1;
 	swapChainDescription.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	swapChainDescription.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
@@ -41,7 +41,7 @@ void DX11Handler::Initialize(const Window& window)
 	swapChainDescription.SampleDesc.Count = 1;
 	swapChainDescription.SampleDesc.Quality = 0;
 	swapChainDescription.Windowed = TRUE;
-	swapChainDescription.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swapChainDescription.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
 	swapChainDescription.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	UINT swapflags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
@@ -56,7 +56,7 @@ void DX11Handler::Initialize(const Window& window)
 	/////////////////				END SWAPCHAIN INITIALIZE				/////////////////
 
 	CreateBackbufferRenderTarget(window.GetWidth(), window.GetHeight());
-	SetWireframeMode(false);
+	SetWireframeMode(true);
 }
 
 void DX11Handler::SetWireframeMode(bool useWireframe)
@@ -74,27 +74,33 @@ void DX11Handler::SetWireframeMode(bool useWireframe)
 	///* Filips nasty shit >:D
 	rasterizerDescription.DepthClipEnable = true;
 	rasterizerDescription.FrontCounterClockwise = false;
-	rasterizerDescription.MultisampleEnable = false;
-	rasterizerDescription.ScissorEnable = true;
+	rasterizerDescription.ScissorEnable = false;
 	rasterizerDescription.DepthBias = 0;
 	rasterizerDescription.DepthBiasClamp = 0.0f;
 	
-
 	HRESULT resultCreateRasterizer = device->CreateRasterizerState(&rasterizerDescription, &rasterizerState);
 	assert(SUCCEEDED(resultCreateRasterizer));
+
+	//ZeroMemory(&rasterizerDescription, sizeof(D3D11_RASTERIZER_DESC));
+	rasterizerDescription.DepthBias = -50;
+	//rasterizerDescription.DepthBiasClamp = 100;
+
+	resultCreateRasterizer = device->CreateRasterizerState(&rasterizerDescription, &waterRaster);
+	assert(SUCCEEDED(resultCreateRasterizer));
+
 	context->RSSetState(rasterizerState);
 }
 
 void DX11Handler::CreateBackbufferRenderTarget(size_t width, size_t height)
 {
-	ID3D11Texture2D* backBufferPtr;
+	this->backBufferPtr;
 	swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
 
 	// assert backbufferPtr instead
 
 	if (backBufferPtr != nullptr)
 	{
-		ID3D11RenderTargetView* backbufferRTV;
+		backbufferRTV;
 		device->CreateRenderTargetView(backBufferPtr, nullptr, &backbufferRTV);
 		backBufferPtr->Release();
 

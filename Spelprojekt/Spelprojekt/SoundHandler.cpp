@@ -28,7 +28,7 @@ void SoundHandler::PlaySound(std::string key, float volume)
 {
 	if (HasKey(key))
 	{
-		soundMap[key]->Play(volume,0,0);
+		soundMap[key]->Play(volume,0,0);		
 	}	
 }
 
@@ -45,4 +45,26 @@ void SoundHandler::SetGlobalVolume(float volume)
 float SoundHandler::GetGlobalVolume()
 {
 	return audioEngine->GetMasterVolume();
+}
+
+void SoundHandler::StopSound()
+{
+	audioEngine->Reset(); // Think this is it. 
+
+	/*if (audioEngine != nullptr) {
+		audioEngine = nullptr;
+		delete audioEngine;
+	}
+		
+	if (soundEffect != nullptr)
+	{
+		soundEffect = nullptr;
+		delete soundEffect;
+	}
+
+	if (soundMap[key]) {
+		soundMap[key] = nullptr;
+		delete soundMap[key];
+	}*/
+		
 }

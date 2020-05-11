@@ -2,42 +2,36 @@
 Player::Player(Mesh* mesh, Material* material, CameraController* controller, Terrain* terrain, GUI* gui, DX11Handler& dx11, Scene* scene)
 	:controller(controller), terrain(terrain), Object(mesh, material), dx11(dx11)
 {
-
-
 	Object* temp = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, material->GetShader());
 	SetMesh(temp->GetMesh());
 	SetMaterial(temp->GetMaterial());
 
-	this->movementspeed = 3;
+	this->movementspeed = 7;
 	this->input = controller->getInput();
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
-	this->coconutSprite = new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
+
+	// weapon shit
+	this->leftActionbar = nullptr; //  new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
+	this->rightActionbar = nullptr;
 	this->gui = gui;
-	this->gui->AddGUIObject(this->coconutSprite);
-	this->leftNut = 1;
-	this->rightNut = 1;
-	this->testSound = new SoundHandler();
-	this->testSound->LoadSound("Explosive", "SoundEffects/Explo1.wav");
-	this->scene = scene;
-	rightWeapon = new Projectile("Models/Coconut.fbx", terrain, dx11, this->GetMaterial()->GetShader(), DirectX::XMVECTOR({ 0,this->currentPosition.y,0 }), this->GetTransform().GetRotation());
+	//this->gui->AddGUIObject(this->leftActionbar);
 
+	this->lefthandFull = false;
+	this->righthandFull = false;
+	this->leftWeapon = nullptr;
+	this->rightWeapon = nullptr;	
+		
+	this->scene = scene;	
 
-	this->PlayerHealth = 100.0f;
-	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 700.0f);
+	this->playerHealth = 100.0f;
+	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 650.0f);
 	this->healthbar->HealthBar(100.0f, 100.0f);
-<<<<<<< Updated upstream
-	this->gui->AddGUIObject(this->healthbar);
-=======
 	this->gui->AddGUIObject(this->healthbar, "healthbar");
-	//this->firedWea
-
->>>>>>> Stashed changes
 }
 
 Player::~Player()
 {
-
 }
 
 void Player::Update(const float& deltaTime)
@@ -45,17 +39,19 @@ void Player::Update(const float& deltaTime)
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
 	UpdateHitEnemy();
-	HandleInput();
+	//HandleInput();
 
+	UpdateMeleeWeaponPosition();	// If spoon is equiped
+	UseWeapon();
 	TakeDamage();
 }
 
 
 void Player::TakeDamage()
 {
-	if (input->GetMouseButtonDown(1) && PlayerHealth != 0.0f) {
-		this->PlayerHealth -= 10.0f;
-		healthbar->HealthBar(100.0f, this->PlayerHealth);
+	if (input->GetMouseButtonDown(1) && playerHealth != 0.0f) {
+		playerHealth -= 10.0f;
+		healthbar->HealthBar(100.0f, playerHealth);
 	}
 }
 
@@ -116,8 +112,6 @@ void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 
 void Player::InitWeapons()
 {
-
-
 }
 
 float Player::ShortestRotation(float currentDir, float nextDir)
@@ -134,79 +128,150 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 
 void Player::UpdateHitEnemy()
 {
-	if (enemy != nullptr && testProj != nullptr)
+	if (enemy != nullptr && leftWeapon != nullptr)
 	{
-		if (testProj->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
+		if (leftWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
 		{
-			scene->RemoveObject(testProj);
-			testProj = nullptr;
+			enemy->HitSound();
+			scene->RemoveObject(enemy);			
+			enemy = nullptr;
+			scene->RemoveObject(leftWeapon);
+			leftWeapon->SetEnabled(false); // new
+			leftWeapon = nullptr;
+		}
+	}
+
+	if (enemy != nullptr && rightWeapon != nullptr)
+	{
+		if (rightWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
+		{
+			enemy->HitSound();
+			scene->RemoveObject(enemy);
+			enemy = nullptr;
+			scene->RemoveObject(rightWeapon);
+			rightWeapon->SetEnabled(false); // new
+			rightWeapon = nullptr;
 		}
 	}
 }
 
-void Player::NutOnPlayer(Object* obj)
+void Player::UpdateHands(Weapon* obj)
 {
-	if (obj->IsEnabled() && obj->GetWorldBounds().Overlaps(this->GetWorldBounds()))
-	{
-		if (input->GetKeyDown('q') && leftNut == 0)
-		{
-			this->coconutSprite = new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
-			this->gui->AddGUIObject(this->coconutSprite);
-			scene->RemoveObject(obj);
+	if (input->GetKeyDown('e') && obj->IsEnabled() && obj->GetWorldBounds().Overlaps(this->GetWorldBounds()))
+	{		
+		if (!lefthandFull) {	
+			leftWeapon = CheckWeaponType(obj);	//check type
+			
+			this->leftActionbar = new GUIActionbar(*obj->GetWeaponSprite());
+			this->leftActionbar->SetPosition(325.0f, 650.0f);
+			this->gui->AddGUIObject(this->leftActionbar, "Left Actionbar");
+
+			scene->RemoveObject(obj);			
 			obj->SetEnabled(false);
-			leftNut++;
+			lefthandFull = true;
+		}
+		else if (lefthandFull && !righthandFull) {
+			rightWeapon = CheckWeaponType(obj); //check type
+			
+			this->rightActionbar = new GUIActionbar(*obj->GetWeaponSprite());
+			this->rightActionbar->SetPosition(400.0f, 650.0f);
+			this->gui->AddGUIObject(this->rightActionbar, "Right Actionbar");
+
+			scene->RemoveObject(obj);			
+			obj->SetEnabled(false);
+			righthandFull = true;
+		}
+		else {
+			
+		}
+	}		
+
+}
+
+void Player::UpdateMeleeWeaponPosition()
+{
+	if (lefthandFull) {
+		if (leftWeapon->GetWeaponTypename() == "Slev") {
+			leftWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
+			leftWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
+			leftWeapon->direction = GetTransform().GetRotation();
 		}
 	}
+
+	if (righthandFull) {
+		if (rightWeapon->GetWeaponTypename() == "Slev") {
+			rightWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
+			rightWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
+			rightWeapon->direction = GetTransform().GetRotation();
+		}
+	}	
+}
+
+void Player::UseWeapon()
+{
+	if (input->GetMouseButtonDown(0) && lefthandFull) {
+		leftWeapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());		
+		leftWeapon->direction = GetTransform().GetRotation();
+		leftWeapon->PlaySoundEffect();
+		scene->AddObject(leftWeapon);
+		/*if (leftWeapon->GetWeaponTypename() != "Slev") {
+			
+			// TEMPOR�RT stuff			
+			testWeapon = static_cast<Weapon*>(leftWeapon);;
+			scene->AddObject(testWeapon);		
+		}*/
+		
+		gui->RemoveGUIObject("Left Actionbar");
+		//scene->AddObject(leftWeapon);
+		//leftWeapon = nullptr;
+		lefthandFull = false;
+	}
+
+	if (input->GetMouseButtonDown(1) && righthandFull) {		
+		rightWeapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());
+		rightWeapon->direction = GetTransform().GetRotation();
+		rightWeapon->PlaySoundEffect();
+		scene->AddObject(rightWeapon);
+
+		/*if (rightWeapon->GetWeaponTypename() != "Slev")
+		{
+			scene->AddObject(rightWeapon);		
+			testWeapon = static_cast<Weapon*>(rightWeapon);;
+			scene->AddObject(testWeapon);
+		}*/
+		
+		gui->RemoveGUIObject("Right Actionbar");
+		
+		//rightWeapon = nullptr;
+		righthandFull = false;
+	}
+}
+
+float Player::GetPlayerHealth()
+{
+	return playerHealth;
 }
 
 void Player::SetEnemy(Enemy* enemy)
 {
-	this->enemy = enemy;
+	this->enemy = enemy;	
+}
+
+Weapon* Player::CheckWeaponType(Weapon* obj)
+{
+	Weapon* curr = nullptr;
+	if (obj->GetWeaponTypename() == "Coconut") {
+		Projectile* proj = static_cast<Projectile*>(obj);
+		curr = new Projectile(*proj);
+	}
+	if (obj->GetWeaponTypename() == "Slev") {
+		Spoon* spoonweap = static_cast<Spoon*>(obj);
+		curr = new Spoon(*spoonweap);
+		scene->AddObject(curr);
+	}
+	return curr;
 }
 
 void Player::TriggerAttack()
 {
-}
-
-void Player::HandleInput()
-{
-
-	if (input->GetMouseButtonDown(0) && leftNut > 0)
-	{
-			testProj = new Projectile(*rightWeapon);
-
-			testProj->GetTransform().SetPosition(GetTransform().GetPosition());
-			testProj->GetTransform().SetRotation(GetTransform().GetRotation());
-			//testProj->SetMesh(GetMesh());
-			//testProj->SetMaterial(GetMaterial());
-			testProj->direction = GetTransform().GetRotation();
-			scene->AddObject(testProj);
-<<<<<<< Updated upstream
-			gui->RemoveGUIObject(coconutSprite);
-=======
-			//firedWeapon.push_back(testProj);
-			gui->RemoveGUIObject("testWeapon");
->>>>>>> Stashed changes
-			leftNut--;
-			/*Logger::Write(LOG_LEVEL::Info, "Left click");
-			gui->RemoveGUIObject(coconutSprite);
-			leftNut--;*/
-			testSound->PlaySound("Explosive", 0.1f);
-	}
-	//
-	//if(input->GetKeyDown('q') && leftNut == 0)
-	//{
-	//	this->coconutSprite = new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
-	//	this->gui->AddGUIObject(this->coconutSprite);
-	//	scene->RemoveObject(testProj);
-	//	//delete testProj;
-	//	testProj->SetEnabled(false);
-	//	leftNut++;
-	//}
-
-	if (input->GetMouseButtonDown(1) && rightNut > 0)
-	{
-		Logger::Write(LOG_LEVEL::Info, "Right click");
-		//rightNut--;
-	}
 }

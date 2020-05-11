@@ -1,6 +1,6 @@
 #include "Application.h"
 
-Application::Application(HINSTANCE hInstance) : window(hInstance)
+Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(false)
 {
 	this->window.Initialize(); // initializes the win32 window
 	this->dx11.Initialize(this->window); // creates swapchain, device, deviceContext
@@ -11,15 +11,15 @@ Application::Application(HINSTANCE hInstance) : window(hInstance)
 	Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
 
 	// default scene.. devScene at the moment. Different sceness for the actual game, main menu, game over(?) etc 
-	this->gameScene = new DevScene(this->deferredRenderer, this->dx11, this->window);
+	this->gameScene = new DevScene(this->deferredRenderer, this->dx11, this->window, scenes);
+	this->endScene = new EndScene(this->deferredRenderer, this->dx11, this->window, scenes, "EndScene", exitGame);
+	this->introScene = new IntroScene("IntroScene", this->deferredRenderer, this->dx11, this->window, scenes, exitGame);
+	
+	scenes.push_back(endScene);
 	scenes.push_back(gameScene);
-	this->gameOverScene = new DevScene(this->deferredRenderer, this->dx11, this->window );
-	scenes.push_back(gameOverScene);
-	this->introScene = new IntroScene(this->deferredRenderer, this->dx11, this->window, scenes);
 	scenes.push_back(introScene);
 
 	introScene->Load();
-
 	currentScene = introScene;
 }
 
@@ -49,6 +49,8 @@ void Application::Run()
 
 			if (msg.message == WM_QUIT)
 				break;
+			if (exitGame)
+				break;
 		}
 		else
 		{
@@ -58,7 +60,7 @@ void Application::Run()
 			window.GetInput()->UpdateState();
 
 			// call update function
-			if (currentScene != nullptr)
+			if (currentScene != nullptr && !pauseGame)
 			{
 				fixedTimeAccumulation += deltaTime;
 				currentScene->Update(deltaTime);
@@ -70,16 +72,15 @@ void Application::Run()
 					fixedTimeAccumulation -= TARGET_FIXED_DELTA;
 				}
 
-
 				Scene* next = currentScene->GetNextScene();
 
 				if (next != nullptr)
-				{
+				{					
 					currentScene->Unload();
-					delete currentScene;
 
 					currentScene = next;
 					currentScene->Load();
+					currentScene->nextScene = nullptr;
 				}
 			}
 

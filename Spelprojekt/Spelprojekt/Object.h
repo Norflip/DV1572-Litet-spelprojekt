@@ -36,6 +36,8 @@ public:
 	bool IsEnabled() const { return this->enabled; }
 	bool IsVisible() const { return this->visible; }
 	void SetVisible(bool visible) { this->visible = visible; }
+
+	bool isWater = false;
 	
 private:
 	Transform transform;

@@ -18,6 +18,7 @@ RenderTarget::RenderTarget(size_t bufferCount, size_t width, size_t height, bool
 
 RenderTarget::~RenderTarget()
 {
+	Cleanup();
 }
 
 void RenderTarget::Initalize(ID3D11Device* device)
@@ -211,6 +212,9 @@ void RenderTarget::Cleanup()
 			rtv[i] = 0;
 		}
 	}
+
+	delete dsv;
+	delete dss;
 
 	delete[] srv;
 	delete[] rtv;

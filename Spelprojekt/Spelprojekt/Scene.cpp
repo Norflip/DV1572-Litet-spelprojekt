@@ -4,6 +4,7 @@ Scene::Scene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& wi
 {
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
 	this->nextScene = nullptr;
+	this->didWin = false;
 }
 
 
@@ -15,10 +16,18 @@ Scene::~Scene()
 	delete camera;
 }
 
+void Scene::Unload()
+{
+	for (auto i = allObjects.rbegin(); i < allObjects.rend(); i++)
+	{
+		delete *i;
+	}
+}
+
 void Scene::Update(const float& deltaTime)
 {
 	UpdateAddRemoveSceneQueues();
-
+	
 	for (auto i : allObjects)
 	{
 		if (i->IsEnabled())
@@ -40,8 +49,12 @@ void Scene::Render()
 {
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object
+	
+	//dx11.GetContext()->RSSetState(dx11.GetRasterizer());
 	renderer->SetDeferredRenderTarget();
 	renderer->ClearRenderTarget();
+
+	
 
 	DirectX::XMMATRIX view = camera->GetView();
 	DirectX::XMMATRIX projection = camera->GetProjection();
@@ -77,13 +90,24 @@ void Scene::Render()
 						lastMaterialID = material->GetID();
 					}
 
+					/*if (object->isWater) {
+						dx11.GetContext()->RSSetState(dx11.GetRasterizer());
+					}*/
+										
 					object->Render(renderer, view, projection);
+
+					/*if(object->isWater) {
+						dx11.GetContext()->RSSetState(dx11.GetWaterRasterizer());
+					}*/
+
 				}
 			}
 		}
 
 		// shader unbind can become relevant if we add more then vs and ps shaders
 	}
+
+
 
 	UpdateAddRemoveSceneQueues();
 	renderer->DisplayFrame(camera->GetTransform().GetPosition());
@@ -97,6 +121,11 @@ void Scene::AddObject(Object* obj)
 void Scene::RemoveObject(Object* obj)
 {
 	objectsToRemove.push_back(obj);
+}
+
+void Scene::setWinOrLose(bool didWin)
+{
+	this->didWin = didWin;
 }
 
 void Scene::m_AddObjectToScene(Object* obj)
