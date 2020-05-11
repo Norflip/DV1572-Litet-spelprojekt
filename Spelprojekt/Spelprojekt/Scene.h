@@ -51,4 +51,5 @@ protected:
 	std::vector<Object*> allObjects;
 	std::string sceneName;
 	bool didWin;
+		
 };

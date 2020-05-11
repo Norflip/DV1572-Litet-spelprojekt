@@ -1,16 +1,17 @@
 #include "IntroGUI.h"
 
-IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scene) : dx11(dx11)
+IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scene, SoundHandler* sound) : dx11(dx11)
 {
     this->currentScene = scene;
     this->gui = gui;
     this->input = cameraController->getInput();
-
+    this->mainSound = sound;
    
 }
 
 IntroGUI::~IntroGUI()
 {
+    
 }
 
 void IntroGUI::Update()
@@ -44,6 +45,7 @@ void IntroGUI::Start()
         if (play->Clicked(input))
         {
             //ClearGUI();
+            this->mainSound->StopSound();   // temp
             currentScene->setNextScene();
         }
         GUISprite* quit = static_cast<GUISprite*>(gui->GetGUIList()->at("quit"));
@@ -77,18 +79,28 @@ void IntroGUI::LoadStart()
 void IntroGUI::Options()
 {    
     GUISprite* lowVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("leftvolume"));
+    GUISprite* volumeBar = static_cast<GUISprite*>(gui->GetGUIList()->at("VolumeBar"));
+    volumeBar->HealthBar(maxVolume, currentVolume);
     if (lowVolume->Clicked(input))
     {
-        std::cout << "LOWER VOLUME!" << std::endl;
-       // first = true;
-//menu = Menu::start;
+        if (currentVolume > 0.0f) {
+            currentVolume -= volumeScale;
+            this->mainSound->SetGlobalVolume(currentVolume);
+            volumeBar->HealthBar(maxVolume, currentVolume);
+        }        
+        std::cout << "LOWER VOLUME!" << std::endl;     
     }
     GUISprite* highVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightvolume"));
     if (highVolume->Clicked(input))
     {
-        std::cout << "HIGHER VOLUME!" << std::endl;
-       // first = true;
-      //  menu = Menu::start;
+        if (currentVolume < 1.0f)
+        {
+            currentVolume += volumeScale;
+            this->mainSound->SetGlobalVolume(currentVolume);
+            volumeBar->HealthBar(maxVolume, currentVolume);
+        }
+        
+        std::cout << "HIGHER VOLUME!" << std::endl;      
     }
 
     GUISprite* backtointro = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
@@ -196,6 +208,11 @@ void IntroGUI::LoadOptions()
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/leftVol.png", 550.0f, 110.0f), "leftvolume");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/rightVol.png", 950.0f, 110.0f), "rightvolume");
+
+    // frame and bar
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 650.0f, 110.0f), "VolumeBar");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 650.0f, 110.0f), "SoundFrame");
+   
     first = false;
 }
 

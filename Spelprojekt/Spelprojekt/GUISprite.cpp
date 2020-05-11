@@ -67,6 +67,7 @@ GUISprite::~GUISprite()
 void GUISprite::Draw(DirectX::SpriteBatch* spritebatch)
 {	
 	spritebatch->Draw(SRV, this->position, nullptr, this->color, rotation, origin, scale,DirectX::SpriteEffects::SpriteEffects_None, 0.0f);
+	
 }
 
 void GUISprite::SetPosition(float x, float y)
@@ -118,7 +119,7 @@ bool GUISprite::MouseOver(Input* input)
 }
 
 void GUISprite::HealthBar(float maxHealth, float currentHealth)
-{
+{	
 	this->xScale = currentHealth/maxHealth;
 	float xs = this->xScale;
 	this->scale = DirectX::XMVectorSet(xs, 1, 1, 1);

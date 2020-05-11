@@ -33,7 +33,8 @@ private:
 	IntroGUI* introGUI;
 	Input* input;
 	std::vector<Scene*>& scenes;
+	SoundHandler* mainmenuMusic;
 
-	SoundHandler* mainMusic;
+	float volumeScale = 0.1f; 
 };
 

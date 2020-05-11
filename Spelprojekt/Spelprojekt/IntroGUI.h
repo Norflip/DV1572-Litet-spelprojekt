@@ -2,13 +2,16 @@
 #include "GUI.h"
 #include "DirectXHelpers.h"
 #include "CameraController.h"
+#include "SoundHandler.h"
+
 class IntroScene;
 #include "IntroScene.h"
-#include "SoundHandler.h"
+
+
 class IntroGUI
 {
 public:
-	IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scenes);
+	IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scenes, SoundHandler* sound);
 	~IntroGUI();
 	enum class Menu
 	{
@@ -35,6 +38,9 @@ private:
 	GUI* gui;
 	Input* input;
 	IntroScene* currentScene;
+	SoundHandler* mainSound;
 
-	
+	float volumeScale = 0.1f;	
+	float maxVolume = 1.0f;
+	float currentVolume = 1.0f;
 };
