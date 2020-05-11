@@ -13,7 +13,7 @@ class SpawnObjects : public Object
 		~SpawnObjects() {};
 		void Update(const float& deltaTime) override;
 		void SetPlayer(Player*);
-		void SetEnemy(Enemy*);
+		void SetEnemy();
 		void SetObject(Object*);
 		void AddEnemy(Enemy*);
 		void RemoveEnemy(Enemy*);
@@ -28,6 +28,7 @@ class SpawnObjects : public Object
 		Mesh* mesh;
 		Material* material;
 		Player* player;
+		Enemy* testEnemy;
 		Enemy* enemy;
 		Object* object;
 

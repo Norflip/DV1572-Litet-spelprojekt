@@ -8,6 +8,7 @@ SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Me
 	this->mesh = mesh;
 	this->material = material;
 	this->player = player;
+	this->testEnemy = nullptr;
 	this->enemy = nullptr;
 	SetVisible(false);
 }
@@ -23,9 +24,12 @@ void SpawnObjects::SetPlayer(Player* player)
 	this->player = player;
 }
 
-void SpawnObjects::SetEnemy(Enemy* enemy)
+void SpawnObjects::SetEnemy()
 {
-	this->enemy = enemy;
+	testEnemy = new Enemy(mesh, material, terrain, dx11);
+	testEnemy->GetTransform().Translate(30, 7, 35 + spawnOffset);
+	testEnemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
+	testEnemy->SetTarget(player);
 }
 
 void SpawnObjects::SetObject(Object* object)
@@ -40,14 +44,15 @@ void SpawnObjects::AddEnemy(Enemy* enemy)
 
 void SpawnObjects::RemoveEnemy(Enemy* enemy)
 {
-	
+	auto findEnemy = std::find(enemies.begin(), enemies.end(), enemy);
+	enemies.erase(findEnemy);
 }
 
 void SpawnObjects::UpdateSpawnEnemy()
 {
 	if (nrOfEnemies <= 2)
 	{
-		enemy = new Enemy(mesh, material, terrain, dx11);
+		enemy = new Enemy(*testEnemy);
 		enemy->GetTransform().Translate(30, 7, 35 + spawnOffset);
 		enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 		enemy->SetTarget(player);
@@ -68,7 +73,7 @@ void SpawnObjects::UpdateRemoveEnemy()
 			{
 				i->HitSound();
 				scene->RemoveObject(i);
-				i = nullptr;
+				RemoveEnemy(i);
 				scene->RemoveObject(player->GetActiveWeapon());
 				player->GetActiveWeapon()->SetEnabled(false); // new
 				player->SetActiveWeapon(nullptr);

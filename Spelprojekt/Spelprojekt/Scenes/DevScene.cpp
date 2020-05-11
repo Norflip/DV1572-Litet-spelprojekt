@@ -131,6 +131,7 @@ void DevScene::Load()
 
 	
 	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &test, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
+	this->spawnObjects->SetEnemy();
 	AddObject(this->spawnObjects);
 	
 	for(int i = 0; i < 5; i++)
