@@ -4,11 +4,13 @@
 #include "Camera.h"
 #include "CameraController.h"
 #include "assimpHandler.h"
+class EndGUI;
+#include "EndGUI.h"
 
 class EndScene : public Scene
 {
 public:
-	EndScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, std::string sceneName);
+	EndScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, std::string sceneName, bool& exitGame);
 	virtual ~EndScene();
 
 	void Load() override;
@@ -17,17 +19,14 @@ public:
 	void Update(const float& deltaTime) override;
 	Scene* GetNextScene() const override;
 
-private:
-	void CheckForNextScene();
+	bool& exitGame;
+
+	void SetNextScene(std::string whichScene);
+	bool getWinOrLose();
 private:
 
 	CameraController* controller;
-	GUIText* winText;
-	GUIText* menuText;
-	GUIText* restartText;
-	GUIText* infoText;
 
 	std::vector<Scene*>& scenes;
-
-	bool didWin;
+	EndGUI* endGUI;
 };

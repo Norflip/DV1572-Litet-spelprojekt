@@ -3,7 +3,7 @@
 #include "Input.h"
 #include "Object.h"
 #include "Camera.h"
-
+#include "SoundHandler.h"
 class Scene
 {
 public:
@@ -16,7 +16,7 @@ public:
 	virtual void Update(const float& deltaTime);
 	virtual void FixedUpdate(const float& fixedDeltaTime);
 	virtual void Render();
-
+	virtual Renderer* getRenderer() { return this->renderer; };
 	virtual Scene* GetNextScene() const = 0;
 
 	Camera* GetSceneCamera() const { return this->camera; }
@@ -27,9 +27,9 @@ public:
 
 	void AddObject(Object*);
 	void RemoveObject(Object*);
-
+	Window& getWindow() { return this->window; };
 	Scene* nextScene;
-
+	void setWinOrLose(bool didWin);
 protected:
 	void m_AddObjectToScene(Object*);
 	void m_RemoveObjectFromScene(Object*);
@@ -50,5 +50,5 @@ protected:
 	std::unordered_map <size_t, std::unordered_map<size_t, std::vector<Object*>>> sortedObjects;
 	std::vector<Object*> allObjects;
 	std::string sceneName;
-	
+	bool didWin;
 };

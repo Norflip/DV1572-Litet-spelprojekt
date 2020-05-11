@@ -19,8 +19,8 @@ Material::Material(Shader* shader, DX11Handler& dx11) : shader(shader)
 	this->materialData.specular = { 0.8f, 0.8f, 0.8f ,1 };
 	this->materialData.shininess = 32;
 
-	this->materialData.hasAlbedoTexture = true;
-	this->materialData.hasNormalTexture = true;
+	this->materialData.hasAlbedoTexture = false;
+	this->materialData.hasNormalTexture = false;
 }
 
 Material::~Material()

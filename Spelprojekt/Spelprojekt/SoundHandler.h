@@ -11,6 +11,7 @@ class SoundHandler
 		bool HasKey(std::string key) const;
 		void SetGlobalVolume(float volume);
 		float GetGlobalVolume();
+		void StopSound();
 	private:
 		DirectX::AudioEngine* audioEngine;
 		DirectX::SoundEffect* soundEffect;	

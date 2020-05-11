@@ -24,6 +24,10 @@ float4 main(PixelInputType input) : SV_TARGET
 	*/
 
 	float4 albedo = albedoTexture.Load(float3(input.position.xy, 0), 0);
+
+
+
+
 	float3 normal = normalTexture.Load(float3(input.position.xy, 0), 0).xyz;
 	normal = normalize(normal);
 
@@ -32,7 +36,7 @@ float4 main(PixelInputType input) : SV_TARGET
 	float3 sunDir = normalize(-sunDirection);
 
 	// diffuse shading
-	float diff = saturate(dot(normal, sunDir));
+	float diff = saturate(dot(float3(0,1,0), sunDir));
 
 	// specular shading
 	float3 reflectDir = reflect(-sunDir, normal);
