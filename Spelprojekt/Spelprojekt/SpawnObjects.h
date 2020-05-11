@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "Player.h"
 #include "Enemy.h"
+#include <ctime>
 
 class SpawnObjects : public Object
 {
@@ -21,6 +22,7 @@ class SpawnObjects : public Object
 	private:
 		void UpdateSpawnEnemy();
 		void UpdateRemoveEnemy();
+		void UpdateRandomNumber();
 
 		DX11Handler& dx11;
 		Terrain* terrain;
@@ -34,6 +36,7 @@ class SpawnObjects : public Object
 
 		int nrOfEnemies = 0;
 		float spawnOffset = 0;
+		float randX, randZ, lastRandX, lastRandZ;
 
 		std::vector<Enemy*> enemies;
 };

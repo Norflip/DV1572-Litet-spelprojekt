@@ -17,6 +17,7 @@ void SpawnObjects::Update(const float& deltaTime)
 {
 	UpdateSpawnEnemy();
 	UpdateRemoveEnemy();
+	UpdateRandomNumber();
 }
 
 void SpawnObjects::SetPlayer(Player* player)
@@ -50,16 +51,18 @@ void SpawnObjects::RemoveEnemy(Enemy* enemy)
 
 void SpawnObjects::UpdateSpawnEnemy()
 {
-	if (nrOfEnemies <= 2)
+
+	if (nrOfEnemies <= 2 && randX != lastRandX)
 	{
 		enemy = new Enemy(*testEnemy);
-		enemy->GetTransform().Translate(30, 7, 35 + spawnOffset);
+		enemy->GetTransform().Translate(randX, 7, randZ);
 		enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 		enemy->SetTarget(player);
 		scene->AddObject(enemy);
 		AddEnemy(enemy);
 		nrOfEnemies++;
 		spawnOffset += 5;
+		lastRandX = randX;
 	}
 }
 
@@ -81,6 +84,17 @@ void SpawnObjects::UpdateRemoveEnemy()
 			}
 		}
 	}
+}
+
+void SpawnObjects::UpdateRandomNumber()
+{
+	srand((unsigned)time(0));
+	for(int i = 0; i < 4; i++)
+	{
+		randX = static_cast <float>(rand() % 125) + 35.0f;
+		randZ = static_cast <float>(rand() % 125) + 35.0f;
+	}
+	Logger::Write(LOG_LEVEL::Info, "X pos: " + std::to_string(lastRandX));
 }
 
 Enemy* SpawnObjects::GetEnemy()
