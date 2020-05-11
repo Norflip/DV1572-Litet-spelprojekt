@@ -50,5 +50,5 @@ protected:
 	std::unordered_map <size_t, std::unordered_map<size_t, std::vector<Object*>>> sortedObjects;
 	std::vector<Object*> allObjects;
 	std::string sceneName;
-	
+		
 };
