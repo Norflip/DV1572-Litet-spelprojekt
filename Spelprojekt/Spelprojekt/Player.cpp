@@ -128,31 +128,31 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 
 void Player::UpdateHitEnemy()
 {
-	if (enemy != nullptr && leftWeapon != nullptr)
+	if (enemy != nullptr && testWeapon != nullptr)
 	{
-		if (leftWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
+		if (testWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
 		{
 			enemy->HitSound();
 			scene->RemoveObject(enemy);			
 			enemy = nullptr;
-			scene->RemoveObject(leftWeapon);
-			leftWeapon->SetEnabled(false); // new
-			leftWeapon = nullptr;
+			scene->RemoveObject(testWeapon);
+			testWeapon->SetEnabled(false); // new
+			testWeapon = nullptr;
 		}
 	}
 
-	if (enemy != nullptr && rightWeapon != nullptr)
-	{
-		if (rightWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
-		{
-			enemy->HitSound();
-			scene->RemoveObject(enemy);
-			enemy = nullptr;
-			scene->RemoveObject(rightWeapon);
-			rightWeapon->SetEnabled(false); // new
-			rightWeapon = nullptr;
-		}
-	}
+	//if (enemy != nullptr && rightWeapon != nullptr)
+	//{
+	//	if (rightWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
+	//	{
+	//		enemy->HitSound();
+	//		scene->RemoveObject(enemy);
+	//		enemy = nullptr;
+	//		scene->RemoveObject(rightWeapon);
+	//		rightWeapon->SetEnabled(false); // new
+	//		rightWeapon = nullptr;
+	//	}
+	//}
 }
 
 void Player::UpdateHands(Weapon* obj)
@@ -213,13 +213,14 @@ void Player::UseWeapon()
 		leftWeapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());		
 		leftWeapon->direction = GetTransform().GetRotation();
 		leftWeapon->PlaySoundEffect();
-		scene->AddObject(leftWeapon);
-		/*if (leftWeapon->GetWeaponTypename() != "Slev") {
-			
-			// TEMPORÄRT stuff			
-			testWeapon = static_cast<Weapon*>(leftWeapon);;
+		
+		if (leftWeapon->GetWeaponTypename() != "Slev") {
+			testWeapon = static_cast<Weapon*>(leftWeapon);
 			scene->AddObject(testWeapon);		
-		}*/
+		}
+		else {
+			scene->AddObject(leftWeapon);
+		}
 		
 		gui->RemoveGUIObject("Left Actionbar");
 		//scene->AddObject(leftWeapon);
@@ -231,14 +232,16 @@ void Player::UseWeapon()
 		rightWeapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());
 		rightWeapon->direction = GetTransform().GetRotation();
 		rightWeapon->PlaySoundEffect();
-		scene->AddObject(rightWeapon);
-
-		/*if (rightWeapon->GetWeaponTypename() != "Slev")
+		
+		if (rightWeapon->GetWeaponTypename() != "Slev")
 		{
 			scene->AddObject(rightWeapon);		
 			testWeapon = static_cast<Weapon*>(rightWeapon);;
 			scene->AddObject(testWeapon);
-		}*/
+		}
+		else {
+			scene->AddObject(rightWeapon);
+		}
 		
 		gui->RemoveGUIObject("Right Actionbar");
 		
