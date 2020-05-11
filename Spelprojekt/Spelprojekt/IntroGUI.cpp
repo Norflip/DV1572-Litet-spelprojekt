@@ -5,6 +5,8 @@ IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraControll
     this->currentScene = scene;
     this->gui = gui;
     this->input = cameraController->getInput();
+
+   
 }
 
 IntroGUI::~IntroGUI()
@@ -73,7 +75,22 @@ void IntroGUI::LoadStart()
 }
 
 void IntroGUI::Options()
-{
+{    
+    GUISprite* lowVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("leftvolume"));
+    if (lowVolume->Clicked(input))
+    {
+        std::cout << "LOWER VOLUME!" << std::endl;
+       // first = true;
+//menu = Menu::start;
+    }
+    GUISprite* highVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightvolume"));
+    if (highVolume->Clicked(input))
+    {
+        std::cout << "HIGHER VOLUME!" << std::endl;
+       // first = true;
+      //  menu = Menu::start;
+    }
+
     GUISprite* backtointro = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
     if (backtointro->Clicked(input))
     {
@@ -173,8 +190,12 @@ void IntroGUI::Options()
 void IntroGUI::LoadOptions()
 {
     ClearGUI();
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsync.png", 100.0f, 100.0f), "vsync");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 300.0f), "backtointro");
+    
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/vol.png", 100.0f, 100.0f), "volume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsync.png", 100.0f, 300.0f), "vsync");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/leftVol.png", 550.0f, 110.0f), "leftvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/rightVol.png", 950.0f, 110.0f), "rightvolume");
     first = false;
 }
 

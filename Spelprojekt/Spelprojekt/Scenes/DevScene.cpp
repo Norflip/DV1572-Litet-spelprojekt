@@ -19,7 +19,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 	this->timeUntilEnd = 10.0f;
-	this->canWin = false;
+
 }
 
 DevScene::~DevScene()
@@ -28,7 +28,13 @@ DevScene::~DevScene()
 }
 
 void DevScene::Load()
-{	
+{		
+
+	this->canWin = false;
+
+	//this->levelMusic->LoadSound("Grass", "SoundEffects/Greengrass.wav");
+	//this->levelMusic->PlaySound("Grass", 0.1f);
+
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
@@ -73,12 +79,12 @@ void DevScene::Load()
 	terrainShader->LoadPixelShader(L"Shaders/Terrain_ps.hlsl", "main", dx11.GetDevice());
 	terrainShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
 
-	Texture* grass_texture = Texture::CreateTexture("Textures/Grass.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	Texture* grass_normal = Texture::CreateTexture("Textures/TMP_Grass_NORM.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	Texture* grass_texture = Texture::CreateTexture("Textures/Grass_Color.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 
-
-	Texture* sand_texture = Texture::CreateTexture("Textures/TMP_Sand_COLOR.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);	
-	Texture* sand_normal = Texture::CreateTexture("Textures/TMP_Sand_NORM.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	
+	Texture* sand_texture = Texture::CreateTexture("Textures/Sand_Color_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);	
+	Texture* sand_normal = Texture::CreateTexture("Textures/Sand_Normal_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	
 	Material* terrainMat = new Material(terrainShader, dx11);
 	terrainMat->SetTexture(0, grass_texture, PIXEL_TYPE::PIXEL);
@@ -203,6 +209,12 @@ void DevScene::Load()
 	//// Testing animation
 	//Object* animation = AssimpHandler::loadFbxObject("Models/animation.fbx", dx11, defaultShader);
 	//AddObject(animation);
+
+
+	// Music last thing to load
+	this->levelMusic = new SoundHandler();
+	this->levelMusic->LoadSound("Levelsound", "SoundEffects/Ben.wav");
+	this->levelMusic->PlaySound("Levelsound", 0.05f);
 }
 
 void DevScene::Unload()
@@ -210,10 +222,12 @@ void DevScene::Unload()
 	// @TODO
 	gametimer.Restart();
 	gametimer.Stop();
+		
+	this->levelMusic->StopSound();
 }
 
 void DevScene::Update(const float& deltaTime)
-{
+{	
 	spawnObjects->SpawnEnemy();
 	
 	Scene::Update(deltaTime);
@@ -254,8 +268,6 @@ void DevScene::Update(const float& deltaTime)
 		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(false);
 	}
-
-	int size = allObjects.size();
 
 	if (canWin && player->GetWorldBounds().Overlaps(allObjects[0]->GetWorldBounds()))
 	{
@@ -512,27 +524,28 @@ void DevScene::CreateSceneObjects()
 		//
 
 		// Surdboards
-		Object* sunsetSurfboard = AssimpHandler::loadFbxObject("Models/surfboardSunset.fbx", dx11, defaultShader);
-		Object* surfboard = AssimpHandler::loadFbxObject("Models/surfboard.fbx", dx11, defaultShader);
-		Object* surfboardTrippy = AssimpHandler::loadFbxObject("Models/surfboardTrippy.fbx", dx11, defaultShader);
+		Object* SurfboardBlue = AssimpHandler::loadFbxObject("Models/SurfboardBlue.fbx", dx11, defaultShader);
+		Object* SurfboardOrange = AssimpHandler::loadFbxObject("Models/SurfboardOrange.fbx", dx11, defaultShader);
+		Object* SurfboardTrippy = AssimpHandler::loadFbxObject("Models/SurfboardTrippy.fbx", dx11, defaultShader);
 
-		sunsetSurfboard->GetTransform().Translate(150, 8.5, 30);
-		sunsetSurfboard->GetTransform().Scale(1, 1, 1);
-		sunsetSurfboard->GetTransform().SetRotation({ 0, 0, 0 });
-		AddObject(sunsetSurfboard);
+		SurfboardBlue->GetTransform().Translate(150, 8.5, 30);
+		SurfboardBlue->GetTransform().SetRotation({ 0, 0, 0 });
+		AddObject(SurfboardBlue);
 
-		surfboard->GetTransform().Translate(148, 8.5, 28);
-		surfboard->GetTransform().Scale(1, 1, 1);
-		surfboard->GetTransform().SetRotation({ 0, 0, 0 });
-		AddObject(surfboard);
+		SurfboardOrange->GetTransform().Translate(148, 8.5, 28);
+		SurfboardOrange->GetTransform().SetRotation({ 0, 0, 0 });
+		AddObject(SurfboardOrange);
 
-		surfboardTrippy->GetTransform().Translate(146, 8.5, 30);
-		surfboardTrippy->GetTransform().Scale(1, 1, 1);
-		surfboardTrippy->GetTransform().SetRotation({ 0, 0, 0 });
-		AddObject(surfboardTrippy);
+		SurfboardTrippy->GetTransform().Translate(146, 8.5, 30);
+		SurfboardTrippy->GetTransform().SetRotation({ 0, 0, 0 });
+		AddObject(SurfboardTrippy);
 
-		//this->controller->SetFollow(&boat->GetTransform(), { 0, 10.0f, -10.0f });
+		Object* bungalow = AssimpHandler::loadFbxObject("Models/Bungalow.fbx", dx11, defaultShader);
+		bungalow->GetTransform().Translate(110, 7.5, 140);
+		bungalow->GetTransform().SetRotation({ 0, -2, 0 });
+		AddObject(bungalow);
 
+		//this->controller->SetFollow(&boat->GetTransform(), { 0, 10.0f, -10.0f });	
 
 
 	}
@@ -546,6 +559,8 @@ void DevScene::AddSceneObject(Object* obj)
 
 void DevScene::checkForNextScene()
 {
+	// Används inte längre
+
 	// Change scene logic
 	if (controller->getInput()->GetKeyDown('i'))
 	{
@@ -580,19 +595,10 @@ void DevScene::SetNextScene(bool winOrLose)
 
 	for (int i = 0; i < scenes.size(); i++)
 	{
-		if (winOrLose == false)
+		if (scenes[i]->GetName() == "EndScene")
 		{
-			if (scenes[i]->GetName() == "GameOverScene")
-			{
-				nextScene = scenes[i];
-			}
-		}
-		else if (winOrLose ==  true)
-		{
-			if (scenes[i]->GetName() == "WinScene")
-			{
-				nextScene = scenes[i];
-			}
+			scenes[i]->setWinOrLose(winOrLose);
+			nextScene = scenes[i];
 		}
 	}
 }

@@ -13,6 +13,8 @@ IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, 
 	//lights.SetSunDirection({ 1, -1, 0 });
 	//lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
 	//lights.SetSunIntensity(0.6f);
+
+	
 }
 
 IntroScene::~IntroScene()
@@ -53,6 +55,7 @@ void IntroScene::Load()
 
 	controller->SetFollow(&wagon->GetTransform(), { 0, 10.0f, -10.0f });
 	AddObject(sphere);
+		
 }
 
 void IntroScene::Unload()

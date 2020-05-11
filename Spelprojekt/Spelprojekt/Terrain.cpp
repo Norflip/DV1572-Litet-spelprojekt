@@ -35,7 +35,7 @@ void Terrain::GenerateMesh(std::string texturePath, ID3D11Device* device)
 			vertex.position.y = (float)rgb_image[z * width + x + 0] / 255.f;  
 			vertex.position.y *= verticalScaling;
  
-			vertex.uv = DirectX::XMFLOAT2((float)x / width, (float)z / height); // needs to be calculated when we create a quad
+			vertex.uv = DirectX::XMFLOAT2((float)x, (float)z); // needs to be calculated when we create a quad
 
 			vertex.normal = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
 			vertex.tangent = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -93,7 +93,7 @@ void Terrain::GenerateMesh(std::string texturePath, ID3D11Device* device)
 	for (size_t i = 0; i < vertList.size(); ++i)
 	{
 		DirectX::XMFLOAT3 temp = vertList.at(i).normal;
-		DirectX::XMStoreFloat3(&vertList.at(i).normal, DirectX::XMVector3Normalize({ temp.x,temp.y,temp.z }));
+		DirectX::XMStoreFloat3(&vertList.at(i).normal, DirectX::XMVector3Normalize({ -temp.x,-temp.y,-temp.z }));
 	}
 
 	this->mesh = MeshCreator::CreateMesh(vertList, indexList, device);

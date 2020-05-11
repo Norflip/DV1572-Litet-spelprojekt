@@ -42,11 +42,11 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 	float from = grassHeightLevel + blendHeight / 2.0f;
 	float to = grassHeightLevel - blendHeight / 2.0f;
 	float t = saturate((input.worldPosition.y - from) / (to - from));
-
+	
 	if (hasAlbedoTexture)
 	{
-		float4 sand = float4(m_sandAlbedo.Sample(m_samplerState0, input.uv));
-		float4 grass = float4(m_grassAlbedo.Sample(m_samplerState1, input.uv));
+		float4 grass = float4(m_grassAlbedo.Sample(m_samplerState0, fmod(input.uv, float2 (1, 1))));
+		float4 sand = float4(m_sandAlbedo.Sample(m_samplerState1, fmod(input.uv, float2 (1, 1))));
 		
 		float4 color = lerp(sand, grass, t);
 		output.albedo *= color;
