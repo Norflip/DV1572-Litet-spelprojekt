@@ -34,6 +34,8 @@ public:
 
 	void SetEnabled(bool enabled) { this->enabled = enabled; }
 	bool IsEnabled() const { return this->enabled; }
+	bool IsVisible() const { return this->visible; }
+	void SetVisible(bool visible) { this->visible = visible; }
 	
 private:
 	Transform transform;
@@ -43,4 +45,5 @@ private:
 	Mesh* mesh;
 
 	bool enabled;
+	bool visible = true;
 };

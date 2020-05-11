@@ -88,14 +88,14 @@ void DevScene::Load()
 	AddObject(this->player);
 
 	
-	spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &test, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
-	spawnObjects->SpawnEnemy();
+	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &test, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
+	AddObject(this->spawnObjects);
 	/*this->enemy = new Enemy(dev_monkey_mesh, new Material(defaultShader, dx11), &test, dx11);
 	this->enemy->GetTransform().Translate(5, 12, 15);
 	this->enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	this->enemy->SetTarget(this->player);
 	AddObject(this->enemy);*/
-	this->player->SetEnemy(spawnObjects->GetEnemy());
+	//this->player->SetEnemy(spawnObjects->GetEnemy());
 
 	Shader* waterShader = new Shader();
 	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
@@ -147,8 +147,6 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {
-	spawnObjects->SpawnEnemy();
-
 	Scene::Update(deltaTime);
 
 	//FPS STUFF

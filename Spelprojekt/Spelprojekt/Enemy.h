@@ -11,7 +11,7 @@ class Player;
 class Enemy : public Object
 {
 	public: 
-		Enemy(Mesh * mesh, Material * material, Terrain* terrain, DX11Handler&);
+		Enemy(Mesh * mesh, Material* material, Terrain* terrain, DX11Handler&);
 		~Enemy();
 
 		void Update(const float& deltaTime) override;

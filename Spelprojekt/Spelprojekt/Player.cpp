@@ -26,7 +26,13 @@ Player::Player(Mesh* mesh, Material* material, CameraController* controller, Ter
 	this->PlayerHealth = 100.0f;
 	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 700.0f);
 	this->healthbar->HealthBar(100.0f, 100.0f);
+<<<<<<< Updated upstream
 	this->gui->AddGUIObject(this->healthbar);
+=======
+	this->gui->AddGUIObject(this->healthbar, "healthbar");
+	//this->firedWea
+
+>>>>>>> Stashed changes
 }
 
 Player::~Player()
@@ -132,8 +138,6 @@ void Player::UpdateHitEnemy()
 	{
 		if (testProj->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
 		{
-			scene->RemoveObject(enemy);
-			enemy = nullptr;
 			scene->RemoveObject(testProj);
 			testProj = nullptr;
 		}
@@ -177,7 +181,12 @@ void Player::HandleInput()
 			//testProj->SetMaterial(GetMaterial());
 			testProj->direction = GetTransform().GetRotation();
 			scene->AddObject(testProj);
+<<<<<<< Updated upstream
 			gui->RemoveGUIObject(coconutSprite);
+=======
+			//firedWeapon.push_back(testProj);
+			gui->RemoveGUIObject("testWeapon");
+>>>>>>> Stashed changes
 			leftNut--;
 			/*Logger::Write(LOG_LEVEL::Info, "Left click");
 			gui->RemoveGUIObject(coconutSprite);

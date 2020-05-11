@@ -12,7 +12,6 @@
 class Enemy;
 #include "Enemy.h"
 
-
 class Player : public Object
 {
 public:
@@ -23,7 +22,13 @@ public:
 	void SetHeight(float height) { this->playerHeight = height; };
 	void TakeDamage();	
 	void NutOnPlayer(Object* obj);
+<<<<<<< Updated upstream
 	void SetEnemy(Enemy* enemy);
+=======
+	float GetPlayerHealth();
+
+	void SetEnemy(Enemy*);
+>>>>>>> Stashed changes
 private:
 
 private:
@@ -35,8 +40,8 @@ private:
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 	float ShortestRotation(float currentDir, float nextDir);
 	void UpdateHitEnemy();
+	//std::vector<Weapon*> GetFiredWeapon() { return firedWeapon; }
 	
-
 private:
 
 	Input* input;
@@ -65,7 +70,7 @@ private:
 	DirectX::XMFLOAT3 currentPosition;
 	float nextDir = 0;
 	
-	std::vector<Weapon*> weapons;
+	//std::vector<Weapon*>& firedWeapon;
 	float playerHeight = 3;
 
 	// New

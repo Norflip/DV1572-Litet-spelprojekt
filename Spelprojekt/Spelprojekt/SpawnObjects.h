@@ -5,19 +5,22 @@
 #include "Scene.h"
 #include "Player.h"
 #include "Enemy.h"
-#include "Object.h"
 
-class SpawnObjects
+class SpawnObjects : public Object
 {
 	public:
 		SpawnObjects(DX11Handler&, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player);
 		~SpawnObjects() {};
-		void SetPlayer(Player* player);
-		void SetEnemy(Enemy* enemy);
-		void SetObject(Object* object);
-		void SpawnEnemy();
+		void Update(const float& deltaTime) override;
+		void SetPlayer(Player*);
+		void SetEnemy(Enemy*);
+		void SetObject(Object*);
+		void AddEnemy(Enemy*);
+		void RemoveEnemy(Enemy*);
 		Enemy* GetEnemy();
 	private:
+		void UpdateSpawnEnemy();
+
 		DX11Handler& dx11;
 		Terrain* terrain;
 		Scene* scene;
@@ -26,4 +29,8 @@ class SpawnObjects
 		Player* player;
 		Enemy* enemy;
 		Object* object;
+
+		int nrOfEnemies;
+
+		std::unordered_map<int, Enemy*> enemyList;
 };
