@@ -230,7 +230,9 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			weapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());
 			weapon->direction = GetTransform().GetRotation();
 			weapon->PlaySoundEffect();
-			scene->AddObject(weapon);
+			scene->RemoveObject(weapon);
+			weapon->SetEnabled(false); 
+			weapon = nullptr;
 			hand = false;
 		}
 	}
