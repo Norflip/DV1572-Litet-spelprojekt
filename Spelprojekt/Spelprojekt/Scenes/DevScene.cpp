@@ -1,6 +1,6 @@
 #include "DevScene.h"
 
-DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes) : Scene("DevScene", renderer, dx11, window), scenes(scenes)
+DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, SoundHandler* sound) : Scene("DevScene", renderer, dx11, window), scenes(scenes)
 {
 	//----- GUI SHIET |  Set gui last |
 
@@ -20,6 +20,8 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 	this->timeUntilEnd = 10.0f;
 
+	// Soundhandler
+	this->levelMusic = sound;	
 }
 
 DevScene::~DevScene()
@@ -28,7 +30,7 @@ DevScene::~DevScene()
 }
 
 void DevScene::Load()
-{		
+{	
 	this->canWin = false;
 
 	// HEALTH
@@ -174,8 +176,6 @@ void DevScene::Load()
 	
 	// ------ Leveldesign
 	CreateSceneObjects();	
-	
-
 
 
 	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
@@ -196,11 +196,12 @@ void DevScene::Load()
 	//Object* animation = AssimpHandler::loadFbxObject("Models/animation.fbx", dx11, defaultShader);
 	//AddObject(animation);
 
+	
 
-	// Music last thing to load
-	this->levelMusic = new SoundHandler();
+	// Play scenemusic
+	this->levelMusic->StopSound();
 	this->levelMusic->LoadSound("Levelsound", "SoundEffects/Ben.wav");
-	this->levelMusic->PlaySound("Levelsound", 0.05f);
+	levelMusic->PlaySound("Levelsound", levelMusic->GetGlobalVolume());
 }
 
 void DevScene::Unload()
@@ -209,7 +210,7 @@ void DevScene::Unload()
 	gametimer.Restart();
 	gametimer.Stop();
 		
-	this->levelMusic->StopSound();
+	//this->levelMusic->StopSound();
 }
 
 void DevScene::Update(const float& deltaTime)

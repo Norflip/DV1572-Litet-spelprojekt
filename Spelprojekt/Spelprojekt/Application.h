@@ -40,6 +40,10 @@ private:
 	Scene* gameScene;
 	Scene* introScene;
 	Scene* endScene;
+
+	// new
+	SoundHandler* sounds;
+
 	std::vector<Scene*>scenes;
 
 	Renderer* deferredRenderer;

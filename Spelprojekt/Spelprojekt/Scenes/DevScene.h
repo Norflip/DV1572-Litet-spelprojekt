@@ -28,7 +28,7 @@ class DevScene : public Scene
 
 public:
 	
-	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes);
+	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, SoundHandler*);
 	virtual ~DevScene();
 
 	void Load() override;

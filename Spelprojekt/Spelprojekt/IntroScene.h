@@ -12,7 +12,7 @@ class IntroScene : public Scene
 {
 
 public:
-	IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool &exitGame);
+	IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool &exitGame, SoundHandler* sound);
 	virtual ~IntroScene();
 
 	void Load() override;

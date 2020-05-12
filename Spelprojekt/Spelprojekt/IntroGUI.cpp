@@ -5,8 +5,7 @@ IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraControll
     this->currentScene = scene;
     this->gui = gui;
     this->input = cameraController->getInput();
-    this->mainSound = sound;
-   
+    this->mainSound = sound;   
 }
 
 IntroGUI::~IntroGUI()
@@ -45,7 +44,7 @@ void IntroGUI::Start()
         if (play->Clicked(input))
         {
             //ClearGUI();
-            this->mainSound->StopSound();   // temp
+           // this->mainSound->StopSound();   // temp
             currentScene->setNextScene();
         }
         GUISprite* quit = static_cast<GUISprite*>(gui->GetGUIList()->at("quit"));
@@ -80,27 +79,30 @@ void IntroGUI::Options()
 {    
     GUISprite* lowVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("leftvolume"));
     GUISprite* volumeBar = static_cast<GUISprite*>(gui->GetGUIList()->at("VolumeBar"));
+
+    // Set current volume
+    currentVolume = mainSound->GetGlobalVolume();
     volumeBar->HealthBar(maxVolume, currentVolume);
+
     if (lowVolume->Clicked(input))
     {
-        if (currentVolume > 0.0f) {
+        if (mainSound->GetGlobalVolume() > 0.0f) {
+            currentVolume = mainSound->GetGlobalVolume();
             currentVolume -= volumeScale;
             this->mainSound->SetGlobalVolume(currentVolume);
             volumeBar->HealthBar(maxVolume, currentVolume);
-        }        
-        std::cout << "LOWER VOLUME!" << std::endl;     
+        }      
     }
     GUISprite* highVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightvolume"));
     if (highVolume->Clicked(input))
     {
-        if (currentVolume < 1.0f)
+        if (mainSound->GetGlobalVolume() < 1.0f)
         {
+            currentVolume = mainSound->GetGlobalVolume();
             currentVolume += volumeScale;
             this->mainSound->SetGlobalVolume(currentVolume);
             volumeBar->HealthBar(maxVolume, currentVolume);
-        }
-        
-        std::cout << "HIGHER VOLUME!" << std::endl;      
+        }           
     }
 
     GUISprite* backtointro = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
@@ -242,8 +244,6 @@ void IntroGUI::LoadQuit()
 
 void IntroGUI::ClearGUI()
 {
-
-
     for (auto& it : *gui->GetGUIList()) 
     {
         // Do stuff

@@ -2,7 +2,7 @@
 
 
 
-IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool& exitGame) : Scene(name, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
+IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool& exitGame, SoundHandler* sound) : Scene(name, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
 {
 	sceneName = "IntroScene";
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
@@ -14,7 +14,8 @@ IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, 
 	//lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
 	//lights.SetSunIntensity(0.6f);
 
-	this->mainmenuMusic = new SoundHandler();
+	//sound = new SoundHandler();
+	this->mainmenuMusic = sound;
 	this->mainmenuMusic->LoadSound("Cait", "SoundEffects/cait.wav");
 }
 
@@ -25,7 +26,10 @@ IntroScene::~IntroScene()
 
 void IntroScene::Load()
 {	
-	mainmenuMusic->PlaySound("Cait", 0.1f);
+	// Set music volume from beginning
+	mainmenuMusic->SetGlobalVolume(0.5f);
+	mainmenuMusic->PlaySound("Cait", mainmenuMusic->GetGlobalVolume());
+	
 
 	//healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
 	GUI* gui = new GUI(dx11);
