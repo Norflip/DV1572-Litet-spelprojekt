@@ -17,7 +17,6 @@
 #include "../Timer.h"
 #include "../GUI.h"
 #include "../AABB.h"
-#include "../Enemy.h"
 #include "../SpawnObjects.h"
 
 
