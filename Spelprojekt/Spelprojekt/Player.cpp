@@ -214,7 +214,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		weapon->direction = GetTransform().GetRotation();
 		weapon->PlaySoundEffect();
 		scene->AddObject(weapon);
-		//testWeapon = static_cast<Weapon*>(weapon);
+		activeWeapon = static_cast<Weapon*>(weapon);
 		scene->AddObject(weapon);
 		hand = false;
 	}
