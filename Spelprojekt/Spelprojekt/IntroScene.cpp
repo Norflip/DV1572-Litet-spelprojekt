@@ -14,7 +14,7 @@ IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, 
 	//lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
 	//lights.SetSunIntensity(0.6f);
 
-	//sound = new SoundHandler();
+	// Music and soundeffects
 	this->mainmenuMusic = sound;
 	this->mainmenuMusic->LoadSound("Cait", "SoundEffects/cait.wav");
 }
@@ -26,7 +26,7 @@ IntroScene::~IntroScene()
 
 void IntroScene::Load()
 {	
-	// Set music volume from beginning
+	// Set music volume from beginning	
 	mainmenuMusic->SetGlobalVolume(0.5f);
 	mainmenuMusic->PlaySound("Cait", mainmenuMusic->GetGlobalVolume());
 	
@@ -36,6 +36,7 @@ void IntroScene::Load()
 	//gui->AddGUIObject(healthFrame);
 	introGUI = new IntroGUI(gui, dx11, controller, this, mainmenuMusic);
 	renderer->SetGUI(gui);
+
 	// save the shaders somewhere, remember to clean it up
 	Shader* defaultShader = new Shader();
 	defaultShader->LoadPixelShader(L"Shaders/Default_ps.hlsl", "main", dx11.GetDevice());

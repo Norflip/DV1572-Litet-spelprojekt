@@ -44,7 +44,6 @@ void IntroGUI::Start()
         if (play->Clicked(input))
         {
             //ClearGUI();
-           // this->mainSound->StopSound();   // temp
             currentScene->setNextScene();
         }
         GUISprite* quit = static_cast<GUISprite*>(gui->GetGUIList()->at("quit"));
@@ -220,7 +219,6 @@ void IntroGUI::LoadOptions()
 
 void IntroGUI::Quit()
 {
-
     GUISprite* temp2 = static_cast<GUISprite*>(gui->GetGUIList()->at("imsure"));
     if (temp2->Clicked(input))
     {

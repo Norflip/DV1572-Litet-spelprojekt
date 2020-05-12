@@ -22,8 +22,6 @@ public:
 	Scene* GetNextScene() const override;
 
 
-
-
 	CameraController* controller;
 	GUISprite* healthFrame;
 	void setNextScene();
