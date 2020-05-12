@@ -13,9 +13,10 @@ Terrain::~Terrain()
 {
 }
 
-void Terrain::GenerateMesh(std::string texturePath, ID3D11Device* device)
+void Terrain::GenerateMesh(std::string texturePath, ID3D11Device* device, bool water)
 {
 	int bpp = sizeof(uint8_t) * 4;//RGBA, bits per pixel
+	stbi_set_flip_vertically_on_load(1);
 	uint8_t* rgb_image = stbi_load(texturePath.data(), &width, &height, &bpp, 1);
 
 	std::vector<MeshVertex> vertList;
@@ -34,9 +35,10 @@ void Terrain::GenerateMesh(std::string texturePath, ID3D11Device* device)
 			//Load in height of said vertex, only returns 0-1.
 			vertex.position.y = (float)rgb_image[z * width + x + 0] / 255.f;  
 			vertex.position.y *= verticalScaling;
- 
-			vertex.uv = DirectX::XMFLOAT2((float)x / 10, (float)z / 10); // needs to be calculated when we create a quad
-
+			if(water)
+				vertex.uv = DirectX::XMFLOAT2(((float)x) / width, (height - (float)z) / height); // needs to be calculated when we create a quad
+			else
+				vertex.uv = DirectX::XMFLOAT2(((float)x) / 10, (height - (float)z) / 10); // needs to be calculated when we create a quad
 			vertex.normal = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
 			vertex.tangent = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 
@@ -97,6 +99,7 @@ void Terrain::GenerateMesh(std::string texturePath, ID3D11Device* device)
 	}
 
 	this->mesh = MeshCreator::CreateMesh(vertList, indexList, device);
+
 }
 
 float Terrain::SampleHeight(float x, float z)

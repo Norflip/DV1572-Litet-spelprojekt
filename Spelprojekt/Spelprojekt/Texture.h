@@ -7,6 +7,7 @@
 #include <DDSTextureLoader.h>
 #include <DirectXMath.h>
 #include <string>
+#include <wrl.h>
 
 class Texture
 {

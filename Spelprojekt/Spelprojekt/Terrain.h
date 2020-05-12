@@ -15,7 +15,7 @@ public:
 	Terrain();
 	virtual ~Terrain();
 
-	void GenerateMesh (std::string texturePath, ID3D11Device* device);
+	void GenerateMesh (std::string texturePath, ID3D11Device* device, bool water);
 
 	int GetMapHeight() { return this->height; };
 	int GetMapWidth() { return this->width; };

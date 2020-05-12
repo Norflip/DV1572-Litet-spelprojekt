@@ -21,8 +21,9 @@ struct GBUFFER
 GBUFFER main(VS_OUTPUT input) : SV_TARGET
 {
 	GBUFFER output;
-	float v = 1 - input.uv.y;
-	float4 heightMap = m_heightMap.Sample(m_heightMapState,float2(input.uv.x,v));
+	//float v = 1 - input.uv.y;
+	//float4 heightMap = m_heightMap.Sample(m_heightMapState,float2(input.uv.x,v));
+	float4 heightMap = m_heightMap.Sample(m_heightMapState, float2(input.uv)); 
 	float4 DiffuseColor = float4(1, 1, 1, 1);
 	float3 DiffuseLightDirection = -sunDirection;
 
