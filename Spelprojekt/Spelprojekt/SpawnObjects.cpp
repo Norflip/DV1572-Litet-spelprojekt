@@ -94,7 +94,7 @@ void SpawnObjects::UpdateRandomNumber()
 		randX = static_cast <float>(rand() % 125) + 35.0f;
 		randZ = static_cast <float>(rand() % 125) + 35.0f;
 	}
-	Logger::Write(LOG_LEVEL::Info, "X pos: " + std::to_string(lastRandX));
+	//Logger::Write(LOG_LEVEL::Info, "X pos: " + std::to_string(lastRandX));
 }
 
 Enemy* SpawnObjects::GetEnemy()
