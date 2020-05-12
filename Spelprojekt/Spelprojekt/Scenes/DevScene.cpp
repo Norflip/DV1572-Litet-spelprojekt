@@ -103,7 +103,7 @@ void DevScene::Load()
 	test_material->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
 	test_material->GetMaterialData().hasNormalTexture = false;*/
 
-	ground.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(),false);
+	ground.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
 	Object* terrainObject = new Object(ground.GetMesh(), terrainMat);
 	AddObject(terrainObject);
 	
@@ -144,7 +144,7 @@ void DevScene::Load()
 	AddObject(this->player);
 
 	
-	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &test, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
+	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
 	this->spawnObjects->SetEnemy();
 	AddObject(this->spawnObjects);
 	

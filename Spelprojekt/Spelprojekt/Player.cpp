@@ -124,21 +124,21 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 	return returnValue;
 }
 
-void Player::UpdateHitEnemy()
-{
-	if (enemy != nullptr && testWeapon != nullptr)
-	{
-		if (testWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
-		{
-			enemy->HitSound();
-			scene->RemoveObject(enemy);			
-			enemy = nullptr;
-			scene->RemoveObject(testWeapon);
-			testWeapon->SetEnabled(false); // new
-			testWeapon = nullptr;
-		}
-	}		
-}
+//void Player::UpdateHitEnemy()
+//{
+//	if (enemy != nullptr && testWeapon != nullptr)
+//	{
+//		if (testWeapon->GetWorldBounds().Overlaps(enemy->GetWorldBounds()))
+//		{
+//			enemy->HitSound();
+//			scene->RemoveObject(enemy);			
+//			enemy = nullptr;
+//			scene->RemoveObject(testWeapon);
+//			testWeapon->SetEnabled(false); // new
+//			testWeapon = nullptr;
+//		}
+//	}		
+//}
 
 void Player::UpdateHands(Weapon* obj)
 {
@@ -214,7 +214,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		weapon->direction = GetTransform().GetRotation();
 		weapon->PlaySoundEffect();
 		scene->AddObject(weapon);
-		testWeapon = static_cast<Weapon*>(weapon);
+		//testWeapon = static_cast<Weapon*>(weapon);
 		scene->AddObject(weapon);
 		hand = false;
 	}

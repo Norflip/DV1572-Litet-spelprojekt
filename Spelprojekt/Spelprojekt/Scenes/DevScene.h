@@ -12,7 +12,7 @@
 #include "../Projectile.h"
 #include "../Spoon.h"
 
-#include "../Player.h"
+//#include "../Player.h"
 // new
 #include "../Timer.h"
 #include "../GUI.h"
