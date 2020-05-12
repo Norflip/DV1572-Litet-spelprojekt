@@ -54,6 +54,12 @@ void DevScene::Load()
 	wagon->GetTransform().Rotate(0.05f, -5, 0);
 	AddObject(wagon);
 
+	//Bush
+	Object* bush = AssimpHandler::loadFbxObject("Models/Bush.fbx", dx11, defaultShader);
+	bush->GetTransform().Scale(0.5f, 0.5f, 0.5f);
+	bush->GetTransform().Translate(60, 9.5, 50);
+	bush->GetTransform().Rotate(0.05f, -5, 0);
+	AddObject(bush);
 
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 
@@ -138,31 +144,10 @@ void DevScene::Load()
 	AddObject(this->player);
 
 	
-	spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
-	spawnObjects->SpawnEnemy();
-	/*this->enemy = new Enemy(dev_monkey_mesh, new Material(defaultShader, dx11), &test, dx11);
-	this->enemy->GetTransform().Translate(5, 12, 15);
-	this->enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
-	this->controller->SetFollow(&player->GetTransform(), { 0, 10.0f, -10.0f });
-	AddObject(player);
-
-	// ------ ENEMY
-	this->enemy = new Enemy(dev_monkey_mesh, new Material(defaultShader, dx11), &test, dx11);
-	this->enemy->GetTransform().Translate(5, 12, 3);
-	this->enemy->GetTransform().Scale(0.3, 0.3, 0.3);
-	this->enemy->SetTarget(this->player);
-	AddObject(this->enemy);*/
-	this->player->SetEnemy(spawnObjects->GetEnemy());
+	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &test, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
+	this->spawnObjects->SetEnemy();
+	AddObject(this->spawnObjects);
 	
-
-		
-	/*this->coconutPickUp = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
-	coconutPickUp->GetTransform().Translate(10, 2, 15);
-	AddObject(coconutPickUp);*/
-	
-	// ------ WEAPONS
-
-	// Coconuts
 	for(int i = 0; i < 5; i++)
 		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, defaultShader, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
 	
@@ -229,8 +214,6 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {	
-	spawnObjects->SpawnEnemy();
-	
 	Scene::Update(deltaTime);
 
 	//FPS STUFF

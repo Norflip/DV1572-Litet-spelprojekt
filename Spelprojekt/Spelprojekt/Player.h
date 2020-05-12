@@ -13,7 +13,6 @@
 class Enemy;
 #include "Enemy.h"
 
-
 class Player : public Object
 {
 public:
@@ -24,27 +23,24 @@ public:
 	void SetHeight(float height) { this->playerHeight = height; };
 	void TakeDamage();	
 	float GetPlayerHealth();
-	void SetEnemy(Enemy* enemy);
 	void UpdateHands(Weapon* obj);
-
 	void UpdateMeleeWeaponPosition();
 	void UseWeapon();
 	void WeaponUsage(Weapon*, bool& hand);
 
 
 	Weapon* CheckWeaponType(Weapon* obj);
+	Weapon* GetActiveWeapon() const;
+	void SetActiveWeapon(Weapon*);
 	
 private:
 	void InitWeapons();
 	void UpdateMovement(float FixedDeltaTime);
 	void UpdateHeight(float FixedDeltaTime);
 	void TriggerAttack();
-	//void HandleInput();
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 	float ShortestRotation(float currentDir, float nextDir);
-	void UpdateHitEnemy();
 	
-
 private:
 
 	Input* input;
@@ -56,7 +52,7 @@ private:
 	// Weapon shit
 	Weapon* rightWeapon;
 	Weapon* leftWeapon;	
-	Weapon* testWeapon;	
+	Weapon* activeWeapon;	
 	GUIActionbar* leftActionbar;
 	GUIActionbar* rightActionbar;
 	bool lefthandFull, righthandFull;

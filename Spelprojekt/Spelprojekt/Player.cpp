@@ -38,8 +38,6 @@ void Player::Update(const float& deltaTime)
 {
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
-	UpdateHitEnemy();
-	//HandleInput();
 
 	UpdateMeleeWeaponPosition();	// If spoon is equiped
 	UseWeapon();
@@ -243,11 +241,6 @@ float Player::GetPlayerHealth()
 	return playerHealth;
 }
 
-void Player::SetEnemy(Enemy* enemy)
-{
-	this->enemy = enemy;	
-}
-
 Weapon* Player::CheckWeaponType(Weapon* obj)
 {
 	Weapon* curr = nullptr;
@@ -261,6 +254,16 @@ Weapon* Player::CheckWeaponType(Weapon* obj)
 		scene->AddObject(curr);
 	}
 	return curr;
+}
+
+Weapon* Player::GetActiveWeapon() const
+{
+	return activeWeapon;
+}
+
+void Player::SetActiveWeapon(Weapon* weapon)
+{
+	activeWeapon = weapon;
 }
 
 void Player::TriggerAttack()

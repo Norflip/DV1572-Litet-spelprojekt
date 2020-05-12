@@ -14,6 +14,20 @@ Enemy::Enemy(Mesh* mesh, Material* material, Terrain* terrain, DX11Handler& dx11
 	this->hitSound->LoadSound("Hit", "SoundEffects/Kick.wav");
 }
 
+
+Enemy::Enemy(const Enemy& other)
+{
+	this->terrain = other.terrain;
+	this->FBXModel = other.FBXModel;
+	SetMesh(other.GetMesh());
+	SetMaterial(other.GetMaterial());
+	this->movementspeed = other.movementspeed;
+	this->currentPosition = other.currentPosition;
+	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
+	this->hitSound = new SoundHandler();
+	this->hitSound->LoadSound("Hit", "SoundEffects/Kick.wav");
+}
+
 Enemy::~Enemy()
 {
 }
