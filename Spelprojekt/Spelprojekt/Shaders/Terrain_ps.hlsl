@@ -49,7 +49,27 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 		float4 sand = float4(m_sandAlbedo.Sample(m_samplerState1, fmod(input.uv, float2 (1, 1))));
 		
 		float4 color = lerp(sand, grass, t);
-		output.albedo *= color;
+		
+
+		float3 DiffuseLightDirection = -sunDirection;
+
+		float intensity = dot(normalize(input.normal), DiffuseLightDirection);
+		if (intensity < 0)
+			intensity = 0;
+
+		float4 testColor = color;
+		//// Discretize the intensity, based on a few cutoff points
+		//if (intensity > 0.95)
+		//	testColor = float4(1.0, 1, 1, 1.0) * testColor;
+		//else if (intensity > 0.5)
+		//	testColor = float4(0.8, 0.8, 0.8, 1.0) * testColor;
+		//else if (intensity > 0.05)
+		//	testColor = float4(0.5, 0.5, 0.5, 1.0) * testColor;
+		//else
+		//	testColor = float4(0.3, 0.3, 0.3, 1.0) * testColor;
+
+		//testColor = round(intensity * 5) / 5 * testColor;
+		output.albedo = testColor;
 	}
 
 	if (hasNormalTexture)

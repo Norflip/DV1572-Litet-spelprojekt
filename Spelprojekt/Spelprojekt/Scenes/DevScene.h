@@ -74,7 +74,8 @@ private:
 	Player* player;
 	Enemy* enemy;
 	
-	Terrain test;
+	Terrain ground;
+	Terrain waterMesh;
 	Timer gametimer;
 	Timer fpsTimer;
 	float timeUntilEnd;
