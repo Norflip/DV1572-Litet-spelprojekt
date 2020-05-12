@@ -10,6 +10,7 @@
 #include "Timer.h"
 #include <vector>
 #include "EndScene.h"
+
 class Application
 {
 	const float TARGET_FIXED_DELTA = 1.0f / 50.0f;

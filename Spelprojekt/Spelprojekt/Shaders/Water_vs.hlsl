@@ -21,7 +21,7 @@ struct VS_OUTPUT
 
 float GetWaterHeightAtPoint(float x, float z)
 {
-	const float amplitude = 0.5f;
+	const float amplitude = 0.20f;
 	const float noiseScale = 30.0f;
 	const float speed = 0.2f;
 
