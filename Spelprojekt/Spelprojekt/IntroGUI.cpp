@@ -206,12 +206,12 @@ void IntroGUI::LoadOptions()
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/vol.png", 100.0f, 100.0f), "volume");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsync.png", 100.0f, 300.0f), "vsync");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/leftVol.png", 550.0f, 110.0f), "leftvolume");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/rightVol.png", 950.0f, 110.0f), "rightvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower4.png", 555.0f, 110.0f), "leftvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher4.png", 1045.0f, 110.0f), "rightvolume");
 
     // frame and bar
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 650.0f, 110.0f), "VolumeBar");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 650.0f, 110.0f), "SoundFrame");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar3.png", 650.0f, 110.0f), "VolumeBar");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame3.png", 650.0f, 110.0f), "SoundFrame");
    
     first = false;
 }
