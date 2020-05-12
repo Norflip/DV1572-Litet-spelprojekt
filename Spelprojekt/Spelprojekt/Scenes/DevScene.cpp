@@ -30,8 +30,7 @@ DevScene::~DevScene()
 }
 
 void DevScene::Load()
-{	
-	this->canWin = false;
+{		
 
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
@@ -52,7 +51,7 @@ void DevScene::Load()
 	// Exit Wagon
 	Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
 	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
-	wagon->GetTransform().Translate(50, 9.5, 50);
+	wagon->GetTransform().Translate(99, 9.5, 50);
 	wagon->GetTransform().Rotate(0.05f, -5, 0);
 	AddObject(wagon);
 
@@ -89,7 +88,7 @@ void DevScene::Load()
 	//Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Cartoon_Normal_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 
 	
-	Texture* sand_texture = Texture::CreateTexture("Textures/Sand_Color_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);	
+	Texture* sand_texture = Texture::CreateTexture("Textures/Sand_Color_Test.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);	
 	Texture* sand_normal = Texture::CreateTexture("Textures/Sand_Normal_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	
 	Material* terrainMat = new Material(terrainShader, dx11);
@@ -141,7 +140,7 @@ void DevScene::Load()
 	this->player = new Player(dev_monkey_mesh, new Material(toonShader, dx11), controller, &ground, gui, dx11, static_cast<Scene*>(this));
 	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
-	this->player->GetTransform().SetPosition({ 30, 7, 30 });
+	this->player->GetTransform().SetPosition({ 55, 7, 55 });
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
 	AddObject(this->player);
 
