@@ -40,11 +40,11 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 	intensity += ((input.worldPosition.y-(5.5f)) / 50);
 
 	// Discretize the intensity, based on a few cutoff points
-	if (intensity > 0.5)
-	testColor = float4(1.0, 1, 1, 1.0) * testColor;
-	else if (intensity > 0.4)
-	testColor = float4(0.95, 0.95, 0.95, 1.0) * testColor;
+	if (intensity > 0.4)
+	testColor = float4(1.0, 1, 1, 1.0) * float4(1,1,1,1);
 	else if (intensity > 0.3)
+	testColor = float4(0.95, 0.95, 0.95, 1.0) * testColor;
+	else if (intensity > 0.2)
 	testColor = float4(0.88, 0.88, 0.88, 1.0) * testColor;
 	else
 	testColor = float4(0.8, 0.8, 0.8, 1.0) * testColor;
