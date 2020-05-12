@@ -33,6 +33,7 @@ Spoon::Spoon(const Spoon& other)
 	this->damage = other.damage;
 	this->WeaponTypeName = other.WeaponTypeName;
 	this->weaponSound = other.weaponSound;
+	this->used = 0;
 }
 
 Spoon::~Spoon()
@@ -49,10 +50,10 @@ void Spoon::HasAttacked(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 }
 
 void Spoon::MeleeAttack(float deltaTime)
-{
+{	
 	// do melee stuff here
 	nextPos = { (GetTransform().GetPosition().m128_f32[0] + (-std::sinf(direction.m128_f32[1]) * 30) * deltaTime) ,GetTransform().GetPosition().m128_f32[1], (GetTransform().GetPosition().m128_f32[2] + (-std::cosf(direction.m128_f32[1]) * 30) * deltaTime) };	// 30 = speed
-	GetTransform().SetPosition(nextPos);
+	GetTransform().SetPosition(nextPos);		
 }
 
 void Spoon::FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)

@@ -15,12 +15,12 @@ public:
 	float DamageGiven() override { return this->damage; }
 	void HasAttacked(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;	
 	void MeleeAttack(float deltaTime);
-	void FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);
-	int CheckUsage() { return this->used; }
+	void FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);	
 	void PlaySoundEffect() override { weaponSound->PlaySound("Swoosh", 0.1f); }
 
-private:
-	int used;
+	void Use() override { this->used++; };
+	int CheckUsage() override { return this->used; }
+private:	
 	//int movementspeeds = 3;
 
 };

@@ -11,7 +11,7 @@ Weapon::Weapon()
 	this->damage = 0;
 	this->weaponSprite = nullptr;
 	this->weaponSound = new SoundHandler();
-
+	this->used = 0;
 }
 
 Weapon::~Weapon()
