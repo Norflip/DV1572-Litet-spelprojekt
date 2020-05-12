@@ -210,8 +210,8 @@ void IntroGUI::LoadOptions()
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher4.png", 1045.0f, 110.0f), "rightvolume");
 
     // frame and bar
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar3.png", 650.0f, 110.0f), "VolumeBar");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame3.png", 650.0f, 110.0f), "SoundFrame");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 650.0f, 110.0f), "VolumeBar");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 650.0f, 110.0f), "SoundFrame");
    
     first = false;
 }
