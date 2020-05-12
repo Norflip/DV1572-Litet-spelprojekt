@@ -1,16 +1,18 @@
 #include "QuadTree.h"
 
-QuadTree::QuadTree(AABB bounds) : level(0), bounds(bounds), children(nullptr)
+QuadTree::QuadTree(AABB bounds) : QuadTree(0, bounds)
 {
 }
 
-QuadTree::QuadTree(size_t level, AABB bounds) : level(level), bounds(bounds), children(nullptr)
+QuadTree::QuadTree(size_t level, AABB bounds) : level(level), bounds(bounds), children(new QuadTree* [4])
 {
+	for (size_t i = 0; i < 4; i++)
+		children[i] = nullptr;
 }
 
 void QuadTree::Insert(Object* object)
 {
-	if (children != nullptr)
+	if (IsSplit())
 	{
 		int index = GetBoundsIndex(object);
 		if (index != 0)
@@ -29,25 +31,36 @@ void QuadTree::Insert(Object* object)
 
 	objects.push_back(object);
 
-	if (objects.size() > MAX_OBJECTS && level < MAX_LEVELS)
+	if (objects.size() >= MAX_OBJECTS && level < MAX_LEVELS)
 	{
-		if (children == nullptr)
+		if (!IsSplit())
 			Split();
 
-		for (auto i = objects.rbegin(); i < objects.rend(); i++)
+		for (int i = objects.size() - 1; i >= 0; i--)
 		{
-			int index = GetBoundsIndex(*i);
+			int index = GetBoundsIndex(objects[i]);
+
 			if (index != 0)
 			{
 				for (int f = 0; f < 4; f++)
 				{
 					if ((index & (1 << f)) == (1 << f))
-						children[f]->Insert(*i);
+						children[f]->Insert(objects[i]);
 				}
+
+
+				objects.erase(objects.begin() + i);
 			}
+
+
 		}
 
-		objects.clear();
+		for (auto i = objects.rbegin(); i < objects.rend(); i++)
+		{
+
+		}
+
+		//objects.clear();
 	}
 }
 
@@ -55,16 +68,14 @@ void QuadTree::Clear()
 {
 	objects.clear();
 
-	if (children != nullptr)
+	if (IsSplit())
 	{
 		for (size_t i = 0; i < 4; i++)
 		{
 			children[i]->Clear();
 			delete children[i];
+			children[i] = nullptr;
 		}
-
-		delete[] children;
-		children = nullptr;
 	}
 }
 
@@ -88,8 +99,8 @@ int QuadTree::GetBoundsIndex(Object* object)
 
 	for (int i = 0; i < 4; i++)
 	{
-		if(childBounds[i].Overlaps(object->GetWorldBounds()))
-		//if (AABBOverlapsXZ(object->GetWorldBounds(), childBounds[i]))
+		//if(childBounds[i].Overlaps(object->GetWorldBounds()))
+		if (AABBOverlapsXZ(object->GetWorldBounds(), childBounds[i]))
 			flag |= (1 << i);
 	}
 
@@ -106,13 +117,10 @@ void QuadTree::GetChildBounds(AABB childBounds[])
 	float width = size.x / 2.0f;
 	float depth = size.z / 2.0f;
 
-	DirectX::XMVECTOR childSize = { min.x + width, min.y + size.y, min.z + depth };
-
-	childBounds[0] = AABB({ min.x + width,	min.y,	min.z			}, childSize);
-	childBounds[1] = AABB({ min.x,			min.y,	min.z			}, childSize);
-	childBounds[2] = AABB({ min.x,			min.y,	min.z + depth	}, childSize);
-	childBounds[3] = AABB({ min.x + width,	min.y,	min.z + depth	}, childSize);
-
+	childBounds[0] = AABB({ min.x + width,	min.y,	min.z },			{ max.x,			max.y,		min.z + depth });
+	childBounds[1] = AABB({ min.x,			min.y,	min.z },			{ min.x + width,	max.y,		min.z + depth });
+	childBounds[2] = AABB({ min.x,			min.y,	min.z + depth },	{ min.x + width,	max.y,		max.z });
+	childBounds[3] = AABB({ min.x + width,	min.y,	min.z + depth },	{ max.x,			max.y,		max.z });
 }
 
 bool QuadTree::AABBOverlapsXZ(AABB a, AABB b)

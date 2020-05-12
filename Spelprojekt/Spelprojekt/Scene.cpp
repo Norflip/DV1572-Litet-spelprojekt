@@ -3,12 +3,11 @@
 Scene::Scene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window) :
 	sceneName(name), renderer(renderer), window(window), dx11(dx11) 
 {
-	this->entities = new Entities(AABB({ 0,0,0 }, { 512, 256, 512 }));
+	this->entities.SetBounds(AABB({ 0,0,0 }, { 250, 64, 250 }));
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
 	this->nextScene = nullptr;
 	this->didWin = false;
 }
-
 
 Scene::~Scene() 
 {
@@ -56,8 +55,8 @@ void Scene::Render()
 	renderer->SetDeferredRenderTarget();
 	renderer->ClearRenderTarget();
 
-	camera->UpdateView();
-	std::vector<Object*> obbjj = entities->GetObjectsInView(camera);
+	std::vector<Object*> inView = entities.GetObjectsInView(camera);
+	std::sort(inView.begin(), inView.end(), m_CompareRenderList); // O(N·log(N))
 
 	DirectX::XMMATRIX view = camera->GetView();
 	DirectX::XMMATRIX projection = camera->GetProjection();
@@ -66,7 +65,7 @@ void Scene::Render()
 	size_t lastMaterialID = -1;
 	Material* currentMaterial = nullptr;
 
-	for (auto i : obbjj)
+	for (auto i : inView)
 	{
 		Material* material = i->GetMaterial();
 		size_t shaderID = material->GetShader()->GetID();
@@ -90,53 +89,6 @@ void Scene::Render()
 		i->Render(renderer, view, projection);
 	}
 
-
-	//for (auto shaderKey : sortedObjects)
-	//{
-	//	for (auto materialKey : shaderKey.second)
-	//	{
-	//		for (auto object : materialKey.second)
-	//		{
-	//			if (object->IsEnabled() && camera->IsBoundsInView(object->GetWorldBounds()))
-	//			{
-	//				Material* material = object->GetMaterial();
-	//				size_t shaderID = material->GetShader()->GetID();
-
-	//				if (lastShaderID != shaderID)
-	//				{
-	//					material->GetShader()->Bind(dx11.GetContext());
-	//					lastShaderID = shaderID;
-	//				}
-
-	//				if (lastMaterialID != material->GetID())
-	//				{
-	//					if (currentMaterial != nullptr)
-	//						currentMaterial->Unbind(dx11.GetContext());
-
-	//					currentMaterial = material;
-	//					material->Bind(dx11.GetContext());
-	//					lastMaterialID = material->GetID();
-	//				}
-
-	//				/*if (object->isWater) {
-	//					dx11.GetContext()->RSSetState(dx11.GetRasterizer());
-	//				}*/
-	//									
-	//				object->Render(renderer, view, projection);
-
-	//				/*if(object->isWater) {
-	//					dx11.GetContext()->RSSetState(dx11.GetWaterRasterizer());
-	//				}*/
-
-	//			}
-	//		}
-	//	}
-
-	//	// shader unbind can become relevant if we add more then vs and ps shaders
-	//}
-
-
-
 	UpdateAddRemoveSceneQueues();
 	renderer->DisplayFrame(camera->GetTransform().GetPosition());
 }
@@ -144,13 +96,13 @@ void Scene::Render()
 void Scene::AddObject(Object* obj)
 {
 	objectsToAdd.push_back(obj);
-	entities->InsertObject(obj);
+	entities.InsertObject(obj);
 }
 
 void Scene::RemoveObject(Object* obj)
 {
 	objectsToRemove.push_back(obj);
-	entities->RemoveObject(obj);
+	entities.RemoveObject(obj);
 }
 
 void Scene::setWinOrLose(bool didWin)
@@ -216,4 +168,19 @@ void Scene::UpdateAddRemoveSceneQueues()
 
 	objectsToAdd.clear();
 	objectsToRemove.clear();
+}
+
+// https://stackoverflow.com/questions/6771374/sorting-an-stl-vector-on-two-values
+bool Scene::m_CompareRenderList(Object* a, Object* b)
+{
+	Material* aMat = a->GetMaterial();
+	Material* bMat = b->GetMaterial();
+	bool comparison = false;
+
+	if (aMat->GetShader()->GetID() != bMat->GetShader()->GetID())
+		comparison = (aMat->GetShader()->GetID() < bMat->GetShader()->GetID());
+	else
+		comparison = (aMat->GetID() < bMat->GetID());
+		
+	return comparison;
 }

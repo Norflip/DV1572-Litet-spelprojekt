@@ -71,9 +71,6 @@ void DevScene::Load()
 	sphere->GetTransform().Translate(0, 3, 6);
 	AddObject(sphere);
 
-
-
-
 	// ------- TERRAIN
 	Shader* terrainShader = new Shader();
 	terrainShader->LoadPixelShader(L"Shaders/Terrain_ps.hlsl", "main", dx11.GetDevice());
@@ -81,8 +78,6 @@ void DevScene::Load()
 
 	Texture* grass_texture = Texture::CreateTexture("Textures/Grass.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	Texture* grass_normal = Texture::CreateTexture("Textures/TMP_Grass_NORM.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-
-
 	Texture* sand_texture = Texture::CreateTexture("Textures/TMP_Sand_COLOR.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);	
 	Texture* sand_normal = Texture::CreateTexture("Textures/TMP_Sand_NORM.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	

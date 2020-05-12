@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <string>
+
 #include "Renderer.h"
 #include "Input.h"
 #include "Object.h"
 #include "Camera.h"
 #include "SoundHandler.h"
 #include "Entities.h"
-#include <string>
+#include "Resources.h"
 
 class Scene
 {
@@ -41,19 +44,28 @@ protected:
 	void SortObject(Object*);
 	void UpdateAddRemoveSceneQueues();
 
+	//static bool m_CompareRenderList(const Object& a, const Object& b);
+	static bool m_CompareRenderList(Object* a, Object* b);
+
 protected:
-	Entities* entities;
 	Camera* camera;
 	Renderer* renderer;
 	Window& window;
 	DX11Handler& dx11;
 
+	Resources resources;
+	Entities entities;
+
 	std::vector<Object*> objectsToAdd;
 	std::vector<Object*> objectsToRemove;
+
+
 
 	// shader holds a map with diffrent material and a list of objects
 	std::unordered_map <size_t, std::unordered_map<size_t, std::vector<Object*>>> sortedObjects;
 	std::vector<Object*> allObjects;
+
+
 	std::string sceneName;
 	bool didWin;
 };

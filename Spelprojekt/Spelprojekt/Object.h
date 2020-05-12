@@ -38,6 +38,7 @@ public:
 	AABB GetWorldBounds() const;
 
 	void UpdateLocalBounds();
+	size_t GetID() const { return this->id; }
 
 	virtual void Render(Renderer*, DirectX::XMMATRIX view, DirectX::XMMATRIX projection);
 	virtual void Update(const float& deltaTime) {};
@@ -57,6 +58,8 @@ private:
 	ObjectLayer layer;
 	Material* material;
 	Mesh* mesh;
-
+	size_t id;
 	bool enabled;
 };
+
+static size_t object_id_counter = 0;

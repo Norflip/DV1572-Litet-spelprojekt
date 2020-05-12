@@ -4,8 +4,8 @@
 
 class QuadTree
 {
-	const int MAX_LEVELS = 8;
-	const int MAX_OBJECTS = 4;
+	const int MAX_LEVELS = 10;
+	const int MAX_OBJECTS = 8;
 
 public:
 	QuadTree(AABB bounds);
@@ -13,9 +13,10 @@ public:
 
 	void Insert(Object* object);
 	void Clear();
-
-	bool IsSplit() const { return this->children != nullptr; }
 	
+	bool IsSplit() const { return this->children != nullptr && this->children[0] != nullptr;; }
+	
+	void SetBounds(AABB bounds) { this->bounds = bounds; }
 	AABB GetBounds() { return this->bounds; }
 	
 	std::vector<Object*> GetObjects() { return this->objects; }

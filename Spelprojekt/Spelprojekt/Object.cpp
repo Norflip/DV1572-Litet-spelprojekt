@@ -3,6 +3,7 @@
 
 Object::Object(ObjectLayer layer, Mesh* mesh, Material* material) : mesh(mesh), material(material), enabled(true), layer(layer)
 {
+	this->id = object_id_counter++;
 	SetMesh(mesh);
 }
 

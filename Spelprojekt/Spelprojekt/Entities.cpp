@@ -1,11 +1,12 @@
 #include "Entities.h"
 
-Entities::Entities(AABB worldBounds) : quadtree(worldBounds)
-{
-}
+Entities::Entities() : quadtree(AABB({ 0,0,0 }, { 0,0,0 })) {}
+Entities::Entities(AABB worldBounds) : quadtree(worldBounds) {}
+Entities::~Entities() {}
 
-Entities::~Entities()
+void Entities::SetBounds(AABB worldBounds)
 {
+	this->quadtree.SetBounds(worldBounds);
 }
 
 void Entities::InsertObject(Object* object)
@@ -14,7 +15,7 @@ void Entities::InsertObject(Object* object)
 	auto findLayerVector = objectsInLayerMap.find(layer);
 	if (findLayerVector == objectsInLayerMap.end())
 		objectsInLayerMap.insert({ layer, std::vector<Object*>() });
-	
+
 	objectsInLayerMap[layer].push_back(object);
 	allEntities.push_back(object);
 }
@@ -47,30 +48,37 @@ std::vector<Object*> Entities::GetObjectsInLayer(ObjectLayer layer)
 
 std::vector<Object*> Entities::GetObjectsInRange(DirectX::XMVECTOR center, float radius, ObjectLayer layer)
 {
-	return std::vector<Object*>();
+	// TODO FIND WITH QUADTREE
+	std::vector<Object*> inRange;
+
+	for (auto i : allEntities)
+	{
+		if (i->IsEnabled() && (i->GetLayer() == layer || layer == ObjectLayer::Any))
+		{
+			float sqrDistance = i->GetWorldBounds().SqrDistanceToPoint(center);
+			if (sqrDistance < radius * radius)
+				inRange.push_back(i);
+		}
+	}
+
+	return inRange;
 }
 
 std::vector<Object*> Entities::GetObjectsInView(Camera* camera)
 {
-	size_t count = 0;
 	quadtree.Clear();
-
 	for (auto i : allEntities)
-	{
-		count++;
 		quadtree.Insert(i);
-	}
 
 	std::vector<Object*> inView;
+	std::unordered_set<int> visited;
 	std::queue<QuadTree*> treeQueue;
 	treeQueue.push(&quadtree);
-	size_t treeC = 0;
 
 	while (!treeQueue.empty())
 	{
 		QuadTree* quad = treeQueue.front();
 		treeQueue.pop();
-		treeC++;
 
 		if (camera->IsBoundsInView(quad->GetBounds()))
 		{
@@ -83,15 +91,19 @@ std::vector<Object*> Entities::GetObjectsInView(Camera* camera)
 			else
 			{
 				auto df = quad->GetObjects();
+
 				for (auto j : df)
 				{
-					inView.push_back(j);
+					if (visited.find(j->GetID()) == visited.end() && camera->IsBoundsInView(j->GetWorldBounds()))
+					{
+						visited.insert(j->GetID());
+						inView.push_back(j);
+					}
 				}
 			}
 		}
 	}
 
-	Logger::Write("in view: " + std::to_string(inView.size()) + " nr inserted: " + std::to_string(count) + " quadsChecked: " + std::to_string(treeC));
-
+	//Logger::Write("in view: " + std::to_string(inView.size()) + " nr inserted: " + std::to_string(insertCount) + " quadsChecked: " + std::to_string(treeC));
 	return inView;
 }

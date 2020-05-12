@@ -22,11 +22,14 @@ IntroScene::~IntroScene()
 
 void IntroScene::Load()
 {
+	
+
 	//healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
 	GUI* gui = new GUI(dx11);
 	//gui->AddGUIObject(healthFrame);
 	introGUI = new IntroGUI(gui, dx11, controller, this);
 	renderer->SetGUI(gui);
+	
 	// save the shaders somewhere, remember to clean it up
 	Shader* defaultShader = new Shader();
 	defaultShader->LoadPixelShader(L"Shaders/Default_ps.hlsl", "main", dx11.GetDevice());
@@ -46,11 +49,11 @@ void IntroScene::Load()
 
 	Object* glasse = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", ObjectLayer::Enviroment, dx11, defaultShader);
 	AddObject(glasse);
+	
 	Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", ObjectLayer::Enviroment, dx11, defaultShader);
 	wagon->GetTransform().Translate(5, 5, 30);
+	
 	AddObject(wagon);
-
-
 	controller->SetFollow(&wagon->GetTransform(), { 0, 10.0f, -10.0f });
 	AddObject(sphere);
 }

@@ -12,6 +12,12 @@
 
 namespace AssimpHandler
 {
+	struct AssimpData
+	{
+		Mesh* mesh;
+		Material* material;
+	};
+
 	inline Mesh* loadMesh(const aiScene* scene, ID3D11Device* device)
 	{
 		Mesh* mesh = nullptr;
