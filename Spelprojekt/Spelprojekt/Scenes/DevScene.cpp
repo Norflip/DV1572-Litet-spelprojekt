@@ -54,6 +54,12 @@ void DevScene::Load()
 	wagon->GetTransform().Rotate(0.05f, -5, 0);
 	AddObject(wagon);
 
+	//Bush
+	Object* bush = AssimpHandler::loadFbxObject("Models/Bush.fbx", dx11, defaultShader);
+	bush->GetTransform().Scale(0.5f, 0.5f, 0.5f);
+	bush->GetTransform().Translate(60, 9.5, 50);
+	bush->GetTransform().Rotate(0.05f, -5, 0);
+	AddObject(bush);
 
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 
