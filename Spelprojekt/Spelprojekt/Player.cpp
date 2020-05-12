@@ -150,11 +150,7 @@ void Player::UpdateHands(Weapon* obj)
 			obj->SetEnabled(false);
 			righthandFull = true;
 		}
-		else {
-			
-		}
-	}		
-
+	}	
 }
 
 void Player::UpdateMeleeWeaponPosition()
@@ -196,12 +192,17 @@ void Player::UseWeapon()
 		
 		gui->RemoveGUIObject("Left Actionbar");
 		lefthandFull = false;
+	// Left hand
+	if (input->GetMouseButtonDown(0) && lefthandFull) {		
+		WeaponUsage(leftWeapon, lefthandFull);
+		
+		if(!lefthandFull)
+			gui->RemoveGUIObject("Left Actionbar");		
 	}
 
-	if (input->GetMouseButtonDown(1) && righthandFull) {		
-		rightWeapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());
-		rightWeapon->direction = GetTransform().GetRotation();
-		rightWeapon->PlaySoundEffect();
+	// Right hand
+	if (input->GetMouseButtonDown(1) && righthandFull) {			
+		WeaponUsage(rightWeapon, righthandFull);
 		
 		if (rightWeapon->GetWeaponTypename() != "Slev")
 		{
@@ -218,6 +219,37 @@ void Player::UseWeapon()
 		gui->RemoveGUIObject("Right Actionbar");
 		
 		righthandFull = false;
+		if(!righthandFull)
+			gui->RemoveGUIObject("Right Actionbar");		
+	}
+}
+
+void Player::WeaponUsage(Weapon* weapon, bool& hand)
+{
+	if (weapon->GetWeaponTypename() == "Coconut") {
+		weapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());
+		weapon->direction = GetTransform().GetRotation();
+		weapon->PlaySoundEffect();
+		scene->AddObject(weapon);
+		testWeapon = static_cast<Weapon*>(weapon);
+		scene->AddObject(weapon);
+		hand = false;
+	}
+
+	if (weapon->GetWeaponTypename() == "Slev") {
+		if (weapon->CheckUsage() < 2) {
+			weapon->PlaySoundEffect();
+			weapon->Use();
+		}
+		else {
+			weapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());
+			weapon->direction = GetTransform().GetRotation();
+			weapon->PlaySoundEffect();
+			scene->RemoveObject(weapon);
+			weapon->SetEnabled(false); 
+			weapon = nullptr;
+			hand = false;
+		}
 	}
 }
 

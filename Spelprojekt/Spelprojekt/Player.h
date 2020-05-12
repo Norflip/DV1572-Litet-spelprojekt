@@ -26,6 +26,9 @@ public:
 	void UpdateHands(Weapon* obj);
 	void UpdateMeleeWeaponPosition();
 	void UseWeapon();
+	void WeaponUsage(Weapon*, bool& hand);
+
+
 	Weapon* CheckWeaponType(Weapon* obj);
 	Weapon* GetActiveWeapon() const;
 	void SetActiveWeapon(Weapon*);
