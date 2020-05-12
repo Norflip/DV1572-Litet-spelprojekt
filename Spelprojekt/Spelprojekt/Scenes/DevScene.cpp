@@ -122,7 +122,7 @@ void DevScene::Load()
 	//Object* water =  AssimpHandler::loadFbxObject("Models/Water_Plane.fbx", dx11, waterShader);
 	Object* water = new Object(waterMesh.GetMesh(), waterMat);
 	water->SetMaterial(waterMat);
-	water->GetTransform().Translate({ 0,6,0,});
+	water->GetTransform().Translate({ 0,5,0,});
 	water->GetTransform().SetRotation({ 0,0,0 });
 	//water->GetTransform().Scale(2*1.2, 2 * 1.2, 2 * 1.2);
 	//water->GetTransform().Scale(2,2,2);
