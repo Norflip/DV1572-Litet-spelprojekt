@@ -29,6 +29,8 @@ public:
 
 	void UpdateMeleeWeaponPosition();
 	void UseWeapon();
+	void WeaponUsage(Weapon*, bool& hand);
+
 
 	Weapon* CheckWeaponType(Weapon* obj);
 	

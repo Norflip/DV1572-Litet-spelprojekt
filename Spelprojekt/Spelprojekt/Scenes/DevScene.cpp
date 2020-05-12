@@ -29,11 +29,7 @@ DevScene::~DevScene()
 
 void DevScene::Load()
 {		
-
 	this->canWin = false;
-
-	//this->levelMusic->LoadSound("Grass", "SoundEffects/Greengrass.wav");
-	//this->levelMusic->PlaySound("Grass", 0.1f);
 
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
