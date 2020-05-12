@@ -30,7 +30,7 @@ Texture* Texture::CreateTexture(std::string filePath, DX11Handler& dx11, bool cr
 		samplerDescription.AddressU = mode;
 		samplerDescription.AddressV = mode;
 		samplerDescription.AddressW = mode;
-		samplerDescription.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		samplerDescription.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
 
 		for (size_t i = 0; i < 4; i++)
 			samplerDescription.BorderColor[i] = 1.0f;

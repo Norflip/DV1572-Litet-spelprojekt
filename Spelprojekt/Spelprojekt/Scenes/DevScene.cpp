@@ -29,7 +29,6 @@ DevScene::~DevScene()
 
 void DevScene::Load()
 {		
-	this->canWin = false;
 
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
