@@ -7,7 +7,7 @@ class EndScene;
 class EndGUI
 {
 public: 
-	EndGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, EndScene* scenes);
+	EndGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, EndScene* scenes, SoundHandler* music, SoundHandler* soundeffect);
 	~EndGUI();
 	enum class Menu
 	{
@@ -31,4 +31,8 @@ private:
 	GUI* gui;
 	Input* input;
 	EndScene* currentScene;
+
+	// Sound stuff
+	SoundHandler* musicsound;
+	SoundHandler* soundeffects;
 };
