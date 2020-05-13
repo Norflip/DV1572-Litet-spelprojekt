@@ -16,6 +16,7 @@ IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, 
 
 	// Music and soundeffects
 	this->mainmenuMusic = sound;
+	this->mainmenuMusic->SetGlobalVolume(0.5f);
 	this->mainmenuMusic->LoadSound("Cait", "SoundEffects/cait.wav");
 
 	this->soundeffects = soundeffect;
@@ -29,7 +30,7 @@ IntroScene::~IntroScene()
 void IntroScene::Load()
 {	
 	// Set music volume from beginning	
-	mainmenuMusic->SetGlobalVolume(0.5f);
+	
 	mainmenuMusic->PlaySound("Cait", mainmenuMusic->GetGlobalVolume());
 	
 

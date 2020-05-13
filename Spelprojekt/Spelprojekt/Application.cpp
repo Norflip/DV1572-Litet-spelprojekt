@@ -16,7 +16,7 @@ Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(fal
 
 	// default scene.. devScene at the moment. Different sceness for the actual game, main menu, game over(?) etc 
 	this->gameScene = new DevScene(this->deferredRenderer, this->dx11, this->window, scenes, music, soundEffect);
-	this->endScene = new EndScene(this->deferredRenderer, this->dx11, this->window, scenes, "EndScene", exitGame);
+	this->endScene = new EndScene(this->deferredRenderer, this->dx11, this->window, scenes, "EndScene", exitGame, music);
 	this->introScene = new IntroScene("IntroScene", this->deferredRenderer, this->dx11, this->window, scenes, exitGame, music, soundEffect);
 	
 	

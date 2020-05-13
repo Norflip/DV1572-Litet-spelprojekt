@@ -1,6 +1,6 @@
 #include "EndScene.h"
 
-EndScene::EndScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, std::string sceneName, bool& exitGame) : Scene(sceneName, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
+EndScene::EndScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, std::string sceneName, bool& exitGame, SoundHandler* musicsound) : Scene(sceneName, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
 {
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
 	this->nextScene = nullptr;
@@ -8,6 +8,7 @@ EndScene::EndScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	window.GetInput()->LockCursor(false);
 
 	this->didWin = false;
+	//this->endSceneMusic = musicsound;
 }
 
 EndScene::~EndScene()
@@ -30,6 +31,7 @@ void EndScene::Load()
 
 void EndScene::Unload()
 {
+	//this->endSceneMusic->StopSound();
 }
 
 void EndScene::Update(const float& deltaTime)

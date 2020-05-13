@@ -28,6 +28,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 DevScene::~DevScene()
 {
 	delete controller;
+
 }
 
 void DevScene::Load()
@@ -204,8 +205,6 @@ void DevScene::Unload()
 	// @TODO
 	gametimer.Restart();
 	gametimer.Stop();
-		
-	//this->levelMusic->StopSound();
 }
 
 void DevScene::Update(const float& deltaTime)
