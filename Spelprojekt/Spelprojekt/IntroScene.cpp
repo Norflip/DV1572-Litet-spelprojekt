@@ -5,7 +5,7 @@
 IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool& exitGame, SoundHandler* sound, SoundHandler* soundeffect) : Scene(name, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
 {
 	sceneName = "IntroScene";
-	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
+	this->camera = new Camera(90.0f, window.GetWidth(), window.GetHeight());
 	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::Follow);
 	window.GetInput()->LockCursor(false);
 	this->nextScene = nullptr;
@@ -62,11 +62,13 @@ void IntroScene::Load()
 	AddObject(glasse);
 	
 	Object* wagon = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader));
-	wagon->GetTransform().Translate(5, 5, 30);
+	wagon->GetTransform().Translate(30, 5, 30);
 	
 	AddObject(wagon);
-	controller->SetFollow(&wagon->GetTransform(), { 0, 10.0f, -10.0f });
+	controller->SetFollow(&wagon->GetTransform(), { -5, 15, -10.0f });
 	AddObject(sphere);
+
+	
 		
 }
 

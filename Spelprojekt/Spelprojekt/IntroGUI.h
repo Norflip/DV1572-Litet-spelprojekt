@@ -40,6 +40,7 @@ private:
 	IntroScene* currentScene;
 
 	// music and sounds
+	bool vsyncOn = false;
 	SoundHandler* mainSound;
 	SoundHandler* soundeffects;
 	float volumeScale = 0.1f;	

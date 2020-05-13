@@ -69,8 +69,8 @@ void IntroGUI::LoadStart()
 {
     ClearGUI();
     //LOAD ALL GUI OBJECTS FOR START, ONCE
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 100.0f), "play");    
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 300.0f), "options");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 200.0f), "play");    
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 350.0f), "options");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/quit.png", 100.0f, 500.0f), "quit");
     first = false;
 }
@@ -125,6 +125,7 @@ void IntroGUI::Options()
         }      
     }
     GUISprite* highMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightmusicvolume"));
+    
     if (highMusicVolume->Clicked(input))
     {
         if (mainSound->GetGlobalVolume() < 1.0f)
@@ -147,11 +148,25 @@ void IntroGUI::Options()
     GUISprite* vsync = static_cast<GUISprite*>(gui->GetGUIList()->at("vsync"));
     if (vsync->Clicked(input))
     {
+        if (!vsyncOn) {
+            gui->RemoveGUIObject("vsyncOff");
+            gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsyncOn.png", 660.0f, 350.0f), "vsyncOn");
+            currentScene->getRenderer()->setVsync(true);
+            vsyncOn = true;
+            std::cout << "VSYNC ON!" << std::endl;
+        }
+        else {
+            gui->RemoveGUIObject("vsyncOn");
+            gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsyncOff.png", 660.0f, 350.0f), "vsyncOff");
+            currentScene->getRenderer()->setVsync(false);
+            vsyncOn = false;
+            std::cout << "VSYNC OFF!" << std::endl;
+        }
+
 
         // THIS WORKS
-        currentScene->getRenderer()->setVsync(false);
+        
         //dx11.GetSwapChain()->SetFullscreenState(true, NULL);
-
 
        // HRESULT hr;
 
@@ -241,6 +256,8 @@ void IntroGUI::LoadOptions()
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/music.png", 100.0f, 50.0f), "musicvolume");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/sounds.png", 100.0f, 200.0f), "soundsvolume");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsync.png", 100.0f, 350.0f), "vsync");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsyncOff.png", 660.0f, 350.0f), "vsyncOff");
+    
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
 
     // frame and bar music
