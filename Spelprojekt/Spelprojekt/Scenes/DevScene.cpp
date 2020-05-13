@@ -55,13 +55,7 @@ void DevScene::Load()
 	wagon->GetTransform().Rotate(0.05f, -5, 0);
 	AddObject(wagon);
 
-	//Bush
-	Object* bush = AssimpHandler::loadFbxObject("Models/Bush.fbx", dx11, defaultShader);
-	bush->GetTransform().Scale(0.5f, 0.5f, 0.5f);
-	bush->GetTransform().Translate(60, 9.5, 50);
-	bush->GetTransform().Rotate(0.05f, -5, 0);
-	AddObject(bush);
-
+	
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 
 	Object* sphere = new Object(dev_monkey_mesh, new Material(defaultShader, dx11));
@@ -490,136 +484,179 @@ void DevScene::CreateSceneObjects()
 		blueballs[1]->GetTransform().Rotate(0.2f, -5, 0);
 		AddObject(blueballs[1]);
 
-		//// Benches left beachside
-		//Object* bench = AssimpHandler::loadFbxObject("Models/Bench.fbx", dx11, defaultShader);
-		//Object* benches[2];
-		//for (int i = 0; i < 2; i++)
-		//	benches[i] = new Object(*bench);
-		//		
-		//benches[0]->GetTransform().Translate(29, 7, 50);
-		//benches[0]->GetTransform().SetRotation({ 0,2,0 });
-		//AddObject(benches[0]);
-		//		
-		//benches[1]->GetTransform().Translate(25, 7, 95);
-		//benches[1]->GetTransform().SetRotation({ 0,0.9,0 });
-		//AddObject(benches[1]);
 
-		
+		////////////////////////// BEACHBALLS /////////////////////////////
 
-		
+		Object* bush = AssimpHandler::loadFbxObject("Models/Bush.fbx", dx11, defaultShader);
+		Object* bushes[11];
+		for (int i = 0; i < 11; i++)
+			bushes[i] = new Object(*bush);
 
-		//// Palms left beach side 
-		//Object* palm = AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader);
-		//Object* palms[3];
-		//for (int i = 0; i < 3; i++)
-		//	palms[i] = new Object(*palm);
+		// 2 Stands bottom beach //
+		bushes[0]->GetTransform().Translate(142, 7, 50);
+		bushes[0]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[0]);
 
-		//palms[0]->GetTransform().Translate(40, 9.5, 55);
-		//AddObject(palms[0]);
-
-		//palms[1]->GetTransform().Translate(45, 8, 75);
-		//AddObject(palms[1]);
-
-		//palms[2]->GetTransform().Translate(45, 8, 90);
-		//AddObject(palms[2]);
-
-		
-
-
-		//// Middle palms
-		//Object* middlePalms[5];
-		//for (int i = 0; i < 5; i++)
-		//	middlePalms[i] = new Object(*palm);
-		//// 2 stycken �ver mitten berget
-		//middlePalms[0]->GetTransform().Translate(65, 8, 140);
-		//AddObject(middlePalms[0]);
-
-		//middlePalms[1]->GetTransform().Translate(85, 8.2, 145);
-		//AddObject(middlePalms[1]);
-
-		//// 3 under mitten berget
-		//middlePalms[2]->GetTransform().Translate(110, 9, 55);
-		//AddObject(middlePalms[2]);
-
-		//middlePalms[3]->GetTransform().Translate(105, 8, 75);
-		//AddObject(middlePalms[3]);
-
-		//middlePalms[4]->GetTransform().Translate(115, 8, 90);
-		//AddObject(middlePalms[4]);
-
-		//// palmer h�gra sidan
-		//Object* rightPalms[3];
-		//for (int i = 0; i < 3; i++)
-		//	rightPalms[i] = new Object(*palm);
-
-		//rightPalms[0]->GetTransform().Translate(150, 8, 160);
-		//AddObject(rightPalms[0]);
-
-		//rightPalms[1]->GetTransform().Translate(155, 8, 150);
-		//AddObject(rightPalms[1]);
-
-		//rightPalms[2]->GetTransform().Translate(157, 8, 130);
-		//AddObject(rightPalms[2]);
-
-		
-
-		Object* bungalow = AssimpHandler::loadFbxObject("Models/Bungalow.fbx", dx11, defaultShader);
-		bungalow->GetTransform().Translate(110, 7.5, 140);
-		bungalow->GetTransform().SetRotation({ 0, -2, 0 });
-		AddObject(bungalow);
-
-		//// Grass
-		//Object* grass = AssimpHandler::loadFbxObject("Models/Grass.fbx", dx11, defaultShader);
-		//Object* grassgroup[7];
-		//for (int i = 0; i < 7; i++)
-		//	grassgroup[i] = new Object(*grass);
-
-		//// By Icecream wagon, left beach side
-		//grassgroup[0]->GetTransform().Translate(48, 9.4, 43);
-		//grassgroup[0]->GetTransform().SetRotation({ 0, 0, -0.05f });
-		//grassgroup[0]->GetTransform().Scale(1, 1, 1);
-		//AddObject(grassgroup[0]);
-
-		//grassgroup[1]->GetTransform().Translate(45, 9, 77);
-		//grassgroup[1]->GetTransform().Scale(1, 1, 1);
-		//AddObject(grassgroup[1]);
+		bushes[1]->GetTransform().Translate(120, 7, 47);
+		bushes[1]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[1]);
 		////
 
-		//// Right Beach side, under mid mountain
-		//grassgroup[2]->GetTransform().Translate(115, 10.5, 65);
-		//grassgroup[2]->GetTransform().Scale(1, 1, 1);
-		//grassgroup[2]->GetTransform().SetRotation({ 0.05, 0, 0 });
-		//AddObject(grassgroup[2]);
+		// Stand bottom beach left side
+		bushes[2]->GetTransform().Translate(75, 6.5, 43);
+		bushes[2]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[2]);
 
-		//grassgroup[3]->GetTransform().Translate(135, 10.2, 60);
-		//grassgroup[3]->GetTransform().Scale(1, 1, 1);
-		//grassgroup[3]->GetTransform().SetRotation({ 0.05, 0, -0.05f });
-		//AddObject(grassgroup[3]);
-
-		//grassgroup[4]->GetTransform().Translate(155, 10, 55);
-		//grassgroup[4]->GetTransform().Scale(1, 1, 1);
-		//grassgroup[4]->GetTransform().SetRotation({ 0.05, 0, 0.05f });
-		//AddObject(grassgroup[4]);
-
-		//// Palms right side top
-		//grassgroup[5]->GetTransform().Translate(158, 10, 135);
-		//grassgroup[5]->GetTransform().Scale(1, 1, 1);
-		//grassgroup[5]->GetTransform().SetRotation({ 0.05, 0, -0.05f });
-		//AddObject(grassgroup[5]);
-
-		//grassgroup[6]->GetTransform().Translate(158, 10, 145);
-		//grassgroup[6]->GetTransform().Scale(1, 1, 1);
-		//grassgroup[6]->GetTransform().SetRotation({ 0.05, 0, 0.05f });
-		//AddObject(grassgroup[6]);
+		bushes[3]->GetTransform().Translate(70, 6.5, 45);
+		bushes[3]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[3]);
 		////
 
+		// By restplace //
+		bushes[4]->GetTransform().Translate(112, 7, 132);
+		bushes[4]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[4]);
+
+		bushes[5]->GetTransform().Translate(115, 8, 148);
+		bushes[5]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[5]);
+		////
+
+
+		// By rocks //
+		bushes[6]->GetTransform().Translate(195, 8, 143);
+		bushes[6]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[6]);
+
+		bushes[7]->GetTransform().Translate(200, 8, 152);
+		bushes[7]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[7]);
+
+		// Bottom rocks by beach
+		bushes[8]->GetTransform().Translate(190, 7, 120);
+		bushes[8]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[8]);
+
+		bushes[9]->GetTransform().Translate(195, 7, 120);
+		bushes[9]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[9]);
+		////
+
+		// By benches - by rocks
+		bushes[10]->GetTransform().Translate(165, 7, 122);
+		bushes[10]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[10]);
+
+		////////////////////////// Fireplace stuff /////////////////////////////
 		
+		Object* restplace = AssimpHandler::loadFbxObject("Models/Bungalow.fbx", dx11, defaultShader);
+		restplace->GetTransform().Translate(107, 7.5, 140);
+		restplace->GetTransform().SetRotation({ 0, -1.5, 0 });
+		AddObject(restplace);
+
+
+		// Benches left beachside
+		Object* bench = AssimpHandler::loadFbxObject("Models/Bench.fbx", dx11, defaultShader);
+		Object* benches[2];
+		for (int i = 0; i < 2; i++)
+			benches[i] = new Object(*bench);
+				
+		benches[0]->GetTransform().Translate(170, 7, 118);
+		benches[0]->GetTransform().SetRotation({ 0, 0.4, 0 });
+		AddObject(benches[0]);
+				
+		benches[1]->GetTransform().Translate(157, 7, 122);
+		benches[1]->GetTransform().SetRotation({ 0, 0.3, 0 });
+		AddObject(benches[1]);
+
+
+		////////////////////////// PALMS /////////////////////////////
 
 		
+		// Palms left beach side 
+		Object* palm = AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader);
+		Object* palms[22];
+		for (int i = 0; i < 22; i++)
+			palms[i] = new Object(*palm);
+
+		// Bottom beach //
+		palms[0]->GetTransform().Translate(200, 7.8, 60);
+		AddObject(palms[0]);
+
+		palms[1]->GetTransform().Translate(180, 7.8, 75);
+		AddObject(palms[1]);
+
+		palms[2]->GetTransform().Translate(160, 7.8, 60);
+		AddObject(palms[2]);
+
+		palms[3]->GetTransform().Translate(145, 7.8, 73);
+		AddObject(palms[3]);
+
+		palms[4]->GetTransform().Translate(125, 7.8, 60);
+		AddObject(palms[4]);
+
+		palms[5]->GetTransform().Translate(105, 7.8, 75);
+		AddObject(palms[5]);
+		/////
+
+		// bottom beach left
+		palms[6]->GetTransform().Translate(85, 7.8, 58);
+		AddObject(palms[6]);
+
+		palms[7]->GetTransform().Translate(83, 7.8, 82);
+		AddObject(palms[7]);
+
+		palms[8]->GetTransform().Translate(60, 8, 90);
+		AddObject(palms[8]);
+
+		palms[9]->GetTransform().Translate(60, 7.8, 65);
+		AddObject(palms[9]);
+		////
+
+		// left of middle rock
+		palms[10]->GetTransform().Translate(55, 7.8, 115);
+		AddObject(palms[10]);
+
+		palms[11]->GetTransform().Translate(38, 7.8, 95);
+		AddObject(palms[11]);
+
+		palms[12]->GetTransform().Translate(45, 7.8, 140);
+		AddObject(palms[12]);
+		////
+
+		// top rock
+		palms[13]->GetTransform().Translate(70, 7.8, 165);
+		AddObject(palms[13]);
+
+		palms[14]->GetTransform().Translate(80, 7.8, 140);
+		AddObject(palms[14]);
+
+		palms[15]->GetTransform().Translate(105, 7.8, 165);
+		AddObject(palms[15]);
+
+		palms[16]->GetTransform().Translate(90, 8, 195);
+		AddObject(palms[16]);
+
+		palms[17]->GetTransform().Translate(115, 7.8, 200);
+		AddObject(palms[17]);
+		////
+
+		// Left by rocks
+		palms[18]->GetTransform().Translate(145, 8, 175);
+		AddObject(palms[18]);
+
+		palms[19]->GetTransform().Translate(170, 7.8, 160);
+		AddObject(palms[19]);
+
+		palms[20]->GetTransform().Translate(150, 7.8, 145);
+		AddObject(palms[20]);
+
+		palms[21]->GetTransform().Translate(200, 7.8, 180);
+		AddObject(palms[21]);
 
 
+		
 	}
-
 }
 
 void DevScene::AddSceneObject(Object* obj)
