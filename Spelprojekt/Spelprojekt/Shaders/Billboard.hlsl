@@ -19,14 +19,13 @@ struct VS_OUTPUT
 };
 
 
-[maxvertexcount(4)]
-void main(triangle VS_OUTPUT input[4], inout TriangleStream<GS_OUTPUT>output)
+[maxvertexcount(3)]
+void main(triangle VS_OUTPUT input[3], inout TriangleStream<GS_OUTPUT>output)
 {
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		GS_OUTPUT element;
 		element.position = input[i].position;
-		element.position.y = element.position.y;
 		element.uv = input[i].uv;
 		element.normal = input[i].normal;
 		element.worldPosition = input[i].worldPosition;

@@ -152,9 +152,6 @@ void DevScene::Load()
 	this->enemy->SetTarget(this->player);
 	AddObject(this->enemy);*/
 	this->player->SetEnemy(spawnObjects->GetEnemy());
-	
-
-		
 	/*this->coconutPickUp = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	coconutPickUp->GetTransform().Translate(10, 2, 15);
 	AddObject(coconutPickUp);*/
@@ -288,7 +285,7 @@ void DevScene::CreateSceneObjects()
 	// save the shaders somewhere, remember to clean it up
 	Shader* billboard = new Shader();
 
-
+	
 	billboard->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 	billboard->LoadGeometryShader(L"Shaders/Billboard.hlsl", "main", dx11.GetDevice());
 	billboard->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
@@ -307,7 +304,7 @@ void DevScene::CreateSceneObjects()
 	plane2->GetTransform().SetRotation({ 0, 0, 0 });
 	AddObject(plane2);
 
-	if (true)
+	if (false)
 	{
 		
 

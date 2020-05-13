@@ -289,7 +289,7 @@
     <FxCompile Include="Shaders\ToonShader_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Billboard.hlsl">
+    <FxCompile Include="Shaders\Billboard.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

@@ -57,6 +57,6 @@ float4 main(PixelInputType input) : SV_TARGET
 	{
 		finalColor += CalculatePointLight(pointLights[i], normal, position, viewDirection);
 	}
-	finalColor = float4(normal,1);
+	//finalColor = float4(normal,1);
 	return  finalColor;
 }
