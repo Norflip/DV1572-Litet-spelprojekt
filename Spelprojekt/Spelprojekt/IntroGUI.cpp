@@ -69,9 +69,9 @@ void IntroGUI::LoadStart()
 {
     ClearGUI();
     //LOAD ALL GUI OBJECTS FOR START, ONCE
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 100.0f), "play");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/quit.png", 100.0f, 300.0f), "quit");  
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 500.0f), "options");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 100.0f), "play");    
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 300.0f), "options");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/quit.png", 100.0f, 500.0f), "quit");
     first = false;
 }
 

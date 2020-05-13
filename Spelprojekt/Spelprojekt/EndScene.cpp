@@ -8,7 +8,7 @@ EndScene::EndScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	window.GetInput()->LockCursor(false);
 
 	this->didWin = false;
-	//this->endSceneMusic = musicsound;
+	this->endSceneMusic = musicsound;
 }
 
 EndScene::~EndScene()
@@ -31,7 +31,7 @@ void EndScene::Load()
 
 void EndScene::Unload()
 {
-	//this->endSceneMusic->StopSound();
+	this->endSceneMusic->StopSound();
 }
 
 void EndScene::Update(const float& deltaTime)
