@@ -47,10 +47,10 @@ void IntroScene::Load()
 	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 	sphere->GetTransform().Translate(1, 1, 3);
 
-	Object* glasse = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", ObjectLayer::Enviroment, dx11, defaultShader);
+	Object* glasse = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader));
 	AddObject(glasse);
 	
-	Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", ObjectLayer::Enviroment, dx11, defaultShader);
+	Object* wagon = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader));
 	wagon->GetTransform().Translate(5, 5, 30);
 	
 	AddObject(wagon);
@@ -80,9 +80,9 @@ void IntroScene::setNextScene()
 	Input* input = this->window.GetInput();
 
 	// Change scene logic
-		for (int i = 0; i < scenes.size(); i++)
-		{
-			if (scenes[i]->GetName() == "DevScene")
-				nextScene = scenes[i];
-		}
+	for (int i = 0; i < scenes.size(); i++)
+	{
+		if (scenes[i]->GetName() == "DevScene")
+			nextScene = scenes[i];
+	}
 }

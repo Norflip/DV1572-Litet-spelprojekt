@@ -8,7 +8,11 @@ Object::Object(ObjectLayer layer, Mesh* mesh, Material* material) : mesh(mesh), 
 }
 
 Object::Object() : Object(ObjectLayer::None, nullptr, nullptr) {}
+
 Object::Object(const Object& other) : Object(other.layer, other.mesh, other.material) { this->enabled = other.enabled; }
+
+Object::Object(ObjectLayer layer, AssimpHandler::AssimpData model) : Object(layer, model.mesh, model.material){}
+
 Object::~Object() {}
 
 void Object::SetMesh(Mesh* mesh)

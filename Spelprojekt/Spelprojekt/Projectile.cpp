@@ -1,12 +1,13 @@
 #include "Projectile.h"
 
-Projectile::Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, Shader* defaultShader, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation)
+Projectile::Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData modelData, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation)
 {	
 	GetTransform().SetPosition(position);
 	GetTransform().SetRotation(rotation);
-	Object* temp = AssimpHandler::loadFbxObject(name, ObjectLayer::Projectile, dx11, defaultShader);
-	SetMesh(temp->GetMesh());
-	SetMaterial(temp->GetMaterial());
+
+	SetMesh(modelData.mesh);
+	SetMaterial(modelData.material);
+	
 	this->movementspeed = 3;
 	this->direction = rotation; // makes us shoot in the direction of the object initial rotation
 	this->weaponSprite = new GUIActionbar(dx11, "Sprites/CoconutNew.png", 0.0f, 0.0f);

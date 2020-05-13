@@ -4,6 +4,8 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "AABB.h"
+#include "assimpHandler.h"
+
 class Renderer;
 
 
@@ -24,6 +26,7 @@ public:
 
 	Object();
 	Object(const Object& other);
+	Object(ObjectLayer layer, AssimpHandler::AssimpData model);
 	Object(ObjectLayer layer, Mesh* mesh, Material* material);
 	virtual ~Object();
 

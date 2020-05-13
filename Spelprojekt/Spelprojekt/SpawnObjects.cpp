@@ -29,7 +29,9 @@ void SpawnObjects::SpawnEnemy()
 {
 	if (enemy == nullptr)
 	{
-		enemy = new Enemy(mesh, material, terrain, dx11);
+		AssimpHandler::AssimpData model = AssimpHandler::loadFbxObject("Models/IcecreamEnemy.fbx", dx11, material->GetShader());
+
+		enemy = new Enemy(model, terrain, dx11);
 		enemy->GetTransform().Translate(5, 12, 15);
 		enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 		enemy->SetTarget(player);

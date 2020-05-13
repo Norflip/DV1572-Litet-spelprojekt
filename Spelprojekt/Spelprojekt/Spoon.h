@@ -4,7 +4,7 @@ class Spoon
 	: public Weapon
 {
 public:
-	Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, Shader* defaultShader, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation);
+	Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData model, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation);
 	Spoon(const Spoon& other);
 
 	~Spoon();

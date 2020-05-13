@@ -1,11 +1,12 @@
 #include "Enemy.h"
 
-Enemy::Enemy(Mesh* mesh, Material* material, Terrain* terrain, DX11Handler& dx11)
-	: terrain(terrain), Object(ObjectLayer::Enemy, mesh, material)
+Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler& dx11)
+	: terrain(terrain), Object(ObjectLayer::Enemy, modelData.mesh, modelData.material)
 {
-	FBXModel = AssimpHandler::loadFbxObject("Models/IcecreamEnemy.fbx", ObjectLayer::None, dx11, material->GetShader());
-	SetMesh(FBXModel->GetMesh());
-	SetMaterial(FBXModel->GetMaterial());
+
+
+	//SetMesh(FBXModel->GetMesh());
+	//SetMaterial(FBXModel->GetMaterial());
 
 	// delete FBXModel? / F
 
