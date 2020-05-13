@@ -1,9 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <string>
+
 #include "Renderer.h"
 #include "Input.h"
 #include "Object.h"
 #include "Camera.h"
 #include "SoundHandler.h"
+#include "Entities.h"
+#include "Resources.h"
+
 class Scene
 {
 public:
@@ -23,19 +29,25 @@ public:
 
 	//--FPS STUFF
 
+
+
 	std::string GetName() { return this->sceneName; };
 
 	void AddObject(Object*);
 	void RemoveObject(Object*);
-	Window& getWindow() { return this->window; };
+
+	Window& GetWindow() { return this->window; };
 	Scene* nextScene;
 	void setWinOrLose(bool didWin);
+
 protected:
-	void m_AddObjectToScene(Object*);
+	/*void m_AddObjectToScene(Object*);
 	void m_RemoveObjectFromScene(Object*);
 
 	void SortObject(Object*);
-	void UpdateAddRemoveSceneQueues();
+	void UpdateAddRemoveSceneQueues();*/
+
+	static bool m_CompareRenderList(Object* a, Object* b);
 
 protected:
 	Camera* camera;
@@ -43,12 +55,16 @@ protected:
 	Window& window;
 	DX11Handler& dx11;
 
-	std::vector<Object*> objectsToAdd;
-	std::vector<Object*> objectsToRemove;
+	Resources resources;
+	Entities entities;
 
-	// shader holds a map with diffrent material and a list of objects
-	std::unordered_map <size_t, std::unordered_map<size_t, std::vector<Object*>>> sortedObjects;
-	std::vector<Object*> allObjects;
+	//std::vector<Object*> objectsToAdd;
+	//std::vector<Object*> objectsToRemove;
+	//// shader holds a map with diffrent material and a list of objects
+	//std::unordered_map <size_t, std::unordered_map<size_t, std::vector<Object*>>> sortedObjects;
+	//std::vector<Object*> allObjects;
+
+
 	std::string sceneName;
 	bool didWin;
 		

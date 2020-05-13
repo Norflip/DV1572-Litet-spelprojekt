@@ -4,6 +4,8 @@
 #include "Camera.h"
 #include "CameraController.h"
 #include "assimpHandler.h"
+#include "Resources.h"
+
 class IntroGUI;
 #include "IntroGui.h"
 #include "SoundHandler.h"

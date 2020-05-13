@@ -22,6 +22,8 @@ public:
 	ID3D11SamplerState* GetSampler() { return this->samplerState;}
 	ID3D11Resource* GetTexture() {return this->texture;}
 	D3D11_TEXTURE2D_DESC  GetimageSampleDesc() const {return this->imageSampleDesc;}
+
+
 private:	
 	D3D11_TEXTURE2D_DESC  imageSampleDesc;
 	ID3D11ShaderResourceView* textureSRV;

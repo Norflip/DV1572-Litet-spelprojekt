@@ -1,12 +1,18 @@
 #include "Object.h"
 #include "Renderer.h"
-Object::Object(Mesh* mesh, Material* material) : mesh(mesh), material(material), enabled(true)
+
+Object::Object(ObjectLayer layer, Mesh* mesh, Material* material) : mesh(mesh), material(material), enabled(true), layer(layer)
 {
+	this->id = object_id_counter++;
 	SetMesh(mesh);
 }
 
-Object::Object() : Object(nullptr, nullptr) {}
-Object::Object(const Object& other) : Object(other.mesh, other.material) { this->enabled = other.enabled; }
+Object::Object() : Object(ObjectLayer::None, nullptr, nullptr) {}
+
+Object::Object(const Object& other) : Object(other.layer, other.mesh, other.material) { this->enabled = other.enabled; }
+
+Object::Object(ObjectLayer layer, AssimpHandler::AssimpData model) : Object(layer, model.mesh, model.material){}
+
 Object::~Object() {}
 
 void Object::SetMesh(Mesh* mesh)

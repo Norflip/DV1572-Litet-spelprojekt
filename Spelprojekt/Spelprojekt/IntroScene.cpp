@@ -37,6 +37,7 @@ void IntroScene::Load()
 	introGUI = new IntroGUI(gui, dx11, controller, this, mainmenuMusic);
 	renderer->SetGUI(gui);
 
+	
 	// save the shaders somewhere, remember to clean it up
 	Shader* defaultShader = new Shader();
 	defaultShader->LoadPixelShader(L"Shaders/Default_ps.hlsl", "main", dx11.GetDevice());
@@ -46,7 +47,7 @@ void IntroScene::Load()
 
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 
-	Object* sphere = new Object(dev_monkey_mesh, new Material(defaultShader, dx11));
+	Object* sphere = new Object(ObjectLayer::None, dev_monkey_mesh, new Material(defaultShader, dx11));
 	Texture* monkey_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	Texture* monkey_normal = Texture::CreateTexture("Textures/rocks_normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 
@@ -54,13 +55,13 @@ void IntroScene::Load()
 	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 	sphere->GetTransform().Translate(1, 1, 3);
 
-	Object* glasse = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader);
+	Object* glasse = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader));
 	AddObject(glasse);
-	Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
+	
+	Object* wagon = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader));
 	wagon->GetTransform().Translate(5, 5, 30);
+	
 	AddObject(wagon);
-
-
 	controller->SetFollow(&wagon->GetTransform(), { 0, 10.0f, -10.0f });
 	AddObject(sphere);
 		
@@ -75,14 +76,6 @@ void IntroScene::Update(const float& deltaTime)
 	Scene::Update(deltaTime);
 	controller->Update(deltaTime);
 	introGUI->Update();
-
-	for (auto i : allObjects)
-	{
-		if (i->IsEnabled())
-		{
-			i->Update(deltaTime);
-		}
-	}
 }
 
 Scene* IntroScene::GetNextScene() const
@@ -96,9 +89,9 @@ void IntroScene::setNextScene()
 	Input* input = this->window.GetInput();
 
 	// Change scene logic
-		for (int i = 0; i < scenes.size(); i++)
-		{
-			if (scenes[i]->GetName() == "DevScene")
-				nextScene = scenes[i];
-		}
+	for (int i = 0; i < scenes.size(); i++)
+	{
+		if (scenes[i]->GetName() == "DevScene")
+			nextScene = scenes[i];
+	}
 }

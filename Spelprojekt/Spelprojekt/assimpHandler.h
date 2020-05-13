@@ -4,14 +4,26 @@
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include "Object.h"
+
+#include <vector>
+#include <unordered_map>
+
 #include "Mesh.h"
-#include "../Spelprojekt/Logger.h"
+#include "Logger.h"
 #include "Texture.h"
 #include "MathHelper.h"
+#include "ConstantBuffers.h"
+#include "Shader.h"
+#include "Material.h"
 
 namespace AssimpHandler
 {
+	struct AssimpData
+	{
+		Mesh* mesh;
+		Material* material;
+	};
+
 	inline Mesh* loadMesh(const aiScene* scene, ID3D11Device* device)
 	{
 		Mesh* mesh = nullptr;
@@ -131,12 +143,12 @@ namespace AssimpHandler
 		return material;
 	}
 
-	inline Object* loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader)
+	inline AssimpData loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader)
 	{
 		// Open the scene from the file
 		Assimp::Importer imp;
 		const aiScene* scene = imp.ReadFile(filepath, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
-		Object* object = nullptr;
+		AssimpData object;
 
 		if (scene == nullptr)
 		{
@@ -149,21 +161,21 @@ namespace AssimpHandler
 			Texture* texture = nullptr;
 			aiString path;
 
-			// Get the mesh from the file
-			Mesh* mesh = loadMesh(scene, dx11.GetDevice());
-
 			// Create a new object with the new mesh
-			object = new Object(mesh, new Material(shader, dx11));
+			// Get the mesh from the file
+			object.mesh = loadMesh(scene, dx11.GetDevice());
+			object.material = new Material(shader, dx11);
+
 
 			MaterialData* temp = getMaterialFromFbx(scene);
-			object->GetMaterial()->SetMaterialData(*temp);
+			object.material->SetMaterialData(*temp);
 
 			// Check if the file contains a diffuseTexture
 			if (scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
 			{
 				// Load the diffuseTexture and apply it to the object
 				texture = loadTextureFromFbx(dx11, path);
-				object->GetMaterial()->GetMaterialData().hasAlbedoTexture = true;
+				object.material->GetMaterialData().hasAlbedoTexture = true;
 			}
 
 			// The app assumes there is a texture to every object, so if there is no texture in the file,
@@ -178,12 +190,12 @@ namespace AssimpHandler
 			{
 				// Load the normalMap and apply it to the object
 				normalMap = loadTextureFromFbx(dx11, path);
-				object->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, normalMap, PIXEL_TYPE::PIXEL);
-				object->GetMaterial()->GetMaterialData().hasNormalTexture = true;
+				object.material->SetTexture(NORMAL_MATERIAL_TYPE, normalMap, PIXEL_TYPE::PIXEL);
+				object.material->GetMaterialData().hasNormalTexture = true;
 				
 			}
 
-			object->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, texture, PIXEL_TYPE::PIXEL);
+			object.material->SetTexture(ALBEDO_MATERIAL_TYPE, texture, PIXEL_TYPE::PIXEL);
 
 		}
 		

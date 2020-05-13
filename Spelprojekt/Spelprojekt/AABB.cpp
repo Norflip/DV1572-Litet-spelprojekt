@@ -77,3 +77,27 @@ bool AABB::Overlaps(const AABB& other)
 
 	return true;
 }
+
+// https://www.amazon.com/dp/1558607323
+float AABB::SqrDistanceToPoint(DirectX::XMVECTOR point)
+{
+	float sqDist = 0.0f;
+
+	DirectX::XMFLOAT3 p;
+	DirectX::XMStoreFloat3(&p, point);
+
+	for (size_t i = 0; i < 3; i++)
+	{
+		float v = DirectX::XMVectorGetByIndex(point, i);
+		float bmin = DirectX::XMVectorGetByIndex(min, i);
+		float bmax= DirectX::XMVectorGetByIndex(max, i);
+
+		if (v < bmin)
+			sqDist += (bmin - v) * (bmin - v);
+
+		if (v > bmax)
+			sqDist += (v - bmax) * (v - bmax);
+	}
+
+	return sqDist;
+}

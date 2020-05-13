@@ -11,7 +11,7 @@ class Player;
 class Enemy : public Object
 {
 	public: 
-		Enemy(Mesh * mesh, Material* material, Terrain* terrain, DX11Handler&);
+		Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&);
 		Enemy(const Enemy& other);
 		~Enemy();
 

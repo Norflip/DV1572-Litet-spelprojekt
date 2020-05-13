@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-Camera::Camera(float fovDegrees, size_t width, size_t height) : Object(nullptr, nullptr), width(width), height(height)
+Camera::Camera(float fovDegrees, size_t width, size_t height) : Object(ObjectLayer::None, nullptr, nullptr), width(width), height(height)
 {
 	this->aspect = static_cast<float>(width) / static_cast<float>(height);
 	this->SetEnabled(false);

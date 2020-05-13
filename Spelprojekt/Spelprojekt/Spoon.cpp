@@ -1,12 +1,13 @@
 #include "Spoon.h"
 
-Spoon::Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, Shader* defaultShader, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation)
+Spoon::Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData model, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation)
 {
 	GetTransform().SetPosition(position);
 	GetTransform().SetRotation(rotation);
-	Object* slev = AssimpHandler::loadFbxObject(name, dx11, defaultShader);
-	SetMesh(slev->GetMesh());
-	SetMaterial(slev->GetMaterial());
+
+	
+	SetMesh(model.mesh);
+	SetMaterial(model.material);
 	//this->movementspeeds = 3;
 	this->direction = rotation; // makes us shoot in the direction of the object initial rotation
 

@@ -20,6 +20,7 @@ public:
 	DirectX::XMVECTOR GetCenter() const;
 
 	bool Overlaps(const AABB& other);
+	float SqrDistanceToPoint(DirectX::XMVECTOR point);
 
 private:
 	DirectX::XMVECTOR min;

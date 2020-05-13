@@ -1,10 +1,7 @@
 #include "Player.h"
-Player::Player(Mesh* mesh, Material* material, CameraController* controller, Terrain* terrain, GUI* gui, DX11Handler& dx11, Scene* scene)
-	:controller(controller), terrain(terrain), Object(mesh, material), dx11(dx11)
+Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, DX11Handler& dx11, Scene* scene)
+	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11)
 {
-	Object* temp = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, material->GetShader());
-	SetMesh(temp->GetMesh());
-	SetMaterial(temp->GetMaterial());
 
 	this->movementspeed = 7;
 	this->input = controller->getInput();

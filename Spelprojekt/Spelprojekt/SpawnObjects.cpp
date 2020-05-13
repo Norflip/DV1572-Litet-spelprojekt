@@ -1,5 +1,10 @@
 #include "SpawnObjects.h"
 
+// insert entities reference
+// remove scene
+// AssimpData instead of mesh + material
+//SpawnObjects::SpawnObjects(Entities* entities, Terrain* terrain, AssimpHandler::AssimpData modelData, Player* player, DX11Handler& dx11)
+
 SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player) : Object(mesh, material), dx11(dx11)
 {
 	this->dx11 = dx11;
@@ -31,6 +36,7 @@ void SpawnObjects::SetEnemy()
 	testEnemy->GetTransform().Translate(30, 7, 35 + spawnOffset);
 	testEnemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	testEnemy->SetTarget(player);
+	testEnemy->SetEnabled(false);
 }
 
 void SpawnObjects::SetObject(Object* object)
