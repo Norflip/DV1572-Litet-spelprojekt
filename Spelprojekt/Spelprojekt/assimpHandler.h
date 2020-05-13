@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 #include "Mesh.h"
-#include "../Spelprojekt/Logger.h"
+#include "Logger.h"
 #include "Texture.h"
 #include "MathHelper.h"
 #include "ConstantBuffers.h"
