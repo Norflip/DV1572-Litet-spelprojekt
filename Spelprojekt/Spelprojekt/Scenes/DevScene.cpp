@@ -488,14 +488,16 @@ void DevScene::CreateSceneObjects()
 		////////////////////////// BEACHBALLS /////////////////////////////
 
 		Object* bush = AssimpHandler::loadFbxObject("Models/Bush.fbx", dx11, defaultShader);
-		Object* bushes[11];
-		for (int i = 0; i < 11; i++)
+		Object* bushes[15];
+		for (int i = 0; i < 15; i++)
 			bushes[i] = new Object(*bush);
 
 		// 2 Stands bottom beach //
 		bushes[0]->GetTransform().Translate(142, 7, 50);
 		bushes[0]->GetTransform().Rotate(0.05f, -5, 0);
 		AddObject(bushes[0]);
+
+
 
 		bushes[1]->GetTransform().Translate(120, 7, 47);
 		bushes[1]->GetTransform().Rotate(0.05f, -5, 0);
@@ -543,9 +545,27 @@ void DevScene::CreateSceneObjects()
 		////
 
 		// By benches - by rocks
-		bushes[10]->GetTransform().Translate(165, 7, 122);
+		bushes[10]->GetTransform().Translate(165, 7+0.1, 122);
 		bushes[10]->GetTransform().Rotate(0.05f, -5, 0);
 		AddObject(bushes[10]);
+
+		// By benches - by rocks
+		bushes[11]->GetTransform().Translate(165, 7 + 0.3, 122);
+		bushes[11]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[11]);
+		// By benches - by rocks
+		bushes[12]->GetTransform().Translate(165, 7 + 0.5, 122);
+		bushes[12]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[12]);
+		// By benches - by rocks
+		bushes[13]->GetTransform().Translate(165, 7 + 0.7, 122);
+		bushes[13]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[13]);
+		// By benches - by rocks
+		bushes[14]->GetTransform().Translate(165, 7 + 0.9, 122);
+		bushes[14]->GetTransform().Rotate(0.05f, -5, 0);
+		AddObject(bushes[14]);
+
 
 		////////////////////////// Fireplace stuff /////////////////////////////
 		
