@@ -306,8 +306,8 @@ void DevScene::CreateSceneObjects()
 		////////////////////////// STANDS /////////////////////////////
 		// Left beach stand
 		Object* beachstand = AssimpHandler::loadFbxObject("Models/Beachstand.fbx", dx11, defaultShader);
-		Object* beachstands[2]; 
-		for(int i = 0; i < 2; i++)
+		Object* beachstands[3]; 
+		for(int i = 0; i < 3; i++)
 			beachstands[i] = new Object(*beachstand);
 
 		beachstands[0]->GetTransform().Translate(135, 7, 48);
@@ -316,6 +316,10 @@ void DevScene::CreateSceneObjects()
 		beachstands[1]->GetTransform().Translate(125, 7, 48);
 		beachstands[1]->GetTransform().SetRotation({ -0.1, -0.1, 0 });
 		AddObject(beachstands[1]);
+
+		beachstands[2]->GetTransform().Translate(60, 7, 55);
+		beachstands[2]->GetTransform().SetRotation({ -0.1, 0.7, 0 });
+		AddObject(beachstands[2]);
 		
 
 		////////////////////////// SUNCHAIR /////////////////////////////
@@ -457,8 +461,8 @@ void DevScene::CreateSceneObjects()
 
 		// Balls left beachside
 		Object* redball = AssimpHandler::loadFbxObject("Models/Beachball_Red.fbx", dx11, defaultShader);
-		Object* redballs[2];
-		for (int i = 0; i < 2; i++)
+		Object* redballs[3];
+		for (int i = 0; i < 3; i++)
 			redballs[i] = new Object(*redball);
 				
 		redballs[0]->GetTransform().Translate(100, 7, 38);
@@ -468,6 +472,10 @@ void DevScene::CreateSceneObjects()
 		redballs[1]->GetTransform().Translate(160, 7, 190);
 		redballs[1]->GetTransform().Rotate(0.2f, -5, 0);
 		AddObject(redballs[1]);
+
+		redballs[2]->GetTransform().Translate(35, 6, 45);
+		redballs[2]->GetTransform().Rotate(0.2f, -5, 0);
+		AddObject(redballs[2]);
 
 		Object* blueball = AssimpHandler::loadFbxObject("Models/Beachball_Blue.fbx", dx11, defaultShader);
 		Object* blueballs[2];
