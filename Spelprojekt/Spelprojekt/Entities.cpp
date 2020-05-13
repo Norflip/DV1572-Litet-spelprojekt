@@ -48,20 +48,68 @@ std::vector<Object*> Entities::GetObjectsInLayer(ObjectLayer layer)
 
 std::vector<Object*> Entities::GetObjectsInRange(DirectX::XMVECTOR center, float radius, ObjectLayer layer)
 {
-	// TODO FIND WITH QUADTREE
-	std::vector<Object*> inRange;
+	DirectX::XMFLOAT3 point;
+	DirectX::XMStoreFloat3(&point, center);
+	float hr = radius / 2.0f;
+	AABB bounds = AABB({ point.x - hr, point.y - hr, point.z - hr }, { point.x + hr, point.y + hr, point.z + hr });
 
-	for (auto i : allEntities)
+	std::vector<Object*> inRange;
+	auto inArea = GetObjectsInAABB(bounds, layer);
+
+	for (auto j : inArea)
 	{
-		if (i->IsEnabled() && (i->GetLayer() == layer || layer == ObjectLayer::Any))
+		if (j->IsEnabled() && (((int)j->GetLayer() & (int)layer) == (int)j->GetLayer()))		// j->GetLayer() == layer || layer == ObjectLayer::Any))
 		{
-			float sqrDistance = i->GetWorldBounds().SqrDistanceToPoint(center);
+			float sqrDistance = j->GetWorldBounds().SqrDistanceToPoint(center);
 			if (sqrDistance < radius * radius)
-				inRange.push_back(i);
+				inRange.push_back(j);
 		}
 	}
 
 	return inRange;
+}
+
+std::vector<Object*> Entities::GetObjectsInAABB(const AABB& aabb, ObjectLayer layer)
+{
+	std::vector<Object*> inArea;
+	std::unordered_set<int> visited;
+	std::queue<QuadTree*> treeQueue;
+	treeQueue.push(&quadtree);
+
+	while (!treeQueue.empty())
+	{
+		QuadTree* quad = treeQueue.front();
+		treeQueue.pop();
+
+		if (quad->GetBounds().Overlaps(aabb))
+		{
+			if (quad->IsSplit())
+			{
+				auto d = quad->GetChildren();
+				for (size_t i = 0; i < 4; i++)
+					treeQueue.push(d[i]);
+			}
+			else
+			{
+				auto df = quad->GetObjects();
+
+				for (auto j : df)
+				{
+					if (visited.find(j->GetID()) == visited.end())
+					{
+						if (j->IsEnabled() && (((int)j->GetLayer() & (int)layer) == (int)j->GetLayer()))		// j->GetLayer() == layer || layer == ObjectLayer::Any))
+						{
+							inArea.push_back(j);
+						}
+
+						visited.insert(j->GetID());
+					}
+				}
+			}
+		}
+	}
+
+	return inArea;
 }
 
 std::vector<Object*> Entities::GetObjectsInView(Camera* camera)

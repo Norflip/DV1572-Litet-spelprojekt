@@ -227,6 +227,10 @@ void DevScene::Update(const float& deltaTime)
 	
 	Scene::Update(deltaTime);
 
+	auto g = entities.GetObjectsInRange(player->GetTransform().GetPosition(), 2.0f);
+
+	std::cout << "inside radius 2: " << g.size() << std::endl;
+
 	//FPS STUFF
 	fpsTimer.Start();			
 	
@@ -248,8 +252,6 @@ void DevScene::Update(const float& deltaTime)
 
 	gametimerText->SetString("Time until extraction: " + std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd))));
 	
-
-
 	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f)
 	{
 		gametimerText->SetString("Move to exit");
@@ -264,7 +266,7 @@ void DevScene::Update(const float& deltaTime)
 		SetNextScene(false);
 	}
 
-	if (canWin && player->GetWorldBounds().Overlaps(allObjects[0]->GetWorldBounds()))
+	if (canWin && player->GetWorldBounds().Overlaps(entities.AllEntities()[0]->GetWorldBounds()))
 	{
 		gametimerText->SetString("You won");
 		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);

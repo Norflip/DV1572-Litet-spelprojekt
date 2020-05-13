@@ -67,14 +67,6 @@ void IntroScene::Update(const float& deltaTime)
 	Scene::Update(deltaTime);
 	controller->Update(deltaTime);
 	introGUI->Update();
-
-	for (auto i : allObjects)
-	{
-		if (i->IsEnabled())
-		{
-			i->Update(deltaTime);
-		}
-	}
 }
 
 Scene* IntroScene::GetNextScene() const
