@@ -148,8 +148,7 @@ void DevScene::Load()
 	AssimpHandler::AssimpData coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	// Coconuts
 	for (int i = 0; i < 5; i++)
-		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
-	
+		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);	
 	coconuts[0]->GetTransform().Translate(35 + 22.5, 10, 25 + 22.5);
 	coconuts[1]->GetTransform().Translate(40, 10, 25);
 	coconuts[2]->GetTransform().Translate(45, 10, 25);
@@ -163,8 +162,7 @@ void DevScene::Load()
 	AssimpHandler::AssimpData slev = AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, defaultShader);			
 	// Spoon
 	for(int i = 0; i < 5; i++)
-		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
-
+		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);	
 	spoons[0]->GetTransform().Translate(35, 10, 30);
 	spoons[1]->GetTransform().Translate(40, 10, 30);
 	spoons[2]->GetTransform().Translate(45, 10, 30);
@@ -178,6 +176,12 @@ void DevScene::Load()
 	CreateSceneObjects();	
 
 
+	// - - - - - Exit arrow
+	arrow = new Object(ObjectLayer::None, AssimpHandler::loadFbxObject("Models/Arrow.fbx", dx11, defaultShader));
+	arrow->GetTransform().Translate(35, 10, 30);	
+	player->SetArrow(arrow);
+	AddObject(arrow);
+	arrow->SetVisible(false);
 	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
 
 	// Add objects
@@ -237,6 +241,7 @@ void DevScene::Update(const float& deltaTime)
 	
 	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f)
 	{
+		arrow->SetVisible(true);
 		gametimerText->SetString("Move to exit");
 		gametimerText->SetPosition(window.GetWidth() / 2.0f - 80.0f, 0.0f);
 		canWin = true;

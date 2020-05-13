@@ -78,4 +78,5 @@ private:
 	bool canWin;
 
 	SpawnObjects* spawnObjects;
+	Object* arrow;
 };

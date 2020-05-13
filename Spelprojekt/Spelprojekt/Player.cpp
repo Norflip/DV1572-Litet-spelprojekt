@@ -25,6 +25,8 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 650.0f);
 	this->healthbar->HealthBar(100.0f, 100.0f);
 	this->gui->AddGUIObject(this->healthbar, "healthbar");
+
+	this->arrow = nullptr;
 }
 
 Player::~Player()
@@ -36,9 +38,12 @@ void Player::Update(const float& deltaTime)
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
 
+	
 	UpdateMeleeWeaponPosition();	// If spoon is equiped
 	UseWeapon();
 	TakeDamage();
+
+	UpdateLookAtPosition();
 }
 
 
@@ -102,7 +107,7 @@ void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) + MathHelper::PI * 2, 0 });
 	if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) > MathHelper::PI * 2)
 		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) - MathHelper::PI * 2, 0 });
-
+	
 }
 
 void Player::InitWeapons()
@@ -195,7 +200,8 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		weapon->direction = GetTransform().GetRotation();
 		weapon->PlaySoundEffect();
 		scene->AddObject(weapon);
-		activeWeapon = static_cast<Weapon*>(weapon);
+		SetActiveWeapon(static_cast<Weapon*>(weapon));
+		//activeWeapon = static_cast<Weapon*>(weapon);
 		scene->AddObject(weapon);
 		hand = false;
 	}
@@ -203,9 +209,9 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 	if (weapon->GetWeaponTypename() == "Slev") {
 		if (weapon->CheckUsage() < 2) {
 			weapon->PlaySoundEffect();
-			activeWeapon = static_cast<Weapon*>(weapon);
+			//activeWeapon = static_cast<Weapon*>(weapon);
 			weapon->Use();
-			activeWeapon = nullptr;
+			//activeWeapon = nullptr;
 		}
 		else {
 			weapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());
@@ -248,6 +254,27 @@ void Player::SetActiveWeapon(Weapon* weapon)
 {
 	activeWeapon = weapon;
 }
+
+void Player::SetArrow(Object* obj)
+{
+	this->arrow = obj;
+}
+
+void Player::UpdateLookAtPosition()
+{	
+	if (arrow != nullptr)
+	{
+		arrow->GetTransform().SetPosition(GetTransform().GetPosition());
+		arrow->GetTransform().SetRotation(GetTransform().GetRotation());
+
+		//nextPosition = { (GetTransform().GetPosition().m128_f32[0] + (-std::sinf(arrowDirection.m128_f32[1]) * 30)) ,GetTransform().GetPosition().m128_f32[1], (GetTransform().GetPosition().m128_f32[2] + (-std::cosf(arrowDirection.m128_f32[1]) * 30)) };	// 30 = speed
+		//GetTransform().SetPosition(nextPos);
+		//GetTransform().SetRotation({ (GetTransform().GetRotation().m128_f32[0] + (-8.f * deltaTime)) ,GetTransform().GetRotation().m128_f32[1]  ,GetTransform().GetRotation().m128_f32[2] });
+				
+		//arrow->GetTransform().LookAt(this->exitPosition);		
+	}	
+}
+
 
 void Player::TriggerAttack()
 {
