@@ -145,15 +145,23 @@ void DevScene::Load()
 	// ------ WEAPONS
 	AssimpHandler::AssimpData coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	// Coconuts
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 11; i++)
 		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);	
-	coconuts[0]->GetTransform().Translate(35 + 22.5, 10, 25 + 22.5);
-	coconuts[1]->GetTransform().Translate(40, 10, 25);
-	coconuts[2]->GetTransform().Translate(45, 10, 25);
-	coconuts[3]->GetTransform().Translate(50, 10, 25);
-	coconuts[4]->GetTransform().Translate(55, 10, 25);
-	for (int i = 0; i < 5; i++)
+	coconuts[0]->GetTransform().Translate(177.0f, 8.5f, 75.0f);
+	coconuts[1]->GetTransform().Translate(164.0f, 8.5f, 60.0f);
+	coconuts[2]->GetTransform().Translate(100.0f, 8.8f, 75.0f);
+	coconuts[3]->GetTransform().Translate(78.0f, 9.0f, 82.0f);
+	coconuts[4]->GetTransform().Translate(56.0f, 8.5f, 65.0f);
+	coconuts[5]->GetTransform().Translate(34.0f, 8.5f, 95.0f);
+	coconuts[6]->GetTransform().Translate(41.0f, 8.5f, 140.0f);
+	coconuts[7]->GetTransform().Translate(109.0f, 8.5f, 165.0f);
+	coconuts[8]->GetTransform().Translate(94.0f, 9.0f, 195.0f);
+	coconuts[9]->GetTransform().Translate(175.0f, 8.5f, 160.0f);
+	coconuts[10]->GetTransform().Translate(149.0f, 9.0f, 175.0f);
+
+	for (int i = 0; i < 11; i++)
 		AddObject(coconuts[i]);
+	
 	
 	/////////////////////////////////////////
 
@@ -161,11 +169,11 @@ void DevScene::Load()
 	// Spoon
 	for(int i = 0; i < 5; i++)
 		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);	
-	spoons[0]->GetTransform().Translate(35, 10, 30);
-	spoons[1]->GetTransform().Translate(40, 10, 30);
-	spoons[2]->GetTransform().Translate(45, 10, 30);
-	spoons[3]->GetTransform().Translate(50, 10, 30);
-	spoons[4]->GetTransform().Translate(55, 10, 30);
+	spoons[0]->GetTransform().Translate(130, 8, 40);
+	spoons[1]->GetTransform().Translate(28, 7, 47);
+	spoons[2]->GetTransform().Translate(145.0f, 8.5f, 193.0f);
+	spoons[3]->GetTransform().Translate(115.0f, 8.5f, 138.0f);
+	spoons[4]->GetTransform().Translate(195, 7.0f, 115);
 	for (int i = 0; i < 5; i++)
 		AddObject(spoons[i]);
 	
@@ -211,7 +219,7 @@ void DevScene::Update(const float& deltaTime)
 {	
 	Scene::Update(deltaTime);
 
-	auto g = entities.GetObjectsInRange(player->GetTransform().GetPosition(), 2.0f);
+	//auto g = entities.GetObjectsInRange(player->GetTransform().GetPosition(), 2.0f);
 
 
 	//FPS STUFF
@@ -282,11 +290,11 @@ void DevScene::CreateSceneObjects()
 		}			
 
 		// Middle mountain
-		mountains[0]->GetTransform().Translate(100, 6, 110);
+		mountains[0]->GetTransform().Translate(100.0f, 6.0f, 110.0f);
 
 		// Top left mountain
-		mountains[1]->GetTransform().Translate(30, 4, 170);
-		mountains[1]->GetTransform().Rotate(0, 180, 0);
+		mountains[1]->GetTransform().Translate(30.0f, 4.0f, 170.0f);
+		mountains[1]->GetTransform().Rotate(0.0f, 180.0f, 0.0f);
 			
 
 		////////////////////////// ROCKS /////////////////////////////
@@ -499,53 +507,53 @@ void DevScene::CreateSceneObjects()
 		bushes[2]->GetTransform().Translate(75, 6.5, 43);
 		bushes[2]->GetTransform().Rotate(0.05f, -5, 0);
 
-		bushes[3]->GetTransform().Translate(70, 6.5, 45);
-		bushes[3]->GetTransform().Rotate(0.05f, -5, 0);
+		bushes[3]->GetTransform().Translate(70.0f, 6.5f, 45.0f);
+		bushes[3]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 		////
 
 		// By restplace //
-		bushes[4]->GetTransform().Translate(112, 7, 132);
-		bushes[4]->GetTransform().Rotate(0.05f, -5, 0);
+		bushes[4]->GetTransform().Translate(112.0f, 7.0f, 132.0f);
+		bushes[4]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 
-		bushes[5]->GetTransform().Translate(115, 8, 148);
-		bushes[5]->GetTransform().Rotate(0.05f, -5, 0);
+		bushes[5]->GetTransform().Translate(115.0f, 8.0f, 148.0f);
+		bushes[5]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 		////
 
 
 		// By rocks //
-		bushes[6]->GetTransform().Translate(195, 8, 143);
-		bushes[6]->GetTransform().Rotate(0.05f, -5, 0);
+		bushes[6]->GetTransform().Translate(195.0f, 8.0f, 143.0f);
+		bushes[6]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 
-		bushes[7]->GetTransform().Translate(200, 8, 152);
-		bushes[7]->GetTransform().Rotate(0.05f, -5, 0);
+		bushes[7]->GetTransform().Translate(200.0f, 8.0f, 152.0f);
+		bushes[7]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 
 		// Bottom rocks by beach
-		bushes[8]->GetTransform().Translate(190, 7, 120);
-		bushes[8]->GetTransform().Rotate(0.05f, -5, 0);
+		bushes[8]->GetTransform().Translate(190.0f, 7.0f, 120.0f);
+		bushes[8]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 
-		bushes[9]->GetTransform().Translate(195, 7, 120);
-		bushes[9]->GetTransform().Rotate(0.05f, -5, 0);
+		bushes[9]->GetTransform().Translate(195.0f, 7.0f, 120.0f);
+		bushes[9]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 		////
 
 		// By benches - by rocks
-		bushes[10]->GetTransform().Translate(165, 7, 122);
-		bushes[10]->GetTransform().Rotate(0.05f, -5, 0);
+		bushes[10]->GetTransform().Translate(165.0f, 7.0f, 122.0f);
+		bushes[10]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 		////
 
 		// Top beach
-		bushes[11]->GetTransform().Translate(143, 7.5, 188);
-		bushes[11]->GetTransform().Rotate(0.05f, -5, 0);
+		bushes[11]->GetTransform().Translate(143.0f, 7.5f, 188.0f);
+		bushes[11]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 
-		bushes[12]->GetTransform().Translate(163, 7.5, 185);
-		bushes[12]->GetTransform().Rotate(0.05f, -5, 0);
+		bushes[12]->GetTransform().Translate(163.0f, 7.5f, 185.0f);
+		bushes[12]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 						
 
 
 		////////////////////////// Fireplace stuff /////////////////////////////
 		
 		Object* restplace = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Bungalow.fbx", dx11, defaultShader));
-		restplace->GetTransform().Translate(107, 7.5, 140);
-		restplace->GetTransform().SetRotation({ 0, -1.5, 0 });
+		restplace->GetTransform().Translate(107.0f, 7.5f, 140.0f);
+		restplace->GetTransform().SetRotation({ 0.0f, -1.5f, 0.0f });
 		AddObject(restplace);
 
 
@@ -555,17 +563,17 @@ void DevScene::CreateSceneObjects()
 		for (int i = 0; i < 4; i++)
 			benches[i] = new Object(*bench);
 				
-		benches[0]->GetTransform().Translate(170, 7, 118);
-		benches[0]->GetTransform().SetRotation({ 0, 0.4, 0 });
+		benches[0]->GetTransform().Translate(170.0f, 7.0f, 118.0f);
+		benches[0]->GetTransform().SetRotation({ 0.0f, 0.4f, 0.0f });
 				
-		benches[1]->GetTransform().Translate(157, 7, 122);
-		benches[1]->GetTransform().SetRotation({ 0, 0.3, 0 });
+		benches[1]->GetTransform().Translate(157.0f, 7.0f, 122.0f);
+		benches[1]->GetTransform().SetRotation({ 0.0f, 0.3f, 0.0f });
 
-		benches[2]->GetTransform().Translate(140, 7, 195);
-		benches[2]->GetTransform().SetRotation({ 0, -2.5, 0 });
+		benches[2]->GetTransform().Translate(140.0f, 7.0f, 195.0f);
+		benches[2]->GetTransform().SetRotation({ 0.0f, -2.5f, 0.0f });
 
-		benches[3]->GetTransform().Translate(170, 7, 190);
-		benches[3]->GetTransform().SetRotation({ 0, 2.5, 0 });
+		benches[3]->GetTransform().Translate(170.0f, 7.0f, 190.0f);
+		benches[3]->GetTransform().SetRotation({ 0.0f, 2.5f, 0.0f });
 
 		for (int i = 0; i < 4; i++)
 			AddObject(benches[i]);
@@ -582,40 +590,40 @@ void DevScene::CreateSceneObjects()
 		}
 			
 		// Bottom beach //
-		palms[0]->GetTransform().Translate(200, 7.8, 60);
-		palms[1]->GetTransform().Translate(180, 7.8, 75);
-		palms[2]->GetTransform().Translate(160, 7.8, 60);
-		palms[3]->GetTransform().Translate(145, 7.8, 73);
-		palms[4]->GetTransform().Translate(125, 7.8, 60);
-		palms[5]->GetTransform().Translate(105, 7.8, 75);
+		palms[0]->GetTransform().Translate(200.0f, 7.8f, 60.0f);
+		palms[1]->GetTransform().Translate(180.0f, 7.8f, 75.0f);
+		palms[2]->GetTransform().Translate(160.0f, 7.8f, 60.0f);
+		palms[3]->GetTransform().Translate(145.0f, 7.8f, 73.0f);
+		palms[4]->GetTransform().Translate(125.0f, 7.8f, 60.0f);
+		palms[5]->GetTransform().Translate(105.0f, 7.8f, 75.0f);
 		/////
 
 		// bottom beach left
-		palms[6]->GetTransform().Translate(85, 7.8, 58);
-		palms[7]->GetTransform().Translate(83, 7.8, 82);
-		palms[8]->GetTransform().Translate(60, 8, 90);
-		palms[9]->GetTransform().Translate(60, 7.8, 65);
+		palms[6]->GetTransform().Translate(85.0f, 7.8f, 58.0f);
+		palms[7]->GetTransform().Translate(83.0f, 7.8f, 82.0f);
+		palms[8]->GetTransform().Translate(60.0f, 8.0f, 90.0f);
+		palms[9]->GetTransform().Translate(60.0f, 7.8f, 65.0f);
 		////
 
 		// left of middle rock
-		palms[10]->GetTransform().Translate(55, 7.8, 115);
-		palms[11]->GetTransform().Translate(38, 7.8, 95);
-		palms[12]->GetTransform().Translate(45, 7.8, 140);
+		palms[10]->GetTransform().Translate(55.0f, 7.8f, 115.0f);
+		palms[11]->GetTransform().Translate(38.0f, 7.8f, 95.0f);
+		palms[12]->GetTransform().Translate(45.0f, 7.8f, 140.0f);
 		////
 
 		// top rock
-		palms[13]->GetTransform().Translate(70, 7.8, 165);
-		palms[14]->GetTransform().Translate(80, 7.8, 140);
-		palms[15]->GetTransform().Translate(105, 7.8, 165);
-		palms[16]->GetTransform().Translate(90, 8, 195);
-		palms[17]->GetTransform().Translate(115, 7.8, 200);
+		palms[13]->GetTransform().Translate(70.0f, 7.8f, 165.0f);
+		palms[14]->GetTransform().Translate(80.0f, 7.8f, 140.0f);
+		palms[15]->GetTransform().Translate(105.0f, 7.8f, 165.0f);
+		palms[16]->GetTransform().Translate(90.0f, 8.0f, 195.0f);
+		palms[17]->GetTransform().Translate(115.0f, 7.8f, 200.0f);
 		////
 
 		// Left by rocks
-		palms[18]->GetTransform().Translate(145, 8, 175);
-		palms[19]->GetTransform().Translate(170, 7.8, 160);
-		palms[20]->GetTransform().Translate(150, 7.8, 145);
-		palms[21]->GetTransform().Translate(200, 7.8, 180);
+		palms[18]->GetTransform().Translate(145.0f, 8.0f, 175.0f);
+		palms[19]->GetTransform().Translate(170.0f, 7.8f, 160.0f);
+		palms[20]->GetTransform().Translate(150.0f, 7.8f, 145.0f);
+		palms[21]->GetTransform().Translate(200.0f, 7.8f, 180.0f);
 				
 	}
 }

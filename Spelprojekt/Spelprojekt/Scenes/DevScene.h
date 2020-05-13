@@ -62,7 +62,7 @@ private:
 	GUIActionbar* actionbarLeft;
 	GUIActionbar* actionbarRight;
 
-	Projectile* coconuts[5];
+	Projectile* coconuts[11];
 	Spoon* spoons[5];
 
 	// Level design
