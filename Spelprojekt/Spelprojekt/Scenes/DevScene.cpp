@@ -96,7 +96,7 @@ void DevScene::Load()
 	test_material->GetMaterialData().hasNormalTexture = false;*/
 
 	ground.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
-	Object* terrainObject = new Object(ground.GetMesh(), terrainMat);
+	Object* terrainObject = new Object(ObjectLayer::None, ground.GetMesh(), terrainMat);
 	AddObject(terrainObject);
 	
 
@@ -105,14 +105,15 @@ void DevScene::Load()
 	Shader* waterShader = new Shader();
 	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
 	waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
-	Texture* heightMapTexture = Texture::CreateTexture("Textures/map_displacement_map_small.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	Material* waterMat = new Material(waterShader, dx11);
 	
+	Texture* heightMapTexture = Texture::CreateTexture("Textures/map_displacement_map_small.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	
+	Material* waterMat = new Material(waterShader, dx11);
 	waterMat->SetTexture(0, heightMapTexture, PIXEL_TYPE::PIXEL);
 
 	//Mesh* waterPlane = ShittyOBJLoader::Load("Models/Water_Plane.obj", dx11.GetDevice());
 	//Object* water =  AssimpHandler::loadFbxObject("Models/Water_Plane.fbx", dx11, waterShader);
-	Object* water = new Object(waterMesh.GetMesh(), waterMat);
+	Object* water = new Object(ObjectLayer::None, waterMesh.GetMesh(), waterMat);
 	water->SetMaterial(waterMat);
 	water->GetTransform().Translate({ 0,5,0,});
 	water->GetTransform().SetRotation({ 0,0,0 });
@@ -131,7 +132,7 @@ void DevScene::Load()
 
 	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, toonShader);
 
-	this->player = new Player(playerModel, controller, &test, gui, dx11, static_cast<Scene*>(this));
+	this->player = new Player(playerModel, controller, &ground, gui, dx11, static_cast<Scene*>(this));
 	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 	this->player->GetTransform().SetPosition({ 55, 7, 55 });
@@ -143,11 +144,11 @@ void DevScene::Load()
 	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
 	this->spawnObjects->SetEnemy();
 	AddObject(this->spawnObjects);
+
+	spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
 	
-	for(int i = 0; i < 5; i++)
-		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, defaultShader, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
-	spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &test, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
-	spawnObjects->SpawnEnemy();
+	//spawnObjects->SpawnEnemy();
+	
 
 
 
@@ -163,9 +164,8 @@ void DevScene::Load()
 	this->enemy->GetTransform().Scale(0.3, 0.3, 0.3);
 	this->enemy->SetTarget(this->player);
 	AddObject(this->enemy);*/
-	this->player->SetEnemy(spawnObjects->GetEnemy());
 	
-
+	//this->player->SetEnemy(spawnObjects->GetEnemy());
 		
 	/*this->coconutPickUp = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	coconutPickUp->GetTransform().Translate(10, 2, 15);
@@ -173,12 +173,11 @@ void DevScene::Load()
 	
 	// ------ WEAPONS
 
-
 	AssimpHandler::AssimpData coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 
 	// Coconuts
 	for(int i = 0; i < 5; i++)
-		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &test, dx11, coconut, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
+		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
 	
 	coconuts[0]->GetTransform().Translate(35 + 22.5, 10, 25 + 22.5);
 	coconuts[1]->GetTransform().Translate(40, 10, 25);
@@ -316,7 +315,7 @@ void DevScene::CreateSceneObjects()
 		
 
 		////////////////////////// MOUNTAINS /////////////////////////////
-		Object* mountain = AssimpHandler::loadFbxObject("Models/Mountain.fbx", dx11, defaultShader);
+		Object* mountain = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Mountain.fbx", dx11, defaultShader));
 		Object* mountains[2];
 		for (int i = 0; i < 2; i++)
 			mountains[i] = new Object(*mountain);
@@ -332,40 +331,39 @@ void DevScene::CreateSceneObjects()
 			AddObject(mountains[i]);
 
 		////////////////////////// ROCKS /////////////////////////////
-		Object* rocks = AssimpHandler::loadFbxObject("Models/Rocks.fbx", dx11, defaultShader);
+		Object* rocks = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Rocks.fbx", dx11, defaultShader));
 		rocks->GetTransform().Rotate(0, 180, 0);
 		rocks->GetTransform().Translate(195, 5, 145);
-
+		AddObject(rocks);
 
 		// FILIP OLD
 		// Left beach stand
-		Object* beachstand = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Beachstand.fbx", dx11, defaultShader));
+		/*Object* beachstand = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Beachstand.fbx", dx11, defaultShader));
 		beachstand->GetTransform().Translate(35, 8, 75);
 		beachstand->GetTransform().SetRotation({ 0, 1.6, 0 });
-		AddObject(beachstand);
+		AddObject(beachstand);*/
 
 		// Boat
-		Object* boat = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Boat.fbx", dx11, defaultShader));
+	/*	Object* boat = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Boat.fbx", dx11, defaultShader));
 		boat->GetTransform().Translate(160, 8.0f, 30);
 		boat->GetTransform().SetRotation({ 0, 1.6, 0 });
-		AddObject(boat);
+		AddObject(boat);*/
 
 		// Rocks
-		Object* rocks = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Rocks.fbx", dx11, defaultShader));
-		rocks->GetTransform().Scale(1, 1, 1);
-		rocks->GetTransform().Translate(145, 7.5, 65);
-		AddObject(rocks);
+		//Object* rocks = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Rocks.fbx", dx11, defaultShader));
+		//rocks->GetTransform().Scale(1, 1, 1);
+		//rocks->GetTransform().Translate(145, 7.5, 65);
 		// FILIP FIX
 
 		////////////////////////// BOATS /////////////////////////////
-		Object* boat = AssimpHandler::loadFbxObject("Models/Boat.fbx", dx11, defaultShader);
+		Object* boat = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Boat.fbx", dx11, defaultShader));
 		boat->GetTransform().Translate(205, 6.2f, 115);
 		boat->GetTransform().SetRotation({ 0.1, 1.7, -0.15});
 		AddObject(boat);
 
 		////////////////////////// STANDS /////////////////////////////
 		// Left beach stand
-		Object* beachstand = AssimpHandler::loadFbxObject("Models/Beachstand.fbx", dx11, defaultShader);
+		Object* beachstand = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Beachstand.fbx", dx11, defaultShader));
 		Object* beachstands[3]; 
 		for(int i = 0; i < 3; i++)
 			beachstands[i] = new Object(*beachstand);
@@ -457,14 +455,15 @@ void DevScene::CreateSceneObjects()
 
 		////////////////////////// PARASOLLS /////////////////////////////
 
-		Object* parasoll = AssimpHandler::loadFbxObject("Models/Umbrella_BlueRed.fbx", dx11, defaultShader);
-		Object* parasolls[7];
-		for (int i = 0; i < 7; i++)
+
 		// Benches left beachside
-		Object* bench = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Bench.fbx", dx11, defaultShader));
+		/*Object* bencha = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Bench.fbx", dx11, defaultShader));
 		Object* benches[2];
+
 		for (int i = 0; i < 2; i++)
-			benches[i] = new Object(*bench);
+		{
+			benches[i] = new Object(*bencha);
+		}
 				
 		benches[0]->GetTransform().Translate(29, 7, 50);
 		benches[0]->GetTransform().SetRotation({ 0,2,0 });
@@ -472,12 +471,14 @@ void DevScene::CreateSceneObjects()
 				
 		benches[1]->GetTransform().Translate(25, 7, 95);
 		benches[1]->GetTransform().SetRotation({ 0,0.9,0 });
-		AddObject(benches[1]);
+		AddObject(benches[1]);*/
 
 		// Parasoll left beachside
+
 		Object* parasoll = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Umbrella_BlueRed.fbx", dx11, defaultShader));
-		Object* parasolls[2];
-		for (int i = 0; i < 2; i++)
+		Object* parasolls[7];
+
+		for (int i = 0; i < 7; i++)
 			parasolls[i] = new Object(*parasoll);
 
 		parasolls[0]->GetTransform().Translate(192.5, 5.3, 40);
@@ -503,7 +504,7 @@ void DevScene::CreateSceneObjects()
 
 		////////////////////////// SURFBOARDS /////////////////////////////
 
-		Object* SurfboardBlue = AssimpHandler::loadFbxObject("Models/SurfboardBlue.fbx", dx11, defaultShader);
+		Object* SurfboardBlue = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/SurfboardBlue.fbx", dx11, defaultShader));
 		Object* SurfboardsBlue[2];
 		for (int i = 0; i < 2; i++)
 			SurfboardsBlue[i] = new Object(*SurfboardBlue);
@@ -514,7 +515,7 @@ void DevScene::CreateSceneObjects()
 		for (int i = 0; i < 2; i++)
 			AddObject(SurfboardsBlue[i]);
 		
-		Object* SurfboardOrange = AssimpHandler::loadFbxObject("Models/SurfboardOrange.fbx", dx11, defaultShader);
+		Object* SurfboardOrange = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/SurfboardOrange.fbx", dx11, defaultShader));
 		Object* SurfboardsOrange[2];
 		for (int i = 0; i < 2; i++)
 			SurfboardsOrange[i] = new Object(*SurfboardOrange);
@@ -525,7 +526,7 @@ void DevScene::CreateSceneObjects()
 		for (int i = 0; i < 2; i++)
 			AddObject(SurfboardsOrange[i]);
 
-		Object* SurfboardTrippy = AssimpHandler::loadFbxObject("Models/SurfboardTrippy.fbx", dx11, defaultShader);
+		Object* SurfboardTrippy = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/SurfboardTrippy.fbx", dx11, defaultShader));
 
 		SurfboardTrippy->GetTransform().Translate(130, 7, 37);
 		AddObject(SurfboardTrippy);
@@ -572,7 +573,7 @@ void DevScene::CreateSceneObjects()
 
 		////////////////////////// BEACHBALLS /////////////////////////////
 
-		Object* bush = AssimpHandler::loadFbxObject("Models/Bush.fbx", dx11, defaultShader);
+		Object* bush = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Bush.fbx", dx11, defaultShader));
 		Object* bushes[15];
 		for (int i = 0; i < 15; i++)
 			bushes[i] = new Object(*bush);
@@ -654,14 +655,14 @@ void DevScene::CreateSceneObjects()
 
 		////////////////////////// Fireplace stuff /////////////////////////////
 		
-		Object* restplace = AssimpHandler::loadFbxObject("Models/Bungalow.fbx", dx11, defaultShader);
+		Object* restplace = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Bungalow.fbx", dx11, defaultShader));
 		restplace->GetTransform().Translate(107, 7.5, 140);
 		restplace->GetTransform().SetRotation({ 0, -1.5, 0 });
 		AddObject(restplace);
 
 
 		// Benches left beachside
-		Object* bench = AssimpHandler::loadFbxObject("Models/Bench.fbx", dx11, defaultShader);
+		Object* bench = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Bench.fbx", dx11, defaultShader));
 		Object* benches[4];
 		for (int i = 0; i < 4; i++)
 			benches[i] = new Object(*bench);
@@ -685,7 +686,7 @@ void DevScene::CreateSceneObjects()
 
 		
 		// Palms left beach side 
-		Object* palm = AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader);
+		Object* palm = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader));
 		Object* palms[22];
 		for (int i = 0; i < 22; i++)
 			palms[i] = new Object(*palm);

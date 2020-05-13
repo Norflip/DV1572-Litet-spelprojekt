@@ -22,6 +22,8 @@ namespace AssimpHandler
 	{
 		Mesh* mesh;
 		Material* material;
+
+		AssimpData() : mesh(nullptr), material(nullptr) {}
 	};
 
 	inline Mesh* loadMesh(const aiScene* scene, ID3D11Device* device)

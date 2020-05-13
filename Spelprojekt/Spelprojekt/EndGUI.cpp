@@ -67,10 +67,10 @@ void EndGUI::LoadStart()
     GUISprite* quit = new GUISprite(dx11, "Sprites/quit.png", 0.0f, 0.0f);
     GUISprite* menu = new GUISprite(dx11, "Sprites/backtointro.png", 0.0f, 0.0f);
 
-    winLose->SetPosition((currentScene->getWindow().GetWidth() / 2.0f) - (winLose->GetTextureWidth() / 2.0f), 100.0f);
-    play->SetPosition((currentScene->getWindow().GetWidth() / 2.0f) - (play->GetTextureWidth() / 2.0f), 250.0f);
-    menu->SetPosition((currentScene->getWindow().GetWidth() / 2.0f) - (menu->GetTextureWidth() / 2.0f), 400.0f);
-    quit->SetPosition((currentScene->getWindow().GetWidth() / 2.0f) - (quit->GetTextureWidth() / 2.0f), 550.0f);
+    winLose->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (winLose->GetTextureWidth() / 2.0f), 100.0f);
+    play->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (play->GetTextureWidth() / 2.0f), 250.0f);
+    menu->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (menu->GetTextureWidth() / 2.0f), 400.0f);
+    quit->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (quit->GetTextureWidth() / 2.0f), 550.0f);
 
     gui->AddGUIObject(winLose, "winorlose");
     gui->AddGUIObject(play, "restart");
@@ -102,8 +102,8 @@ void EndGUI::LoadQuit()
     GUISprite* imsure = new GUISprite(dx11, "Sprites/imsure.png", 0.0f, 0.0f);
     GUISprite* backtoendscreen = new GUISprite(dx11, "Sprites/backtointro.png", 0.0f, 0.0f);
 
-    imsure->SetPosition((currentScene->getWindow().GetWidth() / 2.0f) - (imsure->GetTextureWidth() / 2.0f), 200.0f);
-    backtoendscreen->SetPosition((currentScene->getWindow().GetWidth() / 2.0f) - (backtoendscreen->GetTextureWidth() / 2.0f), 400.0f);
+    imsure->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (imsure->GetTextureWidth() / 2.0f), 200.0f);
+    backtoendscreen->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (backtoendscreen->GetTextureWidth() / 2.0f), 400.0f);
 
     gui->AddGUIObject(imsure, "imsure");
     gui->AddGUIObject(backtoendscreen, "backtoendscreen");

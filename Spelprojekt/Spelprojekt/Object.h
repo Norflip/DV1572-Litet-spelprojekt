@@ -16,8 +16,8 @@ enum class ObjectLayer
 	Enemy = 1 << 1,
 	Projectile = 1 << 2,
 	Player = 1 << 3,
-	Pickups = 1 << 4,
-	Any = Enviroment | Enemy | Projectile | Player | Pickups
+	Pickup = 1 << 4,
+	Any = Enviroment | Enemy | Projectile | Player | Pickup
 };
 
 class Object

@@ -4,8 +4,9 @@
 // remove scene
 // AssimpData instead of mesh + material
 //SpawnObjects::SpawnObjects(Entities* entities, Terrain* terrain, AssimpHandler::AssimpData modelData, Player* player, DX11Handler& dx11)
+// ska ej vara ett objekt
 
-SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player) : Object(mesh, material), dx11(dx11)
+SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player) : Object(ObjectLayer::None, mesh, material), dx11(dx11)
 {
 	this->dx11 = dx11;
 	this->scene = scene;
@@ -32,7 +33,9 @@ void SpawnObjects::SetPlayer(Player* player)
 
 void SpawnObjects::SetEnemy()
 {
-	testEnemy = new Enemy(mesh, material, terrain, dx11);
+	AssimpHandler::AssimpData enemyModel = AssimpHandler::loadFbxObject("Models/IcecreamEnemy.fbx", dx11, material->GetShader());
+
+	testEnemy = new Enemy(enemyModel, terrain, dx11);
 	testEnemy->GetTransform().Translate(30, 7, 35 + spawnOffset);
 	testEnemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	testEnemy->SetTarget(player);
