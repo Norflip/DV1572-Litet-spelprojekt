@@ -268,8 +268,8 @@ void DevScene::CreateSceneObjects()
 		Shader* defaultShader = new Shader();
 		defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
 		defaultShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
-
 		
+
 		////////////////////////// MOUNTAINS /////////////////////////////
 		Object* mountain = AssimpHandler::loadFbxObject("Models/Mountain.fbx", dx11, defaultShader);
 		Object* mountains[2];
@@ -278,12 +278,13 @@ void DevScene::CreateSceneObjects()
 
 		// Middle mountain
 		mountains[0]->GetTransform().Translate(100, 6, 110);
-		AddObject(mountains[0]);
 
 		// Top left mountain
 		mountains[1]->GetTransform().Translate(30, 4, 170);
 		mountains[1]->GetTransform().Rotate(0, 180, 0);
-		AddObject(mountains[1]);
+
+		for (int i = 0; i < 2; i++)
+			AddObject(mountains[i]);
 
 		////////////////////////// ROCKS /////////////////////////////
 		Object* rocks = AssimpHandler::loadFbxObject("Models/Rocks.fbx", dx11, defaultShader);
@@ -305,150 +306,145 @@ void DevScene::CreateSceneObjects()
 			beachstands[i] = new Object(*beachstand);
 
 		beachstands[0]->GetTransform().Translate(135, 7, 48);
-		AddObject(beachstands[0]);
 
 		beachstands[1]->GetTransform().Translate(125, 7, 48);
 		beachstands[1]->GetTransform().SetRotation({ -0.1, -0.1, 0 });
-		AddObject(beachstands[1]);
 
 		beachstands[2]->GetTransform().Translate(60, 7, 55);
 		beachstands[2]->GetTransform().SetRotation({ -0.1, 0.7, 0 });
-		AddObject(beachstands[2]);
 		
+		for (int i = 0; i < 3; i++)
+			AddObject(beachstands[i]);
 
 		////////////////////////// SUNCHAIR /////////////////////////////
 		
 		// Chairs Left beachside
 		Object* chair = AssimpHandler::loadFbxObject("Models/Sunchair.fbx", dx11, defaultShader);
-		Object* sunChairs[18];
-		for (int i = 0; i < 18; i++)
+		Object* sunChairs[21];
+		for (int i = 0; i < 21; i++)
 			sunChairs[i] = new Object(*chair);
 				
 		sunChairs[0]->GetTransform().Translate(200, 6.5, 40);
 		sunChairs[0]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[0]);
 				
 		sunChairs[1]->GetTransform().Translate(195, 6.5, 39.8);
 		sunChairs[1]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[1]);
 		
 		sunChairs[2]->GetTransform().Translate(190, 6.5, 39.6);
 		sunChairs[2]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[2]);
-				
 		
 		sunChairs[3]->GetTransform().Translate(175, 6.5, 39.6);
 		sunChairs[3]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[3]);
 		
 		sunChairs[4]->GetTransform().Translate(170, 6.5, 39.4);
 		sunChairs[4]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[4]);
 
 		sunChairs[5]->GetTransform().Translate(165, 6.5, 39.2);
 		sunChairs[5]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[5]);
-
 		
 		sunChairs[6]->GetTransform().Translate(150, 6.5, 39.2);
 		sunChairs[6]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[6]);
 
 		sunChairs[7]->GetTransform().Translate(145, 6.5, 39.2);
 		sunChairs[7]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[7]);
 
 		sunChairs[8]->GetTransform().Translate(140, 6.5, 39.2);
 		sunChairs[8]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[8]);
-
 
 		sunChairs[9]->GetTransform().Translate(120, 6.5, 38);
 		sunChairs[9]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[9]);
 
 		sunChairs[10]->GetTransform().Translate(115, 6.5, 37.6);
 		sunChairs[10]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[10]);
 
 		sunChairs[11]->GetTransform().Translate(110, 6.5, 37.4);
 		sunChairs[11]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[11]);
-
 
 		sunChairs[12]->GetTransform().Translate(90, 6.5, 34);
 		sunChairs[12]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[12]);
 
 		sunChairs[13]->GetTransform().Translate(85, 6.5, 34);
 		sunChairs[13]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[13]);
 
 		sunChairs[14]->GetTransform().Translate(80, 6.5, 34);
 		sunChairs[14]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		AddObject(sunChairs[14]);
-
 
 		sunChairs[15]->GetTransform().Translate(35, 6.5, 57);
 		sunChairs[15]->GetTransform().Rotate(-0.1f, -5.7, 0);
-		AddObject(sunChairs[15]);
 
 		sunChairs[16]->GetTransform().Translate(40, 6.5, 55);
 		sunChairs[16]->GetTransform().Rotate(-0.1f, -5.5, 0);
-		AddObject(sunChairs[16]);
 
 		sunChairs[17]->GetTransform().Translate(42, 6.5, 51);
 		sunChairs[17]->GetTransform().Rotate(-0.1f, -5.3, 0);
-		AddObject(sunChairs[17]);
 
-		//this->controller->SetFollow(&sunChairs[0]->GetTransform(), { 0, 10.0f, -10.0f });
+		sunChairs[18]->GetTransform().Translate(58, 6.5, 39);
+		sunChairs[18]->GetTransform().Rotate(-0.1f, -5.7, 0);
 
+		sunChairs[19]->GetTransform().Translate(62, 6.5, 37);
+		sunChairs[19]->GetTransform().Rotate(-0.1f, -5.7, 0);
+
+		sunChairs[20]->GetTransform().Translate(66, 6.5, 35);
+		sunChairs[20]->GetTransform().Rotate(-0.1f, -5.7, 0);
+
+		for (int i = 0; i < 21; i++)
+			AddObject(sunChairs[i]);
 
 		////////////////////////// PARASOLLS /////////////////////////////
 
 		Object* parasoll = AssimpHandler::loadFbxObject("Models/Umbrella_BlueRed.fbx", dx11, defaultShader);
-		Object* parasolls[6];
-		for (int i = 0; i < 6; i++)
+		Object* parasolls[7];
+		for (int i = 0; i < 7; i++)
 			parasolls[i] = new Object(*parasoll);
 
 		parasolls[0]->GetTransform().Translate(192.5, 5.3, 40);
-		AddObject(parasolls[0]);
 
 		parasolls[1]->GetTransform().Translate(172.5, 5.4, 40);
-		AddObject(parasolls[1]);
 
 		parasolls[2]->GetTransform().Translate(147.5, 5.5, 40);
-		AddObject(parasolls[2]);
 
 		parasolls[3]->GetTransform().Translate(117.5, 5.6, 38);
 		parasolls[3]->GetTransform().Rotate(-0.05, 0, 0);
-		AddObject(parasolls[3]);
 
 		parasolls[4]->GetTransform().Translate(87.5, 5.6, 35);
 		parasolls[4]->GetTransform().Rotate(-0.05, 0, 0);
-		AddObject(parasolls[4]);
 
 		parasolls[5]->GetTransform().Translate(45, 5.6, 55);
 		parasolls[5]->GetTransform().Rotate(-0.05, 0, 0);
-		AddObject(parasolls[5]);
 
+		parasolls[6]->GetTransform().Translate(65, 6, 40);
+		parasolls[6]->GetTransform().Rotate(-0.05, 0, 0);
+
+		for (int i = 0; i < 7; i++)
+			AddObject(parasolls[i]);
 
 		////////////////////////// SURFBOARDS /////////////////////////////
 
 		Object* SurfboardBlue = AssimpHandler::loadFbxObject("Models/SurfboardBlue.fbx", dx11, defaultShader);
+		Object* SurfboardsBlue[2];
+		for (int i = 0; i < 2; i++)
+			SurfboardsBlue[i] = new Object(*SurfboardBlue);
+
+		SurfboardsBlue[0]->GetTransform().Translate(130, 7, 35);
+		SurfboardsBlue[1]->GetTransform().Translate(168, 7.3, 210);
+
+		for (int i = 0; i < 2; i++)
+			AddObject(SurfboardsBlue[i]);
+		
 		Object* SurfboardOrange = AssimpHandler::loadFbxObject("Models/SurfboardOrange.fbx", dx11, defaultShader);
+		Object* SurfboardsOrange[2];
+		for (int i = 0; i < 2; i++)
+			SurfboardsOrange[i] = new Object(*SurfboardOrange);
+
+		SurfboardsOrange[0]->GetTransform().Translate(128, 7, 33);
+		SurfboardsOrange[1]->GetTransform().Translate(168, 7.3, 205);
+
+		for (int i = 0; i < 2; i++)
+			AddObject(SurfboardsOrange[i]);
+
 		Object* SurfboardTrippy = AssimpHandler::loadFbxObject("Models/SurfboardTrippy.fbx", dx11, defaultShader);
 
-		SurfboardBlue->GetTransform().Translate(130, 7, 35);
-		SurfboardBlue->GetTransform().SetRotation({ 0, 0, 0 });
-		AddObject(SurfboardBlue);
-
-		SurfboardOrange->GetTransform().Translate(128, 7, 33);
-		SurfboardOrange->GetTransform().SetRotation({ 0, 0, 0 });
-		AddObject(SurfboardOrange);
-
 		SurfboardTrippy->GetTransform().Translate(130, 7, 37);
-		SurfboardTrippy->GetTransform().SetRotation({ 0, 0, 0 });
 		AddObject(SurfboardTrippy);
 
 		////////////////////////// BEACHBALLS /////////////////////////////
@@ -461,29 +457,32 @@ void DevScene::CreateSceneObjects()
 				
 		redballs[0]->GetTransform().Translate(100, 7, 38);
 		redballs[0]->GetTransform().Rotate(0.2f, -5, 0);
-		AddObject(redballs[0]);
 				
 		redballs[1]->GetTransform().Translate(160, 7, 190);
 		redballs[1]->GetTransform().Rotate(0.2f, -5, 0);
-		AddObject(redballs[1]);
 
 		redballs[2]->GetTransform().Translate(35, 6, 45);
 		redballs[2]->GetTransform().Rotate(0.2f, -5, 0);
-		AddObject(redballs[2]);
+
+		for (int i = 0; i < 3; i++)
+			AddObject(redballs[i]);
 
 		Object* blueball = AssimpHandler::loadFbxObject("Models/Beachball_Blue.fbx", dx11, defaultShader);
-		Object* blueballs[2];
-		for (int i = 0; i < 2; i++)
+		Object* blueballs[3];
+		for (int i = 0; i < 3; i++)
 			blueballs[i] = new Object(*blueball);
 				
 		blueballs[0]->GetTransform().Translate(105,6.5, 35);
 		blueballs[0]->GetTransform().Rotate(0.2f, -5, 0);
-		AddObject(blueballs[0]);
 				
 		blueballs[1]->GetTransform().Translate(155, 6.5, 195);
 		blueballs[1]->GetTransform().Rotate(0.2f, -5, 0);
-		AddObject(blueballs[1]);
 
+		blueballs[2]->GetTransform().Translate(40, 6.2, 40);
+		blueballs[2]->GetTransform().Rotate(0.2f, -5, 0);
+
+		for(int i= 0 ; i < 3; i++)
+			AddObject(blueballs[i]);
 
 		////////////////////////// BEACHBALLS /////////////////////////////
 
@@ -495,59 +494,59 @@ void DevScene::CreateSceneObjects()
 		// 2 Stands bottom beach //
 		bushes[0]->GetTransform().Translate(142, 7, 50);
 		bushes[0]->GetTransform().Rotate(0.05f, -5, 0);
-		AddObject(bushes[0]);
 
 
 
 		bushes[1]->GetTransform().Translate(120, 7, 47);
 		bushes[1]->GetTransform().Rotate(0.05f, -5, 0);
-		AddObject(bushes[1]);
 		////
 
 		// Stand bottom beach left side
 		bushes[2]->GetTransform().Translate(75, 6.5, 43);
 		bushes[2]->GetTransform().Rotate(0.05f, -5, 0);
-		AddObject(bushes[2]);
 
 		bushes[3]->GetTransform().Translate(70, 6.5, 45);
 		bushes[3]->GetTransform().Rotate(0.05f, -5, 0);
-		AddObject(bushes[3]);
 		////
 
 		// By restplace //
 		bushes[4]->GetTransform().Translate(112, 7, 132);
 		bushes[4]->GetTransform().Rotate(0.05f, -5, 0);
-		AddObject(bushes[4]);
 
 		bushes[5]->GetTransform().Translate(115, 8, 148);
 		bushes[5]->GetTransform().Rotate(0.05f, -5, 0);
-		AddObject(bushes[5]);
 		////
 
 
 		// By rocks //
 		bushes[6]->GetTransform().Translate(195, 8, 143);
 		bushes[6]->GetTransform().Rotate(0.05f, -5, 0);
-		AddObject(bushes[6]);
 
 		bushes[7]->GetTransform().Translate(200, 8, 152);
 		bushes[7]->GetTransform().Rotate(0.05f, -5, 0);
-		AddObject(bushes[7]);
 
 		// Bottom rocks by beach
 		bushes[8]->GetTransform().Translate(190, 7, 120);
 		bushes[8]->GetTransform().Rotate(0.05f, -5, 0);
-		AddObject(bushes[8]);
 
 		bushes[9]->GetTransform().Translate(195, 7, 120);
 		bushes[9]->GetTransform().Rotate(0.05f, -5, 0);
-		AddObject(bushes[9]);
 		////
 
 		// By benches - by rocks
 		bushes[10]->GetTransform().Translate(165, 7+0.1, 122);
 		bushes[10]->GetTransform().Rotate(0.05f, -5, 0);
-		AddObject(bushes[10]);
+		////
+
+		// Top beach
+		bushes[11]->GetTransform().Translate(143, 7.5, 188);
+		bushes[11]->GetTransform().Rotate(0.05f, -5, 0);
+
+		bushes[12]->GetTransform().Translate(163, 7.5, 185);
+		bushes[12]->GetTransform().Rotate(0.05f, -5, 0);
+
+		for (int i = 0; i < 13; i++)
+			AddObject(bushes[i]);
 
 		// By benches - by rocks
 		bushes[11]->GetTransform().Translate(165, 7 + 0.3, 122);
@@ -577,18 +576,24 @@ void DevScene::CreateSceneObjects()
 
 		// Benches left beachside
 		Object* bench = AssimpHandler::loadFbxObject("Models/Bench.fbx", dx11, defaultShader);
-		Object* benches[2];
-		for (int i = 0; i < 2; i++)
+		Object* benches[4];
+		for (int i = 0; i < 4; i++)
 			benches[i] = new Object(*bench);
 				
 		benches[0]->GetTransform().Translate(170, 7, 118);
 		benches[0]->GetTransform().SetRotation({ 0, 0.4, 0 });
-		AddObject(benches[0]);
 				
 		benches[1]->GetTransform().Translate(157, 7, 122);
 		benches[1]->GetTransform().SetRotation({ 0, 0.3, 0 });
-		AddObject(benches[1]);
 
+		benches[2]->GetTransform().Translate(140, 7, 195);
+		benches[2]->GetTransform().SetRotation({ 0, -2.5, 0 });
+
+		benches[3]->GetTransform().Translate(170, 7, 190);
+		benches[3]->GetTransform().SetRotation({ 0, 2.5, 0 });
+
+		for (int i = 0; i < 4; i++)
+			AddObject(benches[i]);
 
 		////////////////////////// PALMS /////////////////////////////
 
@@ -601,78 +606,42 @@ void DevScene::CreateSceneObjects()
 
 		// Bottom beach //
 		palms[0]->GetTransform().Translate(200, 7.8, 60);
-		AddObject(palms[0]);
-
 		palms[1]->GetTransform().Translate(180, 7.8, 75);
-		AddObject(palms[1]);
-
 		palms[2]->GetTransform().Translate(160, 7.8, 60);
-		AddObject(palms[2]);
-
 		palms[3]->GetTransform().Translate(145, 7.8, 73);
-		AddObject(palms[3]);
-
 		palms[4]->GetTransform().Translate(125, 7.8, 60);
-		AddObject(palms[4]);
-
 		palms[5]->GetTransform().Translate(105, 7.8, 75);
-		AddObject(palms[5]);
 		/////
 
 		// bottom beach left
 		palms[6]->GetTransform().Translate(85, 7.8, 58);
-		AddObject(palms[6]);
-
 		palms[7]->GetTransform().Translate(83, 7.8, 82);
-		AddObject(palms[7]);
-
 		palms[8]->GetTransform().Translate(60, 8, 90);
-		AddObject(palms[8]);
-
 		palms[9]->GetTransform().Translate(60, 7.8, 65);
-		AddObject(palms[9]);
 		////
 
 		// left of middle rock
 		palms[10]->GetTransform().Translate(55, 7.8, 115);
-		AddObject(palms[10]);
-
 		palms[11]->GetTransform().Translate(38, 7.8, 95);
-		AddObject(palms[11]);
-
 		palms[12]->GetTransform().Translate(45, 7.8, 140);
-		AddObject(palms[12]);
 		////
 
 		// top rock
 		palms[13]->GetTransform().Translate(70, 7.8, 165);
-		AddObject(palms[13]);
-
 		palms[14]->GetTransform().Translate(80, 7.8, 140);
-		AddObject(palms[14]);
-
 		palms[15]->GetTransform().Translate(105, 7.8, 165);
-		AddObject(palms[15]);
-
 		palms[16]->GetTransform().Translate(90, 8, 195);
-		AddObject(palms[16]);
-
 		palms[17]->GetTransform().Translate(115, 7.8, 200);
-		AddObject(palms[17]);
 		////
 
 		// Left by rocks
 		palms[18]->GetTransform().Translate(145, 8, 175);
-		AddObject(palms[18]);
-
 		palms[19]->GetTransform().Translate(170, 7.8, 160);
-		AddObject(palms[19]);
-
 		palms[20]->GetTransform().Translate(150, 7.8, 145);
-		AddObject(palms[20]);
-
 		palms[21]->GetTransform().Translate(200, 7.8, 180);
-		AddObject(palms[21]);
+
+		for (int i = 0; i < 22; i++)
+			AddObject(palms[i]);
 
 	}
 }
