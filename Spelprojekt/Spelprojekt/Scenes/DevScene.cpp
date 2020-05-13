@@ -654,8 +654,6 @@ void DevScene::CreateSceneObjects()
 		palms[21]->GetTransform().Translate(200, 7.8, 180);
 		AddObject(palms[21]);
 
-
-		
 	}
 }
 
