@@ -34,6 +34,8 @@ Projectile::Projectile(const Projectile& other)
 	this->weaponSound = other.weaponSound;
 }
 
+
+
 Projectile::~Projectile()
 {
 	
