@@ -14,7 +14,7 @@ class IntroScene : public Scene
 {
 
 public:
-	IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool &exitGame, SoundHandler* sound);
+	IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool &exitGame, SoundHandler* sound, SoundHandler* soundeffect);
 	virtual ~IntroScene();
 
 	void Load() override;
@@ -33,7 +33,10 @@ private:
 	IntroGUI* introGUI;
 	Input* input;
 	std::vector<Scene*>& scenes;
+
+	// Music and sounds
 	SoundHandler* mainmenuMusic;
+	SoundHandler* soundeffects;
 
 	float volumeScale = 0.1f; 
 };

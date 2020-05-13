@@ -18,6 +18,7 @@ public:
 	int GetTextureHeight() { return this->height; };
 	int GetTextureWidth() { return this->width; };
 	void HealthBar(float maxHealth, float currentHealth);	// Update from player/enemies class current health
+	void VolumeBar(float maxVol, float currentVol);	
 
 private:
 	DX11Handler* dxHandler;

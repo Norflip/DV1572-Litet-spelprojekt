@@ -1,6 +1,6 @@
 #include "Enemy.h"
 
-Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler& dx11)
+Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler& dx11, SoundHandler* soundeffect)
 	: terrain(terrain), Object(ObjectLayer::Enemy, modelData.mesh, modelData.material)
 {
 
@@ -14,7 +14,7 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 
-	this->hitSound = new SoundHandler();
+	this->hitSound = soundeffect;
 	this->hitSound->LoadSound("Hit", "SoundEffects/Kick.wav");
 }
 
@@ -28,7 +28,7 @@ Enemy::Enemy(const Enemy& other)
 	this->movementspeed = other.movementspeed;
 	this->currentPosition = other.currentPosition;
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
-	this->hitSound = new SoundHandler();
+	this->hitSound = other.hitSound;
 	this->hitSound->LoadSound("Hit", "SoundEffects/Kick.wav");
 }
 

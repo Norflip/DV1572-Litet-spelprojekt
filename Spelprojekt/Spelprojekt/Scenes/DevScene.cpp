@@ -1,6 +1,6 @@
 #include "DevScene.h"
 
-DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, SoundHandler* sound) : Scene("DevScene", renderer, dx11, window), scenes(scenes)
+DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, SoundHandler* sound, SoundHandler* soundeffect) : Scene("DevScene", renderer, dx11, window), scenes(scenes)
 {
 	//----- GUI SHIET |  Set gui last |
 
@@ -22,6 +22,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 
 	// Soundhandler
 	this->levelMusic = sound;	
+	this->soundeffects = soundeffect;
 }
 
 DevScene::~DevScene()
@@ -77,7 +78,6 @@ void DevScene::Load()
 	Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	//Texture* grass_texture = Texture::CreateTexture("Textures/Cartoon_Grass_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	//Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Cartoon_Normal_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-
 	
 	Texture* sand_texture = Texture::CreateTexture("Textures/Sand_Color_Test.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);	
 	Texture* sand_normal = Texture::CreateTexture("Textures/Sand_Normal_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
@@ -90,11 +90,7 @@ void DevScene::Load()
 	terrainMat->SetTexture(3, sand_normal, PIXEL_TYPE::PIXEL);
 	terrainMat->GetMaterialData().hasNormalTexture = true;
 
-	/*Material* test_material = new Material(terrainShader, dx11);
-	Texture* m_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	test_material->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
-	test_material->GetMaterialData().hasNormalTexture = false;*/
-
+	// GROUNDH MESH
 	ground.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
 	Object* terrainObject = new Object(ObjectLayer::None, ground.GetMesh(), terrainMat);
 	AddObject(terrainObject);
@@ -131,6 +127,7 @@ void DevScene::Load()
 
 	// ------ PLAYER
 	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, toonShader);
+
 	this->player = new Player(playerModel, controller, &ground, gui, dx11, static_cast<Scene*>(this));
 	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
@@ -139,7 +136,7 @@ void DevScene::Load()
 	AddObject(this->player);
 
 		
-	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
+	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, soundeffects);
 	this->spawnObjects->SetEnemy();
 	AddObject(this->spawnObjects);
 	
@@ -148,7 +145,7 @@ void DevScene::Load()
 	AssimpHandler::AssimpData coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	// Coconuts
 	for (int i = 0; i < 5; i++)
-		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);	
+		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);	
 	coconuts[0]->GetTransform().Translate(35 + 22.5, 10, 25 + 22.5);
 	coconuts[1]->GetTransform().Translate(40, 10, 25);
 	coconuts[2]->GetTransform().Translate(45, 10, 25);
@@ -162,7 +159,7 @@ void DevScene::Load()
 	AssimpHandler::AssimpData slev = AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, defaultShader);			
 	// Spoon
 	for(int i = 0; i < 5; i++)
-		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);	
+		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);	
 	spoons[0]->GetTransform().Translate(35, 10, 30);
 	spoons[1]->GetTransform().Translate(40, 10, 30);
 	spoons[2]->GetTransform().Translate(45, 10, 30);
@@ -199,7 +196,7 @@ void DevScene::Load()
 	// Play scenemusic
 	this->levelMusic->StopSound();
 	this->levelMusic->LoadSound("Levelsound", "SoundEffects/Ben.wav");
-	//levelMusic->PlaySound("Levelsound", levelMusic->GetGlobalVolume());
+	levelMusic->PlaySound("Levelsound", levelMusic->GetGlobalVolume());
 }
 
 void DevScene::Unload()

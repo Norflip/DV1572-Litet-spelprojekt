@@ -11,14 +11,14 @@ class Player;
 class Enemy : public Object
 {
 	public: 
-		Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&);
+		Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&, SoundHandler* soundeffect);
 		Enemy(const Enemy& other);
 		~Enemy();
 
 		void Update(const float& deltaTime) override;
 		void SetHeight(float height) { this->enemyHeight = height; };
 		void SetTarget(Player* player);
-		void HitSound() { this->hitSound->PlaySound("Hit", 0.1f); }
+		void HitSound() { this->hitSound->PlaySound("Hit", this->hitSound->GetGlobalVolume()); }
 
 		Object* GetFBXModel();
 	private:

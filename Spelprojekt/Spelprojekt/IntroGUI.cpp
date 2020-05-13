@@ -1,11 +1,12 @@
 #include "IntroGUI.h"
 
-IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scene, SoundHandler* sound) : dx11(dx11)
+IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scene, SoundHandler* sound, SoundHandler* soundeffect) : dx11(dx11)
 {
     this->currentScene = scene;
     this->gui = gui;
     this->input = cameraController->getInput();
     this->mainSound = sound;   
+    this->soundeffects = soundeffect;
 }
 
 IntroGUI::~IntroGUI()
@@ -76,33 +77,66 @@ void IntroGUI::LoadStart()
 
 void IntroGUI::Options()
 {    
-    GUISprite* lowVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("leftvolume"));
-    GUISprite* volumeBar = static_cast<GUISprite*>(gui->GetGUIList()->at("VolumeBar"));
 
-    // Set current volume
-    currentVolume = mainSound->GetGlobalVolume();
-    volumeBar->HealthBar(maxVolume, currentVolume);
+    // Set current volume for sounds
+    GUISprite* soundsVolBar = static_cast<GUISprite*>(gui->GetGUIList()->at("SoundsBar"));
+    currentSoundVolume = soundeffects->GetGlobalVolume();
+    soundsVolBar->VolumeBar(maxVolume, currentSoundVolume);
 
-    if (lowVolume->Clicked(input))
+    GUISprite* lowSoundVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("leftsoundvolume"));
+    if (lowSoundVolume->Clicked(input))
+    {
+        if (soundeffects->GetGlobalVolume() > 0.0f) {
+            currentSoundVolume = soundeffects->GetGlobalVolume();
+            currentSoundVolume -= volumeScale;
+            this->soundeffects->SetGlobalVolume(currentSoundVolume);
+            soundsVolBar->VolumeBar(maxVolume, currentSoundVolume);
+        }
+    }
+    GUISprite* highSoundVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightsoundvolume"));
+    if (highSoundVolume->Clicked(input))
+    {
+        if (soundeffects->GetGlobalVolume() < 1.0f)
+        {
+            currentSoundVolume = soundeffects->GetGlobalVolume();
+            currentSoundVolume += volumeScale;
+            this->soundeffects->SetGlobalVolume(currentSoundVolume);
+            soundsVolBar->VolumeBar(maxVolume, currentSoundVolume);
+        }
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    // Set current volume for music
+    GUISprite* musicVolBar = static_cast<GUISprite*>(gui->GetGUIList()->at("MusicBar"));    
+    currentMusicVolume = mainSound->GetGlobalVolume();
+    musicVolBar->VolumeBar(maxVolume, currentMusicVolume);
+
+    GUISprite* lowMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("leftmusicvolume"));
+    if (lowMusicVolume->Clicked(input))
     {
         if (mainSound->GetGlobalVolume() > 0.0f) {
-            currentVolume = mainSound->GetGlobalVolume();
-            currentVolume -= volumeScale;
-            this->mainSound->SetGlobalVolume(currentVolume);
-            volumeBar->HealthBar(maxVolume, currentVolume);
+            currentMusicVolume = mainSound->GetGlobalVolume();
+            currentMusicVolume -= volumeScale;
+            this->mainSound->SetGlobalVolume(currentMusicVolume);
+            musicVolBar->VolumeBar(maxVolume, currentMusicVolume);
         }      
     }
-    GUISprite* highVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightvolume"));
-    if (highVolume->Clicked(input))
+    GUISprite* highMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightmusicvolume"));
+    if (highMusicVolume->Clicked(input))
     {
         if (mainSound->GetGlobalVolume() < 1.0f)
         {
-            currentVolume = mainSound->GetGlobalVolume();
-            currentVolume += volumeScale;
-            this->mainSound->SetGlobalVolume(currentVolume);
-            volumeBar->HealthBar(maxVolume, currentVolume);
+            currentMusicVolume = mainSound->GetGlobalVolume();
+            currentMusicVolume += volumeScale;
+            this->mainSound->SetGlobalVolume(currentMusicVolume);
+            musicVolBar->VolumeBar(maxVolume, currentMusicVolume);
         }           
     }
+
+    //////////////////////////////////////////////////////////////
 
     GUISprite* backtointro = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
     if (backtointro->Clicked(input))
@@ -204,15 +238,22 @@ void IntroGUI::LoadOptions()
 {
     ClearGUI();
     
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/vol.png", 100.0f, 100.0f), "volume");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsync.png", 100.0f, 300.0f), "vsync");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/music.png", 100.0f, 50.0f), "musicvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/sounds.png", 100.0f, 200.0f), "soundsvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsync.png", 100.0f, 350.0f), "vsync");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower4.png", 555.0f, 110.0f), "leftvolume");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher4.png", 1045.0f, 110.0f), "rightvolume");
 
-    // frame and bar
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 650.0f, 110.0f), "VolumeBar");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 650.0f, 110.0f), "SoundFrame");
+    // frame and bar music
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 650.0f, 60.0f), "MusicBar");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower4.png", 555.0f, 60.0f), "leftmusicvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher4.png", 1045.0f, 60.0f), "rightmusicvolume");    
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 650.0f, 60.0f), "MusicFrame");
+
+    // frame and bar sounds
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 650.0f, 210.0f), "SoundsBar");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower4.png", 555.0f, 210.0f), "leftsoundvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher4.png", 1045.0f, 210.0f), "rightsoundvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 650.0f, 210.0f), "SoundFrame");
    
     first = false;
 }

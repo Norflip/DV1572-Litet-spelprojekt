@@ -1,6 +1,6 @@
 #include "Projectile.h"
 
-Projectile::Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData modelData, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation)
+Projectile::Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData modelData, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, SoundHandler* soundeffect)
 {	
 	GetTransform().SetPosition(position);
 	GetTransform().SetRotation(rotation);
@@ -15,7 +15,7 @@ Projectile::Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, As
 	this->attack = false;
 	this->damage = 10.0f;
 	this->WeaponTypeName = "Coconut";
-
+	this->weaponSound = soundeffect;
 	this->weaponSound->LoadSound("Explo", "SoundEffects/Explo1.wav");
 }
 
