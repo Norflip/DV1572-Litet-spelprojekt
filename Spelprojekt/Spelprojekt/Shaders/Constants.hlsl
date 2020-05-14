@@ -46,15 +46,20 @@ cbuffer MaterialBuffer : register (b2)
 }
 cbuffer GeometryCBuffer : register(b3)
 {
-	float3 position;
+	matrix view;
+
+	float3 midpoint;
 	float gcb_pad0;
 
+	float3 position;
+	float gcb_pad1;
+
 	float2 uv;
-	float2 gcb_pad1;
+	float2 gcb_pad2;
 
 	float3 normal;
-	float gcb_pad2;
+	float gcb_pad3;
 
 	float3 tangent;
-	float gcb_pad3;
+	float gcb_pad4;
 };

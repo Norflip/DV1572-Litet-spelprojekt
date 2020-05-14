@@ -54,15 +54,19 @@ struct MaterialData
 __declspec(align(16))
 struct GeometryCBuffer
 {
+	DirectX::XMMATRIX view;
 	DirectX::XMFLOAT3 position;
 	float pad0;
+
+	DirectX::XMFLOAT3 midpoint;
+	float pad1;
 
 	DirectX::XMFLOAT2 uv;
 	DirectX::XMFLOAT2 pad;
 
 	DirectX::XMFLOAT3 normal;
-	float pad1;
+	float pad2;
 
 	DirectX::XMFLOAT3 tangent;
-	float pad2;
+	float pad3;
 };
