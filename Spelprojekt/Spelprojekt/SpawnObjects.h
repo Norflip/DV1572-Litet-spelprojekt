@@ -10,7 +10,7 @@
 class SpawnObjects : public Object
 {
 	public:
-		SpawnObjects(DX11Handler&, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player);
+		SpawnObjects(DX11Handler&, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player, SoundHandler* soundeffect);
 		~SpawnObjects() {};
 		void Update(const float& deltaTime) override;
 		void SetPlayer(Player*);
@@ -33,6 +33,7 @@ class SpawnObjects : public Object
 		Enemy* testEnemy;
 		Enemy* enemy;
 		Object* object;
+		SoundHandler* soundeffects;
 
 		int nrOfEnemies = 0;
 		float spawnOffset = 0;

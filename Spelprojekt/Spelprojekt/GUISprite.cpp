@@ -125,3 +125,10 @@ void GUISprite::HealthBar(float maxHealth, float currentHealth)
 	this->scale = DirectX::XMVectorSet(xs, 1, 1, 1);
 }
 
+void GUISprite::VolumeBar(float maxVol, float currentVol)
+{
+	this->xScale = currentVol / maxVol;
+	float xs = this->xScale;
+	this->scale = DirectX::XMVectorSet(xs, 1, 1, 1);
+}
+

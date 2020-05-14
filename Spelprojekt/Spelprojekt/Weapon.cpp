@@ -10,13 +10,11 @@ Weapon::Weapon()
 	this->WeaponTypeName = "None";
 	this->damage = 0;
 	this->weaponSprite = nullptr;
-	this->weaponSound = new SoundHandler();
 	this->used = 0;
 }
 
 Weapon::~Weapon()
 {
-	this->weaponSound = nullptr;
 }
 
 //void Weapon::meleeAttack(float deltaTime)

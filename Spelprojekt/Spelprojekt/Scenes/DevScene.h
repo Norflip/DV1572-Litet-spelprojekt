@@ -28,7 +28,7 @@ class DevScene : public Scene
 
 public:
 	
-	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, SoundHandler*);
+	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, SoundHandler*, SoundHandler*);
 	virtual ~DevScene();
 
 	void Load() override;
@@ -41,19 +41,19 @@ public:
 
 	// level design
 	void CreateSceneObjects();
-	void AddSceneObject(Object*);
 
 	std::string getName() { return this->sceneName; };
 	void checkForNextScene();
 	void SetNextScene(bool winOrLose);
 
-	void AddPickups(Object*);
-	void RemovePickup(Object*);
 
 private:
 	CameraController* controller;
 
+	// Sounds
 	SoundHandler* levelMusic;
+	SoundHandler* soundeffects;
+	/////////////////////
 
 	GUIText* gametimerText;
 	GUIText* fpsText;
@@ -62,7 +62,7 @@ private:
 	GUIActionbar* actionbarLeft;
 	GUIActionbar* actionbarRight;
 
-	Projectile* coconuts[5];
+	Projectile* coconuts[11];
 	Spoon* spoons[5];
 
 	// Level design
@@ -81,4 +81,5 @@ private:
 	bool canWin;
 
 	SpawnObjects* spawnObjects;
+	Object* arrow;
 };

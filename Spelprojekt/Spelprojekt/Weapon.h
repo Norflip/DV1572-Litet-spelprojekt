@@ -29,7 +29,6 @@ public:
 private:	
 	
 protected:	
-	SoundHandler* weaponSound;
 	GUIActionbar* weaponSprite;	
 	std::string WeaponTypeName;
 	bool attack;

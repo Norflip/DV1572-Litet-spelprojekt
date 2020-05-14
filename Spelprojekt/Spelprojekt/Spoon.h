@@ -4,7 +4,7 @@ class Spoon
 	: public Weapon
 {
 public:
-	Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData model, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation);
+	Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData model, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, SoundHandler* soundeffect);
 	Spoon(const Spoon& other);
 
 	~Spoon();
@@ -22,5 +22,5 @@ public:
 	int CheckUsage() override { return this->used; }
 private:	
 	//int movementspeeds = 3;
-
+	SoundHandler* weaponSound;
 };

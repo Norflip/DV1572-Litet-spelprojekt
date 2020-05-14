@@ -5,7 +5,7 @@ class Projectile :
 	public Weapon 
 {
 public:
-	Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData modelData, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation);
+	Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData modelData, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, SoundHandler* soundeffect);
 	Projectile(const Projectile& other);
 
 	~Projectile();
@@ -20,5 +20,6 @@ public:
 	
 private:		
 	int movementspeed = 3;
+	SoundHandler* weaponSound;
 };
 

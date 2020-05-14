@@ -33,6 +33,10 @@ public:
 	Weapon* GetActiveWeapon() const;
 	void SetActiveWeapon(Weapon*);
 	
+
+	void SetArrow(Object*);
+	void UpdateLookAtPosition();
+
 private:
 	void InitWeapons();
 	void UpdateMovement(float FixedDeltaTime);
@@ -73,5 +77,8 @@ private:
 	//
 
 	Enemy* enemy;
+
+	DirectX::XMVECTOR arrowRotation;
+	Object* arrow;
 }; 
 
