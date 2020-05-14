@@ -7,8 +7,8 @@ IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraControll
     this->input = cameraController->getInput();
     this->mainSound = sound;   
     this->soundeffects = soundeffect;
-    this->lastOff = "Sprites/offON.png";
-    this->lastOn = "Sprites/onOFF.png";
+    this->lastOff = "Sprites/off_isON.png";
+    this->lastOn = "Sprites/on_isOFF.png";
 }
 
 IntroGUI::~IntroGUI()
@@ -157,10 +157,10 @@ void IntroGUI::Options()
     if (vsyncON->Clicked(input))
     {
         if (!vsyncOn) {
-            vsyncON->SetWICSprite(dx11, "Sprites/onON.png");
-            lastOn = "Sprites/onON.png";
-            vsyncOFF->SetWICSprite(dx11, "Sprites/offOFF.png");        
-            lastOff = "Sprites/offOFF.png";
+            vsyncON->SetWICSprite(dx11, "Sprites/on_isON.png");
+            lastOn = "Sprites/on_isON.png";
+            vsyncOFF->SetWICSprite(dx11, "Sprites/off_isOFF.png");        
+            lastOff = "Sprites/off_isOFF.png";
 
             currentScene->getRenderer()->setVsync(true);
             vsyncOn = true;
@@ -253,16 +253,33 @@ void IntroGUI::Options()
 
     if (vsyncOFF->Clicked(input)) {
         if (vsyncOn) {
-            vsyncON->SetWICSprite(dx11, "Sprites/onOFF.png");
-            lastOn = "Sprites/onOFF.png";
-            vsyncOFF->SetWICSprite(dx11, "Sprites/offON.png");
-            lastOff = "Sprites/offON.png";
+            vsyncON->SetWICSprite(dx11, "Sprites/on_isOFF.png");
+            lastOn = "Sprites/on_isOFF.png";
+            vsyncOFF->SetWICSprite(dx11, "Sprites/off_isON.png");
+            lastOff = "Sprites/off_isON.png";
 
             currentScene->getRenderer()->setVsync(false);
             vsyncOn = false;
             std::cout << "VSYNC OFF!" << std::endl;
         }
     }
+
+    // Mouseover
+    if (vsyncON->MouseOver(input) && !vsyncOn) {        
+        vsyncON->SetWICSprite(dx11, "Sprites/on_isOFF_Mouseover.png");
+    }
+    else {
+        vsyncON->SetWICSprite(dx11, this->lastOn);
+    }
+
+    if (vsyncOFF->MouseOver(input) && vsyncOn) {        
+        vsyncOFF->SetWICSprite(dx11, "Sprites/off_isOFF_Mouseover.png");       
+    }
+    else {
+        vsyncOFF->SetWICSprite(dx11, this->lastOff);
+    }
+
+
 }
 
 void IntroGUI::LoadOptions()
