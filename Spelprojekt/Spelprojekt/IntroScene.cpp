@@ -9,8 +9,8 @@ IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, 
 	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::Follow);
 	window.GetInput()->LockCursor(false);
 	this->nextScene = nullptr;
-	//Lights& lights = renderer->GetLights();
-	//lights.SetSunDirection({ 1, -1, 0 });
+	//Lights& lights = renderer->GetLights();	
+	//lights.SetSunDirection({ 1, 1, 0 });
 	//lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
 	//lights.SetSunIntensity(0.6f);
 
@@ -46,6 +46,11 @@ void IntroScene::Load()
 	defaultShader->LoadPixelShader(L"Shaders/Default_ps.hlsl", "main", dx11.GetDevice());
 	defaultShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
 
+	Shader* toonshader = new Shader();
+	toonshader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+	toonshader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
+
+
 	// object = mesh + material
 
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
@@ -58,12 +63,12 @@ void IntroScene::Load()
 	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 	sphere->GetTransform().Translate(0, 0, -5);
 
-	Object* glasse = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader));
-	glasse->GetTransform().Translate(0, 0, 0);
+	Object* glasse = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Glasse_intro_Pose.fbx", dx11, toonshader));
+	glasse->GetTransform().Translate(0, 0.35, -3);
 	glasse->GetTransform().Rotate(0, -0.6, 0);
 	AddObject(glasse);
 	
-	Object* wagon = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader));
+	Object* wagon = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, toonshader));
 	wagon->GetTransform().Translate(7, -2.5, 1);
 	wagon->GetTransform().Rotate(0, 0.1, 0);
 	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
