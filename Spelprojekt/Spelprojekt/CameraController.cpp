@@ -64,7 +64,6 @@ void CameraController::UpdateFree(const float& deltaTime)
 		translation = DirectX::XMVectorScale(DirectX::XMVector3Normalize(translation), cameraSpeed * deltaTime);
 		transform.Translate(translation);
 	}
-
 	camera->UpdateView();
 }
 
@@ -79,9 +78,8 @@ void CameraController::UpdateFollow(const float& deltaTime)
 		direction = DirectX::XMVector3Normalize(direction);
 
 		camera->GetTransform().SetPosition(position);
-		//camera->GetTransform().LookDirection(direction, camera->GetTransform().Forward());
 
-		camera->GetTransform().LookAt(target->GetPosition());
+		camera->GetTransform().LookAtCamera(target->GetPosition());
 		camera->UpdateView();
 	}
 }
