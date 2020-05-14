@@ -65,6 +65,30 @@ void IntroGUI::Start()
             first = true;
         }
 
+
+        // MOUSEOVER
+        // to options
+        if (options->MouseOver(input)) {
+            options->SetWICSprite(dx11, "Sprites/options_mouseover.png");
+        }
+        else {
+            options->SetWICSprite(dx11, "Sprites/options.png");
+        }
+        // play
+        if (play->MouseOver(input)) {
+            play->SetWICSprite(dx11, "Sprites/play_mouseover.png");
+        }
+        else {
+            play->SetWICSprite(dx11, "Sprites/play.png");
+        }
+        //quit
+        if (quit->MouseOver(input)) {
+            quit->SetWICSprite(dx11, "Sprites/quit_mouseover.png");
+        }
+        else {
+            quit->SetWICSprite(dx11, "Sprites/quit.png");
+        }
+
 }
 
 void IntroGUI::LoadStart()
@@ -139,16 +163,29 @@ void IntroGUI::Options()
         }           
     }
 
+
     //////////////////////////////////////////////////////////////
 
+
     GUISprite* backtointro = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
+
     if (backtointro->Clicked(input))
     {
         first = true;
         menu = Menu::start;
     }
        
+    if (backtointro->MouseOver(input)) 
+    {
+        backtointro->SetWICSprite(dx11, "Sprites/backtointro_mouseover.png");
+    }
+    else {
+        backtointro->SetWICSprite(dx11, "Sprites/backtointro.png");
+    }
+
+
     /////////////////////////////
+
 
     // VSYNC
     GUISprite* vsyncON = static_cast<GUISprite*>(gui->GetGUIList()->at("vsyncON"));
@@ -316,24 +353,40 @@ void IntroGUI::LoadOptions()
 
 void IntroGUI::Quit()
 {
-    GUISprite* temp2 = static_cast<GUISprite*>(gui->GetGUIList()->at("imsure"));
-    if (temp2->Clicked(input))
+    GUISprite* imsure = static_cast<GUISprite*>(gui->GetGUIList()->at("imsure"));
+    if (imsure->Clicked(input))
     {
         currentScene->exitGame = true;
     }
-    temp2 = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
-    if (temp2->Clicked(input))
+    GUISprite* backagain = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
+    if (backagain->Clicked(input))
     {
         first = true;
         menu = Menu::start;
+    }
+
+
+    // MOUSEOVER
+    if (imsure->MouseOver(input)) {
+        imsure->SetWICSprite(dx11, "Sprites/imsure_mouseover.png");
+    }
+    else {
+        imsure->SetWICSprite(dx11, "Sprites/imsure.png");
+    }
+
+    if (backagain->MouseOver(input)) {
+        backagain->SetWICSprite(dx11, "Sprites/backtointro_mouseover.png");
+    }
+    else {
+        backagain->SetWICSprite(dx11, "Sprites/backtointro.png");
     }
 }
 
 void IntroGUI::LoadQuit()
 {
     ClearGUI();
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/imsure.png", 400.0f, 300.0f), "imsure");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 10.0f, 300.0f), "backtointro");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/imsure.png", 100.0f, 350.0f), "imsure");
     first = false;
 }
 

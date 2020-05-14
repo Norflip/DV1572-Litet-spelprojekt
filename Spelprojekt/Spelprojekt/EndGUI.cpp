@@ -32,8 +32,8 @@ void EndGUI::Update()
 
 void EndGUI::Restart()
 {
-    GUISprite* play = static_cast<GUISprite*>(gui->GetGUIList()->at("restart"));
-    if (play->Clicked(input))
+    GUISprite* restart = static_cast<GUISprite*>(gui->GetGUIList()->at("restart"));
+    if (restart->Clicked(input))
     {
         currentScene->SetNextScene("game");
     }
@@ -49,6 +49,32 @@ void EndGUI::Restart()
     {
         currentScene->SetNextScene("intro");
     }
+
+
+    // MOUSEOVER
+    // play again
+    if (restart->MouseOver(input)) {
+        restart->SetWICSprite(dx11, "Sprites/restart_mouseover.png");
+    }
+    else {
+        restart->SetWICSprite(dx11, "Sprites/restart.png");
+    }
+
+    // back to main
+    if (intro->MouseOver(input)) {
+        intro->SetWICSprite(dx11, "Sprites/backtointro_mouseover.png");
+    }
+    else {
+        intro->SetWICSprite(dx11, "Sprites/backtointro.png");
+    }
+
+    if (quit->MouseOver(input)) {
+        quit->SetWICSprite(dx11, "Sprites/quit_mouseover.png");
+    }
+    else {
+        quit->SetWICSprite(dx11, "Sprites/quit.png");
+    }
+
 }
 
 void EndGUI::LoadStart()
@@ -62,25 +88,29 @@ void EndGUI::LoadStart()
     }
     else
     {
-        winLose = new GUISprite(dx11, "Sprites/youlose.png", 0.0f, 0.0f);
+        winLose = new GUISprite(dx11, "Sprites/Glassbokal_lose.png", 0.0f, 0.0f);
 
         // Lose sound
         this->musicsound->StopSound();
-        this->soundeffects->LoadSound("Lose", "SoundEffects/Fail.wav");
-        this->soundeffects->PlaySound("Lose", this->soundeffects->GetGlobalVolume());
+        if (!playedOnce) {
+            this->soundeffects->LoadSound("Lose", "SoundEffects/Fail.wav");
+            this->soundeffects->PlaySound("Lose", this->soundeffects->GetGlobalVolume());
+            playedOnce = true;
+        }
+        
     }
 
-    GUISprite* play = new GUISprite(dx11, "Sprites/restart.png", 0.0f, 0.0f);
-    GUISprite* quit = new GUISprite(dx11, "Sprites/quit.png", 0.0f, 0.0f);
-    GUISprite* menu = new GUISprite(dx11, "Sprites/backtointro.png", 0.0f, 0.0f);
+    GUISprite* restart = new GUISprite(dx11, "Sprites/restart.png", 0.0f, 0.0f);       
+    GUISprite* quit = new GUISprite(dx11, "Sprites/quit.png", 0.0f, 0.0f);          
+    GUISprite* menu = new GUISprite(dx11, "Sprites/backtointro.png", 0.0f, 0.0f);   
 
     winLose->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (winLose->GetTextureWidth() / 2.0f), 0);
-    play->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (play->GetTextureWidth() / 2.0f) + 350.0f, 50.0f);
-    menu->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (menu->GetTextureWidth() / 2.0f) + 350.0f, 200.0f);
-    quit->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (quit->GetTextureWidth() / 2.0f) + 350.0f, 350.0f);
+    restart->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (restart->GetTextureWidth() / 2.0f) + 300.0f, 200.0f);
+    menu->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (menu->GetTextureWidth() / 2.0f) + 300.0f, 350.0f);
+    quit->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (quit->GetTextureWidth() / 2.0f) + 300.0f, 500.0f);
 
     gui->AddGUIObject(winLose, "winorlose");
-    gui->AddGUIObject(play, "restart");
+    gui->AddGUIObject(restart, "restart");
     gui->AddGUIObject(quit, "quit");
     gui->AddGUIObject(menu, "menu");
 
@@ -89,17 +119,34 @@ void EndGUI::LoadStart()
 
 void EndGUI::Quit()
 {
-    GUISprite* quitSprite = static_cast<GUISprite*>(gui->GetGUIList()->at("imsure"));
-    if (quitSprite->Clicked(input))
+    GUISprite* quitimsure = static_cast<GUISprite*>(gui->GetGUIList()->at("imsure"));
+    if (quitimsure->Clicked(input))
     {
         currentScene->exitGame = true;
     }
-    quitSprite = static_cast<GUISprite*>(gui->GetGUIList()->at("backtoendscreen"));
-    if (quitSprite->Clicked(input))
+    GUISprite* backtoscreen = static_cast<GUISprite*>(gui->GetGUIList()->at("backtoendscreen"));
+    if (backtoscreen->Clicked(input))
     {
         first = true;
         menu = Menu::restart;
     }
+
+    if (quitimsure->MouseOver(input)) {
+        quitimsure->SetWICSprite(dx11, "Sprites/imsure_mouseover.png");
+    }
+    else {
+        quitimsure->SetWICSprite(dx11, "Sprites/imsure.png");
+    }
+
+    if (backtoscreen->MouseOver(input)) {
+        backtoscreen->SetWICSprite(dx11, "Sprites/backtointro_mouseover.png");
+    }
+    else {
+        backtoscreen->SetWICSprite(dx11, "Sprites/backtointro.png");
+    }
+
+
+
 }
 
 void EndGUI::LoadQuit()
@@ -109,7 +156,7 @@ void EndGUI::LoadQuit()
     GUISprite* imsure = new GUISprite(dx11, "Sprites/imsure.png", 0.0f, 0.0f);
     GUISprite* backtoendscreen = new GUISprite(dx11, "Sprites/backtointro.png", 0.0f, 0.0f);
 
-    imsure->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (imsure->GetTextureWidth() / 2.0f), 200.0f);
+    imsure->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (imsure->GetTextureWidth() / 2.0f), 250.0f);
     backtoendscreen->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (backtoendscreen->GetTextureWidth() / 2.0f), 400.0f);
 
     gui->AddGUIObject(imsure, "imsure");
