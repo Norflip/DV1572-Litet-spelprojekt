@@ -10,9 +10,9 @@ IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, 
 	window.GetInput()->LockCursor(false);
 	this->nextScene = nullptr;
 	Lights& lights = renderer->GetLights();	
-	lights.SetSunDirection({ 1, -2, 4 });
+	lights.SetSunDirection({ 1, -2, 3 });
 	lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
-	lights.SetSunIntensity(0.6f);
+	lights.SetSunIntensity(0.9f);
 
 	// Music and soundeffects
 	this->mainmenuMusic = sound;
