@@ -64,7 +64,8 @@ void IntroScene::Load()
 	AddObject(glasse);
 	
 	Object* wagon = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader));
-	wagon->GetTransform().Translate(7, -2, 1);
+	wagon->GetTransform().Translate(7, -2.5, 1);
+	wagon->GetTransform().Rotate(0, 0.1, 0);
 	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
 	AddObject(wagon);
 	controller->SetFollow(&sphere->GetTransform(), { 0, 1, 0 });
