@@ -1,5 +1,5 @@
 #include "Player.h"
-Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, DX11Handler& dx11, Scene* scene)
+Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, Object* winArea, DX11Handler& dx11, Scene* scene)
 	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11)
 {
 
@@ -25,7 +25,7 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 650.0f);
 	this->healthbar->HealthBar(100.0f, 100.0f);
 	this->gui->AddGUIObject(this->healthbar, "healthbar");
-
+	this->winArea = winArea;
 	this->arrow = nullptr;
 }
 
@@ -281,8 +281,12 @@ void Player::UpdateLookAtPosition()
 	if (arrow != nullptr)
 	{
 		arrow->GetTransform().SetPosition(GetTransform().GetPosition());
-		//arrow->GetTransform().SetRotation(GetTransform().GetRotation());
-		arrow->GetTransform().LookAt({ 55, 7, 55 });
+		DirectX::XMVECTOR playerPos = GetTransform().GetPosition();
+		DirectX::XMVECTOR testWinPos = winArea->GetTransform().GetPosition();
+		float angle = atan2f(testWinPos.m128_f32[0] - playerPos.m128_f32[0], testWinPos.m128_f32[2] - playerPos.m128_f32[2]);
+
+		arrow->GetTransform().SetRotation({ 0,angle,0 });
+		arrow->GetTransform().Rotate(0, MathHelper::PI, 0);
 
 
 		//nextPosition = { (GetTransform().GetPosition().m128_f32[0] + (-std::sinf(arrowDirection.m128_f32[1]) * 30)) ,GetTransform().GetPosition().m128_f32[1], (GetTransform().GetPosition().m128_f32[2] + (-std::cosf(arrowDirection.m128_f32[1]) * 30)) };	// 30 = speed

@@ -16,7 +16,7 @@ class Enemy;
 class Player : public Object
 {
 public:
-	Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, DX11Handler&, Scene* scene);
+	Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, Object* winArea, DX11Handler&, Scene* scene);
 	~Player();
 
 	void Update(const float& deltaTime) override;
@@ -80,5 +80,6 @@ private:
 
 	DirectX::XMVECTOR arrowRotation;
 	Object* arrow;
+	Object* winArea;
 }; 
 
