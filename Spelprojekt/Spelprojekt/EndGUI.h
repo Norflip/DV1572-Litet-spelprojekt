@@ -35,4 +35,5 @@ private:
 	// Sound stuff
 	SoundHandler* musicsound;
 	SoundHandler* soundeffects;
+	bool playedOnce = false;
 };
