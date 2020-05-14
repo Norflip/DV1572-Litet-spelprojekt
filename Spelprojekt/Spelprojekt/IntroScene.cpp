@@ -58,15 +58,15 @@ void IntroScene::Load()
 
 	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
-	sphere->GetTransform().Translate(0, 0, -5);
+	sphere->GetTransform().Translate(0, 0+9, -5);
 
 	Object* glasse = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Glasse_intro_Pose.fbx", dx11, toonshader));
-	glasse->GetTransform().Translate(0, 0.65, -3);
+	glasse->GetTransform().Translate(0, 0.65+9, -3);
 	glasse->GetTransform().Rotate(0, -0.6, 0);
 	AddObject(glasse);
 	
 	Object* wagon = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, toonshader));
-	wagon->GetTransform().Translate(7, -1.75, 1);
+	wagon->GetTransform().Translate(7, -1.75+10, 1);
 	wagon->GetTransform().Rotate(0, 0.1, 0);
 	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
 	AddObject(wagon);
@@ -102,7 +102,7 @@ void IntroScene::Load()
 	ground.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
 	
 	Object* terrainObject = new Object(ObjectLayer::None, ground.GetMesh(), terrainMat);
-	terrainObject->GetTransform().SetPosition({ -55, -5, -2 });
+	terrainObject->GetTransform().SetPosition({ -100, -2+9, -10 });
 	AddObject(terrainObject);
 	
 		
