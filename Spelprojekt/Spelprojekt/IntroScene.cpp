@@ -56,18 +56,21 @@ void IntroScene::Load()
 
 	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
-	sphere->GetTransform().Translate(1, 1, 3);
+	sphere->GetTransform().Translate(0, 0, -5);
 
 	Object* glasse = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, defaultShader));
+	glasse->GetTransform().Translate(0, 0, 0);
+	glasse->GetTransform().Rotate(0, -0.6, 0);
 	AddObject(glasse);
 	
 	Object* wagon = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader));
-	wagon->GetTransform().Translate(30, 5, 30);
-	
+	wagon->GetTransform().Translate(7, -2, 1);
+	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
 	AddObject(wagon);
-	controller->SetFollow(&wagon->GetTransform(), { -5, 15, -10.0f });
-	AddObject(sphere);
+	controller->SetFollow(&sphere->GetTransform(), { 0, 1, 0 });
 
+	AddObject(sphere);
+	sphere->SetVisible(false);
 	
 		
 }
