@@ -17,9 +17,12 @@ IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, 
 	// Music and soundeffects
 	this->mainmenuMusic = sound;
 	this->mainmenuMusic->SetGlobalVolume(0.5f);
-	this->mainmenuMusic->LoadSound("Cait", "SoundEffects/cait.wav");
+	//this->mainmenuMusic->LoadSound("Cait", "SoundEffects/cait.wav");
+	this->mainmenuMusic->LoadSound("Cait", "SoundEffects/MonstersInc.wav");			// mainmenu music??
+	//this->mainmenuMusic->LoadSound("Cait", "SoundEffects/FluffingDuck.wav");		// mainmenu music??
 
 	this->soundeffects = soundeffect;
+	this->soundeffects->SetGlobalVolume(1.0f);
 }
 
 IntroScene::~IntroScene()
@@ -29,18 +32,13 @@ IntroScene::~IntroScene()
 
 void IntroScene::Load()
 {	
-	// Set music volume from beginning	
-	
+	// Set music volume from beginning		
 	mainmenuMusic->PlaySound("Cait", mainmenuMusic->GetGlobalVolume());
 	
-
-	//healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 700.0f);
 	GUI* gui = new GUI(dx11);
-	//gui->AddGUIObject(healthFrame);
 	introGUI = new IntroGUI(gui, dx11, controller, this, mainmenuMusic, soundeffects);
 	renderer->SetGUI(gui);
-
-	
+		
 	// save the shaders somewhere, remember to clean it up
 	Shader* defaultShader = new Shader();
 	defaultShader->LoadPixelShader(L"Shaders/Default_ps.hlsl", "main", dx11.GetDevice());
@@ -52,7 +50,6 @@ void IntroScene::Load()
 
 
 	// object = mesh + material
-
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 
 	Object* sphere = new Object(ObjectLayer::None, dev_monkey_mesh, new Material(defaultShader, dx11));
