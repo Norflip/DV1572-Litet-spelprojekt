@@ -265,7 +265,9 @@ void Player::UpdateLookAtPosition()
 	if (arrow != nullptr)
 	{
 		arrow->GetTransform().SetPosition(GetTransform().GetPosition());
-		arrow->GetTransform().SetRotation(GetTransform().GetRotation());
+		//arrow->GetTransform().SetRotation(GetTransform().GetRotation());
+		arrow->GetTransform().LookAt({ 55, 7, 55 });
+
 
 		//nextPosition = { (GetTransform().GetPosition().m128_f32[0] + (-std::sinf(arrowDirection.m128_f32[1]) * 30)) ,GetTransform().GetPosition().m128_f32[1], (GetTransform().GetPosition().m128_f32[2] + (-std::cosf(arrowDirection.m128_f32[1]) * 30)) };	// 30 = speed
 		//GetTransform().SetPosition(nextPos);
