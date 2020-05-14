@@ -25,6 +25,8 @@ public:
 	float GetAspectRatio() { return this->aspect; }
 	bool IsBoundsInView (const AABB& aabb) const;
 
+	MathHelper::Ray ScreenPositionToWorldRay(const POINTS&) const;
+
 private:
 	void UpdatePlanes(DirectX::XMMATRIX projection, DirectX::XMMATRIX view);
 

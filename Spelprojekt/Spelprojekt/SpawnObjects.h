@@ -19,6 +19,7 @@ class SpawnObjects : public Object
 		void AddEnemy(Enemy*);
 		void RemoveEnemy(Enemy*);
 		Enemy* GetEnemy();
+		void SetSpawnedEnemies(int spawnedEnemies);
 	private:
 		void UpdateSpawnEnemy();
 		void UpdateRemoveEnemy();
@@ -35,7 +36,7 @@ class SpawnObjects : public Object
 		Object* object;
 
 		int nrOfEnemies = 0;
-		float spawnOffset = 0;
+		int spawnedEnemies = 5;
 		float randX, randZ, lastRandX, lastRandZ;
 
 		std::vector<Enemy*> enemies;

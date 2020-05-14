@@ -151,11 +151,11 @@ void DevScene::Load()
 	for(int i = 0; i < 5; i++)
 		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, defaultShader, { 0, 0,0 }, { 0, 0,0 } /* player->GetTransform().GetRotation()*/);
 	
-	coconuts[0]->GetTransform().Translate(35 + 22.5, 10, 25 + 22.5);
-	coconuts[1]->GetTransform().Translate(40, 10, 25);
-	coconuts[2]->GetTransform().Translate(45, 10, 25);
-	coconuts[3]->GetTransform().Translate(50, 10, 25);
-	coconuts[4]->GetTransform().Translate(55, 10, 25);
+	coconuts[0]->GetTransform().Translate(35 + 22.5, 7, 25 + 22.5);
+	coconuts[1]->GetTransform().Translate(40, 7, 25);
+	coconuts[2]->GetTransform().Translate(45, 7, 25);
+	coconuts[3]->GetTransform().Translate(50, 7, 25);
+	coconuts[4]->GetTransform().Translate(55, 7, 25);
 	for (int i = 0; i < 5; i++)
 		AddObject(coconuts[i]);
 	

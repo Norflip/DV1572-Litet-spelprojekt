@@ -32,6 +32,8 @@ public:
 	Weapon* CheckWeaponType(Weapon* obj);
 	Weapon* GetActiveWeapon() const;
 	void SetActiveWeapon(Weapon*);
+
+	DirectX::XMVECTOR GetAimDirection() const;
 	
 private:
 	void InitWeapons();

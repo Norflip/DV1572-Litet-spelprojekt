@@ -194,13 +194,15 @@ void Player::UseWeapon()
 void Player::WeaponUsage(Weapon* weapon, bool& hand)
 {
 	if (weapon->GetWeaponTypename() == "Coconut") {
-		weapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());
-		weapon->direction = GetTransform().GetRotation();
+		DirectX::XMVECTOR aimDirection = GetAimDirection();
+		weapon->HasAttacked(GetTransform().GetPosition(), aimDirection);
+		weapon->direction = aimDirection;
 		weapon->PlaySoundEffect();
 		scene->AddObject(weapon);
 		activeWeapon = static_cast<Weapon*>(weapon);
 		scene->AddObject(weapon);
 		hand = false;
+		GetTransform().SetRotation(aimDirection);
 	}
 
 	if (weapon->GetWeaponTypename() == "Slev") {
@@ -248,6 +250,34 @@ Weapon* Player::GetActiveWeapon() const
 void Player::SetActiveWeapon(Weapon* weapon)
 {
 	activeWeapon = weapon;
+}
+
+DirectX::XMVECTOR Player::GetAimDirection() const
+{
+	//hämta ray
+	float t = -1.0f;
+	DirectX::XMVECTOR playerToMouseDirection = {0,0,0};
+	MathHelper::Ray ray = scene->GetSceneCamera()->ScreenPositionToWorldRay(input->GetMousePosition());
+	float denom = DirectX::XMVectorGetByIndex(DirectX::XMVector3Dot({ 0,-1,0 }, ray.direction),0);
+	//ray casta mot plane
+	if (denom > 0.000001f)
+	{
+		DirectX::XMVECTOR originToPlane = DirectX::XMVectorSubtract(GetTransform().GetPosition(), ray.origin);
+		t = DirectX::XMVectorGetByIndex(DirectX::XMVector3Dot(originToPlane, { 0,-1,0 }),0) / denom;
+	}
+	//hämta riktning mellan spelar och punkt på planet
+	if (t >= 0.0f)
+	{
+		DirectX::XMVECTOR pointInWorld = DirectX::XMVectorAdd(ray.origin, DirectX::XMVectorScale(ray.direction, t));
+		playerToMouseDirection = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(pointInWorld, GetTransform().GetPosition()));
+	}
+
+	DirectX::XMFLOAT3 playerToMouseDir;
+	DirectX::XMStoreFloat3(&playerToMouseDir, playerToMouseDirection);
+
+	float yaw = atan2f(playerToMouseDir.x, playerToMouseDir.z) + MathHelper::PI;
+	DirectX::XMVECTOR angleToPos = { 0, yaw, 0 };
+	return angleToPos;
 }
 
 void Player::TriggerAttack()

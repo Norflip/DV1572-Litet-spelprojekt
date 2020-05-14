@@ -28,7 +28,7 @@ void SpawnObjects::SetPlayer(Player* player)
 void SpawnObjects::SetEnemy()
 {
 	testEnemy = new Enemy(mesh, material, terrain, dx11);
-	testEnemy->GetTransform().Translate(30, 7, 35 + spawnOffset);
+	testEnemy->GetTransform().Translate(30, 7, 35);
 	testEnemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	testEnemy->SetTarget(player);
 }
@@ -52,7 +52,7 @@ void SpawnObjects::RemoveEnemy(Enemy* enemy)
 void SpawnObjects::UpdateSpawnEnemy()
 {
 
-	if (nrOfEnemies <= 2 && randX != lastRandX)
+	if (nrOfEnemies < spawnedEnemies && randX != lastRandX)
 	{
 		enemy = new Enemy(*testEnemy);
 		enemy->GetTransform().Translate(randX, 7, randZ);
@@ -61,7 +61,6 @@ void SpawnObjects::UpdateSpawnEnemy()
 		scene->AddObject(enemy);
 		AddEnemy(enemy);
 		nrOfEnemies++;
-		spawnOffset += 5;
 		lastRandX = randX;
 	}
 }
@@ -100,4 +99,9 @@ void SpawnObjects::UpdateRandomNumber()
 Enemy* SpawnObjects::GetEnemy()
 {
 	return enemy;
+}
+
+void SpawnObjects::SetSpawnedEnemies(int spawnedEnemies)
+{
+	this->spawnedEnemies = spawnedEnemies;
 }
