@@ -17,9 +17,9 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->lefthandFull = false;
 	this->righthandFull = false;
 	this->leftWeapon = nullptr;
-	this->rightWeapon = nullptr;	
-		
-	this->scene = scene;	
+	this->rightWeapon = nullptr;
+
+	this->scene = scene;
 
 	this->playerHealth = 100.0f;
 	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 650.0f);
@@ -63,19 +63,35 @@ void Player::UpdateMovement(float fixedDeltaTime)
 
 	if (controller->GetState() == CameraController::State::Follow)
 	{
+		float dx = 0.0f;
+		float dz = 0.0f;
+
 		if (input->GetKey('w'))
-			nextPosition.z += fixedDeltaTime * movementspeed;
+			dz += 1.0f;
+
 		if (input->GetKey('a'))
-			nextPosition.x -= fixedDeltaTime * movementspeed;
+			dx -= 1.0f;
+
 		if (input->GetKey('s'))
-			nextPosition.z -= fixedDeltaTime * movementspeed;
+			dz -= 1.0f;
+
 		if (input->GetKey('d'))
-			nextPosition.x += fixedDeltaTime * movementspeed;
+			dx += 1.0f;
+
 		bool changedir = false;
-		if (input->GetKey('w') || input->GetKey('a') || input->GetKey('s') || input->GetKey('d'))
+		if(dx != 0.0f || dz != 0.0f)
 			changedir = true;
 
+		float length = sqrtf(dx * dx + dz * dz);
+		if (length != 0.0f)
+		{
+			dx /= length;
+			dz /= length;
 
+			nextPosition.x += dx * fixedDeltaTime * movementspeed;
+			nextPosition.z += dz * fixedDeltaTime * movementspeed;
+		}
+			
 		GetTransform().SmoothRotate(nextPosition, fixedDeltaTime, changedir);
 		GetTransform().SetPosition({ nextPosition.x, nextPosition.y, nextPosition.z });
 	}
@@ -129,30 +145,30 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 void Player::UpdateHands(Weapon* obj)
 {
 	if (input->GetKeyDown('e') && obj->IsEnabled() && obj->GetWorldBounds().Overlaps(this->GetWorldBounds()))
-	{		
-		if (!lefthandFull) {	
+	{
+		if (!lefthandFull) {
 			leftWeapon = CheckWeaponType(obj);	//check type
-			
+
 			this->leftActionbar = new GUIActionbar(*obj->GetWeaponSprite());
 			this->leftActionbar->SetPosition(325.0f, 650.0f);
 			this->gui->AddGUIObject(this->leftActionbar, "Left Actionbar");
 
-			scene->RemoveObject(obj);			
+			scene->RemoveObject(obj);
 			obj->SetEnabled(false);
 			lefthandFull = true;
 		}
 		else if (lefthandFull && !righthandFull) {
 			rightWeapon = CheckWeaponType(obj); //check type
-			
+
 			this->rightActionbar = new GUIActionbar(*obj->GetWeaponSprite());
 			this->rightActionbar->SetPosition(400.0f, 650.0f);
 			this->gui->AddGUIObject(this->rightActionbar, "Right Actionbar");
 
-			scene->RemoveObject(obj);			
+			scene->RemoveObject(obj);
 			obj->SetEnabled(false);
 			righthandFull = true;
 		}
-	}	
+	}
 }
 
 void Player::UpdateMeleeWeaponPosition()
@@ -171,25 +187,25 @@ void Player::UpdateMeleeWeaponPosition()
 			rightWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
 			rightWeapon->direction = GetTransform().GetRotation();
 		}
-	}	
+	}
 }
 
 void Player::UseWeapon()
 {
 	// Left hand
-	if (input->GetMouseButtonDown(0) && lefthandFull) {		
+	if (input->GetMouseButtonDown(0) && lefthandFull) {
 		WeaponUsage(leftWeapon, lefthandFull);
-		
-		if(!lefthandFull)
-			gui->RemoveGUIObject("Left Actionbar");		
+
+		if (!lefthandFull)
+			gui->RemoveGUIObject("Left Actionbar");
 	}
 
 	// Right hand
-	if (input->GetMouseButtonDown(1) && righthandFull) {			
+	if (input->GetMouseButtonDown(1) && righthandFull) {
 		WeaponUsage(rightWeapon, righthandFull);
-		
-		if(!righthandFull)
-			gui->RemoveGUIObject("Right Actionbar");		
+
+		if (!righthandFull)
+			gui->RemoveGUIObject("Right Actionbar");
 	}
 }
 
@@ -218,7 +234,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			weapon->direction = GetTransform().GetRotation();
 			weapon->PlaySoundEffect();
 			scene->RemoveObject(weapon);
-			weapon->SetEnabled(false); 
+			weapon->SetEnabled(false);
 			weapon = nullptr;
 			hand = false;
 		}
