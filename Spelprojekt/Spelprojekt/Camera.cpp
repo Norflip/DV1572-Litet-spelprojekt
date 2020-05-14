@@ -107,6 +107,17 @@ bool Camera::IsBoundsInView(const AABB& aabb) const
 	return inViewResult;
 }
 
+MathHelper::Ray Camera::ScreenPositionToWorldRay(const POINTS& point) const
+{
+	MathHelper::Ray ray;
+	DirectX::FXMVECTOR v = { point.x, point.y, 0 };
+	DirectX::XMVECTOR worldPos = DirectX::XMVector3Unproject(v, 0.0f, 0.0f, width, height, 0.0f, 1.0f, projection, view, DirectX::XMMatrixIdentity());
+	ray.origin = GetTransform().GetPosition();
+	ray.direction = DirectX::XMVectorSubtract(worldPos, ray.origin);
+	ray.direction = DirectX::XMVector3Normalize(ray.direction);
+	return ray;
+}
+
 void Camera::UpdatePlanes(DirectX::XMMATRIX projection, DirectX::XMMATRIX view)
 {
 	// http://www8.cs.umu.se/kurser/5DV051/HT12/lab/plane_extraction.pdf

@@ -5,6 +5,11 @@
 
 namespace MathHelper
 {
+	struct Ray
+	{
+		DirectX::XMVECTOR origin;
+		DirectX::XMVECTOR direction;
+	};
 	constexpr float PI = 3.14159265359f;
 	constexpr float ToRadians = 0.0174532925f;
 	constexpr float ToDegrees = 57.2957795f;
