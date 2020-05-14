@@ -418,7 +418,6 @@ void DevScene::CreateSceneObjects()
 		parasolls[1]->GetTransform().Translate(172.5, 5.4, 40);
 		parasolls[2]->GetTransform().Translate(147.5, 5.5, 40);
 		parasolls[3]->GetTransform().Translate(117.5, 5.6, 38);
-		parasolls[3]->GetTransform().LookAt({ 55, 55, 66 });
 		parasolls[3]->GetTransform().Rotate(-0.05, 0, 0);
 		parasolls[4]->GetTransform().Translate(87.5, 5.6, 35);
 		parasolls[4]->GetTransform().Rotate(-0.05, 0, 0);
