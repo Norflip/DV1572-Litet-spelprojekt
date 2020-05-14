@@ -17,6 +17,7 @@ public:
 	{
 		start,
 		options,
+		soundtracks,
 		quit
 	};
 
@@ -27,6 +28,9 @@ public:
 
 	void Options(); // enable / disable stuff
 	void LoadOptions();
+
+	void Soundtracks();
+	void LoadSoundtracks();
 
 	void Quit(); // Sure to Quit
 	void LoadQuit();
@@ -48,6 +52,7 @@ private:
 	SoundHandler* soundeffects;
 	float volumeScale = 0.1f;	
 	float maxVolume = 1.0f;
+	float minVolume = 0.0f;
 	float currentMusicVolume = 1.0f;
 	float currentSoundVolume = 1.0f;
 };

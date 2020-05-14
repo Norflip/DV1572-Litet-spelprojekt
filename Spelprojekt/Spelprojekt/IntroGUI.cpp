@@ -30,6 +30,11 @@ void IntroGUI::Update()
             LoadOptions();
         Options();
         break;
+    case Menu::soundtracks: // sound crap
+        if (first)
+            LoadSoundtracks();
+        Soundtracks();
+        break;
     case Menu::quit:
         if (first)
             LoadQuit();
@@ -40,9 +45,8 @@ void IntroGUI::Update()
 }
 
 void IntroGUI::Start()
-{
- 
-    // gotta fix if static cast fails
+{ 
+        // gotta fix if static cast fails
         GUISprite* play = static_cast<GUISprite*>(gui->GetGUIList()->at("play"));
         if (play->Clicked(input))
         {
@@ -60,20 +64,21 @@ void IntroGUI::Start()
         if (options->Clicked(input))
         {
             //ClearGUI();
-
             menu = Menu::options;
             first = true;
         }
 
 
         // MOUSEOVER
-        // to options
+
+        // To options
         if (options->MouseOver(input)) {
             options->SetWICSprite(dx11, "Sprites/options_mouseover.png");
         }
         else {
             options->SetWICSprite(dx11, "Sprites/options.png");
         }
+
         // play
         if (play->MouseOver(input)) {
             play->SetWICSprite(dx11, "Sprites/play_mouseover.png");
@@ -81,6 +86,7 @@ void IntroGUI::Start()
         else {
             play->SetWICSprite(dx11, "Sprites/play.png");
         }
+
         //quit
         if (quit->MouseOver(input)) {
             quit->SetWICSprite(dx11, "Sprites/quit_mouseover.png");
@@ -89,20 +95,86 @@ void IntroGUI::Start()
             quit->SetWICSprite(dx11, "Sprites/quit.png");
         }
 
+        // SOUNDTRACK
+        GUISprite* soundtrack = static_cast<GUISprite*>(gui->GetGUIList()->at("soundtracks"));
+
+        if (soundtrack->Clicked(input))
+        {
+            first = true;
+            menu = Menu::soundtracks;
+        }
+
+        if (soundtrack->MouseOver(input)) {
+            soundtrack->SetWICSprite(dx11, "Sprites/soundtracks_mouseover.png");
+        }
+        else {
+            soundtrack->SetWICSprite(dx11, "Sprites/soundtracks.png");
+        }
+
+
 }
 
 void IntroGUI::LoadStart()
 {
     ClearGUI();
     //LOAD ALL GUI OBJECTS FOR START, ONCE
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 200.0f), "play");    
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 350.0f), "options");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 50.0f), "play");    
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 200.0f), "options");
+    // SOUNDTRACK
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/soundtracks.png", 100.0f, 350.0f), "soundtracks");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/quit.png", 100.0f, 500.0f), "quit");
     first = false;
 }
 
 void IntroGUI::Options()
-{    
+{   
+    // Set current volume for music
+    GUISprite* musicVolBar = static_cast<GUISprite*>(gui->GetGUIList()->at("MusicBar"));    
+    currentMusicVolume = mainSound->GetGlobalVolume();
+    musicVolBar->VolumeBar(maxVolume, currentMusicVolume);
+
+    GUISprite* lowMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("leftmusicvolume"));
+    if (lowMusicVolume->Clicked(input))
+    {
+        if (mainSound->GetGlobalVolume() > minVolume) {
+            currentMusicVolume = mainSound->GetGlobalVolume();
+            currentMusicVolume -= volumeScale;
+            this->mainSound->SetGlobalVolume(currentMusicVolume);
+            musicVolBar->VolumeBar(maxVolume, currentMusicVolume);
+        }      
+    }
+
+    GUISprite* highMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightmusicvolume"));
+    
+    if (highMusicVolume->Clicked(input))
+    {
+        if (mainSound->GetGlobalVolume() < maxVolume)
+        {
+            currentMusicVolume = mainSound->GetGlobalVolume();
+            currentMusicVolume += volumeScale;
+            this->mainSound->SetGlobalVolume(currentMusicVolume);
+            musicVolBar->VolumeBar(maxVolume, currentMusicVolume);
+        }           
+    }
+
+    // mouseover
+    if (lowMusicVolume->MouseOver(input)) {
+        lowMusicVolume->SetWICSprite(dx11, "Sprites/VolLower_mouseover.png");
+    }
+    else {
+        lowMusicVolume->SetWICSprite(dx11, "Sprites/VolLower.png");
+    }
+
+    if (highMusicVolume->MouseOver(input)) {
+        highMusicVolume->SetWICSprite(dx11, "Sprites/VolHigher_mouseover.png");
+    }
+    else {
+        highMusicVolume->SetWICSprite(dx11, "Sprites/VolHigher.png");
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     // Set current volume for sounds
     GUISprite* soundsVolBar = static_cast<GUISprite*>(gui->GetGUIList()->at("SoundsBar"));
@@ -119,6 +191,7 @@ void IntroGUI::Options()
             soundsVolBar->VolumeBar(maxVolume, currentSoundVolume);
         }
     }
+
     GUISprite* highSoundVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightsoundvolume"));
     if (highSoundVolume->Clicked(input))
     {
@@ -146,55 +219,8 @@ void IntroGUI::Options()
         highSoundVolume->SetWICSprite(dx11, "Sprites/VolHigher.png");
     }
 
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    // Set current volume for music
-    GUISprite* musicVolBar = static_cast<GUISprite*>(gui->GetGUIList()->at("MusicBar"));    
-    currentMusicVolume = mainSound->GetGlobalVolume();
-    musicVolBar->VolumeBar(maxVolume, currentMusicVolume);
-
-    GUISprite* lowMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("leftmusicvolume"));
-    if (lowMusicVolume->Clicked(input))
-    {
-        if (mainSound->GetGlobalVolume() > 0.0f) {
-            currentMusicVolume = mainSound->GetGlobalVolume();
-            currentMusicVolume -= volumeScale;
-            this->mainSound->SetGlobalVolume(currentMusicVolume);
-            musicVolBar->VolumeBar(maxVolume, currentMusicVolume);
-        }      
-    }
-    GUISprite* highMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightmusicvolume"));
-    
-    if (highMusicVolume->Clicked(input))
-    {
-        if (mainSound->GetGlobalVolume() < 1.0f)
-        {
-            currentMusicVolume = mainSound->GetGlobalVolume();
-            currentMusicVolume += volumeScale;
-            this->mainSound->SetGlobalVolume(currentMusicVolume);
-            musicVolBar->VolumeBar(maxVolume, currentMusicVolume);
-        }           
-    }
-
-    // mouseover
-    if (lowMusicVolume->MouseOver(input)) {
-        lowMusicVolume->SetWICSprite(dx11, "Sprites/VolLower_mouseover.png");
-    }
-    else {
-        lowMusicVolume->SetWICSprite(dx11, "Sprites/VolLower.png");
-    }
-
-    if (highMusicVolume->MouseOver(input)) {
-        highMusicVolume->SetWICSprite(dx11, "Sprites/VolHigher_mouseover.png");
-    }
-    else {
-        highMusicVolume->SetWICSprite(dx11, "Sprites/VolHigher.png");
-    }
-
-
-
-    //////////////////////////////////////////////////////////////
 
 
     GUISprite* backtointro = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
@@ -205,7 +231,6 @@ void IntroGUI::Options()
         menu = Menu::start;
     }
        
-
     // mouseover
     if (backtointro->MouseOver(input)) 
     {
@@ -214,9 +239,9 @@ void IntroGUI::Options()
     else {
         backtointro->SetWICSprite(dx11, "Sprites/backtointro.png");
     }
+       
 
-
-    /////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     // VSYNC
@@ -347,8 +372,6 @@ void IntroGUI::Options()
     else {
         vsyncOFF->SetWICSprite(dx11, this->lastOff);
     }
-
-
 }
 
 void IntroGUI::LoadOptions()
@@ -367,7 +390,7 @@ void IntroGUI::LoadOptions()
     
     ///////////////////////////////
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
-
+        
     // frame and bar music
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 650.0f, 60.0f), "MusicBar");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower.png", 555.0f, 60.0f), "leftmusicvolume");
@@ -381,6 +404,48 @@ void IntroGUI::LoadOptions()
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 650.0f, 210.0f), "SoundFrame");
    
     first = false;
+}
+
+void IntroGUI::Soundtracks()
+{
+    GUISprite* backToMain = static_cast<GUISprite*>(gui->GetGUIList()->at("backtooptions"));
+    if (backToMain->Clicked(input)) {
+        first = true;
+        menu = Menu::start;
+    }
+
+    // Click on musictrack, change string, update
+
+
+    if (backToMain->MouseOver(input)) {
+        backToMain->SetWICSprite(dx11, "Sprites/backtointro_mouseover.png");
+    }
+    else {
+        backToMain->SetWICSprite(dx11, "Sprites/backtointro.png");
+    }
+
+
+    // Mouseover functions 
+    GUISprite* monstersinc = static_cast<GUISprite*>(gui->GetGUIList()->at("monster"));
+    if (monstersinc->MouseOver(input)) {
+        monstersinc->SetWICSprite(dx11, "Sprites/monstersinc_mouseover.png");
+    }
+    else {
+        monstersinc->SetWICSprite(dx11, "Sprites/monstersinc.png");
+    }
+
+
+}
+
+void IntroGUI::LoadSoundtracks()
+{
+    ClearGUI();
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/tracks.png", 100.0f, 50.0f), "tracks");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/tracksFrame.png", 95.0f, 140.0f), "tracksFrame");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/monstersinc.png", 105.0f, 220.0f), "monster");
+    // Different musictrack sprites
+
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtooptions");
 }
 
 void IntroGUI::Quit()

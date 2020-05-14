@@ -61,12 +61,12 @@ void IntroScene::Load()
 	sphere->GetTransform().Translate(0, 0, -5);
 
 	Object* glasse = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Glasse_intro_Pose.fbx", dx11, toonshader));
-	glasse->GetTransform().Translate(0, 0.35, -3);
+	glasse->GetTransform().Translate(0, 0.65, -3);
 	glasse->GetTransform().Rotate(0, -0.6, 0);
 	AddObject(glasse);
 	
 	Object* wagon = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, toonshader));
-	wagon->GetTransform().Translate(7, -2.5, 1);
+	wagon->GetTransform().Translate(7, -1.75, 1);
 	wagon->GetTransform().Rotate(0, 0.1, 0);
 	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
 	AddObject(wagon);
@@ -74,6 +74,36 @@ void IntroScene::Load()
 
 	AddObject(sphere);
 	sphere->SetVisible(false);
+
+
+	// ------- TERRAIN
+	Shader* terrainShader = new Shader();
+	terrainShader->LoadPixelShader(L"Shaders/Terrain_ps.hlsl", "main", dx11.GetDevice());
+	terrainShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
+
+	Texture* grass_texture = Texture::CreateTexture("Textures/Grass_ColorTest.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	//Texture* grass_texture = Texture::CreateTexture("Textures/Cartoon_Grass_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	//Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Cartoon_Normal_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+
+	Texture* sand_texture = Texture::CreateTexture("Textures/Sand_Color_Test.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	Texture* sand_normal = Texture::CreateTexture("Textures/Sand_Normal_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+
+	Material* terrainMat = new Material(terrainShader, dx11);
+	terrainMat->SetTexture(0, grass_texture, PIXEL_TYPE::PIXEL);
+	terrainMat->SetTexture(1, sand_texture, PIXEL_TYPE::PIXEL);
+
+	terrainMat->SetTexture(2, grass_normal, PIXEL_TYPE::PIXEL);
+	terrainMat->SetTexture(3, sand_normal, PIXEL_TYPE::PIXEL);
+	terrainMat->GetMaterialData().hasNormalTexture = true;
+
+
+	Terrain ground;
+	ground.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
+	
+	Object* terrainObject = new Object(ObjectLayer::None, ground.GetMesh(), terrainMat);
+	terrainObject->GetTransform().SetPosition({ -55, -5, -2 });
+	AddObject(terrainObject);
 	
 		
 }

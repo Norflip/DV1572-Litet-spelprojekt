@@ -9,7 +9,7 @@
 class IntroGUI;
 #include "IntroGui.h"
 #include "SoundHandler.h"
-
+#include "Terrain.h"
 class IntroScene : public Scene
 {
 
