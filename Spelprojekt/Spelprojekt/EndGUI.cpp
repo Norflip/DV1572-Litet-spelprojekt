@@ -58,7 +58,7 @@ void EndGUI::LoadStart()
     
     if (currentScene->getWinOrLose() == true)
     {
-       winLose = new GUISprite(dx11, "Sprites/youwon.png", 0.0f, 0.0f);
+       winLose = new GUISprite(dx11, "Sprites/Glassbokal_Win.png", 0.0f, 0.0f);
     }
     else
     {
@@ -74,10 +74,10 @@ void EndGUI::LoadStart()
     GUISprite* quit = new GUISprite(dx11, "Sprites/quit.png", 0.0f, 0.0f);
     GUISprite* menu = new GUISprite(dx11, "Sprites/backtointro.png", 0.0f, 0.0f);
 
-    winLose->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (winLose->GetTextureWidth() / 2.0f), 100.0f);
-    play->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (play->GetTextureWidth() / 2.0f), 250.0f);
-    menu->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (menu->GetTextureWidth() / 2.0f), 400.0f);
-    quit->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (quit->GetTextureWidth() / 2.0f), 550.0f);
+    winLose->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (winLose->GetTextureWidth() / 2.0f), 0);
+    play->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (play->GetTextureWidth() / 2.0f) + 350.0f, 50.0f);
+    menu->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (menu->GetTextureWidth() / 2.0f) + 350.0f, 200.0f);
+    quit->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (quit->GetTextureWidth() / 2.0f) + 350.0f, 350.0f);
 
     gui->AddGUIObject(winLose, "winorlose");
     gui->AddGUIObject(play, "restart");
