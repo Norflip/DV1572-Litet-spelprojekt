@@ -39,6 +39,9 @@ private:
 	Input* input;
 	IntroScene* currentScene;
 
+	// Vsync
+	std::string lastOn, lastOff;
+
 	// music and sounds
 	bool vsyncOn = false;
 	SoundHandler* mainSound;

@@ -7,6 +7,8 @@ IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraControll
     this->input = cameraController->getInput();
     this->mainSound = sound;   
     this->soundeffects = soundeffect;
+    this->lastOff = "Sprites/offON.png";
+    this->lastOn = "Sprites/onOFF.png";
 }
 
 IntroGUI::~IntroGUI()
@@ -145,25 +147,27 @@ void IntroGUI::Options()
         first = true;
         menu = Menu::start;
     }
-    GUISprite* vsync = static_cast<GUISprite*>(gui->GetGUIList()->at("vsync"));
-    if (vsync->Clicked(input))
+       
+    /////////////////////////////
+
+    // VSYNC
+    GUISprite* vsyncON = static_cast<GUISprite*>(gui->GetGUIList()->at("vsyncON"));
+    GUISprite* vsyncOFF = static_cast<GUISprite*>(gui->GetGUIList()->at("vsyncOFF"));
+
+    if (vsyncON->Clicked(input))
     {
         if (!vsyncOn) {
-            gui->RemoveGUIObject("vsyncOff");
-            gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsyncOn.png", 660.0f, 350.0f), "vsyncOn");
+            vsyncON->SetWICSprite(dx11, "Sprites/onON.png");
+            lastOn = "Sprites/onON.png";
+            vsyncOFF->SetWICSprite(dx11, "Sprites/offOFF.png");        
+            lastOff = "Sprites/offOFF.png";
+
             currentScene->getRenderer()->setVsync(true);
             vsyncOn = true;
             std::cout << "VSYNC ON!" << std::endl;
-        }
-        else {
-            gui->RemoveGUIObject("vsyncOn");
-            gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsyncOff.png", 660.0f, 350.0f), "vsyncOff");
-            currentScene->getRenderer()->setVsync(false);
-            vsyncOn = false;
-            std::cout << "VSYNC OFF!" << std::endl;
-        }
+        }    
 
-
+       /*
         // THIS WORKS
         
         //dx11.GetSwapChain()->SetFullscreenState(true, NULL);
@@ -244,8 +248,20 @@ void IntroGUI::Options()
        // depthTexture = nullptr;*/
        // RenderTarget* target = new RenderTarget(test, nullptr, dsv, viewport);
        // dx11.SetRenderTarget(target);
-       //// this->backbuffer = new RenderTarget(backbufferRTV, nullptr, dsv, viewport);
+       //// this->backbuffer = new RenderTarget(backbufferRTV, nullptr, dsv, viewport);                
+    }
 
+    if (vsyncOFF->Clicked(input)) {
+        if (vsyncOn) {
+            vsyncON->SetWICSprite(dx11, "Sprites/onOFF.png");
+            lastOn = "Sprites/onOFF.png";
+            vsyncOFF->SetWICSprite(dx11, "Sprites/offON.png");
+            lastOff = "Sprites/offON.png";
+
+            currentScene->getRenderer()->setVsync(false);
+            vsyncOn = false;
+            std::cout << "VSYNC OFF!" << std::endl;
+        }
     }
 }
 
@@ -256,8 +272,14 @@ void IntroGUI::LoadOptions()
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/music.png", 100.0f, 50.0f), "musicvolume");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/sounds.png", 100.0f, 200.0f), "soundsvolume");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsync.png", 100.0f, 350.0f), "vsync");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsyncOff.png", 660.0f, 350.0f), "vsyncOff");
+
+    // VSYNC ON/OFF   
+    GUISprite* vsyncONOFF_on = new GUISprite(dx11, this->lastOn, 560.0f, 350.0f);
+    GUISprite* vsyncONOFF_off = new GUISprite(dx11, this->lastOff, 790.0f, 350.0f);
+    gui->AddGUIObject(vsyncONOFF_on, "vsyncON");
+    gui->AddGUIObject(vsyncONOFF_off, "vsyncOFF");
     
+    ///////////////////////////////
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
 
     // frame and bar music
