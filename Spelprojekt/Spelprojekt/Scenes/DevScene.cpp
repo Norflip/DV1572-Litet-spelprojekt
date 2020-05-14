@@ -129,7 +129,7 @@ void DevScene::Load()
 	// ------ PLAYER
 	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, toonShader);
 
-	this->player = new Player(playerModel, controller, &ground, gui, dx11, static_cast<Scene*>(this));
+	this->player = new Player(playerModel, controller, &ground, gui, wagon, dx11,  static_cast<Scene*>(this));
 	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 	this->player->GetTransform().SetPosition({ 55, 7, 55 });
@@ -148,6 +148,7 @@ void DevScene::Load()
 	for (int i = 0; i < 11; i++)
 		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);	
 	coconuts[0]->GetTransform().Translate(177.0f, 8.5f, 75.0f);
+	
 	coconuts[1]->GetTransform().Translate(164.0f, 8.5f, 60.0f);
 	coconuts[2]->GetTransform().Translate(100.0f, 8.8f, 75.0f);
 	coconuts[3]->GetTransform().Translate(78.0f, 9.0f, 82.0f);
@@ -170,6 +171,7 @@ void DevScene::Load()
 	for(int i = 0; i < 5; i++)
 		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);	
 	spoons[0]->GetTransform().Translate(130, 8, 40);
+
 	spoons[1]->GetTransform().Translate(28, 7, 47);
 	spoons[2]->GetTransform().Translate(145.0f, 8.5f, 193.0f);
 	spoons[3]->GetTransform().Translate(115.0f, 8.5f, 138.0f);
@@ -416,6 +418,7 @@ void DevScene::CreateSceneObjects()
 		parasolls[1]->GetTransform().Translate(172.5, 5.4, 40);
 		parasolls[2]->GetTransform().Translate(147.5, 5.5, 40);
 		parasolls[3]->GetTransform().Translate(117.5, 5.6, 38);
+		parasolls[3]->GetTransform().LookAt({ 55, 55, 66 });
 		parasolls[3]->GetTransform().Rotate(-0.05, 0, 0);
 		parasolls[4]->GetTransform().Translate(87.5, 5.6, 35);
 		parasolls[4]->GetTransform().Rotate(-0.05, 0, 0);

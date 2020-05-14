@@ -36,13 +36,54 @@ void Transform::LookAt(DirectX::XMVECTOR lookPosition)
 {
 	DirectX::XMVECTOR offset = DirectX::XMVectorSubtract(lookPosition, position);
 
+	DirectX::XMVECTOR playerPos = position;
+	DirectX::XMVECTOR testWinPos = lookPosition;
+
 	DirectX::XMFLOAT3 direction;
 	DirectX::XMStoreFloat3(&direction, DirectX::XMVector3Normalize(offset));
+	float dX = testWinPos.m128_f32[0] - playerPos.m128_f32[0];
+	float dY = testWinPos.m128_f32[1] - playerPos.m128_f32[1];
+	float dZ = testWinPos.m128_f32[2] - playerPos.m128_f32[2];
 
-	float yaw = atanf(direction.x / -direction.y);
-	float pitch = atanf(sqrtf(direction.x * direction.x + direction.y * direction.y) / direction.z);
 
+	float angle = atan2f(dX, dZ);
+	
+	float yaw = angle;// atan2f(direction.x / direction.y);
+
+
+	//float pitch = atanf(sqrtf(direction.x * direction.x + direction.y * direction.y) / direction.z);
+	float pitch = atan2f(sqrtf(dZ * dZ + dX * dX), dY);
+
+	//pitch = atan2f(testWinPos.m128_f32[1] - playerPos.m128_f32[1], testWinPos.m128_f32[2] - playerPos.m128_f32[2]);
 	this->rotation = { pitch, yaw, 0.0f };
+}
+
+
+
+void Transform::LookAtCamera(DirectX::XMVECTOR lookPosition)
+{
+	DirectX::XMVECTOR offset = DirectX::XMVectorSubtract(lookPosition, position);
+
+	DirectX::XMVECTOR playerPos = position;
+	DirectX::XMVECTOR testWinPos = lookPosition;
+
+	DirectX::XMFLOAT3 direction;
+	DirectX::XMStoreFloat3(&direction, DirectX::XMVector3Normalize(offset));
+	float dX = testWinPos.m128_f32[0] - playerPos.m128_f32[0];
+	float dZ = testWinPos.m128_f32[2] - playerPos.m128_f32[2];
+	float dY = testWinPos.m128_f32[1] - playerPos.m128_f32[1];
+
+	float angle = atan2f(dX, dZ);
+
+	float yaw = angle;// atan2f(direction.x / direction.y);
+
+
+	//float pitch = atanf(sqrtf(direction.x * direction.x + direction.y * direction.y) / direction.z);
+	float pitch = atan2(sqrtf(dZ * dZ + dX * dX), dY) - MathHelper::PI;
+
+	//pitch = atan2f(testWinPos.m128_f32[1] - playerPos.m128_f32[1], testWinPos.m128_f32[2] - playerPos.m128_f32[2]);
+
+	this->rotation = { -pitch, yaw, 0.0f };
 }
 
 void Transform::Translate(float x, float y, float z)

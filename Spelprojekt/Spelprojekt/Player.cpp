@@ -1,5 +1,5 @@
 #include "Player.h"
-Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, DX11Handler& dx11, Scene* scene)
+Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, Object* winArea, DX11Handler& dx11, Scene* scene)
 	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11)
 {
 
@@ -25,7 +25,7 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 650.0f);
 	this->healthbar->HealthBar(100.0f, 100.0f);
 	this->gui->AddGUIObject(this->healthbar, "healthbar");
-
+	this->winArea = winArea;
 	this->arrow = nullptr;
 }
 
@@ -115,7 +115,7 @@ void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 		nextDir = atan2(DirectX::XMVectorGetByIndex(directionVector, 0), DirectX::XMVectorGetByIndex(directionVector, 2));
 
 	//Rotates to shortest angle(in rad)
-	GetTransform().Rotate(0, MathHelper::ShortestRotation(currentDir, nextDir) / 10, 0);
+	GetTransform().Rotate(0, MathHelper::ShortestRotation(currentDir, nextDir) / 3, 0);
 	//GetTransform().Rotate(0, shortestRoration(currentDir, nextDir)/10, 0);
 
 	//removes rotations bigger and smaller than 360 & -360
@@ -124,6 +124,9 @@ void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 	if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) > MathHelper::PI * 2)
 		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) - MathHelper::PI * 2, 0 });
 	
+
+
+
 }
 
 void Player::InitWeapons()
@@ -282,10 +285,19 @@ void Player::UpdateLookAtPosition()
 {	
 	if (arrow != nullptr)
 	{
-		arrow->GetTransform().SetPosition(GetTransform().GetPosition());
-		arrow->GetTransform().SetRotation(GetTransform().GetRotation());
+		arrow->GetTransform().SetPosition({ GetTransform().GetPosition().m128_f32[0],GetTransform().GetPosition().m128_f32[1],GetTransform().GetPosition().m128_f32[2] });
+		DirectX::XMVECTOR playerPos = GetTransform().GetPosition();
+		DirectX::XMVECTOR testWinPos = winArea->GetTransform().GetPosition();
 
+		//float angle = atan2f(testWinPos.m128_f32[0] - playerPos.m128_f32[0], testWinPos.m128_f32[2] - playerPos.m128_f32[2]);
 
+		//arrow->GetTransform().SetRotation({ 0,angle,0 });
+		//arrow->GetTransform().Rotate(0, MathHelper::PI, 0);
+		;
+		arrow->GetTransform().LookAt(winArea->GetWorldBounds().GetCenter());
+		//arrow->GetTransform().SetRotation({ 0,0,0});
+		//arrow->GetTransform().GetRotation().m128_f32[0]
+		//arrow->GetTransform().SetRotation({ arrow->GetTransform().GetRotation().m128_f32[0] + MathHelper::PI/2 ,arrow->GetTransform().GetRotation().m128_f32[1] ,arrow->GetTransform().GetRotation().m128_f32[2] });
 		//nextPosition = { (GetTransform().GetPosition().m128_f32[0] + (-std::sinf(arrowDirection.m128_f32[1]) * 30)) ,GetTransform().GetPosition().m128_f32[1], (GetTransform().GetPosition().m128_f32[2] + (-std::cosf(arrowDirection.m128_f32[1]) * 30)) };	// 30 = speed
 		//GetTransform().SetPosition(nextPos);
 		//GetTransform().SetRotation({ (GetTransform().GetRotation().m128_f32[0] + (-8.f * deltaTime)) ,GetTransform().GetRotation().m128_f32[1]  ,GetTransform().GetRotation().m128_f32[2] });
