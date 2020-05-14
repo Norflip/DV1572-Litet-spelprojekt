@@ -131,6 +131,20 @@ void IntroGUI::Options()
         }
     }
 
+    // mouseover
+    if (lowSoundVolume->MouseOver(input)) {
+        lowSoundVolume->SetWICSprite(dx11, "Sprites/VolLower_mouseover.png");
+    }
+    else {
+        lowSoundVolume->SetWICSprite(dx11, "Sprites/VolLower.png");
+    }
+
+    if (highSoundVolume->MouseOver(input)) {
+        highSoundVolume->SetWICSprite(dx11, "Sprites/Volhigher_mouseover.png");
+    }
+    else {
+        highSoundVolume->SetWICSprite(dx11, "Sprites/VolHigher.png");
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -163,6 +177,22 @@ void IntroGUI::Options()
         }           
     }
 
+    // mouseover
+    if (lowMusicVolume->MouseOver(input)) {
+        lowMusicVolume->SetWICSprite(dx11, "Sprites/VolLower_mouseover.png");
+    }
+    else {
+        lowMusicVolume->SetWICSprite(dx11, "Sprites/VolLower.png");
+    }
+
+    if (highMusicVolume->MouseOver(input)) {
+        highMusicVolume->SetWICSprite(dx11, "Sprites/VolHigher_mouseover.png");
+    }
+    else {
+        highMusicVolume->SetWICSprite(dx11, "Sprites/VolHigher.png");
+    }
+
+
 
     //////////////////////////////////////////////////////////////
 
@@ -175,6 +205,8 @@ void IntroGUI::Options()
         menu = Menu::start;
     }
        
+
+    // mouseover
     if (backtointro->MouseOver(input)) 
     {
         backtointro->SetWICSprite(dx11, "Sprites/backtointro_mouseover.png");
@@ -338,14 +370,14 @@ void IntroGUI::LoadOptions()
 
     // frame and bar music
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 650.0f, 60.0f), "MusicBar");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower4.png", 555.0f, 60.0f), "leftmusicvolume");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher4.png", 1045.0f, 60.0f), "rightmusicvolume");    
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower.png", 555.0f, 60.0f), "leftmusicvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher.png", 1045.0f, 60.0f), "rightmusicvolume");    
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 650.0f, 60.0f), "MusicFrame");
 
     // frame and bar sounds
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 650.0f, 210.0f), "SoundsBar");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower4.png", 555.0f, 210.0f), "leftsoundvolume");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher4.png", 1045.0f, 210.0f), "rightsoundvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower.png", 555.0f, 210.0f), "leftsoundvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher.png", 1045.0f, 210.0f), "rightsoundvolume");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 650.0f, 210.0f), "SoundFrame");
    
     first = false;
