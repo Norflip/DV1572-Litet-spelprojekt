@@ -102,7 +102,7 @@ void IntroScene::Load()
 	ground.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
 	
 	Object* terrainObject = new Object(ObjectLayer::None, ground.GetMesh(), terrainMat);
-	terrainObject->GetTransform().SetPosition({ -100, -2+9, -10 });
+	terrainObject->GetTransform().SetPosition({ -100, -2+8.5f, -10 });
 	AddObject(terrainObject);
 	
 		
