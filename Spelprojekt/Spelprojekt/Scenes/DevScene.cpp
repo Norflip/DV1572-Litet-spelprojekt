@@ -205,7 +205,7 @@ void DevScene::Load()
 	// Play scenemusic
 	this->levelMusic->StopSound();
 	this->levelMusic->LoadSound("Levelsound", "SoundEffects/Ben.wav");
-	levelMusic->PlaySound("Levelsound", levelMusic->GetGlobalVolume());
+	//levelMusic->PlaySound("Levelsound", levelMusic->GetGlobalVolume());
 }
 
 void DevScene::Unload()
@@ -655,7 +655,6 @@ void DevScene::checkForNextScene()
 
 void DevScene::SetNextScene(bool winOrLose)
 {
-
 	for (int i = 0; i < scenes.size(); i++)
 	{
 		if (scenes[i]->GetName() == "EndScene")

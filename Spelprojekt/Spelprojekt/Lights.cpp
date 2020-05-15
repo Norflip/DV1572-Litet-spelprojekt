@@ -46,7 +46,7 @@ void Lights::SetSunDirection(DirectX::XMFLOAT3 direction)
 	lightConstantBuffer.sunDirection = { direction.x / l, direction.y / l, direction.z / l };
 }
 
-void Lights::UpdateConstantBuffer(DirectX::XMFLOAT3 eye, ID3D11DeviceContext* context)
+void Lights::UpdateConstantBuffer(Camera* camera, ID3D11DeviceContext* context)
 {
 	auto it = pointLightMap.begin();
 	size_t index = 0;
@@ -58,8 +58,12 @@ void Lights::UpdateConstantBuffer(DirectX::XMFLOAT3 eye, ID3D11DeviceContext* co
 		it++;
 	}
 
+	//lightConstantBuffer.worldToView = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(camera->GetView(), camera->GetProjection()));
+	lightConstantBuffer.worldToView = DirectX::XMMatrixTranspose(camera->GetView());
+
 	lightConstantBuffer.pointLightCount = pointLightMap.size();
-	lightConstantBuffer.eyePosition = eye;
+
+	DirectX::XMStoreFloat3(&lightConstantBuffer.eyePosition, camera->GetTransform().GetPosition());
 
 	context->UpdateSubresource(lightBuffer_ptr, 0, 0, &lightConstantBuffer, 0, 0);
 	context->PSSetConstantBuffers(CONSTANT_BUFFER_SLOT, 1, &lightBuffer_ptr);

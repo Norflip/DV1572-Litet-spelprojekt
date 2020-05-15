@@ -9,7 +9,7 @@
 #include "RenderTarget.h"
 #include "ConstantBuffers.h"
 #include "Lights.h"
-
+#include "SSAO.h"
 #include "GUI.h"
 
 constexpr float CLEAR_COLOR[3] = { 0.4f,0.4f,0.4f };
@@ -29,8 +29,10 @@ public:
 	Lights& GetLights() { return this->lights; }
 
 	void SetGUI(GUI* gui) { this->gui = gui; }
-	void DisplayFrame(DirectX::XMVECTOR eye);
+	void DisplayFrame(Camera*);
 	void setVsync(bool vsync) { this->vSync = vSync; }
+
+	void DrawScreenQuad();
 private:
 	void DrawMesh(Mesh*);
 
@@ -39,6 +41,7 @@ private:
 	DX11Handler& dx11;
 	Timer& timer;
 	Lights lights;
+	SSAO ssao;
 
 	Shader* lightpass;
 	Mesh* screenQuad;
@@ -52,4 +55,7 @@ private:
 	RenderTarget* backbufferRenderTarget;
 	RenderTarget* gbufferRenderTarget;
 	RenderTarget* currentRenderTarget;
+
+
+	Texture* ssaoRandomTexture;
 };

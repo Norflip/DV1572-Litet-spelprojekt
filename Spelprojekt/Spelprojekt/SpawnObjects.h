@@ -7,9 +7,19 @@
 #include "Enemy.h"
 #include <ctime>
 
+// insert entities reference
+// remove scene
+// AssimpData instead of mesh + material
+// ska ej vara ett objekt
+
+//SpawnObjects::SpawnObjects(Entities* entities, Terrain* terrain, AssimpHandler::AssimpData modelData, Player* player, DX11Handler& dx11)
+// registerEnemy (key, object)
+
+
 class SpawnObjects : public Object
 {
 	public:
+		
 		SpawnObjects(DX11Handler&, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player, SoundHandler* soundeffect);
 		~SpawnObjects() {};
 		void Update(const float& deltaTime) override;
@@ -19,6 +29,8 @@ class SpawnObjects : public Object
 		void AddEnemy(Enemy*);
 		void RemoveEnemy(Enemy*);
 		Enemy* GetEnemy();
+
+
 	private:
 		void UpdateSpawnEnemy();
 		void UpdateRemoveEnemy();
@@ -27,12 +39,15 @@ class SpawnObjects : public Object
 		DX11Handler& dx11;
 		Terrain* terrain;
 		Scene* scene;
+		
 		Mesh* mesh;
 		Material* material;
+		
 		Player* player;
 		Enemy* testEnemy;
 		Enemy* enemy;
 		Object* object;
+
 		SoundHandler* soundeffects;
 
 		int nrOfEnemies = 0;

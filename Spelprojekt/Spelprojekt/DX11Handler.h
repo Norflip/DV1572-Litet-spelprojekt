@@ -32,9 +32,11 @@ public:
 	ID3D11Texture2D* GetBackBufferPtr() const { return this->backBufferPtr; }
 	ID3D11RenderTargetView* GetRTV() const { return this->backbufferRTV; }
 	void SetRTV(ID3D11RenderTargetView* rtv) { this->backbufferRTV = rtv; }
+	
 	template <typename T>
 	ID3D11Buffer* CreateBuffer (T& data);
 
+	
 	void SetFullscreen(bool fullscreen);
 	void SetWireframeMode(bool);
 

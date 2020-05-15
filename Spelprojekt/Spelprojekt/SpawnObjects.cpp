@@ -1,11 +1,5 @@
 #include "SpawnObjects.h"
 
-// insert entities reference
-// remove scene
-// AssimpData instead of mesh + material
-// ska ej vara ett objekt
-
-//SpawnObjects::SpawnObjects(Entities* entities, Terrain* terrain, AssimpHandler::AssimpData modelData, Player* player, DX11Handler& dx11)
 
 SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player, SoundHandler* soundeffect) : Object(ObjectLayer::None, mesh, material), dx11(dx11)
 {
@@ -62,7 +56,6 @@ void SpawnObjects::RemoveEnemy(Enemy* enemy)
 
 void SpawnObjects::UpdateSpawnEnemy()
 {
-
 	if (nrOfEnemies <= 2 && randX != lastRandX)
 	{
 		enemy = new Enemy(*testEnemy);

@@ -22,6 +22,7 @@ struct PointLight
 __declspec(align(16))
 struct LightData
 {
+	DirectX::XMMATRIX worldToView;
 	DirectX::XMFLOAT4 sunColor;
 	DirectX::XMFLOAT3 sunDirection;
 	float sunIntensity;

@@ -8,11 +8,14 @@ Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11)
 	this->backbufferRenderTarget = dx11.GetBackbuffer();
 	this->gui = nullptr;
 	this->lightpass = new Shader();
+	this->lightpass->LoadVertexShader(L"Shaders/ScreenQuad_vs.hlsl", "main", dx11.GetDevice());
 	this->lightpass->LoadPixelShader(L"Shaders/DeferredLightPass_ps.hlsl", "main", dx11.GetDevice());
-	this->lightpass->LoadVertexShader(L"Shaders/DeferredLightPass_vs.hlsl", "main", dx11.GetDevice());
 
 	screenQuad = MeshCreator::CreateScreenQuad(dx11.GetDevice());
 	worldBuffer_ptr = dx11.CreateBuffer<WorldData>(cb_world);
+
+	ssao.Initialize(width, height, &dx11);
+	ssaoRandomTexture = Texture::CreateTexture("Textures/ssaoRandom.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP);
 
 	lights.Initialize(dx11);
 }
@@ -57,25 +60,47 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 	DrawMesh(mesh);
 }
 
-void Renderer::DisplayFrame(DirectX::XMVECTOR eye)
+void Renderer::DisplayFrame(Camera* camera)
 {
 	//Uppdate light constant buffer here
-	DirectX::XMFLOAT3 eyePosition;
-	DirectX::XMStoreFloat3(&eyePosition, eye);
-	lights.UpdateConstantBuffer(eyePosition, dx11.GetContext());
+	lights.UpdateConstantBuffer(camera, dx11.GetContext());
 
 	SetRenderTarget(backbufferRenderTarget);
 	ClearRenderTarget();
 
+	ssao.RenderPass(gbufferRenderTarget);
+
+
+	// bind ssao_random texture
+	ID3D11ShaderResourceView* srv = ssaoRandomTexture->GetSRV();
+	ID3D11SamplerState* sampelr = ssaoRandomTexture->GetSampler();
+	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount(), 1, &srv);
+	dx11.GetContext()->PSSetSamplers(gbufferRenderTarget->BufferCount(), 1, &sampelr);
+
 	gbufferRenderTarget->Bind(dx11.GetContext());
 	lightpass->Bind(dx11.GetContext());
 
-	DrawMesh(screenQuad);
 
+	DrawScreenQuad();
+
+	// GUI PASS
 	if (gui != nullptr)
 		gui->DrawAll();
 
 	dx11.GetSwapChain()->Present(vSync, 0);
+
+
+	// unbinds ssao_random texture
+	ID3D11ShaderResourceView* const pSRV[1] = { NULL };
+	ID3D11SamplerState* const ssrf[1] = { NULL };
+	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount(), 1, pSRV);
+	dx11.GetContext()->PSSetSamplers(gbufferRenderTarget->BufferCount(), 1, ssrf);
+
+}
+
+void Renderer::DrawScreenQuad()
+{
+	DrawMesh(screenQuad);
 }
 
 void Renderer::DrawMesh(Mesh* mesh)

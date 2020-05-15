@@ -20,6 +20,7 @@ struct PointLight
 
 cbuffer LightConstantBuffer : register(b1)
 {
+	matrix worldToView;
 	float4 sunColor;
 	float3 sunDirection;
 	float sunIntensity;
@@ -28,6 +29,8 @@ cbuffer LightConstantBuffer : register(b1)
 	int pointLightCount;
 
 	PointLight pointLights[MAX_LIGHTS];
+
+
 }
 
 cbuffer MaterialBuffer : register (b2)
