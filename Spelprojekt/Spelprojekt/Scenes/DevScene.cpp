@@ -221,7 +221,7 @@ void DevScene::Update(const float& deltaTime)
 {	
 	Scene::Update(deltaTime);
 
-	//auto g = entities.GetObjectsInRange(player->GetTransform().GetPosition(), 2.0f);
+	auto g = entities.GetObjectsInRange(player->GetTransform().GetPosition(), 2.0f);
 
 
 	//FPS STUFF
