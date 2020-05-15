@@ -18,7 +18,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
-	this->timeUntilEnd = 0.0f;
+	this->timeUntilEnd = 10.0f;
 
 	// Soundhandler
 	this->levelMusic = sound;	
