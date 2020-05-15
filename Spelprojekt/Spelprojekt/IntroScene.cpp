@@ -75,6 +75,13 @@ void IntroScene::Load()
 	AddObject(sphere);
 	sphere->SetVisible(false);
 
+	// ------- BACKGROUND
+
+	Object* backGround = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Background_Plane.fbx", dx11, toonshader));
+	backGround->GetTransform().Translate(5, 19, 15);
+	backGround->GetTransform().Rotate(-1.5, 0, 0);
+	backGround->GetTransform().Scale(100, 1, 24);
+	AddObject(backGround);
 
 	// ------- TERRAIN
 	Shader* terrainShader = new Shader();
