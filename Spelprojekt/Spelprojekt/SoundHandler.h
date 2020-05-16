@@ -12,9 +12,13 @@ class SoundHandler
 		void SetGlobalVolume(float volume);
 		float GetGlobalVolume();
 		void StopSound();
+		void SetLevelSoundtrack(std::string soundname) { this->levelsoundname = soundname; }
+		std::string GetLevelSoundtrack() { return this->levelsoundname; }
+
 	private:
 		DirectX::AudioEngine* audioEngine;
 		DirectX::SoundEffect* soundEffect;	
 
 		std::unordered_map<std::string, DirectX::SoundEffect*> soundMap;
+		std::string levelsoundname;
 };
