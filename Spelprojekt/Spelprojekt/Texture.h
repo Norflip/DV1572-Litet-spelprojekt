@@ -8,7 +8,6 @@
 #include <DirectXMath.h>
 #include <string>
 #include <wrl.h>
-
 class Texture
 {
 public:
@@ -22,7 +21,7 @@ public:
 	ID3D11SamplerState* GetSampler() { return this->samplerState;}
 	ID3D11Resource* GetTexture() {return this->texture;}
 	D3D11_TEXTURE2D_DESC  GetimageSampleDesc() const {return this->imageSampleDesc;}
-
+	void SetSampler(ID3D11Device* device);
 
 private:	
 	D3D11_TEXTURE2D_DESC  imageSampleDesc;

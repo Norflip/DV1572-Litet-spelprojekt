@@ -178,6 +178,7 @@ namespace AssimpHandler
 				// Load the diffuseTexture and apply it to the object
 				texture = loadTextureFromFbx(dx11, path);
 				object.material->GetMaterialData().hasAlbedoTexture = true;
+				texture->SetSampler(dx11.GetDevice());
 			}
 
 			// The app assumes there is a texture to every object, so if there is no texture in the file,
@@ -185,6 +186,7 @@ namespace AssimpHandler
 			else
 			{
 				texture = Texture::CreateTexture("Textures/greyTexture.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+				texture->SetSampler(dx11.GetDevice());
 			}
 
 			// Check if the file contains a normalMap
@@ -192,6 +194,7 @@ namespace AssimpHandler
 			{
 				// Load the normalMap and apply it to the object
 				normalMap = loadTextureFromFbx(dx11, path);
+				normalMap->SetSampler(dx11.GetDevice());
 				object.material->SetTexture(NORMAL_MATERIAL_TYPE, normalMap, PIXEL_TYPE::PIXEL);
 				object.material->GetMaterialData().hasNormalTexture = true;
 				

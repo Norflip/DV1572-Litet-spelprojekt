@@ -8,7 +8,7 @@ Texture::~Texture()
 {
 }
 
-Texture* Texture::CreateTexture(std::string filePath, DX11Handler& dx11, bool createSampler, D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode)
+Texture* Texture::CreateTexture(std::string filePath, DX11Handler& dx11, bool createSampler = true, D3D11_FILTER filter = D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_MODE mode = D3D11_TEXTURE_ADDRESS_WRAP)
 {
 	Texture* texture = new Texture();
 	HRESULT hr;
@@ -38,7 +38,24 @@ Texture* Texture::CreateTexture(std::string filePath, DX11Handler& dx11, bool cr
 		ID3D11SamplerState* samplerState;
 		ZeroMemory(&samplerState, sizeof(ID3D11SamplerState));
 		dx11.GetDevice()->CreateSamplerState(&samplerDescription, &samplerState);
+		//this->samplerState = 
 	}
 
 	return texture;
+}
+
+void Texture::SetSampler(ID3D11Device* device)
+{
+	D3D11_SAMPLER_DESC samplerDesc;
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	samplerDesc.MinLOD = -FLT_MAX;
+	samplerDesc.MaxLOD = FLT_MAX;
+
+	HRESULT hr = device->CreateSamplerState(&samplerDesc, &samplerState);
 }

@@ -79,9 +79,14 @@ void Material::Unbind(ID3D11DeviceContext* context)
 		if (flag == PIXEL_TYPE::PIXEL)
 		{
 			if (sampler != nullptr)
-				context->PSSetSamplers(index, 1, nullptr);
-
-			context->PSSetShaderResources(index, 1, pSRV);
+			{
+				//ID3D11SamplerState* testSampler;
+				//context->PSGetSamplers(index, 1, &testSampler);
+				//if(testSampler != NULL || testSampler != nullptr)
+				//context->PSSetSamplers(index, 1, nullptr);
+			}
+			if(pSRV != NULL)
+				context->PSSetShaderResources(index, 1, pSRV);
 		}
 		else if (flag == PIXEL_TYPE::VERTEX)
 		{

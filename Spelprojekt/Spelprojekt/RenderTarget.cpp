@@ -181,6 +181,7 @@ void RenderTarget::Initalize(ID3D11Device* device)
 
 void RenderTarget::Bind(ID3D11DeviceContext* context)
 {
+
 	for (size_t i = 0; i < bufferCount; i++)
 		context->PSSetShaderResources(i, 1, &srv[i]);
 }

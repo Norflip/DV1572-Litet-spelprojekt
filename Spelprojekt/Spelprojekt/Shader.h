@@ -31,6 +31,7 @@ public:
 	ID3D11InputLayout* GetInputLayout() const { return this->inputLayout; }
 
 	void Bind(ID3D11DeviceContext*);
+	void CreateSampler(ID3D11Device* device);
 
 private:
 	void PrintShaderError(ID3DBlob* errorBlob);
@@ -40,7 +41,8 @@ private:
 	DWORD flags;
 	ID3D11PixelShader* pixelShader;
 	ID3D11VertexShader* vertexShader;
-	ID3D11InputLayout* inputLayout;
+	ID3D11InputLayout* inputLayout = nullptr;
+	ID3D11SamplerState* sampler;
 };
 
 static size_t shader_id_counter = 0;

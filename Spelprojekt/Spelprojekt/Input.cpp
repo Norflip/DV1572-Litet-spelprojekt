@@ -29,6 +29,8 @@ bool Input::GetKey(const char& c) const
 
 bool Input::GetKeyDown(const char& c) const
 {
+	if(keyboardState[tolower(c)].state && !keyboardState[tolower(c)].previousState != 0)
+		std::cout << keyboardState[tolower(c)].state && !keyboardState[tolower(c)].previousState;
 	return keyboardState[tolower(c)].state && !keyboardState[tolower(c)].previousState;
 }
 
