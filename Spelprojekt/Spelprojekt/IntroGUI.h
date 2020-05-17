@@ -67,6 +67,5 @@ private:
 	Soundtrack soundtrack = Soundtrack::Track1;
 	bool oneChecked;
 	bool twoChecked;
-	bool threeChecked;
-		
+	bool threeChecked;		
 };

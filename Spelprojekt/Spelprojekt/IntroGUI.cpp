@@ -7,13 +7,14 @@ IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraControll
     this->input = cameraController->getInput();
     this->mainSound = sound;   
     this->soundeffects = soundeffect;
+
     this->lastOff = "Sprites/off_isON.png";
     this->lastOn = "Sprites/on_isOFF.png";
 
     this->oneChecked = true;
     this->twoChecked = false;
     this->threeChecked = false;
-       
+      
 }
 
 IntroGUI::~IntroGUI()
@@ -22,6 +23,8 @@ IntroGUI::~IntroGUI()
 
 void IntroGUI::Update()
 {
+    ///////////////////////////////////////
+
     switch (menu)
     {
     case Menu::start:
@@ -73,77 +76,78 @@ void IntroGUI::Update()
 
 void IntroGUI::Start()
 { 
-        // gotta fix if static cast fails
-        GUISprite* play = static_cast<GUISprite*>(gui->GetGUIList()->at("play"));
-        if (play->Clicked(input))
-        {
-            //ClearGUI();
-            currentScene->setNextScene();
-        }
-        GUISprite* options = static_cast<GUISprite*>(gui->GetGUIList()->at("options"));
-        if (options->Clicked(input))
-        {
-            //ClearGUI();
-            menu = Menu::options;
-            first = true;
-        }
-        // SOUNDTRACK
-        GUISprite* soundtrack = static_cast<GUISprite*>(gui->GetGUIList()->at("soundtracks"));
-        if (soundtrack->Clicked(input))
-        {
-            //ClearGUI();
-            menu = Menu::soundtracks;
-            first = true;
-        }
+    // gotta fix if static cast fails
+    GUISprite* play = static_cast<GUISprite*>(gui->GetGUIList()->at("play"));
+    if (play->Clicked(input))
+    {
+        //ClearGUI();
+        currentScene->setNextScene();
+    }
+    GUISprite* options = static_cast<GUISprite*>(gui->GetGUIList()->at("options"));
+    if (options->Clicked(input))
+    {
+        //ClearGUI();
+        menu = Menu::options;
+        first = true;
+    }
+    // SOUNDTRACK
+    GUISprite* soundtrack = static_cast<GUISprite*>(gui->GetGUIList()->at("soundtracks"));
+    if (soundtrack->Clicked(input))
+    {
+        //ClearGUI();
+        menu = Menu::soundtracks;
+        first = true;
+    }
 
-        GUISprite* quit = static_cast<GUISprite*>(gui->GetGUIList()->at("quit"));
-        if (quit->Clicked(input))
-        {
-            //ClearGUI();
-            menu = Menu::quit;
-            first = true;
-        }
+    GUISprite* quit = static_cast<GUISprite*>(gui->GetGUIList()->at("quit"));
+    if (quit->Clicked(input))
+    {
+        //ClearGUI();
+        menu = Menu::quit;
+        first = true;
+    }
                 
 
 
-        // MOUSEOVER
-        // To options
-        if (options->MouseOver(input)) {
-            options->SetWICSprite(dx11, "Sprites/options_mouseover.png");
-        }
-        else {
-            options->SetWICSprite(dx11, "Sprites/options.png");
-        }
+    // MOUSEOVER
+    // To options
+    if (options->MouseOver(input)) {
+        options->SetWICSprite(dx11, "Sprites/options_mouseover.png");
+    }
+    else {
+        options->SetWICSprite(dx11, "Sprites/options.png");
+    }
 
-        // play
-        if (play->MouseOver(input)) {
-            play->SetWICSprite(dx11, "Sprites/play_mouseover.png");
-        }
-        else {
-            play->SetWICSprite(dx11, "Sprites/play.png");
-        }
+    // play
+    if (play->MouseOver(input)) {
+        play->SetWICSprite(dx11, "Sprites/play_mouseover.png");
+    }
+    else {
+        play->SetWICSprite(dx11, "Sprites/play.png");
+    }
 
-        //quit
-        if (quit->MouseOver(input)) {
-            quit->SetWICSprite(dx11, "Sprites/quit_mouseover.png");
-        }
-        else {
-            quit->SetWICSprite(dx11, "Sprites/quit.png");
-        }
+    //quit
+    if (quit->MouseOver(input)) {
+        quit->SetWICSprite(dx11, "Sprites/quit_mouseover.png");
+    }
+    else {
+        quit->SetWICSprite(dx11, "Sprites/quit.png");
+    }
                 
-        // Soundtrack
-        if (soundtrack->MouseOver(input)) {
-            soundtrack->SetWICSprite(dx11, "Sprites/soundtracks_mouseover.png");
-        }
-        else {
-            soundtrack->SetWICSprite(dx11, "Sprites/soundtracks.png");
-        }
+    // Soundtrack
+    if (soundtrack->MouseOver(input)) {
+        soundtrack->SetWICSprite(dx11, "Sprites/soundtracks_mouseover.png");
+    }
+    else {
+        soundtrack->SetWICSprite(dx11, "Sprites/soundtracks.png");
+    }
 
 }
 
 void IntroGUI::LoadStart()
 {
     ClearGUI();
+    
     //LOAD ALL GUI OBJECTS FOR START, ONCE
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 50.0f), "play");    
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 200.0f), "options");
@@ -513,7 +517,6 @@ void IntroGUI::Soundtracks()
             
     }
 
-
     
     ///////////////////////////////////////////////////////////////////////////////////
 
@@ -571,13 +574,13 @@ void IntroGUI::Quit()
     {
         currentScene->exitGame = true;
     }
+
     GUISprite* backagain = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
     if (backagain->Clicked(input))
     {
         first = true;
         menu = Menu::start;
     }
-
 
     // MOUSEOVER
     if (imsure->MouseOver(input)) {
