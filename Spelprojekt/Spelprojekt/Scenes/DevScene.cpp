@@ -206,7 +206,7 @@ void DevScene::Load()
 
 	// Play scenemusic
 	this->levelMusic->StopSound();
-	this->levelMusic->LoadSound("Levelsound", "SoundEffects/Ben.wav");
+	this->levelMusic->LoadSound("Levelsound", this->levelMusic->GetLevelSoundtrack());
 	levelMusic->PlaySound("Levelsound", levelMusic->GetGlobalVolume());
 }
 

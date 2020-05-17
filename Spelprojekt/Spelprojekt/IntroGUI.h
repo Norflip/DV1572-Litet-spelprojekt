@@ -21,6 +21,13 @@ public:
 		quit
 	};
 
+	enum class Soundtrack
+	{
+		Track1,
+		Track2,
+		Track3,
+	};
+		
 	void Update();
 
 	void Start();	//Game starts here
@@ -34,6 +41,7 @@ public:
 
 	void Quit(); // Sure to Quit
 	void LoadQuit();
+
 private:
 	void ClearGUI();
 	bool first = true;
@@ -55,4 +63,9 @@ private:
 	float minVolume = 0.0f;
 	float currentMusicVolume = 1.0f;
 	float currentSoundVolume = 1.0f;
+
+	Soundtrack soundtrack = Soundtrack::Track1;
+	bool oneChecked;
+	bool twoChecked;
+	bool threeChecked;		
 };
