@@ -96,7 +96,7 @@ void Shader::Bind(ID3D11DeviceContext* context)
 	// sets the vertex shader and layout
 	context->IASetInputLayout(inputLayout);
 	context->VSSetShader(vertexShader, 0, 0);
-
+	//context->PSSetSamplers(0, 1, sampler);
 	//sets the pixel shader	
 	context->PSSetShader(pixelShader, 0, 0);
 }
