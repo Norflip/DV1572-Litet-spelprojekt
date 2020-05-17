@@ -28,13 +28,10 @@ public:
 	void UseWeapon();
 	void WeaponUsage(Weapon*, bool& hand);
 
-
 	Weapon* CheckWeaponType(Weapon* obj);
 	Weapon* GetActiveWeapon() const;
 	void SetActiveWeapon(Weapon*);
-
-	DirectX::XMVECTOR GetAimDirection() const;
-	
+	DirectX::XMVECTOR GetAimDirection() const;	
 
 	void SetArrow(Object*);
 	void UpdateLookAtPosition();
@@ -55,7 +52,7 @@ private:
 	float movementspeed;	
 	Terrain* terrain;
 
-	// Weapon shit
+	// Weapon stuff
 	Weapon* rightWeapon;
 	Weapon* leftWeapon;	
 	Weapon* activeWeapon;	

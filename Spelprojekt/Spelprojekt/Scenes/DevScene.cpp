@@ -28,12 +28,10 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 DevScene::~DevScene()
 {
 	delete controller;
-
 }
 
 void DevScene::Load()
 {		
-
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
@@ -116,8 +114,6 @@ void DevScene::Load()
 	water->SetMaterial(waterMat);
 	water->GetTransform().Translate({ 0,5,0,});
 	water->GetTransform().SetRotation({ 0,0,0 });
-	//water->GetTransform().Scale(2*1.2, 2 * 1.2, 2 * 1.2);
-	//water->GetTransform().Scale(2,2,2);
 	AddObject(water);
 
 	water->isWater = true;
@@ -135,22 +131,25 @@ void DevScene::Load()
 	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 	this->player->GetTransform().SetPosition({ 55, 7, 55 });
-	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
+	this->player->SetLayer(ObjectLayer::Player);
+	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });	
 	AddObject(this->player);
+			
+	
 
-		
 	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, soundeffects);
 	this->spawnObjects->SetEnemy();
-	AddObject(this->spawnObjects);
-	
+	AddObject(this->spawnObjects);	
 		
 	// ------ WEAPONS
 	AssimpHandler::AssimpData coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	// Coconuts
-	for (int i = 0; i < 11; i++)
-		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);	
-	coconuts[0]->GetTransform().Translate(177.0f, 8.5f, 75.0f);
-	
+	for (int i = 0; i < 11; i++) {
+		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);
+		this->coconuts[i]->SetLayer(ObjectLayer::Projectile);
+		AddObject(coconuts[i]);
+	}		
+	coconuts[0]->GetTransform().Translate(177.0f, 8.5f, 75.0f);	
 	coconuts[1]->GetTransform().Translate(164.0f, 8.5f, 60.0f);
 	coconuts[2]->GetTransform().Translate(100.0f, 8.8f, 75.0f);
 	coconuts[3]->GetTransform().Translate(78.0f, 9.0f, 82.0f);
@@ -161,26 +160,22 @@ void DevScene::Load()
 	coconuts[8]->GetTransform().Translate(94.0f, 9.0f, 195.0f);
 	coconuts[9]->GetTransform().Translate(175.0f, 8.5f, 160.0f);
 	coconuts[10]->GetTransform().Translate(149.0f, 9.0f, 175.0f);
-
-	for (int i = 0; i < 11; i++)
-		AddObject(coconuts[i]);
-	
-	
+			
 	/////////////////////////////////////////
 
 	AssimpHandler::AssimpData slev = AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, defaultShader);			
 	// Spoon
-	for(int i = 0; i < 5; i++)
-		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);	
+	for (int i = 0; i < 5; i++) {
+		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);
+		this->spoons[i]->SetLayer(ObjectLayer::None);	// ÄNDAR SEN
+		AddObject(spoons[i]);
+ 	}			
 	spoons[0]->GetTransform().Translate(130, 8, 40);
-
 	spoons[1]->GetTransform().Translate(28, 7, 47);
 	spoons[2]->GetTransform().Translate(145.0f, 8.5f, 193.0f);
 	spoons[3]->GetTransform().Translate(115.0f, 8.5f, 138.0f);
 	spoons[4]->GetTransform().Translate(195, 7.0f, 115);
-	for (int i = 0; i < 5; i++)
-		AddObject(spoons[i]);
-	
+		
 	
 	// ------ Leveldesign
 	CreateSceneObjects();	
@@ -192,8 +187,9 @@ void DevScene::Load()
 	player->SetArrow(arrow);
 	AddObject(arrow);
 	arrow->SetVisible(false);
-	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
 
+
+	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
 	// Add objects
 	gui->AddGUIObject(gametimerText, "gametimerText");
 	gui->AddGUIObject(fpsText, "fpsText");
@@ -317,7 +313,7 @@ void DevScene::CreateSceneObjects()
 
 		////////////////////////// STANDS /////////////////////////////
 		// Left beach stand
-		Object* beachstand = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Beachstand.fbx", dx11, defaultShader));
+		Object* beachstand = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Kiosk.fbx", dx11, defaultShader));
 		Object* beachstands[3]; 
 		for (int i = 0; i < 3; i++) {
 			beachstands[i] = new Object(*beachstand);
@@ -330,7 +326,7 @@ void DevScene::CreateSceneObjects()
 		beachstands[1]->GetTransform().SetRotation({ -0.1, -0.1, 0 });
 
 		beachstands[2]->GetTransform().Translate(60, 7, 55);
-		beachstands[2]->GetTransform().SetRotation({ -0.1, 0.7, 0 });
+		beachstands[2]->GetTransform().SetRotation({ -0.1, 0.8, 0 });
 					
 
 		////////////////////////// SUNCHAIR /////////////////////////////		
@@ -388,13 +384,13 @@ void DevScene::CreateSceneObjects()
 		sunChairs[14]->GetTransform().Rotate(-0.1f, -6.3, 0);
 
 		sunChairs[15]->GetTransform().Translate(35, 6.5, 57);
-		sunChairs[15]->GetTransform().Rotate(-0.1f, -5.7, 0);
+		sunChairs[15]->GetTransform().Rotate(0.0f, -5.7, 0);
 
 		sunChairs[16]->GetTransform().Translate(40, 6.5, 55);
-		sunChairs[16]->GetTransform().Rotate(-0.1f, -5.5, 0);
+		sunChairs[16]->GetTransform().Rotate(0.0f, -5.5, 0);
 
 		sunChairs[17]->GetTransform().Translate(42, 6.5, 51);
-		sunChairs[17]->GetTransform().Rotate(-0.1f, -5.3, 0);
+		sunChairs[17]->GetTransform().Rotate(0.0f, -5.3, 0);
 
 		sunChairs[18]->GetTransform().Translate(58, 6.5, 39);
 		sunChairs[18]->GetTransform().Rotate(-0.1f, -5.7, 0);
@@ -555,7 +551,17 @@ void DevScene::CreateSceneObjects()
 
 		////////////////////////// Fireplace stuff /////////////////////////////
 		
-		Object* restplace = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Bungalow.fbx", dx11, defaultShader));
+		Object* bungalow = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Beachbungalow.fbx", dx11, defaultShader));
+		bungalow->GetTransform().Translate(30.0f, 7, 213.0f);
+		bungalow->GetTransform().SetRotation({ 0.0f, -0.9f, 0.0f });
+		AddObject(bungalow);
+
+		Object* gate = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Gate.fbx", dx11, defaultShader));
+		gate->GetTransform().Translate(60.0f, 6.2, 198);
+		gate->GetTransform().SetRotation({ 0.0f, -2.2f, -0.1f });
+		AddObject(gate);
+
+		Object* restplace = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Restplace.fbx", dx11, defaultShader));
 		restplace->GetTransform().Translate(107.0f, 7.5f, 140.0f);
 		restplace->GetTransform().SetRotation({ 0.0f, -1.5f, 0.0f });
 		AddObject(restplace);

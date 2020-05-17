@@ -19,7 +19,6 @@ Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(fal
 	this->endScene = new EndScene(this->deferredRenderer, this->dx11, this->window, scenes, "EndScene", exitGame, music, soundEffect);
 	this->introScene = new IntroScene("IntroScene", this->deferredRenderer, this->dx11, this->window, scenes, exitGame, music, soundEffect);
 	
-	
 
 	scenes.push_back(endScene);
 	scenes.push_back(gameScene);

@@ -2,17 +2,15 @@
 Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, Object* winArea, DX11Handler& dx11, Scene* scene)
 	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11)
 {
-
 	this->movementspeed = 7;
 	this->input = controller->getInput();
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 
 	// weapon shit
-	this->leftActionbar = nullptr; //  new GUIActionbar(gui->GetDXHandler(), "Sprites/Coconut.png", 325.0f, 700.0f);
+	this->leftActionbar = nullptr; 
 	this->rightActionbar = nullptr;
 	this->gui = gui;
-	//this->gui->AddGUIObject(this->leftActionbar);
 
 	this->lefthandFull = false;
 	this->righthandFull = false;
@@ -20,7 +18,6 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->rightWeapon = nullptr;
 
 	this->scene = scene;
-
 	this->playerHealth = 100.0f;
 	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 650.0f);
 	this->healthbar->HealthBar(100.0f, 100.0f);
@@ -221,8 +218,6 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		weapon->PlaySoundEffect();
 		scene->AddObject(weapon);
 		SetActiveWeapon(static_cast<Weapon*>(weapon));
-		//activeWeapon = static_cast<Weapon*>(weapon);
-		scene->AddObject(weapon);
 		hand = false;
 		GetTransform().SetRotation(aimDirection);
 	}
@@ -268,12 +263,12 @@ Weapon* Player::CheckWeaponType(Weapon* obj)
 
 Weapon* Player::GetActiveWeapon() const
 {
-	return activeWeapon;
+	return this->activeWeapon;
 }
 
 void Player::SetActiveWeapon(Weapon* weapon)
 {
-	activeWeapon = weapon;
+	this->activeWeapon = weapon;
 }
 
 void Player::SetArrow(Object* obj)

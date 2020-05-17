@@ -6,6 +6,15 @@
 // ska ej vara ett objekt
 
 //SpawnObjects::SpawnObjects(Entities* entities, Terrain* terrain, AssimpHandler::AssimpData modelData, Player* player, DX11Handler& dx11)
+//SpawnObjects::SpawnObjects(Entities* entities, Terrain* terrain, AssimpHandler::AssimpData modelData, Player* player, DX11Handler& dx11) {
+//
+//	this->terrain = terrain;	
+//	this->mesh = modelData.mesh;
+//	this->material = modelData.material;
+//	this->player = player;
+//	this->dx11 = dx11;
+//
+//}
 
 SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player, SoundHandler* soundeffect) : Object(ObjectLayer::None, mesh, material), dx11(dx11)
 {
@@ -62,7 +71,6 @@ void SpawnObjects::RemoveEnemy(Enemy* enemy)
 
 void SpawnObjects::UpdateSpawnEnemy()
 {
-
 	if (nrOfEnemies < spawnedEnemies && randX != lastRandX)
 	{
 		enemy = new Enemy(*testEnemy);
