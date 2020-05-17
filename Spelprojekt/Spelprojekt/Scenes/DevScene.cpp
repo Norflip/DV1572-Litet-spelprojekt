@@ -28,12 +28,10 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 DevScene::~DevScene()
 {
 	delete controller;
-
 }
 
 void DevScene::Load()
 {		
-
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
@@ -114,8 +112,6 @@ void DevScene::Load()
 	water->SetMaterial(waterMat);
 	water->GetTransform().Translate({ 0,5,0,});
 	water->GetTransform().SetRotation({ 0,0,0 });
-	//water->GetTransform().Scale(2*1.2, 2 * 1.2, 2 * 1.2);
-	//water->GetTransform().Scale(2,2,2);
 	AddObject(water);
 
 	water->isWater = true;
@@ -133,20 +129,24 @@ void DevScene::Load()
 	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 	this->player->GetTransform().SetPosition({ 55, 7, 55 });
-	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
+	this->player->SetLayer(ObjectLayer::Player);
+	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });	
 	AddObject(this->player);
+			
+	
 
-		
 	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, soundeffects);
 	this->spawnObjects->SetEnemy();
-	AddObject(this->spawnObjects);
-	
+	AddObject(this->spawnObjects);	
 		
 	// ------ WEAPONS
 	AssimpHandler::AssimpData coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	// Coconuts
-	for (int i = 0; i < 11; i++)
-		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);	
+	for (int i = 0; i < 11; i++) {
+		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);
+		this->coconuts[i]->SetLayer(ObjectLayer::Projectile);
+		AddObject(coconuts[i]);
+	}		
 	coconuts[0]->GetTransform().Translate(177.0f, 8.5f, 75.0f);	
 	coconuts[1]->GetTransform().Translate(164.0f, 8.5f, 60.0f);
 	coconuts[2]->GetTransform().Translate(100.0f, 8.8f, 75.0f);
@@ -158,25 +158,22 @@ void DevScene::Load()
 	coconuts[8]->GetTransform().Translate(94.0f, 9.0f, 195.0f);
 	coconuts[9]->GetTransform().Translate(175.0f, 8.5f, 160.0f);
 	coconuts[10]->GetTransform().Translate(149.0f, 9.0f, 175.0f);
-
-	for (int i = 0; i < 11; i++)
-		AddObject(coconuts[i]);
-	
-	
+			
 	/////////////////////////////////////////
 
 	AssimpHandler::AssimpData slev = AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, defaultShader);			
 	// Spoon
-	for(int i = 0; i < 5; i++)
-		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);	
+	for (int i = 0; i < 5; i++) {
+		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);
+		this->spoons[i]->SetLayer(ObjectLayer::None);	// ÄNDAR SEN
+		AddObject(spoons[i]);
+ 	}			
 	spoons[0]->GetTransform().Translate(130, 8, 40);
 	spoons[1]->GetTransform().Translate(28, 7, 47);
 	spoons[2]->GetTransform().Translate(145.0f, 8.5f, 193.0f);
 	spoons[3]->GetTransform().Translate(115.0f, 8.5f, 138.0f);
 	spoons[4]->GetTransform().Translate(195, 7.0f, 115);
-	for (int i = 0; i < 5; i++)
-		AddObject(spoons[i]);
-	
+		
 	
 	// ------ Leveldesign
 	CreateSceneObjects();	
@@ -188,8 +185,9 @@ void DevScene::Load()
 	player->SetArrow(arrow);
 	AddObject(arrow);
 	arrow->SetVisible(false);
-	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
 
+
+	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
 	// Add objects
 	gui->AddGUIObject(gametimerText, "gametimerText");
 	gui->AddGUIObject(fpsText, "fpsText");
