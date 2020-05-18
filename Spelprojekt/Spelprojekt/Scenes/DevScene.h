@@ -58,7 +58,9 @@ private:
 	GUIText* gametimerText;
 	GUIText* fpsText;
 	GUISprite* healthFrame;
-		
+	GUISprite* score;
+	GUIText* totalScore;
+
 	GUIActionbar* actionbarLeft;
 	GUIActionbar* actionbarRight;
 

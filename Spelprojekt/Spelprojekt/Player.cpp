@@ -24,6 +24,8 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->gui->AddGUIObject(this->healthbar, "healthbar");
 	this->winArea = winArea;
 	this->arrow = nullptr;
+
+	this->points = 0;
 }
 
 Player::~Player()

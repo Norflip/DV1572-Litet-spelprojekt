@@ -93,6 +93,7 @@ void SpawnObjects::UpdateRemoveEnemy()
 			if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(i->GetWorldBounds()))
 			{
 				i->HitSound();
+				player->IncreasePoints(i->GivePoints());
 				scene->RemoveObject(i);
 				RemoveEnemy(i);
 				scene->RemoveObject(player->GetActiveWeapon());

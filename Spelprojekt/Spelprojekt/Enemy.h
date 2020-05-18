@@ -19,8 +19,11 @@ class Enemy : public Object
 		void SetHeight(float height) { this->enemyHeight = height; };
 		void SetTarget(Player* player);
 		void HitSound();
-
+		
 		Object* GetFBXModel();
+
+		int GivePoints() { return this->pointGiven; }
+	
 	private:
 		float movementspeed;
 		void UpdateHeight(float fixedDeltaTime);
@@ -34,7 +37,9 @@ class Enemy : public Object
 		DirectX::XMFLOAT3 currentPosition;
 		float nextDir = 0.0f;
 		float enemyHeight = 4.65f;	
-
+		
 		// new
 		SoundHandler* hitSound;
+
+		int pointGiven;
 };

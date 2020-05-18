@@ -6,8 +6,9 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 
 	gametimerText = new GUIText(dx11, "Time until extraction", window.GetWidth() / 2.0f - 150.0f, 0);
 	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f - 100.0f, 30);
-
-
+	totalScore = new GUIText(dx11, "Score", 210.0f, 5.0f);
+	totalScore->SetFontSize({ 3.0f, 3.0f });
+	totalScore->SetFontColor({ 1,0,0,1 });
 	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
 	window.GetInput()->LockCursor(false);
 
@@ -38,6 +39,8 @@ void DevScene::Load()
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
 	actionbarRight = new GUIActionbar(dx11, "Sprites/Actionbar.png", 400.0f, 650.0f);
+	score = new GUISprite(dx11, "Sprites/score.png", 10.0f ,19.0f);
+	
 
 	//--------------------------------
 	// Create GUI for Devscene
@@ -198,6 +201,8 @@ void DevScene::Load()
 	gui->AddGUIObject(healthFrame, "healthFrame");
 	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
 	gui->AddGUIObject(actionbarRight, "actionbarRight");
+	gui->AddGUIObject(score, "score");
+	gui->AddGUIObject(totalScore, "totalscore");
 
 	// Set GUI
 	renderer->SetGUI(gui);
@@ -236,6 +241,8 @@ void DevScene::Update(const float& deltaTime)
 		player->UpdateHands(i);
 	//
 	
+	
+	totalScore->SetString(std::to_string(player->GetPoints()));
 		
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 	controller->Update(deltaTime);

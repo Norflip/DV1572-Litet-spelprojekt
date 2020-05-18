@@ -4,7 +4,7 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&
 	: terrain(terrain), Object(ObjectLayer::Enemy, modelData.mesh, modelData.material)
 {
 
-
+	this->pointGiven = 5;
 	//SetMesh(FBXModel->GetMesh());
 	//SetMaterial(FBXModel->GetMaterial());
 
@@ -22,6 +22,7 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&
 
 Enemy::Enemy(const Enemy& other)
 {
+	this->pointGiven = other.pointGiven;
 	this->terrain = other.terrain;
 	this->FBXModel = other.FBXModel;
 	SetMesh(other.GetMesh());
