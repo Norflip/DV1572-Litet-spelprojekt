@@ -48,7 +48,7 @@ void SSAO::Pass(Renderer* renderer, RenderTarget* gBuffer)
 	dx11->GetContext()->PSSetShaderResources(0, 1, &buffers[2]);
 	dx11->GetContext()->PSSetShaderResources(1, 1, &buffers[3]);
 	dx11->GetContext()->PSSetShaderResources(2, 1, &srv);
-	dx11->GetContext()->PSSetSamplers(2, 1, &sampler);
+	dx11->GetContext()->PSSetSamplers(0, 1, &sampler);
 
 	// bind SSAO shader
 	shader->Bind(dx11->GetContext());

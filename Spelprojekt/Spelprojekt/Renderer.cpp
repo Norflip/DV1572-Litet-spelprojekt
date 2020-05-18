@@ -73,13 +73,15 @@ void Renderer::DisplayFrame(Camera* camera)
 	SetRenderTarget(backbufferRenderTarget);
 	ClearRenderTarget();
 
+	
+	gbufferRenderTarget->Bind(dx11.GetContext());
+	deferredLightShader->Bind(dx11.GetContext());
+
 	//// bind ssao output texture
 	ID3D11ShaderResourceView* srv = ssao.GetOutputSRV();
 	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount(), 1, &srv);
-	dx11.GetContext()->PSSetSamplers(gbufferRenderTarget->BufferCount(), 1, &gbuffersampler);
+	dx11.GetContext()->PSSetSamplers(0, 1, &gbuffersampler);
 
-	gbufferRenderTarget->Bind(dx11.GetContext());
-	deferredLightShader->Bind(dx11.GetContext());
 
 	DrawScreenQuad();
 
@@ -87,7 +89,7 @@ void Renderer::DisplayFrame(Camera* camera)
 	ID3D11ShaderResourceView* pSRV[1] = { NULL };
 	ID3D11SamplerState* ssrf[1] = { NULL };
 	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount(), 1, pSRV);
-	dx11.GetContext()->PSSetSamplers(gbufferRenderTarget->BufferCount(), 1, ssrf);
+	dx11.GetContext()->PSSetSamplers(0, 1, ssrf);
 
 	// GUI PASS
 	if (gui != nullptr)
