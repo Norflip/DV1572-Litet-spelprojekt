@@ -147,6 +147,8 @@ namespace AssimpHandler
 
 	inline AssimpData loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader)
 	{
+		Logger::Write("CHECKING IF LOADING EVERY FRAME");
+
 		// Open the scene from the file
 		Assimp::Importer imp;
 		const aiScene* scene = imp.ReadFile(filepath, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
@@ -156,7 +158,6 @@ namespace AssimpHandler
 		{
 			Logger::Write("Couldnt open file with Assimp");
 		}
-
 		else
 		{
 			Texture* normalMap = nullptr;

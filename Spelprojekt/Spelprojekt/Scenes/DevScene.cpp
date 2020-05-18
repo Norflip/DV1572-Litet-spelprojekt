@@ -669,7 +669,6 @@ void DevScene::checkForNextScene()
 
 void DevScene::SetNextScene(bool winOrLose)
 {
-
 	for (int i = 0; i < scenes.size(); i++)
 	{
 		if (scenes[i]->GetName() == "EndScene")

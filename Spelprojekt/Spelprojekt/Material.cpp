@@ -64,17 +64,16 @@ void Material::Unbind(ID3D11DeviceContext* context)
 
 	auto iterator = textureMap.begin();
 	Texture* texture = nullptr;
-	ID3D11ShaderResourceView* const pSRV[1] = { NULL };
+	ID3D11ShaderResourceView* pSRV[1] = { NULL };
+	//ZeroMemory(*pSRV, sizeof(ID3D11ShaderResourceView));
 
 	while (iterator != textureMap.end())
 	{
 		size_t index = (*iterator).first;
 		PIXEL_TYPE flag = (*iterator).second.second;
 
-		texture = (*iterator).second.first;
 
-		ID3D11ShaderResourceView* srv = texture->GetSRV();
-		ID3D11SamplerState* sampler = texture->GetSampler();
+		texture = (*iterator).second.first;
 
 		if (flag == PIXEL_TYPE::PIXEL)
 		{
@@ -90,9 +89,6 @@ void Material::Unbind(ID3D11DeviceContext* context)
 		}
 		else if (flag == PIXEL_TYPE::VERTEX)
 		{
-			if (sampler != nullptr)
-				context->VSSetSamplers(index, 1, nullptr);
-
 			context->VSSetShaderResources(index, 1, pSRV);
 		}
 

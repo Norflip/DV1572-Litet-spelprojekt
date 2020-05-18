@@ -1,20 +1,23 @@
 #include "Renderer.h"
 
-Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11) : dx11(dx11), timer(timer), lights()
+Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11) : dx11(dx11), timer(timer), lights(width, height), ssao(width, height), gbuffersampler(nullptr)
 {
 	this->gbufferRenderTarget = new RenderTarget(4, width, height, true);
 	this->gbufferRenderTarget->Initalize(dx11.GetDevice());
 
 	this->backbufferRenderTarget = dx11.GetBackbuffer();
 	this->gui = nullptr;
-	this->lightpass = new Shader();
-	this->lightpass->LoadPixelShader(L"Shaders/DeferredLightPass_ps.hlsl", "main", dx11.GetDevice());
-	this->lightpass->LoadVertexShader(L"Shaders/DeferredLightPass_vs.hlsl", "main", dx11.GetDevice());
+	this->deferredLightShader = new Shader();
+	this->deferredLightShader->LoadVertexShader(L"Shaders/ScreenQuad_vs.hlsl", "main", dx11.GetDevice());
+	this->deferredLightShader->LoadPixelShader(L"Shaders/DeferredLightPass_ps.hlsl", "main", dx11.GetDevice());
 
 	screenQuad = MeshCreator::CreateScreenQuad(dx11.GetDevice());
 	worldBuffer_ptr = dx11.CreateBuffer<WorldData>(cb_world);
 
-	lights.Initialize(dx11);
+	gbuffersampler = Texture::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP, dx11);
+
+	ssao.Initialize(&dx11);
+	lights.Initialize(&dx11);
 }
 
 Renderer::~Renderer() {}
@@ -41,7 +44,8 @@ void Renderer::ClearRenderTarget()
 	for (size_t i = 0; i < currentRenderTarget->BufferCount(); i++)
 		dx11.GetContext()->ClearRenderTargetView(currentRenderTarget->GetRenderTargetViews()[i], CLEAR_COLOR);
 
-	dx11.GetContext()->ClearDepthStencilView(currentRenderTarget->GetDepthStencil(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	if (currentRenderTarget->GetDepthStencil() != nullptr)
+		dx11.GetContext()->ClearDepthStencilView(currentRenderTarget->GetDepthStencil(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
@@ -52,30 +56,49 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 	cb_world.time = static_cast<float>(timer.GetMilisecondsElapsed()) / 1000.0f;
 
 	dx11.GetContext()->UpdateSubresource(worldBuffer_ptr, 0, 0, &cb_world, 0, 0);
-	dx11.GetContext()->VSSetConstantBuffers(0, 1, &worldBuffer_ptr);
+	dx11.GetContext()->VSSetConstantBuffers(WORLD_CONSTANT_BUFFER_SLOT, 1, &worldBuffer_ptr);
 
 	DrawMesh(mesh);
 }
 
-void Renderer::DisplayFrame(DirectX::XMVECTOR eye)
+void Renderer::DisplayFrame(Camera* camera)
 {
-	//Uppdate light constant buffer here
-	DirectX::XMFLOAT3 eyePosition;
-	DirectX::XMStoreFloat3(&eyePosition, eye);
-	lights.UpdateConstantBuffer(eyePosition, dx11.GetContext());
+	// loops objects and draws them to the gbuffer
+	// ..
+
+	//Uppdate light constant buffer 
+	lights.UpdateConstantBuffer(camera, dx11.GetContext());
+	ssao.Pass(this, gbufferRenderTarget);
 
 	SetRenderTarget(backbufferRenderTarget);
 	ClearRenderTarget();
 
+	//// bind ssao output texture
+	ID3D11ShaderResourceView* srv = ssao.GetOutputSRV();
+	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount(), 1, &srv);
+	dx11.GetContext()->PSSetSamplers(gbufferRenderTarget->BufferCount(), 1, &gbuffersampler);
+
 	gbufferRenderTarget->Bind(dx11.GetContext());
-	lightpass->Bind(dx11.GetContext());
+	deferredLightShader->Bind(dx11.GetContext());
 
-	DrawMesh(screenQuad);
+	DrawScreenQuad();
 
+	//// unbinds ssao_random texture
+	ID3D11ShaderResourceView* pSRV[1] = { NULL };
+	ID3D11SamplerState* ssrf[1] = { NULL };
+	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount(), 1, pSRV);
+	dx11.GetContext()->PSSetSamplers(gbufferRenderTarget->BufferCount(), 1, ssrf);
+
+	// GUI PASS
 	if (gui != nullptr)
 		gui->DrawAll();
 
 	dx11.GetSwapChain()->Present(vSync, 0);
+}
+
+void Renderer::DrawScreenQuad()
+{
+	DrawMesh(screenQuad);
 }
 
 void Renderer::DrawMesh(Mesh* mesh)

@@ -66,8 +66,8 @@ private:
 	Spoon* spoons[5];
 
 	// Level design
-	std::vector<Object*> pickups;
-	std::vector<Object*> levelObjects;
+	//std::vector<Object*> pickups;
+	//std::vector<Object*> levelObjects;
 
 	std::vector<Scene*>& scenes;
 	Player* player;

@@ -24,17 +24,22 @@ public:
 
 	ID3D11Device* GetDevice() const { return this->device; }
 	ID3D11DeviceContext* GetContext() const { return this->context; }
+
 	IDXGISwapChain* GetSwapChain() const { return this->swapchain; }
 	RenderTarget* GetBackbuffer() const { return this->backbuffer; }
+
 	ID3D11RasterizerState* GetWaterRasterizer() { return this->waterRaster; }
 	ID3D11RasterizerState* GetRasterizer() { return this->rasterizerState; }
+
 	void SetRenderTarget(RenderTarget* target) { this->backbuffer = target; }
 	ID3D11Texture2D* GetBackBufferPtr() const { return this->backBufferPtr; }
+
 	ID3D11RenderTargetView* GetRTV() const { return this->backbufferRTV; }
 	void SetRTV(ID3D11RenderTargetView* rtv) { this->backbufferRTV = rtv; }
-	template <typename T>
-	ID3D11Buffer* CreateBuffer (T& data);
+	
+	template <typename T> ID3D11Buffer* CreateBuffer (T& data);
 
+	
 	void SetFullscreen(bool fullscreen);
 	void SetWireframeMode(bool);
 

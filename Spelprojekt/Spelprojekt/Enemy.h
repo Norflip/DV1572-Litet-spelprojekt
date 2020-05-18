@@ -18,7 +18,7 @@ class Enemy : public Object
 		void Update(const float& deltaTime) override;
 		void SetHeight(float height) { this->enemyHeight = height; };
 		void SetTarget(Player* player);
-		void HitSound() { this->hitSound->PlaySound("Hit", this->hitSound->GetGlobalVolume()); }
+		void HitSound();
 
 		Object* GetFBXModel();
 	private:
