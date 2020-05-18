@@ -59,8 +59,8 @@ Texture* Material::GetTexture(size_t index) const
 
 void Material::Unbind(ID3D11DeviceContext* context)
 {
-	ID3D11Buffer* const nullBuffer[1] = { NULL };
-	context->PSSetConstantBuffers(CONSTANT_BUFFER_SLOT, 1, nullBuffer);
+	//ID3D11Buffer* const nullBuffer[1] = { NULL };
+	//context->PSSetConstantBuffers(CONSTANT_BUFFER_SLOT, 1, nullBuffer);
 
 	auto iterator = textureMap.begin();
 	Texture* texture = nullptr;
@@ -77,15 +77,14 @@ void Material::Unbind(ID3D11DeviceContext* context)
 
 		if (flag == PIXEL_TYPE::PIXEL)
 		{
-			if (sampler != nullptr)
-			{
-				//ID3D11SamplerState* testSampler;
-				//context->PSGetSamplers(index, 1, &testSampler);
-				//if(testSampler != NULL || testSampler != nullptr)
-				//context->PSSetSamplers(index, 1, nullptr);
-			}
-			if(pSRV != NULL)
-				context->PSSetShaderResources(index, 1, pSRV);
+			//if (sampler != nullptr)
+			//{
+			//	//ID3D11SamplerState* testSampler;
+			//	//context->PSGetSamplers(index, 1, &testSampler);
+			//	//if(testSampler != NULL || testSampler != nullptr)
+			//	//context->PSSetSamplers(index, 1, nullptr);
+			//}
+			context->PSSetShaderResources(index, 1, pSRV);
 		}
 		else if (flag == PIXEL_TYPE::VERTEX)
 		{
@@ -118,14 +117,14 @@ void Material::Bind(ID3D11DeviceContext* context)
 
 		if (flag == PIXEL_TYPE::PIXEL)
 		{
-			if (sampler != nullptr)
+			//if (sampler != nullptr)
 				context->PSSetSamplers(index, 1, &sampler);
 
 			context->PSSetShaderResources(index, 1, &srv);
 		}
 		else if (flag == PIXEL_TYPE::VERTEX)
 		{
-			if (sampler != nullptr)
+			//if (sampler != nullptr)
 				context->VSSetSamplers(index, 1, &sampler);
 
 			context->VSSetShaderResources(index, 1, &srv);

@@ -38,7 +38,7 @@ public:
 	void SetRTV(ID3D11RenderTargetView* rtv) { this->backbufferRTV = rtv; }
 	
 	template <typename T> ID3D11Buffer* CreateBuffer (T& data);
-
+	ID3D11SamplerState* CreateSampler(D3D11_FILTER filter = D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_MODE mode = D3D11_TEXTURE_ADDRESS_WRAP);
 	
 	void SetFullscreen(bool fullscreen);
 	void SetWireframeMode(bool);

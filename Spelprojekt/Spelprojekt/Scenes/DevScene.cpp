@@ -63,8 +63,8 @@ void DevScene::Load()
 	Object* sphere = new Object(ObjectLayer::Enviroment, dev_monkey_mesh, new Material(defaultShader, dx11));
 	Texture* monkey_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	Texture* monkey_normal = Texture::CreateTexture("Textures/rocks_normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	monkey_texture->SetSampler(dx11.GetDevice());
-	monkey_normal->SetSampler(dx11.GetDevice());
+	//monkey_texture->SetSampler(dx11.GetDevice());
+	//monkey_normal->SetSampler(dx11.GetDevice());
 	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 
@@ -78,13 +78,13 @@ void DevScene::Load()
 
 	Texture* grass_texture = Texture::CreateTexture("Textures/Grass_ColorTest.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	grass_texture->SetSampler(dx11.GetDevice());
-	grass_normal->SetSampler(dx11.GetDevice());
+	//grass_texture->SetSampler(dx11.GetDevice());
+	//grass_normal->SetSampler(dx11.GetDevice());
 	
 	Texture* sand_texture = Texture::CreateTexture("Textures/Sand_Color_Test.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);	
 	Texture* sand_normal = Texture::CreateTexture("Textures/Sand_Normal_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	grass_texture->SetSampler(dx11.GetDevice());
-	grass_normal->SetSampler(dx11.GetDevice());
+	//grass_texture->SetSampler(dx11.GetDevice());
+	//grass_normal->SetSampler(dx11.GetDevice());
 	Material* terrainMat = new Material(terrainShader, dx11);
 	terrainMat->SetTexture(0, grass_texture, PIXEL_TYPE::PIXEL);
 	terrainMat->SetTexture(1, sand_texture, PIXEL_TYPE::PIXEL);

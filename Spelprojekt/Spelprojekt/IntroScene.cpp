@@ -57,8 +57,8 @@ void IntroScene::Load()
 	Texture* monkey_normal = Texture::CreateTexture("Textures/rocks_normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
 	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
-	monkey_texture->SetSampler(dx11.GetDevice());
-	monkey_normal->SetSampler(dx11.GetDevice());
+	//monkey_texture->SetSampler(dx11.GetDevice());
+	//monkey_normal->SetSampler(dx11.GetDevice());
 	std::cout << monkey_texture->GetSampler();
 
 	sphere->GetTransform().Translate(0, 0+9, -5);
@@ -97,12 +97,12 @@ void IntroScene::Load()
 
 	Texture* grass_texture = Texture::CreateTexture("Textures/Grass_ColorTest.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	grass_texture->SetSampler(dx11.GetDevice());
-	grass_normal->SetSampler(dx11.GetDevice());
+	//grass_texture->SetSampler(dx11.GetDevice());
+	//grass_normal->SetSampler(dx11.GetDevice());
 	Texture* sand_texture = Texture::CreateTexture("Textures/Sand_Color_Test.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 	Texture* sand_normal = Texture::CreateTexture("Textures/Sand_Normal_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	sand_texture->SetSampler(dx11.GetDevice());
-	sand_normal->SetSampler(dx11.GetDevice());
+	//sand_texture->SetSampler(dx11.GetDevice());
+	//sand_normal->SetSampler(dx11.GetDevice());
 
 	Material* terrainMat = new Material(terrainShader, dx11);
 	terrainMat->SetTexture(0, grass_texture, PIXEL_TYPE::PIXEL);

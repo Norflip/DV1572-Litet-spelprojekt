@@ -14,7 +14,7 @@ Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11)
 	screenQuad = MeshCreator::CreateScreenQuad(dx11.GetDevice());
 	worldBuffer_ptr = dx11.CreateBuffer<WorldData>(cb_world);
 
-	gbuffersampler = Texture::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP, dx11);
+	gbuffersampler = dx11.CreateSampler(D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP);
 
 	ssao.Initialize(&dx11);
 	lights.Initialize(&dx11);

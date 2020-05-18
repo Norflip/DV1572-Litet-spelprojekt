@@ -59,6 +59,25 @@ void DX11Handler::Initialize(const Window& window)
 	SetWireframeMode(true);
 }
 
+ID3D11SamplerState* DX11Handler::CreateSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode)
+{
+	D3D11_SAMPLER_DESC samplerDescription;
+	ZeroMemory(&samplerDescription, sizeof(D3D11_SAMPLER_DESC));
+	samplerDescription.Filter = filter;
+	samplerDescription.AddressU = mode;
+	samplerDescription.AddressV = mode;
+	samplerDescription.AddressW = mode;
+	samplerDescription.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+	for (size_t i = 0; i < 4; i++)
+		samplerDescription.BorderColor[i] = 1.0f;
+
+	ID3D11SamplerState* samplerState;
+	ZeroMemory(&samplerState, sizeof(ID3D11SamplerState));
+	device->CreateSamplerState(&samplerDescription, &samplerState);
+	return samplerState;
+}
+
 void DX11Handler::SetWireframeMode(bool useWireframe)
 {
 	/////////////////				RASTERDESC INITIALIZE				/////////////////
