@@ -106,11 +106,10 @@ float4 main(PixelInputType input) : SV_TARGET
 		finalColor += CalculatePointLight(pointLights[i], normal, position, viewDirection);
 	}
 
-	float ssaoValue = ssao.Sample(ssaoSamplerState, input.uv).x;
-
+	//float ssaoValue = ssao.Sample(ssaoSamplerState, input.uv).x;
+	//return float4(ssaoValue, ssaoValue, ssaoValue, 1.0f);
 
 	// http://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html
-	// BLUR DA BITCH
 	const int blurSize = 4;
 	float2 texel = 1.0f / screenSize;
 
@@ -121,11 +120,16 @@ float4 main(PixelInputType input) : SV_TARGET
 	{
 		for (int y = 0; y < blurSize; y++)
 		{
-			float2 offset = (float2(x, y) + hlim) * texel;
+			float2 offset = (float2(x, y) * hlim) * texel;
 			result += ssao.Sample(ssaoSamplerState, input.uv + offset).x;
 		}
 	}
 
 	float d = result / float(blurSize * blurSize);
-	return float4(d,d,d, 1.0f);
+	
+	finalColor *= (1.0f - d);
+	finalColor.w = 1.0f;
+
+	//return float4(d,d,d, 1.0f);
+	return finalColor;
 }

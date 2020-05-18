@@ -30,13 +30,13 @@ float3 GetNormalViewSpace(float2 uv)
 	return mul(worldToView, float4(normal, 0.0f)).xyz;
 }
 
-float SampleAO(float2 uv, float2 tcoord, float3 position, float3 cnorm)
+float SampleAO(float2 uv, float2 tcoord, float3 position, float3 normal)
 {
 	float3 diff = GetPositionViewSpace(tcoord + uv) - position;
 	float3 aoDirection = normalize(diff);
 	float distance = length(diff) * ssao_scale;
 
-	float tt = max(0.0f, dot(cnorm, aoDirection) - ssao_bias) * (1.0f / (1.0f + distance)) * ssao_intensity;
+	float tt = max(0.0f, dot(normal, aoDirection) - ssao_bias) * (1.0f / (1.0f + distance)) * ssao_intensity;
 	return tt;
 }
 
@@ -79,9 +79,5 @@ float4 main(PixelInputType input) : SV_TARGET
 	}
 
 	ao /= (float)iterations * 4.0f;
-
-	//return float4(input.uv, 0.0f, 1.0f);
-
-	float iao = 1.0f - ao;
-	return float4(iao, iao, iao, 1.0f);
+	return float4(ao, ao, ao, 1.0f);
 }

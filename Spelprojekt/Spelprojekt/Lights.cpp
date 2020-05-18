@@ -2,10 +2,11 @@
 
 Lights::Lights(size_t width, size_t height) : lightBuffer_ptr(nullptr), width(width), height(height) 
 {
-	lightConstantBuffer.ssao_scale = 1.0f;
+	lightConstantBuffer.ssao_scale = 1.5f;
 	lightConstantBuffer.ssao_bias = 0.1f;
-	lightConstantBuffer.ssao_intensity = 4.0f;
-	lightConstantBuffer.ssao_radius = 1.3f;
+	lightConstantBuffer.ssao_intensity = 3.0f;
+	lightConstantBuffer.ssao_radius = 1.5f;
+
 }
 Lights::~Lights() {}
 
