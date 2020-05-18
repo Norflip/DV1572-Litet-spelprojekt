@@ -2,6 +2,8 @@
 #include <d3d11.h>  
 #include <DirectXMath.h>
 #include <vector>
+#include <map>
+#include <string>
 
 struct MeshVertex
 {
@@ -9,10 +11,32 @@ struct MeshVertex
 	DirectX::XMFLOAT2 uv;
 	DirectX::XMFLOAT3 normal;
 	DirectX::XMFLOAT3 tangent;
+	float weights[4];
+	unsigned int IDS[4];
 
-	MeshVertex() : position(0, 0, 0), uv(0, 0), normal(0, 0, 0), tangent(0, 0, 0) {}
-	MeshVertex(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT3 normal, DirectX::XMFLOAT3 tangent) 
-		: position(position), uv(uv), normal(normal), tangent(tangent) {}
+	MeshVertex() : position(0, 0, 0), uv(0, 0), normal(0, 0, 0), tangent(0, 0, 0), weights{ 0.0f, 0.0f, 0.0f, 0.0f }, IDS{ 0,0,0,0 } {}
+	MeshVertex(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT3 normal, DirectX::XMFLOAT3 tangent)
+		: position(position), uv(uv), normal(normal), tangent(tangent), weights{ 0.0f, 0.0f, 0.0f, 0.0f }, IDS{ 0,0,0,0 } {}
+
+	void addBoneData(unsigned int vertexID, float weight)
+	{
+		for (unsigned int i = 0; i < 4; i++)
+		{
+			if (weights[i] == 0.0f)
+			{
+				IDS[i] += vertexID;
+				weights[i] += weight;
+				return;
+			}
+		}
+	}
+};
+
+struct BoneInfo
+{
+	std::string boneName;
+	DirectX::XMMATRIX boneOffset = DirectX::XMMatrixIdentity();;
+	DirectX::XMMATRIX finalTransformation = DirectX::XMMatrixIdentity();
 };
 
 struct Mesh
@@ -22,6 +46,13 @@ struct Mesh
 
 	ID3D11Buffer* indexBuffer;
 	std::vector<unsigned int> indices;
+
+	// Används till animation
+	std::map<std::string, unsigned int> boneMapping;
+	unsigned int numBones;
+	std::vector<BoneInfo> boneInfo;
+	DirectX::XMMATRIX globalInverseTransform = DirectX::XMMatrixIdentity();;
+	std::vector<DirectX::XMMATRIX> boneTransforms;
 
 	~Mesh()
 	{
@@ -42,6 +73,7 @@ namespace MeshCreator
 		mesh->vertexes = vertices;
 		mesh->indexBuffer = nullptr;
 		mesh->indices = indices;
+		mesh->numBones = 0;
 
 		// creates vertex buffer
 		D3D11_BUFFER_DESC vertexBufferDescription;

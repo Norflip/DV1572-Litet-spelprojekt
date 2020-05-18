@@ -51,6 +51,11 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 	cb_world.world = DirectX::XMMatrixTranspose(world);
 	cb_world.time = static_cast<float>(timer.GetMilisecondsElapsed()) / 1000.0f;
 
+	for (int i = 0; i < mesh->boneTransforms.size(); i++)
+	{
+		cb_world.boneTransforms[i] = DirectX::XMMatrixTranspose(mesh->boneTransforms[i]);
+	}
+
 	dx11.GetContext()->UpdateSubresource(worldBuffer_ptr, 0, 0, &cb_world, 0, 0);
 	dx11.GetContext()->VSSetConstantBuffers(0, 1, &worldBuffer_ptr);
 

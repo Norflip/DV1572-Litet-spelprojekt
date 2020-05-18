@@ -9,6 +9,7 @@ struct WorldData
 	DirectX::XMMATRIX world;
 	float time;
 	float pad[3];
+	DirectX::XMMATRIX boneTransforms[70];
 };
 
 __declspec(align(16))

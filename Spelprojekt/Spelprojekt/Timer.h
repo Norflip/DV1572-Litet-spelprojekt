@@ -8,6 +8,7 @@ public:
 	double GetMilisecondsElapsed();
 	double GetMicrosecondsElapsed();
 	double GetTimeUntilEnd(float maxTime);
+	double getSecondsElapsed();
 	void Restart();
 	bool Stop();
 	bool Start();

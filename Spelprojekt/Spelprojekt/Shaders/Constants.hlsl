@@ -8,6 +8,7 @@ cbuffer WorldConstantBuffer : register(b0)
 	float time;
 
 	float3 wvb_pad0;
+	matrix boneTransforms[70];
 };
 
 //---- light buffer
