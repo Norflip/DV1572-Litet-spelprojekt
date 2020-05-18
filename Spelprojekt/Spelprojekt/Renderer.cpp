@@ -1,15 +1,15 @@
 #include "Renderer.h"
 
-Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11) : dx11(dx11), timer(timer), lights(), ssao(width, height), gbuffersampler(nullptr)
+Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11) : dx11(dx11), timer(timer), lights(width, height), ssao(width, height), gbuffersampler(nullptr)
 {
 	this->gbufferRenderTarget = new RenderTarget(4, width, height, true);
 	this->gbufferRenderTarget->Initalize(dx11.GetDevice());
 
 	this->backbufferRenderTarget = dx11.GetBackbuffer();
 	this->gui = nullptr;
-	this->lightpass = new Shader();
-	this->lightpass->LoadVertexShader(L"Shaders/ScreenQuad_vs.hlsl", "main", dx11.GetDevice());
-	this->lightpass->LoadPixelShader(L"Shaders/DeferredLightPass_ps.hlsl", "main", dx11.GetDevice());
+	this->deferredLightShader = new Shader();
+	this->deferredLightShader->LoadVertexShader(L"Shaders/ScreenQuad_vs.hlsl", "main", dx11.GetDevice());
+	this->deferredLightShader->LoadPixelShader(L"Shaders/DeferredLightPass_ps.hlsl", "main", dx11.GetDevice());
 
 	screenQuad = MeshCreator::CreateScreenQuad(dx11.GetDevice());
 	worldBuffer_ptr = dx11.CreateBuffer<WorldData>(cb_world);
@@ -17,22 +17,20 @@ Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11)
 	gbuffersampler = Texture::CreateSampler(D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP, dx11);
 
 	ssao.Initialize(&dx11);
-	//ssaoRandomTexture = Texture::CreateTexture("Textures/ssaoRandom.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP);
-
-	lights.Initialize(dx11);
+	lights.Initialize(&dx11);
 }
 
 Renderer::~Renderer() {}
 
 void Renderer::SetDeferredRenderTarget()
 {
+	this->gbufferRenderTarget->Unbind(dx11.GetContext());
 	SetRenderTarget(gbufferRenderTarget);
 }
 
 void Renderer::SetRenderTarget(RenderTarget* renderTarget)
 {
 	this->currentRenderTarget = renderTarget;
-	this->currentRenderTarget->Unbind(dx11.GetContext());
 
 	dx11.GetContext()->RSSetViewports(1, &currentRenderTarget->GetViewport());
 	dx11.GetContext()->OMSetRenderTargets(currentRenderTarget->BufferCount(), currentRenderTarget->GetRenderTargetViews(), currentRenderTarget->GetDepthStencil());
@@ -58,7 +56,7 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 	cb_world.time = static_cast<float>(timer.GetMilisecondsElapsed()) / 1000.0f;
 
 	dx11.GetContext()->UpdateSubresource(worldBuffer_ptr, 0, 0, &cb_world, 0, 0);
-	dx11.GetContext()->VSSetConstantBuffers(0, 1, &worldBuffer_ptr);
+	dx11.GetContext()->VSSetConstantBuffers(WORLD_CONSTANT_BUFFER_SLOT, 1, &worldBuffer_ptr);
 
 	DrawMesh(mesh);
 }
@@ -68,46 +66,34 @@ void Renderer::DisplayFrame(Camera* camera)
 	// loops objects and draws them to the gbuffer
 	// ..
 
-
-	ssao.RenderPass(this, gbufferRenderTarget);
-
-
-
-	// bind ssao output texture
-	ID3D11ShaderResourceView* srv = ssao.GetOutputSRV();
-	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount(), 1, &srv);
-	dx11.GetContext()->PSSetSamplers(gbufferRenderTarget->BufferCount(), 1, &gbuffersampler);
-
-
-
 	//Uppdate light constant buffer 
 	lights.UpdateConstantBuffer(camera, dx11.GetContext());
+	ssao.Pass(this, gbufferRenderTarget);
 
 	SetRenderTarget(backbufferRenderTarget);
 	ClearRenderTarget();
 
+	//// bind ssao output texture
+	ID3D11ShaderResourceView* srv = ssao.GetOutputSRV();
+	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount(), 1, &srv);
+	dx11.GetContext()->PSSetSamplers(gbufferRenderTarget->BufferCount(), 1, &gbuffersampler);
+
 	gbufferRenderTarget->Bind(dx11.GetContext());
-	lightpass->Bind(dx11.GetContext());
+	deferredLightShader->Bind(dx11.GetContext());
 
 	DrawScreenQuad();
 
-
-
-
-	// unbinds ssao_random texture
+	//// unbinds ssao_random texture
 	ID3D11ShaderResourceView* pSRV[1] = { NULL };
 	ID3D11SamplerState* ssrf[1] = { NULL };
-
 	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount(), 1, pSRV);
 	dx11.GetContext()->PSSetSamplers(gbufferRenderTarget->BufferCount(), 1, ssrf);
-
 
 	// GUI PASS
 	if (gui != nullptr)
 		gui->DrawAll();
 
 	dx11.GetSwapChain()->Present(vSync, 0);
-
 }
 
 void Renderer::DrawScreenQuad()

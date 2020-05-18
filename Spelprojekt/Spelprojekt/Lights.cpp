@@ -1,11 +1,17 @@
 #include "Lights.h"
 
-Lights::Lights() : lightBuffer_ptr(nullptr) {}
+Lights::Lights(size_t width, size_t height) : lightBuffer_ptr(nullptr), width(width), height(height) 
+{
+	lightConstantBuffer.ssao_scale = 1.0f;
+	lightConstantBuffer.ssao_bias = 0.1f;
+	lightConstantBuffer.ssao_intensity = 4.0f;
+	lightConstantBuffer.ssao_radius = 1.3f;
+}
 Lights::~Lights() {}
 
-void Lights::Initialize(DX11Handler& dx11)
+void Lights::Initialize(DX11Handler* dx11)
 {
-	lightBuffer_ptr = dx11.CreateBuffer<LightData>(lightConstantBuffer);
+	lightBuffer_ptr = dx11->CreateBuffer<LightData>(lightConstantBuffer);
 }
 
 size_t Lights::AddPointLight(DirectX::XMFLOAT3 position, DirectX::XMFLOAT4 color, float radius)
@@ -60,11 +66,11 @@ void Lights::UpdateConstantBuffer(Camera* camera, ID3D11DeviceContext* context)
 
 	//lightConstantBuffer.worldToView = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(camera->GetView(), camera->GetProjection()));
 	lightConstantBuffer.worldToView = DirectX::XMMatrixTranspose(camera->GetView());
-
 	lightConstantBuffer.pointLightCount = pointLightMap.size();
+	lightConstantBuffer.screenSize = { static_cast<float>(width), static_cast<float>(height) };
 
 	DirectX::XMStoreFloat3(&lightConstantBuffer.eyePosition, camera->GetTransform().GetPosition());
 
 	context->UpdateSubresource(lightBuffer_ptr, 0, 0, &lightConstantBuffer, 0, 0);
-	context->PSSetConstantBuffers(CONSTANT_BUFFER_SLOT, 1, &lightBuffer_ptr);
+	context->PSSetConstantBuffers(LIGHT_CONSTANT_BUFFER_SLOT, 1, &lightBuffer_ptr);
 }

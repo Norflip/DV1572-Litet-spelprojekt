@@ -72,6 +72,11 @@ void Enemy::SetTarget(Player* player)
 		this->player = player;
 }
 
+void Enemy::HitSound()
+{
+	this->hitSound->PlaySound("Hit", this->hitSound->GetGlobalVolume());
+}
+
 Object* Enemy::GetFBXModel()
 {
 	return FBXModel;

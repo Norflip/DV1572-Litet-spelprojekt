@@ -189,8 +189,8 @@ void RenderTarget::Unbind(ID3D11DeviceContext* context)
 {
 	for (size_t i = 0; i < bufferCount; i++)
 	{
-		ID3D11ShaderResourceView* nullSRV[1];
-		ZeroMemory(&nullSRV, sizeof(nullSRV));
+		ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+		//ZeroMemory(&nullSRV, sizeof(nullSRV));
 
 		context->PSSetShaderResources(i, 1, nullSRV);
 	}

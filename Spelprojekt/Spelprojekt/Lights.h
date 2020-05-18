@@ -9,13 +9,11 @@
 
 class Lights
 {
-	const int CONSTANT_BUFFER_SLOT = 1;
-
 public:
-	Lights();
+	Lights(size_t width, size_t height);
 	virtual ~Lights();
 
-	void Initialize(DX11Handler& dx11);
+	void Initialize(DX11Handler* dx11);
 
 	size_t AddPointLight(DirectX::XMFLOAT3 position, DirectX::XMFLOAT4 color, float attenuation);
 	void RemovePointLight(size_t id);
@@ -32,6 +30,8 @@ public:
 	void UpdateConstantBuffer(Camera* camera, ID3D11DeviceContext*);
 
 private:
+	size_t width, height;
+
 	size_t pointLight_ID;
 	std::unordered_map<size_t, PointLight> pointLightMap;
 

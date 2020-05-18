@@ -25,7 +25,7 @@ void SSAO::Initialize(DX11Handler* dx11)
 	this->shader->LoadPixelShader(L"Shaders/SSAO_ps.hlsl", "main", dx11->GetDevice());
 }
 
-void SSAO::RenderPass(Renderer* renderer, RenderTarget* gBuffer)
+void SSAO::Pass(Renderer* renderer, RenderTarget* gBuffer)
 {
 	
 	//ID3D11ShaderResourceView* srvs[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = { 0 };
@@ -35,43 +35,39 @@ void SSAO::RenderPass(Renderer* renderer, RenderTarget* gBuffer)
 	// unbind gbuffer?
 	//gBuffer->Unbind(dx11->GetContext());
 
+
+	renderer->SetRenderTarget(renderTarget);
+	renderer->ClearRenderTarget();
+
+
 	// bind ssao_random texture + normal and position buffer
-	/*ID3D11ShaderResourceView* srv = randomTexture->GetSRV();
+	ID3D11ShaderResourceView* srv = randomTexture->GetSRV();
 	ID3D11SamplerState* sampler = randomTexture->GetSampler();
 	ID3D11ShaderResourceView** buffers = gBuffer->GetShaderResourceViews();
 
 	dx11->GetContext()->PSSetShaderResources(0, 1, &buffers[2]);
 	dx11->GetContext()->PSSetShaderResources(1, 1, &buffers[3]);
 	dx11->GetContext()->PSSetShaderResources(2, 1, &srv);
-	dx11->GetContext()->PSSetSamplers(0, 1, &sampler);*/
-
-
-
-	renderer->SetRenderTarget(renderTarget);
-	renderer->ClearRenderTarget();
-
+	dx11->GetContext()->PSSetSamplers(2, 1, &sampler);
 
 	// bind SSAO shader
 	shader->Bind(dx11->GetContext());
-
-
 	renderer->DrawScreenQuad();
-	renderTarget->Unbind(dx11->GetContext());
 	
+
 	// bind to output
 
 	// return shaderResourceView from the renderTarget
 
-
 	// unbinds ssao_random texture
 
-	//ID3D11ShaderResourceView* pSRV[1] = { nullptr };
-	//ID3D11SamplerState* ssrf[1] = { nullptr };
+	ID3D11ShaderResourceView* pSRV[1] = { nullptr };
+	ID3D11SamplerState* ssrf[1] = { nullptr };
 
-	//dx11->GetContext()->PSSetShaderResources(0, 1, pSRV);
-	//dx11->GetContext()->PSSetShaderResources(1, 1, pSRV);
-	//dx11->GetContext()->PSSetShaderResources(2, 1, pSRV);
-	//dx11->GetContext()->PSSetSamplers(0, 1, ssrf);
+	dx11->GetContext()->PSSetShaderResources(0, 1, pSRV);
+	dx11->GetContext()->PSSetShaderResources(1, 1, pSRV);
+	dx11->GetContext()->PSSetShaderResources(2, 1, pSRV);
+	dx11->GetContext()->PSSetSamplers(0, 1, ssrf);
 }
 
 ID3D11ShaderResourceView* SSAO::GetOutputSRV() const

@@ -7,7 +7,7 @@ Texture2D normalTexture: register(t2);
 Texture2D positionTexture: register(t3);
 Texture2D ssao : register(t4);
 
-SamplerState ssaoSamplerState: register(s0);
+SamplerState ssaoSamplerState: register(s4);
 
 struct PixelInputType
 {
@@ -106,32 +106,26 @@ float4 main(PixelInputType input) : SV_TARGET
 		finalColor += CalculatePointLight(pointLights[i], normal, position, viewDirection);
 	}
 
-	return finalColor;
+	float ssaoValue = ssao.Sample(ssaoSamplerState, input.uv).x;
 
-	//// SSAO
-	//float radius = 5.1f;
 
-	//float3 n = GetNormalViewSpace(input.uv);
-	//float3 p = GetPositionViewSpace(input.uv);
-	//float2 rand = GetRandom(input.uv);
-	//
-	//float ao = 0.0f;
-	//radius = radius / p.z;
+	// http://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html
+	// BLUR DA BITCH
+	const int blurSize = 4;
+	float2 texel = 1.0f / screenSize;
 
-	//float2 offsets[4] = { float2(1,0), float2(-1,0), float2(0,1), float2(0,-1) };
-	//int iterations = 4;
+	float result = 0.0f;
+	float hlim = float(-blurSize) * 0.5f + 0.5f;
 
-	//for (int i = 0; i < iterations; i++)
-	//{
-	//	float2 coord1 = reflect(offsets[i], rand) * radius;
-	//	float2 coord2 = float2(coord1.x * 0.707f - coord1.y * 0.707f, coord1.x * 0.707f + coord1.y * 0.707f);
+	for (int x = 0; x < blurSize; x++)
+	{
+		for (int y = 0; y < blurSize; y++)
+		{
+			float2 offset = (float2(x, y) + hlim) * texel;
+			result += ssao.Sample(ssaoSamplerState, input.uv + offset).x;
+		}
+	}
 
-	//	ao += DoAO(input.uv, coord1 * 0.25f, p, n);
-	//	ao += DoAO(input.uv, coord2 * 0.5f, p, n);
-	//	ao += DoAO(input.uv, coord1 * 0.75f, p, n);
-	//	ao += DoAO(input.uv, coord2, p, n);
-	//}
-
-	//ao /= (float)iterations * 4.0f;
-	//return float4((1.0f - ao), (1.0f - ao), (1.0f - ao), 1.0f);
+	float d = result / float(blurSize * blurSize);
+	return float4(d,d,d, 1.0f);
 }

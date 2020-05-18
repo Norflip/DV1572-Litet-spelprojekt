@@ -14,7 +14,8 @@ public:
 	virtual ~SSAO();
 
 	void Initialize(DX11Handler* dx11);
-	void RenderPass(Renderer* renderer, RenderTarget* gbuffer);
+	void Pass(Renderer* renderer, RenderTarget* gbuffer);
+
 	ID3D11ShaderResourceView* GetOutputSRV() const;
 
 private:

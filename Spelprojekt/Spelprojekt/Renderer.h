@@ -43,7 +43,7 @@ private:
 	Lights lights;
 	SSAO ssao;
 
-	Shader* lightpass;
+	Shader* deferredLightShader;
 	Mesh* screenQuad;
 
 	Material* meshMat;
