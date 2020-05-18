@@ -17,6 +17,7 @@ public:
 	virtual ~Texture();
 
 	static Texture* CreateTexture(std::string filePath, DX11Handler& dx11, bool createSampler, D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode);
+	static ID3D11SamplerState* CreateSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode, DX11Handler& dx11);
 
 	ID3D11ShaderResourceView* GetSRV() {return this->textureSRV;}
 	ID3D11SamplerState* GetSampler() { return this->samplerState;}

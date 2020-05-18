@@ -16,6 +16,7 @@ public:
 	void Unbind(ID3D11DeviceContext*);
 
 	ID3D11RenderTargetView** GetRenderTargetViews() const { return this->rtv; }
+	ID3D11ShaderResourceView** GetShaderResourceViews() const { return this->srv; }
 
 	bool HasDepthBuffer() const { return this->createDepthBuffer; }
 	ID3D11DepthStencilView* GetDepthStencil() { return this->dsv; }

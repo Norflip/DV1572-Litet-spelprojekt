@@ -3,15 +3,19 @@
 #include "Texture.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "RenderTarget.h"
+
+class Renderer;
 
 class SSAO
 {
 public:
-	SSAO();
+	SSAO(size_t width, size_t height);
 	virtual ~SSAO();
 
-	void Initialize(size_t width, size_t height, DX11Handler* dx11);
-	void RenderPass(RenderTarget* gbuffer);
+	void Initialize(DX11Handler* dx11);
+	void RenderPass(Renderer* renderer, RenderTarget* gbuffer);
+	ID3D11ShaderResourceView* GetOutputSRV() const;
 
 private:
 	RenderTarget* renderTarget;

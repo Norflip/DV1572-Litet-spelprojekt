@@ -23,22 +23,26 @@ Texture* Texture::CreateTexture(std::string filePath, DX11Handler& dx11, bool cr
 	pTextureInterface->Release();
 
 	if (createSampler)
-	{
-		D3D11_SAMPLER_DESC samplerDescription;
-		ZeroMemory(&samplerDescription, sizeof(D3D11_SAMPLER_DESC));
-		samplerDescription.Filter = filter;
-		samplerDescription.AddressU = mode;
-		samplerDescription.AddressV = mode;
-		samplerDescription.AddressW = mode;
-		samplerDescription.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
-
-		for (size_t i = 0; i < 4; i++)
-			samplerDescription.BorderColor[i] = 1.0f;
-
-		ID3D11SamplerState* samplerState;
-		ZeroMemory(&samplerState, sizeof(ID3D11SamplerState));
-		dx11.GetDevice()->CreateSamplerState(&samplerDescription, &samplerState);
-	}
+		texture->samplerState = CreateSampler(filter, mode, dx11);
 
 	return texture;
+}
+
+ID3D11SamplerState* Texture::CreateSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode, DX11Handler& dx11)
+{
+	D3D11_SAMPLER_DESC samplerDescription;
+	ZeroMemory(&samplerDescription, sizeof(D3D11_SAMPLER_DESC));
+	samplerDescription.Filter = filter;
+	samplerDescription.AddressU = mode;
+	samplerDescription.AddressV = mode;
+	samplerDescription.AddressW = mode;
+	samplerDescription.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+	for (size_t i = 0; i < 4; i++)
+		samplerDescription.BorderColor[i] = 1.0f;
+
+	ID3D11SamplerState* samplerState;
+	ZeroMemory(&samplerState, sizeof(ID3D11SamplerState));
+	dx11.GetDevice()->CreateSamplerState(&samplerDescription, &samplerState);
+	return samplerState;
 }

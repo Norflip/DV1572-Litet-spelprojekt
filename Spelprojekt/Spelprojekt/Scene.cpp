@@ -3,7 +3,8 @@
 Scene::Scene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window) :
 	sceneName(name), renderer(renderer), window(window), dx11(dx11) 
 {
-	this->entities.SetBounds(AABB({ 0,0,0 }, { 250, 64, 250 }));
+	this->sceneBounds = AABB({ 0,0,0 }, { 250, 64, 250 });
+	this->entities.SetBounds(this->sceneBounds);
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
 	this->nextScene = nullptr;
 	this->didWin = false;

@@ -56,6 +56,6 @@ private:
 	RenderTarget* gbufferRenderTarget;
 	RenderTarget* currentRenderTarget;
 
-
-	Texture* ssaoRandomTexture;
+	ID3D11SamplerState* gbuffersampler;
+	//Texture* ssaoRandomTexture;
 };
