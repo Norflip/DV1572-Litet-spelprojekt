@@ -32,6 +32,8 @@ DevScene::~DevScene()
 
 void DevScene::Load()
 {		
+	Timer testSpeed;
+	testSpeed.Start();
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
@@ -206,6 +208,8 @@ void DevScene::Load()
 	this->levelMusic->StopSound();
 	this->levelMusic->LoadSound("Levelsound", this->levelMusic->GetLevelSoundtrack());
 	levelMusic->PlaySound("Levelsound", levelMusic->GetGlobalVolume());
+	testSpeed.Stop();
+	std::cout << std::endl << "loadTime:  " << testSpeed.GetMilisecondsElapsed() << std::endl;
 }
 
 void DevScene::Unload()
