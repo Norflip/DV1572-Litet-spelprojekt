@@ -9,10 +9,14 @@ struct WorldData
 	DirectX::XMMATRIX world;
 	DirectX::XMMATRIX vp;
 	DirectX::XMFLOAT3 centre;
+	float pad0;
 	DirectX::XMFLOAT3 cameraRight;
+	float pad1;
 	DirectX::XMFLOAT3 cameraUp;
+	float pad2;
+
 	float time;
-	float pad[5];
+	float pad[3];
 };
 
 

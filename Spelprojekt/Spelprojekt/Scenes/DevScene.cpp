@@ -291,7 +291,7 @@ void DevScene::CreateSceneObjects()
 	billboard->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
 	Object* plane = AssimpHandler::loadFbxObject("Models/ShittyQuad.fbx", dx11, billboard);
 	plane->GetTransform().Translate(1, 1, 1);
-	plane->GetTransform().Scale(3, 3, 3);
+	plane->GetTransform().Scale(1, 1, 1);
 	plane->GetTransform().SetRotation({0,0, 0 });
 	AddObject(plane);
 
@@ -299,8 +299,8 @@ void DevScene::CreateSceneObjects()
 	defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
 	defaultShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 	Object* plane2 = AssimpHandler::loadFbxObject("Models/ShittyQuad.fbx", dx11, defaultShader);
-	plane2->GetTransform().Translate(1, 1, 1);
-	plane2->GetTransform().Scale(3, 3, 3);
+	plane2->GetTransform().Translate(3, 3,3);
+	plane2->GetTransform().Scale(1, 1, 1);
 	plane2->GetTransform().SetRotation({ 0, 0, 0 });
 	AddObject(plane2);
 

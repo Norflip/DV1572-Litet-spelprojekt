@@ -51,11 +51,10 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 	cb_world.world = DirectX::XMMatrixTranspose(world);
 	cb_world.time = static_cast<float>(timer.GetMilisecondsElapsed()) / 1000.0f;
 	cb_world.vp = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(view, projection));
-	cb_world.cameraRight = right;
+	cb_world.cameraRight =  right;
 	cb_world.cameraUp = up;
 	cb_world.centre = centre;
 	cb_geometry.view = view;
-	
 
 	dx11.GetContext()->UpdateSubresource(worldBuffer_ptr, 0, 0, &cb_world, 0, 0);
 	dx11.GetContext()->UpdateSubresource(geoBuffer_ptr, 0, 0, &cb_geometry, 0, 0);
