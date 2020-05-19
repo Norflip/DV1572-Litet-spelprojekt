@@ -10,6 +10,7 @@
 #include "Timer.h"
 #include <vector>
 #include "EndScene.h"
+#include "Gamemanager.h"
 
 class Application
 {
@@ -35,12 +36,13 @@ private:
 	Window window;
 	DX11Handler dx11;
 
+	Gamemanager* gamemanager;
+
 	//Scenes for the game
 	Scene* currentScene;
 	Scene* gameScene;
 	Scene* introScene;
 	Scene* endScene;
-
 	// new
 	SoundHandler* music;
 	SoundHandler* soundEffect;

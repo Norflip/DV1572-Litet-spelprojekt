@@ -61,6 +61,8 @@ protected:
 	Resources resources;
 	Entities entities;
 
+	
+
 	//std::vector<Object*> objectsToAdd;
 	//std::vector<Object*> objectsToRemove;
 	//// shader holds a map with diffrent material and a list of objects

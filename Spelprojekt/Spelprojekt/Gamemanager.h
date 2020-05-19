@@ -11,7 +11,7 @@ public:
 		Hard
 	};
 
-	Gamemanager(DX11Handler*);
+	Gamemanager(DX11Handler&);
 	~Gamemanager();
 
 	SoundHandler* GetMusicHandler() { return this->music; }

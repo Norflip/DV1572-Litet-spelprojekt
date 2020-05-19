@@ -5,6 +5,7 @@
 #include "CameraController.h"
 #include "assimpHandler.h"
 #include "Resources.h"
+#include "Gamemanager.h"
 
 class IntroGUI;
 #include "IntroGui.h"
@@ -14,7 +15,7 @@ class IntroScene : public Scene
 {
 
 public:
-	IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool &exitGame, SoundHandler* sound, SoundHandler* soundeffect);
+	IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool &exitGame, SoundHandler* sound, SoundHandler* soundeffect, Gamemanager* gamemanager);
 	virtual ~IntroScene();
 
 	void Load() override;
@@ -37,7 +38,7 @@ private:
 	// Music and sounds
 	SoundHandler* mainmenuMusic;
 	SoundHandler* soundeffects;
-
+	Gamemanager* gamemanager;
 	float volumeScale = 0.1f; 
 };
 

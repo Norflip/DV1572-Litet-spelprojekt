@@ -2,7 +2,7 @@
 
 
 
-IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool& exitGame, SoundHandler* sound, SoundHandler* soundeffect) : Scene(name, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
+IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool& exitGame, SoundHandler* sound, SoundHandler* soundeffect, Gamemanager* gamemanager) : Scene(name, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
 {
 	sceneName = "IntroScene";
 	this->camera = new Camera(90.0f, window.GetWidth(), window.GetHeight());
@@ -14,6 +14,7 @@ IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, 
 	lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
 	lights.SetSunIntensity(0.9f);
 
+	
 	// Music and soundeffects
 	this->mainmenuMusic = sound;
 	this->mainmenuMusic->SetGlobalVolume(0.5f);
@@ -23,6 +24,12 @@ IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, 
 
 	this->soundeffects = soundeffect;
 	this->soundeffects->SetGlobalVolume(1.0f);
+
+
+
+	this->gamemanager = gamemanager;	
+	gamemanager->GetMusicHandler()->LoadSound("Cait", "SoundEffects/MonstersInc.wav");
+	
 }
 
 IntroScene::~IntroScene()
@@ -33,8 +40,9 @@ IntroScene::~IntroScene()
 void IntroScene::Load()
 {	
 	// Set music volume from beginning		
-	mainmenuMusic->PlaySound("Cait", mainmenuMusic->GetGlobalVolume());
-	
+	///mainmenuMusic->PlaySound("Cait", mainmenuMusic->GetGlobalVolume());
+	gamemanager->GetMusicHandler()->PlaySound("Cait", 0.1f);
+
 	GUI* gui = new GUI(dx11);
 	introGUI = new IntroGUI(gui, dx11, controller, this, mainmenuMusic, soundeffects);
 	renderer->SetGUI(gui);
