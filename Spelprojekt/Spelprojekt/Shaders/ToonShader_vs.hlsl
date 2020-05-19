@@ -48,21 +48,21 @@ VS_OUTPUT animation(VS_INPUT input)
 	}*/
 
 	positions += mul(input.position, boneTransforms[input.IDS.x]) * input.weights.x;
-	positions += mul(input.position, boneTransforms[input.IDS.y]) * input.weights.y;
-	positions += mul(input.position, boneTransforms[input.IDS.z]) * input.weights.z;
-	positions += mul(input.position, boneTransforms[input.IDS.w]) * input.weights.w;
+	//positions += mul(input.position, boneTransforms[input.IDS.y]) * input.weights.y;
+	/*positions += mul(input.position, boneTransforms[input.IDS.z]) * input.weights.z;
+	positions += mul(input.position, boneTransforms[input.IDS.w]) * input.weights.w;*/
 	//positions.w = 1.0f;
 
 
 	normals += input.weights.x * mul(input.normal, (float3x3)boneTransforms[input.IDS.x]).xyz;
-	normals += input.weights.y * mul(input.normal, (float3x3)boneTransforms[input.IDS.y]).xyz;
-	normals += input.weights.z * mul(input.normal, (float3x3)boneTransforms[input.IDS.z]).xyz;
-	normals += input.weights.w * mul(input.normal, (float3x3)boneTransforms[input.IDS.w]).xyz;
+	//normals += input.weights.y * mul(input.normal, (float3x3)boneTransforms[input.IDS.y]).xyz;
+	//normals += input.weights.z * mul(input.normal, (float3x3)boneTransforms[input.IDS.z]).xyz;
+	//normals += input.weights.w * mul(input.normal, (float3x3)boneTransforms[input.IDS.w]).xyz;
 
 	tangents += input.weights.x * mul(input.tangent, (float3x3)boneTransforms[input.IDS.x]).xyz;
-	tangents += input.weights.y * mul(input.tangent, (float3x3)boneTransforms[input.IDS.y]).xyz;
-	tangents += input.weights.z * mul(input.tangent, (float3x3)boneTransforms[input.IDS.z]).xyz;
-	tangents += input.weights.w * mul(input.tangent, (float3x3)boneTransforms[input.IDS.w]).xyz;
+	//tangents += input.weights.y * mul(input.tangent, (float3x3)boneTransforms[input.IDS.y]).xyz;
+	//tangents += input.weights.z * mul(input.tangent, (float3x3)boneTransforms[input.IDS.z]).xyz;
+	//tangents += input.weights.w * mul(input.tangent, (float3x3)boneTransforms[input.IDS.w]).xyz;
 
 	output.worldPosition = mul(positions, world).xyz;
 	output.normal = mul(normals, world).xyz;

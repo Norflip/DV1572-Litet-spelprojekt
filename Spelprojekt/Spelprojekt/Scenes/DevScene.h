@@ -82,4 +82,7 @@ private:
 
 	SpawnObjects* spawnObjects;
 	Object* arrow;
+
+	const aiScene* assimpScene;
+	Assimp::Importer imp;
 };

@@ -24,13 +24,10 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	this->levelMusic = sound;	
 	this->soundeffects = soundeffect;
 
-	Shader* animationShader = new Shader();
-	animationShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
-	animationShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "animation", dx11.GetDevice());
-
-	Object* animation = new Object(ObjectLayer::Player, AssimpHandler::loadFbxObject("Animations/Glasse1.fbx", dx11, animationShader));
-	animation->GetTransform().SetPosition({ 55, 10, 60 });
-	AddObject(animation);
+	//Object* animation = new Object(ObjectLayer::Player, AssimpHandler::loadFbxObject("Animations/sista.fbx", dx11, animationShader));
+	//animation->GetTransform().SetPosition({ 55, 10, 60 });
+	//animation->GetTransform().Scale(2.5, 2.5, 2.5);
+	//AddObject(animation);
 }
 
 DevScene::~DevScene()
@@ -40,6 +37,7 @@ DevScene::~DevScene()
 
 void DevScene::Load()
 {		
+	
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
@@ -132,8 +130,12 @@ void DevScene::Load()
 	toonShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 	toonShader->CreateSampler(dx11.GetDevice());
 
+	Shader* animationShader = new Shader();
+	animationShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+	animationShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "animation", dx11.GetDevice());
+
 	// ------ PLAYER
-	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, toonShader);
+	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Animations/sista.fbx", dx11, animationShader);
 
 	this->player = new Player(playerModel, controller, &ground, gui, wagon, dx11,  static_cast<Scene*>(this));
 	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
@@ -143,7 +145,12 @@ void DevScene::Load()
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });	
 	AddObject(this->player);
 			
-	
+
+	// ANIMATION SCHEISSE
+	this->assimpScene = imp.ReadFile("Animations/sista.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+
+
+
 
 	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, soundeffects);
 	this->spawnObjects->SetEnemy();
@@ -227,14 +234,11 @@ void DevScene::Update(const float& deltaTime)
 {	
 	Scene::Update(deltaTime);
 
-	auto g = entities.GetObjectsInRange(player->GetTransform().GetPosition(), 2.0f);
-
-	Assimp::Importer imp;
 	float seconds = (float)gametimer.getSecondsElapsed();
 	//const aiScene* scene = imp.ReadFile("Animations/Glasse_Walk_Y_UP_REBOUND.fbx", aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
-	const aiScene* scene = imp.ReadFile("Animations/Glasse1.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate | aiProcess_LimitBoneWeights);
-	AssimpHandler::BoneTransform(scene, seconds, entities.AllEntities()[0]->GetMesh()->boneTransforms, entities.AllEntities()[0]->GetMesh());
-
+	//const aiScene* scene = imp.ReadFile("Animations/sista.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate | aiProcess_LimitBoneWeights);
+	AssimpHandler::BoneTransform(this->assimpScene, seconds, this->player->GetMesh()->boneTransforms, this->player->GetMesh());
+	
 	//FPS STUFF
 	fpsTimer.Start();			
 	
