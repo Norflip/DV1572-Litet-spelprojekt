@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include "assimp/scene.h"
 
 struct MeshVertex
 {
@@ -12,11 +13,11 @@ struct MeshVertex
 	DirectX::XMFLOAT3 normal;
 	DirectX::XMFLOAT3 tangent;
 	float weights[4];
-	unsigned int IDS[4];
+	int IDS[4];
 
-	MeshVertex() : position(0, 0, 0), uv(0, 0), normal(0, 0, 0), tangent(0, 0, 0), weights{ 0.0f, 0.0f, 0.0f, 0.0f }, IDS{ 0,0,0,0 } {}
+	MeshVertex() : position(0, 0, 0), uv(0, 0), normal(0, 0, 0), tangent(0, 0, 0), weights{ 0.0f, 0.0f, 0.0f, 0.0f }, IDS{ -1,-1,-1,-1 } {}
 	MeshVertex(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT3 normal, DirectX::XMFLOAT3 tangent)
-		: position(position), uv(uv), normal(normal), tangent(tangent), weights{ 0.0f, 0.0f, 0.0f, 0.0f }, IDS{ 0,0,0,0 } {}
+		: position(position), uv(uv), normal(normal), tangent(tangent), weights{ 0.0f, 0.0f, 0.0f, 0.0f }, IDS{ -1,-1,-1,-1 } {}
 
 	void addBoneData(unsigned int vertexID, float weight)
 	{
@@ -35,6 +36,8 @@ struct MeshVertex
 struct BoneInfo
 {
 	std::string boneName;
+	//aiMatrix4x4 boneOffset;
+	//aiMatrix4x4 finalTransformation;
 	DirectX::XMMATRIX boneOffset = DirectX::XMMatrixIdentity();;
 	DirectX::XMMATRIX finalTransformation = DirectX::XMMatrixIdentity();
 };
@@ -51,6 +54,8 @@ struct Mesh
 	std::map<std::string, unsigned int> boneMapping;
 	unsigned int numBones;
 	std::vector<BoneInfo> boneInfo;
+	//aiMatrix4x4 globalInverseTransform;
+	//std::vector<aiMatrix4x4> boneTransforms;
 	DirectX::XMMATRIX globalInverseTransform = DirectX::XMMatrixIdentity();;
 	std::vector<DirectX::XMMATRIX> boneTransforms;
 

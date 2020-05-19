@@ -37,21 +37,20 @@ VS_OUTPUT animation(VS_INPUT input)
 {
 	VS_OUTPUT output;
 
-	//float weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	/*weights[0] = input.weights.x;
-	weights[1] = input.weights.y;
-	weights[2] = input.weights.z;
-	weights[3] = input.weights.w;*/
+	float4 positions = input.position;
+	float3 normals = input.normal;
+	float3 tangents = input.tangent;
 
-	float4 positions = float4(0.0f, 0.0f, 0.0f, 0.0f);
-	float3 normals = float3(0.0f, 0.0f, 0.0f);
-	float3 tangents = float3(0.0f, 0.0f, 0.0f);
+	if (input.weights.y == 0.0f)
+	{
+		input.weights.x = 1.0f;
+	}
 
 	positions += input.weights.x * mul(input.position, boneTransforms[input.IDS.x]);
 	positions += input.weights.y * mul(input.position, boneTransforms[input.IDS.y]);
 	positions += input.weights.z * mul(input.position, boneTransforms[input.IDS.z]);
 	positions += input.weights.w * mul(input.position, boneTransforms[input.IDS.w]);
-	positions.w = 1.0f;
+	//positions.w = 1.0f;
 
 	normals += input.weights.x * mul(input.normal, (float3x3)boneTransforms[input.IDS.x]).xyz;
 	normals += input.weights.y * mul(input.normal, (float3x3)boneTransforms[input.IDS.y]).xyz;

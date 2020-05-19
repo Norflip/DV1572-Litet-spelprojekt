@@ -28,7 +28,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	animationShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
 	animationShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "animation", dx11.GetDevice());
 
-	Object* animation = new Object(ObjectLayer::Player, AssimpHandler::loadFbxObject("Animations/glasseFinal.fbx", dx11, animationShader));
+	Object* animation = new Object(ObjectLayer::Player, AssimpHandler::loadFbxObject("Animations/glasse0.fbx", dx11, animationShader));
 	animation->GetTransform().SetPosition({ 55, 7, 60 });
 	AddObject(animation);
 }
@@ -231,7 +231,7 @@ void DevScene::Update(const float& deltaTime)
 
 	Assimp::Importer imp;
 	float seconds = (float)gametimer.getSecondsElapsed();
-	const aiScene* scene = imp.ReadFile("Animations/glasseFinal.fbx", aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
+	const aiScene* scene = imp.ReadFile("Animations/glasse0.fbx", aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
 	AssimpHandler::BoneTransform(scene, seconds, entities.AllEntities()[0]->GetMesh()->boneTransforms, entities.AllEntities()[0]->GetMesh());
 
 	//FPS STUFF

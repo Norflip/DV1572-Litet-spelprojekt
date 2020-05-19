@@ -1,6 +1,12 @@
 #pragma once
 #include <DirectXMath.h>
+
 #define MAX_LIGHTS 32
+
+//struct boneData
+//{
+//	float boneTransforms[4][4];
+//};
 
 __declspec(align(16))
 struct WorldData
@@ -9,6 +15,8 @@ struct WorldData
 	DirectX::XMMATRIX world;
 	float time;
 	float pad[3];
+	//boneData data[70];
+	//float boneTransforms[4][4][70];
 	DirectX::XMMATRIX boneTransforms[70];
 };
 
