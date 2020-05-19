@@ -60,6 +60,9 @@ private:
 	GUISprite* healthFrame;
 	GUISprite* score;
 	GUIText* totalScore;
+	GUISprite* enemies;
+	GUIText* totalEnemies;
+	int totalEnemiesLeft = 10;
 
 	GUIActionbar* actionbarLeft;
 	GUIActionbar* actionbarRight;

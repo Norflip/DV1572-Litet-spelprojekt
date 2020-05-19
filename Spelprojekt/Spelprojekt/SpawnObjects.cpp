@@ -28,6 +28,7 @@ SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Me
 	this->enemy = nullptr;
 	this->soundeffects = soundeffect;
 	SetVisible(false);
+	this->enemiesToEliminate = 0;
 }
 
 void SpawnObjects::Update(const float& deltaTime)
@@ -93,6 +94,7 @@ void SpawnObjects::UpdateRemoveEnemy()
 			if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(i->GetWorldBounds()))
 			{
 				i->HitSound();
+				enemiesToEliminate--;
 				player->IncreasePoints(i->GivePoints());
 				scene->RemoveObject(i);
 				RemoveEnemy(i);
@@ -124,4 +126,10 @@ Enemy* SpawnObjects::GetEnemy()
 void SpawnObjects::SetSpawnedEnemies(int spawnedEnemies)
 {
 	this->spawnedEnemies = spawnedEnemies;
+}
+
+void SpawnObjects::SetEnemiesToEliminate(int nrOfenemies)
+{
+	this->enemiesToEliminate = nrOfenemies;
+
 }

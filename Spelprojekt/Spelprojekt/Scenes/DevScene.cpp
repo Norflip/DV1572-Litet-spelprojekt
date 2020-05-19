@@ -9,6 +9,11 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	totalScore = new GUIText(dx11, "Score", 210.0f, 5.0f);
 	totalScore->SetFontSize({ 3.0f, 3.0f });
 	totalScore->SetFontColor({ 1,0,0,1 });
+
+	totalEnemies = new GUIText(dx11, "Enemiesleft", 250, 70);
+	totalEnemies->SetFontSize({ 2.0f, 2.0f });
+	totalEnemies->SetFontColor({ 0.5,1,0,1 });
+
 	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
 	window.GetInput()->LockCursor(false);
 
@@ -17,6 +22,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
 	lights.SetSunIntensity(0.6f);
 
+	this->totalEnemiesLeft = 10.0f;
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 	this->timeUntilEnd = 10.0f;
@@ -40,6 +46,7 @@ void DevScene::Load()
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
 	actionbarRight = new GUIActionbar(dx11, "Sprites/Actionbar.png", 400.0f, 650.0f);
 	score = new GUISprite(dx11, "Sprites/score.png", 10.0f ,19.0f);
+	enemies = new GUISprite(dx11, "Sprites/enemiesleft.png", 10, 80);
 	
 
 	//--------------------------------
@@ -144,6 +151,7 @@ void DevScene::Load()
 
 	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, soundeffects);
 	this->spawnObjects->SetEnemy();
+	this->spawnObjects->SetEnemiesToEliminate(totalEnemiesLeft);
 	AddObject(this->spawnObjects);	
 		
 	// ------ WEAPONS
@@ -203,6 +211,8 @@ void DevScene::Load()
 	gui->AddGUIObject(actionbarRight, "actionbarRight");
 	gui->AddGUIObject(score, "score");
 	gui->AddGUIObject(totalScore, "totalscore");
+	gui->AddGUIObject(enemies, "enemiesleft");
+	gui->AddGUIObject(totalEnemies, "totalenemiesleft");
 
 	// Set GUI
 	renderer->SetGUI(gui);
@@ -240,8 +250,9 @@ void DevScene::Update(const float& deltaTime)
 	for (auto i : spoons)
 		player->UpdateHands(i);
 	//
-	
-	
+
+	totalEnemies->SetString(std::to_string(this->spawnObjects->GetEnemiesLeftToEliminate()));
+
 	totalScore->SetString(std::to_string(player->GetPoints()));
 		
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));

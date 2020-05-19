@@ -30,6 +30,10 @@ class SpawnObjects : public Object
 		void RemoveEnemy(Enemy*);
 		Enemy* GetEnemy();
 		void SetSpawnedEnemies(int spawnedEnemies);
+
+		void SetEnemiesToEliminate(int nrOfenemies);
+		int GetEnemiesLeftToEliminate() { return this->enemiesToEliminate; }
+
 	private:
 		void UpdateSpawnEnemy();
 		void UpdateRemoveEnemy();
@@ -49,6 +53,7 @@ class SpawnObjects : public Object
 
 		SoundHandler* soundeffects;
 
+		int enemiesToEliminate;
 		int nrOfEnemies = 0;
 		int spawnedEnemies = 5;
 		float randX, randZ, lastRandX, lastRandZ;
