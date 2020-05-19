@@ -56,38 +56,14 @@ void DX11Handler::Initialize(const Window& window)
 	/////////////////				END SWAPCHAIN INITIALIZE				/////////////////
 
 	CreateBackbufferRenderTarget(window.GetWidth(), window.GetHeight());
-	SetWireframeMode(false);
-}
+	//SetWireframeMode(false);
 
-ID3D11SamplerState* DX11Handler::CreateSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode)
-{
-	D3D11_SAMPLER_DESC samplerDescription;
-	ZeroMemory(&samplerDescription, sizeof(D3D11_SAMPLER_DESC));
-	samplerDescription.Filter = filter;
-	samplerDescription.AddressU = mode;
-	samplerDescription.AddressV = mode;
-	samplerDescription.AddressW = mode;
-	samplerDescription.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
-
-	for (size_t i = 0; i < 4; i++)
-		samplerDescription.BorderColor[i] = 1.0f;
-
-	ID3D11SamplerState* samplerState;
-	ZeroMemory(&samplerState, sizeof(ID3D11SamplerState));
-	device->CreateSamplerState(&samplerDescription, &samplerState);
-	return samplerState;
-}
-
-void DX11Handler::SetWireframeMode(bool useWireframe)
-{
 	/////////////////				RASTERDESC INITIALIZE				/////////////////
-	
+
 	D3D11_RASTERIZER_DESC rasterizerDescription;
 	ZeroMemory(&rasterizerDescription, sizeof(D3D11_RASTERIZER_DESC));
 
-	D3D11_FILL_MODE mode = useWireframe ? D3D11_FILL_WIREFRAME : D3D11_FILL_SOLID;
-
-	rasterizerDescription.FillMode = mode; //if we want wireframe, fill etc
+	rasterizerDescription.FillMode = D3D11_FILL_SOLID; //if we want wireframe, fill etc
 	rasterizerDescription.CullMode = D3D11_CULL_BACK;
 
 	///* Filips nasty shit >:D
@@ -96,7 +72,7 @@ void DX11Handler::SetWireframeMode(bool useWireframe)
 	rasterizerDescription.ScissorEnable = false;
 	rasterizerDescription.DepthBias = 0;
 	rasterizerDescription.DepthBiasClamp = 0.0f;
-	
+
 	HRESULT resultCreateRasterizer = device->CreateRasterizerState(&rasterizerDescription, &mainRasterizerState);
 	assert(SUCCEEDED(resultCreateRasterizer));
 
@@ -123,7 +99,29 @@ void DX11Handler::SetWireframeMode(bool useWireframe)
 
 
 	context->RSSetState(mainRasterizerState);
+
+	this->defaultSampler = CreateSampler(D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 }
+
+ID3D11SamplerState* DX11Handler::CreateSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode)
+{
+	D3D11_SAMPLER_DESC samplerDescription;
+	ZeroMemory(&samplerDescription, sizeof(D3D11_SAMPLER_DESC));
+	samplerDescription.Filter = filter;
+	samplerDescription.AddressU = mode;
+	samplerDescription.AddressV = mode;
+	samplerDescription.AddressW = mode;
+	samplerDescription.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+	for (size_t i = 0; i < 4; i++)
+		samplerDescription.BorderColor[i] = 1.0f;
+
+	ID3D11SamplerState* samplerState;
+	ZeroMemory(&samplerState, sizeof(ID3D11SamplerState));
+	device->CreateSamplerState(&samplerDescription, &samplerState);
+	return samplerState;
+}
+
 
 void DX11Handler::CreateBackbufferRenderTarget(size_t width, size_t height)
 {

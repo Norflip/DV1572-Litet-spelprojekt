@@ -22,6 +22,7 @@ private:
 	RenderTarget* renderTarget;
 	Texture* randomTexture;
 	Shader* shader;
+	ID3D11SamplerState* sampler;
 
 private:
 	size_t width, height;

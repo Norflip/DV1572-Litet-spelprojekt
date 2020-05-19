@@ -1,6 +1,6 @@
 #include "Texture.h"
 
-Texture::Texture() : texture(nullptr), textureSRV(nullptr), samplerState(nullptr)
+Texture::Texture() : texture(nullptr), textureSRV(nullptr)
 {
 }
 
@@ -8,7 +8,7 @@ Texture::~Texture()
 {
 }
 
-Texture* Texture::CreateTexture(std::string filePath, DX11Handler& dx11, bool createSampler = true, D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode)
+Texture* Texture::CreateTexture(std::string filePath, DX11Handler& dx11)
 {
 	Texture* texture = new Texture();
 	HRESULT hr;
@@ -22,14 +22,9 @@ Texture* Texture::CreateTexture(std::string filePath, DX11Handler& dx11, bool cr
 	pTextureInterface->GetDesc(&texture->imageSampleDesc);
 	pTextureInterface->Release();
 
-	if (createSampler)
-	{
-		ID3D11SamplerState* samplerState = dx11.CreateSampler(filter, mode);
-		texture->SetSampler(samplerState);
-	}
-
 	return texture;
 }
+
 //
 //void Texture::SetSampler(ID3D11Device* device)
 //{

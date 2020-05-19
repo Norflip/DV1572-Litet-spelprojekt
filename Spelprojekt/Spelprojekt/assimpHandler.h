@@ -95,7 +95,7 @@ namespace AssimpHandler
 		Logger::Write(fileName);
 
 		// Create a new texture and then return it
-		texture = Texture::CreateTexture(fileName, dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+		texture = Texture::CreateTexture(fileName, dx11);
 		return texture;
 	}
 
@@ -145,14 +145,19 @@ namespace AssimpHandler
 		return material;
 	}
 
-	inline AssimpData loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader)
+	inline AssimpData loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader, ID3D11SamplerState* sampler = nullptr)
 	{
+		if (sampler == nullptr)
+			sampler = dx11.GetDefaultSampler();
+
 		Logger::Write("CHECKING IF LOADING EVERY FRAME");
 
 		// Open the scene from the file
 		Assimp::Importer imp;
 		const aiScene* scene = imp.ReadFile(filepath, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
 		AssimpData object;
+
+
 
 		if (scene == nullptr)
 		{
@@ -185,7 +190,7 @@ namespace AssimpHandler
 			// add a simply greytexture to it
 			else
 			{
-				texture = Texture::CreateTexture("Textures/greyTexture.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+				texture = Texture::CreateTexture("Textures/greyTexture.png", dx11);
 			}
 
 			// Check if the file contains a normalMap
@@ -193,13 +198,14 @@ namespace AssimpHandler
 			{
 				// Load the normalMap and apply it to the object
 				normalMap = loadTextureFromFbx(dx11, path);
-				object.material->SetTexture(NORMAL_MATERIAL_TYPE, normalMap, PIXEL_TYPE::PIXEL);
+				object.material->SetTexture(NORMAL_MATERIAL_TYPE, normalMap, SHADER_BIND_TYPE::PIXEL);
+				object.material->SetSampler(NORMAL_MATERIAL_TYPE, sampler, SHADER_BIND_TYPE::PIXEL);
 				object.material->GetMaterialData().hasNormalTexture = true;
 				
 			}
 
-			object.material->SetTexture(ALBEDO_MATERIAL_TYPE, texture, PIXEL_TYPE::PIXEL);
-
+			object.material->SetTexture(ALBEDO_MATERIAL_TYPE, texture, SHADER_BIND_TYPE::PIXEL);
+			object.material->SetSampler(ALBEDO_MATERIAL_TYPE, sampler, SHADER_BIND_TYPE::PIXEL);
 		}
 		
 		return object;

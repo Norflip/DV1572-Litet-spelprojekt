@@ -7,7 +7,7 @@ Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11)
 	this->gbufferRenderTarget = new RenderTarget(4, width, height, true);
 	this->gbufferRenderTarget->Initalize(dx11.GetDevice());
 
-	this->backbufferRenderTarget = dx11.GetBackbuffer();
+	this->backbufferRenderTarget = dx11.GetBackbufferRenderTarget();
 	this->gui = nullptr;
 	this->deferredLightShader = new Shader();
 	this->deferredLightShader->LoadVertexShader(L"Shaders/ScreenQuad_vs.hlsl", "main", dx11.GetDevice());
@@ -16,7 +16,6 @@ Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11)
 	screenQuad = MeshCreator::CreateScreenQuad(dx11.GetDevice());
 	worldBuffer_ptr = dx11.CreateBuffer<WorldData>(cb_world);
 	gbuffersampler = dx11.CreateSampler(D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP);
-
 
 	this->shadowRenderTarget = new RenderTarget(0, SHADOW_MAP_SIZE, SHADOW_MAP_SIZE, true);
 	this->shadowRenderTarget->Initalize(dx11.GetDevice());
@@ -135,7 +134,9 @@ void Renderer::DisplayFrame(Camera* camera)
 	ID3D11ShaderResourceView* pSRV[1] = { NULL };
 	ID3D11SamplerState* ssrf[1] = { NULL };
 	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount(), 1, pSRV);
-	dx11.GetContext()->PSSetSamplers(0, 1, ssrf);
+	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount() + 1, 1, pSRV);
+
+	//dx11.GetContext()->PSSetSamplers(0, 1, ssrf);
 
 	// GUI PASS
 	if (gui != nullptr)

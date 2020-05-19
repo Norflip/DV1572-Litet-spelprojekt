@@ -160,7 +160,7 @@ float4 main(PixelInputType input) : SV_TARGET
 	*/
 
 	const float bias = 0.00001f;
-	const float PCFSpread = 3000.0f; // 2k works aswell
+	const float PCFSpread = 700.0f; // 2k works aswell
 
 	float4 lightViewPosition = mul(mul(position, sunView), sunProjection);
 
@@ -174,8 +174,8 @@ float4 main(PixelInputType input) : SV_TARGET
 	// kollar om den transformerade positionen är innanför sol kamerans vy
 	if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
 	{
-		float lightDepthValue = (lightViewPosition.z / lightViewPosition.w) - bias;
-		const uint POSSION_DISK_SAMPLE_COUNT = 16;
+		float lightDepthValue = (lightViewPosition.z / lightViewPosition.w) - bias;		
+		const uint POSSION_DISK_SAMPLE_COUNT = 8;
 
 		for (int i = 0; i < POSSION_DISK_SAMPLE_COUNT; i++)
 		{
@@ -189,7 +189,7 @@ float4 main(PixelInputType input) : SV_TARGET
 			}
 		}
 
-		visibility = saturate(0.5f + visibility);
+		visibility = saturate(0.3f + visibility);
 
 		//visibility = clamp(visibility, 0.1f, 1.0f);
 	}

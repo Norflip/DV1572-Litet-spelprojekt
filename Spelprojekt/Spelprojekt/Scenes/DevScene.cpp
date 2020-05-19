@@ -46,8 +46,6 @@ void DevScene::Load()
 	Shader* defaultShader = new Shader();
 	defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
 	defaultShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
-	defaultShader->CreateSampler(dx11.GetDevice());
-	// object = mesh + material
 
 	// Exit Wagon
 	Object* wagon = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Wagon.fbx",dx11, defaultShader));
@@ -60,12 +58,13 @@ void DevScene::Load()
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 
 	Object* sphere = new Object(ObjectLayer::Enviroment, dev_monkey_mesh, new Material(defaultShader, dx11));
-	Texture* monkey_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	Texture* monkey_normal = Texture::CreateTexture("Textures/rocks_normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	//monkey_texture->SetSampler(dx11.GetDevice());
-	//monkey_normal->SetSampler(dx11.GetDevice());
-	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
-	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
+	Texture* monkey_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11);
+	Texture* monkey_normal = Texture::CreateTexture("Textures/rocks_normal.png", dx11);
+
+
+	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, SHADER_BIND_TYPE::PIXEL);
+	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, SHADER_BIND_TYPE::PIXEL);
+	sphere->GetMaterial()->SetSampler(0, dx11.GetDefaultSampler());
 
 	sphere->GetTransform().Translate(0, 3, 6);
 	AddObject(sphere);
@@ -75,23 +74,19 @@ void DevScene::Load()
 	terrainShader->LoadPixelShader(L"Shaders/Terrain_ps.hlsl", "main", dx11.GetDevice());
 	terrainShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 
-	Texture* grass_texture = Texture::CreateTexture("Textures/Grass_ColorTest.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	//grass_texture->SetSampler(dx11.GetDevice());
-	//grass_normal->SetSampler(dx11.GetDevice());
-	
-	Texture* sand_texture = Texture::CreateTexture("Textures/Sand_Color_Test.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);	
-	Texture* sand_normal = Texture::CreateTexture("Textures/Sand_Normal_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	//grass_texture->SetSampler(dx11.GetDevice());
-	//grass_normal->SetSampler(dx11.GetDevice());
+	Texture* grass_texture = Texture::CreateTexture("Textures/Grass_ColorTest.png", dx11);
+	Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Normal.png", dx11);
+	Texture* sand_texture = Texture::CreateTexture("Textures/Sand_Color_Test.png", dx11);
+	Texture* sand_normal = Texture::CreateTexture("Textures/Sand_Normal_2.png", dx11);
+
 	Material* terrainMat = new Material(terrainShader, dx11);
-	terrainMat->SetTexture(0, grass_texture, PIXEL_TYPE::PIXEL);
-	terrainMat->SetTexture(1, sand_texture, PIXEL_TYPE::PIXEL);
+	terrainMat->SetTexture(0, grass_texture, SHADER_BIND_TYPE::PIXEL);
+	terrainMat->SetTexture(1, sand_texture, SHADER_BIND_TYPE::PIXEL);
+	terrainMat->SetTexture(2, grass_normal, SHADER_BIND_TYPE::PIXEL);
+	terrainMat->SetTexture(3, sand_normal, SHADER_BIND_TYPE::PIXEL);
 
-	terrainMat->SetTexture(2, grass_normal, PIXEL_TYPE::PIXEL);
-	terrainMat->SetTexture(3, sand_normal, PIXEL_TYPE::PIXEL);
+	terrainMat->SetSampler(0, dx11.GetDefaultSampler(), SHADER_BIND_TYPE::PIXEL);
 	terrainMat->GetMaterialData().hasNormalTexture = true;
-
 	// GROUNDH MESH
 	ground.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
 	Object* terrainObject = new Object(ObjectLayer::None, ground.GetMesh(), terrainMat);
@@ -100,17 +95,18 @@ void DevScene::Load()
 
 	// ------- water shader
 	waterMesh.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), true);
+
 	Shader* waterShader = new Shader();
 	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
 	waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
-	waterShader->CreateSampler(dx11.GetDevice());
-	Texture* heightMapTexture = Texture::CreateTexture("Textures/map_displacement_map_small.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+
+	Texture* heightMapTexture = Texture::CreateTexture("Textures/map_displacement_map_small.png", dx11);
 	
 	Material* waterMat = new Material(waterShader, dx11);
-	waterMat->SetTexture(0, heightMapTexture, PIXEL_TYPE::PIXEL);
+	waterMat->SetTexture(0, heightMapTexture, SHADER_BIND_TYPE::PIXEL);
+	waterMat->SetSampler(0, dx11.GetDefaultSampler(), SHADER_BIND_TYPE::PIXEL);
 
-	//Mesh* waterPlane = ShittyOBJLoader::Load("Models/Water_Plane.obj", dx11.GetDevice());
-	//Object* water =  AssimpHandler::loadFbxObject("Models/Water_Plane.fbx", dx11, waterShader);
+
 	Object* water = new Object(ObjectLayer::None, waterMesh.GetMesh(), waterMat);
 	water->SetMaterial(waterMat);
 	water->GetTransform().Translate({ 0,5,0,});
@@ -123,7 +119,6 @@ void DevScene::Load()
 	Shader* toonShader = new Shader();
 	toonShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
 	toonShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
-	toonShader->CreateSampler(dx11.GetDevice());
 
 	// ------ PLAYER
 	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, toonShader);
@@ -145,11 +140,13 @@ void DevScene::Load()
 	// ------ WEAPONS
 	AssimpHandler::AssimpData coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	// Coconuts
-	for (int i = 0; i < 11; i++) {
+	for (int i = 0; i < 11; i++) 
+	{
 		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);
 		this->coconuts[i]->SetLayer(ObjectLayer::Projectile);
 		AddObject(coconuts[i]);
 	}		
+
 	coconuts[0]->GetTransform().Translate(177.0f, 8.5f, 75.0f);	
 	coconuts[1]->GetTransform().Translate(164.0f, 8.5f, 60.0f);
 	coconuts[2]->GetTransform().Translate(100.0f, 8.8f, 75.0f);
@@ -223,20 +220,17 @@ void DevScene::Update(const float& deltaTime)
 	this->cameraFocusPosition = player->GetTransform().GetPosition();
 	Scene::Update(deltaTime);
 
-	auto g = entities.GetObjectsInRange(player->GetTransform().GetPosition(), 2.0f);
-
-
 	//FPS STUFF
 	fpsTimer.Start();			
 	
 	// Change all weapons to vector
 	for(auto i : coconuts)
 		player->UpdateHands(i);
+
 	for (auto i : spoons)
 		player->UpdateHands(i);
 	//
 	
-		
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 	controller->Update(deltaTime);
 	
@@ -277,13 +271,13 @@ Scene* DevScene::GetNextScene() const
 
 void DevScene::CreateSceneObjects()
 {
+
 	if (true)
 	{
 		// save the shaders somewhere, remember to clean it up
 		Shader* defaultShader = new Shader();
 		defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
 		defaultShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
-		defaultShader->CreateSampler(dx11.GetDevice());
 
 		////////////////////////// MOUNTAINS /////////////////////////////
 		Object* mountain = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Mountain.fbx", dx11, defaultShader));

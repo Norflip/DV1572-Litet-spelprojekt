@@ -24,25 +24,27 @@ public:
 
 	ID3D11Device* GetDevice() const { return this->device; }
 	ID3D11DeviceContext* GetContext() const { return this->context; }
-
 	IDXGISwapChain* GetSwapChain() const { return this->swapchain; }
-	RenderTarget* GetBackbuffer() const { return this->backbuffer; }
+	RenderTarget* GetBackbufferRenderTarget() const { return this->backbuffer; }
 
 	ID3D11RasterizerState* GetShadowRasterizerState() { return this->shadowRasterizerState; }
 	ID3D11RasterizerState* GetWaterRasterizerState() { return this->waterRasterizerState; }
 	ID3D11RasterizerState* GetMainRasterizerState() { return this->mainRasterizerState; }
 
+	ID3D11SamplerState* CreateSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode);
+	ID3D11SamplerState* GetDefaultSampler() const { return this->defaultSampler; }
+
+	/*
 	void SetRenderTarget(RenderTarget* target) { this->backbuffer = target; }
 	ID3D11Texture2D* GetBackBufferPtr() const { return this->backBufferPtr; }
 
 	ID3D11RenderTargetView* GetRTV() const { return this->backbufferRTV; }
 	void SetRTV(ID3D11RenderTargetView* rtv) { this->backbufferRTV = rtv; }
-	
+	*/
+
 	template <typename T> ID3D11Buffer* CreateBuffer (T& data);
-	ID3D11SamplerState* CreateSampler(D3D11_FILTER filter = D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_MODE mode = D3D11_TEXTURE_ADDRESS_WRAP);
 	
 	void SetFullscreen(bool fullscreen);
-	void SetWireframeMode(bool);
 
 private:
 	void CreateBackbufferRenderTarget(size_t width, size_t height);
@@ -58,10 +60,13 @@ private:
 	ID3D11RasterizerState* waterRasterizerState;
 	ID3D11RasterizerState* shadowRasterizerState;
 
-	ID3D11Texture2D* backBufferPtr;
 	DXGI_SWAP_CHAIN_DESC swapChainDescription;
+	ID3D11Texture2D* backBufferPtr;
 	RenderTarget* backbuffer;
+
+	ID3D11SamplerState* defaultSampler;
 };
+
 
 template<typename T>
 inline ID3D11Buffer* DX11Handler::CreateBuffer(T& data)
