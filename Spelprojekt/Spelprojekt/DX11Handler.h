@@ -37,7 +37,7 @@ public:
 
 	void SetFullscreen(bool fullscreen);
 	void SetWireframeMode(bool);
-
+	ID3D11RasterizerState* rasterizerState;
 private:
 	void CreateBackbufferRenderTarget(size_t width, size_t height);
 
@@ -47,7 +47,7 @@ private:
 	ID3D11Device* device;
 	ID3D11DeviceContext* context;
 	IDXGISwapChain* swapchain;
-	ID3D11RasterizerState* rasterizerState;
+
 	ID3D11RasterizerState* waterRaster;
 	
 	ID3D11Texture2D* backBufferPtr;

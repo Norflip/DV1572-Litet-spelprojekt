@@ -66,7 +66,7 @@ void DX11Handler::SetWireframeMode(bool useWireframe)
 	D3D11_RASTERIZER_DESC rasterizerDescription;
 	ZeroMemory(&rasterizerDescription, sizeof(D3D11_RASTERIZER_DESC));
 
-	D3D11_FILL_MODE mode = useWireframe ? D3D11_FILL_WIREFRAME : D3D11_FILL_SOLID;
+	D3D11_FILL_MODE mode =  D3D11_FILL_SOLID;
 
 	rasterizerDescription.FillMode = mode; //if we want wireframe, fill etc
 	rasterizerDescription.CullMode = D3D11_CULL_NONE;
@@ -89,6 +89,7 @@ void DX11Handler::SetWireframeMode(bool useWireframe)
 	assert(SUCCEEDED(resultCreateRasterizer));
 
 	context->RSSetState(rasterizerState);
+	
 }
 
 void DX11Handler::CreateBackbufferRenderTarget(size_t width, size_t height)

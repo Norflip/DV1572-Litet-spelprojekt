@@ -26,6 +26,7 @@ void Scene::Unload()
 
 void Scene::Update(const float& deltaTime)
 {
+
 	UpdateAddRemoveSceneQueues();
 	
 	for (auto i : allObjects)
@@ -49,7 +50,7 @@ void Scene::Render()
 {
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object
-	
+	dx11.GetContext()->RSSetState(dx11.rasterizerState);
 	//dx11.GetContext()->RSSetState(dx11.GetRasterizer());
 	renderer->SetDeferredRenderTarget();
 	renderer->ClearRenderTarget();
