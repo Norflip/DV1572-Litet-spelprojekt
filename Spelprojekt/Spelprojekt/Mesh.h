@@ -19,9 +19,9 @@ struct MeshVertex
 	MeshVertex(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT3 normal, DirectX::XMFLOAT3 tangent)
 		: position(position), uv(uv), normal(normal), tangent(tangent), weights{ 0.0f, 0.0f, 0.0f, 0.0f }, IDS{ -1,-1,-1,-1 } {}
 
-	void addBoneData(unsigned int vertexID, float weight)
+	/*void addBoneData(unsigned int vertexID, float weight)
 	{
-		for (unsigned int i = 0; i < 4; i++)
+		for (unsigned int i = 0; i < 5; i++)
 		{
 			if (weights[i] == 0.0f)
 			{
@@ -30,7 +30,8 @@ struct MeshVertex
 				return;
 			}
 		}
-	}
+	}*/
+
 };
 
 struct BoneInfo

@@ -101,7 +101,6 @@ namespace AssimpHandler
 			{
 				unsigned int boneIndex = 0;
 				std::string boneName(scene->mMeshes[0]->mBones[i]->mName.data);
-
 				if (tempMesh->boneMapping.find(boneName) == tempMesh->boneMapping.end())
 				{
 					boneIndex = tempMesh->numBones;
@@ -149,7 +148,7 @@ namespace AssimpHandler
 					//vertices[vertexId].addBoneData(boneIndex, weight);
 				}
 			}
-			float stop = 0;
+
 		}
 
 		newMesh = MeshCreator::CreateMesh(vertices, indices, device);
@@ -309,11 +308,11 @@ namespace AssimpHandler
 		float deltaTime = (float)(nodeAnim->mPositionKeys[nextPosIndex].mTime - nodeAnim->mPositionKeys[positionIndex].mTime);
 		float factor = (animationTime - (float)nodeAnim->mPositionKeys[positionIndex].mTime) / deltaTime;
 
-		//const aiVector3D& start = nodeAnim->mPositionKeys[positionIndex].mValue;
-		const aiVector3D& start = nodeAnim->mPositionKeys[16].mValue;
+		const aiVector3D& start = nodeAnim->mPositionKeys[positionIndex].mValue;
+		//const aiVector3D& start = nodeAnim->mPositionKeys[16].mValue;
 		const aiVector3D& end = nodeAnim->mPositionKeys[nextPosIndex].mValue;
 		aiVector3D delta = end - start;
-		positionOut = start;// +factor * delta;
+		positionOut = start +factor * delta;
 
 		float out = 0;
 	}
@@ -334,15 +333,15 @@ namespace AssimpHandler
 		float deltaTime = (float)(nodeAnim->mRotationKeys[nextRotIndex].mTime - nodeAnim->mRotationKeys[rotationIndex].mTime);
 		float factor = (animationTime - (float)nodeAnim->mRotationKeys[rotationIndex].mTime) / deltaTime;
 		//assert(factor >= 0.0f && factor <= 1.0f);
-		//aiQuaternion& startRotation = nodeAnim->mRotationKeys[rotationIndex].mValue;
-		aiQuaternion& startRotation = nodeAnim->mRotationKeys[16].mValue;
+		aiQuaternion& startRotation = nodeAnim->mRotationKeys[rotationIndex].mValue;
+		//aiQuaternion& startRotation = nodeAnim->mRotationKeys[16].mValue;
 		aiQuaternion& endRotation = nodeAnim->mRotationKeys[nextRotIndex].mValue;
 
-		//startRotation.Normalize();
+		startRotation.Normalize();
 		endRotation.Normalize();
 
 		aiQuaternion::Interpolate(rotationOut, startRotation, endRotation, factor);
-		rotationOut = startRotation.Normalize();
+		rotationOut = rotationOut.Normalize();
 	}
 
 	inline void calculateScalingInterpolation(aiVector3D& scalingOut, float animationTime, const aiNodeAnim* nodeAnim)
@@ -361,11 +360,11 @@ namespace AssimpHandler
 		float deltaTime = (float)(nodeAnim->mScalingKeys[nextScaleIndex].mTime - nodeAnim->mScalingKeys[scaleIndex].mTime);
 		float factor = (animationTime - (float)nodeAnim->mScalingKeys[scaleIndex].mTime) / deltaTime;
 		//assert(factor >= 0.0f && factor <= 1.0f);
-		//aiVector3D& start = nodeAnim->mScalingKeys[scaleIndex].mValue;
-		aiVector3D& start = nodeAnim->mScalingKeys[16].mValue;
+		aiVector3D& start = nodeAnim->mScalingKeys[scaleIndex].mValue;
+		//aiVector3D& start = nodeAnim->mScalingKeys[16].mValue;
 		aiVector3D& end = nodeAnim->mScalingKeys[nextScaleIndex].mValue;
 		aiVector3D delta = end - start;
-		scalingOut = start;// +factor * delta;
+		scalingOut = start + factor * delta;
 	}
 
 	inline void readNodeHierarchy(float animationTime, const aiScene* scene, aiNode* node, DirectX::XMMATRIX& parentTransform, Mesh* mesh)
@@ -390,25 +389,37 @@ namespace AssimpHandler
 			calculateRotationInterpolation(rotation, animationTime, nodeAnim);
 			calculateScalingInterpolation(scaling, animationTime, nodeAnim);
 
-			DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(scaling.x, scaling.y, scaling.z);
-			DirectX::XMMATRIX trans = DirectX::XMMatrixTranslation(translation.x, translation.y, translation.z);
-			DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(rotation.x, rotation.y, rotation.z, rotation.w));
+			DirectX::XMVECTOR scale = DirectX::XMVectorSet(scaling.x, scaling.y, scaling.z, 1.0f);
+			DirectX::XMVECTOR trans = DirectX::XMVectorSet(translation.x, translation.y, translation.z, 1.0f);
+			DirectX::XMVECTOR rotate = DirectX::XMVectorSet(rotation.x, rotation.y, rotation.z, 1.0f);
 
-			nodeTransformation = scale * rotate * trans;
+			/*DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(scaling.x, scaling.y, scaling.z);
+			DirectX::XMMATRIX trans = DirectX::XMMatrixTranslation(translation.x, translation.y, translation.z);
+			DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(rotation.x, rotation.y, rotation.z, rotation.w));*/
+
+			DirectX::XMVECTOR origin = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+			//nodeTransformation = trans * rotate * scale;
+			//nodeTransformation = scale * rotate * trans;
+			nodeTransformation = DirectX::XMMatrixAffineTransformation(scale, origin, rotate, trans);
 			nodeTransformation = DirectX::XMMatrixTranspose(nodeTransformation);
+			float stop = 0;
 		}
 
 		DirectX::XMMATRIX globalTransform = parentTransform * nodeTransformation;
-
+		//DirectX::XMMATRIX globalTransform = nodeTransformation * parentTransform;
+		float stop = 0;
 		if (mesh->boneMapping.find(nodeName) != mesh->boneMapping.end())
 		{
 			unsigned int boneIndex = mesh->boneMapping[nodeName];
-			mesh->boneInfo[boneIndex].finalTransformation = mesh->globalInverseTransform * globalTransform * mesh->boneInfo[boneIndex].boneOffset;
-			//mesh->boneInfo[boneIndex].finalTransformation = mesh->boneInfo[boneIndex].boneOffset * globalTransform * mesh->globalInverseTransform;
+			DirectX::XMMATRIX final = mesh->globalInverseTransform * globalTransform * mesh->boneInfo[boneIndex].boneOffset;
+			//DirectX::XMMATRIX final = mesh->boneInfo[boneIndex].boneOffset * globalTransform * mesh->globalInverseTransform;
+			mesh->boneInfo[boneIndex].finalTransformation = final;
+			float stop = 0;
 		}
 
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{
+			Logger::Write(node->mChildren[i]->mName.data);
 			readNodeHierarchy(animationTime, scene, node->mChildren[i], globalTransform, mesh);
 		}
 

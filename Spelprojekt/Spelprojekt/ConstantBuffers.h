@@ -13,6 +13,7 @@ struct WorldData
 {
 	DirectX::XMMATRIX mvp;
 	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX viewproj;
 	float time;
 	float pad[3];
 	//boneData data[70];

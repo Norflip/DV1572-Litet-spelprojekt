@@ -48,6 +48,7 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 {
 	// update the world buffer content
 	cb_world.mvp = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMMatrixMultiply(world, view), projection));
+	cb_world.viewproj = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(view, projection));
 	cb_world.world = DirectX::XMMatrixTranspose(world);
 	cb_world.time = static_cast<float>(timer.GetMilisecondsElapsed()) / 1000.0f;
 
@@ -73,7 +74,10 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 		cb_world.boneTransforms[3][2] = mesh->boneTransforms[i].c4;
 		cb_world.boneTransforms[3][3] = mesh->boneTransforms[i].d4;*/
 
-		cb_world.boneTransforms[i] = DirectX::XMMatrixTranspose(mesh->boneTransforms[i]);
+		//cb_world.boneTransforms[i] = DirectX::XMMatrixIdentity();
+		//cb_world.boneTransforms[i] = DirectX::XMMatrixTranspose(mesh->boneTransforms[i]);
+		cb_world.boneTransforms[i] = mesh->boneTransforms[i];
+
 	}
 
 
