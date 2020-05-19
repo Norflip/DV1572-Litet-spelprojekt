@@ -149,10 +149,10 @@ void IntroGUI::LoadStart()
     ClearGUI();
     
     //LOAD ALL GUI OBJECTS FOR START, ONCE
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 50.0f), "play");    
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 200.0f), "options");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 200.0f), "play");    
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 300.0f), "options");
     // SOUNDTRACK
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/soundtracks.png", 100.0f, 350.0f), "soundtracks");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/soundtracks.png", 100.0f, 400.0f), "soundtracks");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/quit.png", 100.0f, 500.0f), "quit");
     first = false;
 }
@@ -250,27 +250,7 @@ void IntroGUI::Options()
         highSoundVolume->SetWICSprite(dx11, "Sprites/VolHigher.png");
     }
 
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    GUISprite* backtointro = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
-
-    if (backtointro->Clicked(input))
-    {
-        first = true;
-        menu = Menu::start;
-    }
-       
-    // mouseover
-    if (backtointro->MouseOver(input)) 
-    {
-        backtointro->SetWICSprite(dx11, "Sprites/backtointro_mouseover.png");
-    }
-    else {
-        backtointro->SetWICSprite(dx11, "Sprites/backtointro.png");
-    }
-       
+           
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -403,36 +383,66 @@ void IntroGUI::Options()
     else {
         vsyncOFF->SetWICSprite(dx11, this->lastOff);
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    GUISprite* backtointroNEW = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
+
+    if (backtointroNEW->Clicked(input))
+    {
+        first = true;
+        menu = Menu::start;
+    }
+
+    // mouseover
+    if (backtointroNEW->MouseOver(input))
+    {
+        backtointroNEW->SetWICSprite(dx11, "Sprites/backtointro_mouseover.png");
+    }
+    else {
+        backtointroNEW->SetWICSprite(dx11, "Sprites/backtointro.png");
+    }
+
 }
 
 void IntroGUI::LoadOptions()
 {
     ClearGUI();
     
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/music.png", 100.0f, 50.0f), "musicvolume");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/sounds.png", 100.0f, 200.0f), "soundsvolume");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsync.png", 100.0f, 350.0f), "vsync");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/music.png", 100.0f, 100.0), "musicvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/soundeffects.png", 100.0f, 200.0f), "soundsvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/vsync.png", 100.0f, 300.0), "vsync");
 
     // VSYNC ON/OFF   
-    GUISprite* vsyncONOFF_on = new GUISprite(dx11, this->lastOn, 560.0f, 350.0f);
-    GUISprite* vsyncONOFF_off = new GUISprite(dx11, this->lastOff, 790.0f, 350.0f);
+    GUISprite* vsyncONOFF_on = new GUISprite(dx11, this->lastOn, 500.0f, 312.0f);
+    GUISprite* vsyncONOFF_off = new GUISprite(dx11, this->lastOff, 700.0, 312.0f);
     gui->AddGUIObject(vsyncONOFF_on, "vsyncON");
     gui->AddGUIObject(vsyncONOFF_off, "vsyncOFF");
     
     ///////////////////////////////
+    // difficultys
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/difficulty.png", 100.0f, 400.0f), "difficulty");
+        
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/easy_active.png", 400, 415.0f), "easydif");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/medium.png", 600, 415.0f), "mediumdif");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/hard.png", 800, 415.0f), "harddif");
+
+    // back to intro
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
         
-    // frame and bar music
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 650.0f, 60.0f), "MusicBar");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower.png", 555.0f, 60.0f), "leftmusicvolume");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher.png", 1045.0f, 60.0f), "rightmusicvolume");    
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 650.0f, 60.0f), "MusicFrame");
+    // frame and bar music    
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower.png", 480.0f, 107.0f), "leftmusicvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher.png", 845.0f, 107.0f), "rightmusicvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 550.0f, 107.0f), "MusicBar");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 550.0f, 107.0f), "MusicFrame");
 
     // frame and bar sounds
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 650.0f, 210.0f), "SoundsBar");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower.png", 555.0f, 210.0f), "leftsoundvolume");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher.png", 1045.0f, 210.0f), "rightsoundvolume");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 650.0f, 210.0f), "SoundFrame");
+    
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower.png", 480.0f, 210.0f), "leftsoundvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher.png", 845.0f, 210.0f), "rightsoundvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 550.0f, 210.0f), "SoundsBar");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 550.0f, 210.0f), "SoundFrame");
    
     first = false;
 }
@@ -601,8 +611,9 @@ void IntroGUI::Quit()
 void IntroGUI::LoadQuit()
 {
     ClearGUI();
+
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/imsure.png", 100.0f, 400.0f), "imsure");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/imsure.png", 100.0f, 350.0f), "imsure");
     
     first = false;
 }

@@ -172,6 +172,7 @@
     <ClCompile Include="EndScene.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Entities.cpp" />
+    <ClCompile Include="Gamemanager.cpp" />
     <ClCompile Include="GUIActionbar.cpp" />
     <ClCompile Include="GUISprite.cpp" />
     <ClCompile Include="IntroGUI.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="EndScene.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Entities.h" />
+    <ClInclude Include="Gamemanager.h" />
     <ClInclude Include="IntroGUI.h" />
     <ClInclude Include="IntroScene.h" />
     <ClInclude Include="QuadTree.h" />
