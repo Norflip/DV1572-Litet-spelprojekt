@@ -36,109 +36,109 @@ void DevScene::Load()
 	//this->levelMusic->PlaySound("Grass", 0.1f);
 
 	// HEALTH
-	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
-	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
-	actionbarRight = new GUIActionbar(dx11, "Sprites/Actionbar.png", 400.0f, 650.0f);
+	//healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
+	//actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
+	//actionbarRight = new GUIActionbar(dx11, "Sprites/Actionbar.png", 400.0f, 650.0f);
 
 	//--------------------------------
 	// Create GUI for Devscene
 	GUI* gui = new GUI(dx11);
 	
 	// save the shaders somewhere, remember to clean it up
-	Shader* defaultShader = new Shader();
-	defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
-	defaultShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
+	//Shader* defaultShader = new Shader();
+	//defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+	//defaultShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 
 	// object = mesh + material
 
-	// Exit Wagon
-	Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
-	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
-	wagon->GetTransform().Translate(50, 9.5, 50);
-	wagon->GetTransform().Rotate(0.05f, -5, 0);
-	AddObject(wagon);
+	//// Exit Wagon
+	//Object* wagon = AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, defaultShader);
+	//wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
+	//wagon->GetTransform().Translate(50, 9.5, 50);
+	//wagon->GetTransform().Rotate(0.05f, -5, 0);
+	//AddObject(wagon);
 
 
-	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
+	//Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 
-	Object* sphere = new Object(dev_monkey_mesh, new Material(defaultShader, dx11));
-	Texture* monkey_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	Texture* monkey_normal = Texture::CreateTexture("Textures/rocks_normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	//Object* sphere = new Object(dev_monkey_mesh, new Material(defaultShader, dx11));
+	//Texture* monkey_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	//Texture* monkey_normal = Texture::CreateTexture("Textures/rocks_normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 
-	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
-	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
+	//sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
+	//sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
 
-	sphere->GetTransform().Translate(0, 3, 6);
-	AddObject(sphere);
-
-
+	//sphere->GetTransform().Translate(0, 3, 6);
+	//AddObject(sphere);
 
 
-	// ------- TERRAIN
-	Shader* terrainShader = new Shader();
-	terrainShader->LoadPixelShader(L"Shaders/Terrain_ps.hlsl", "main", dx11.GetDevice());
-	terrainShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
-
-	Texture* grass_texture = Texture::CreateTexture("Textures/Grass_Color.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-
-	
-	Texture* sand_texture = Texture::CreateTexture("Textures/Sand_Color_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);	
-	Texture* sand_normal = Texture::CreateTexture("Textures/Sand_Normal_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	
-	Material* terrainMat = new Material(terrainShader, dx11);
-	terrainMat->SetTexture(0, grass_texture, PIXEL_TYPE::PIXEL);
-	terrainMat->SetTexture(1, sand_texture, PIXEL_TYPE::PIXEL);
-
-	terrainMat->SetTexture(2, grass_normal, PIXEL_TYPE::PIXEL);
-	terrainMat->SetTexture(3, sand_normal, PIXEL_TYPE::PIXEL);
-	terrainMat->GetMaterialData().hasNormalTexture = true;
-
-	/*Material* test_material = new Material(terrainShader, dx11);
-	Texture* m_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	test_material->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
-	test_material->GetMaterialData().hasNormalTexture = false;*/
-
-	test.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice());
-	AddObject(new Object(test.GetMesh(), terrainMat));
 
 
-	// ------- water shader
+	//// ------- TERRAIN
+	//Shader* terrainShader = new Shader();
+	//terrainShader->LoadPixelShader(L"Shaders/Terrain_ps.hlsl", "main", dx11.GetDevice());
+	//terrainShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
 
-	Shader* waterShader = new Shader();
-	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
-	waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
-	std::cout << "test";
-	Texture* heightMapTexture = Texture::CreateTexture("Textures/map_displacement_for_water.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	Material* waterMat = new Material(waterShader, dx11);
-	
-	waterMat->SetTexture(0, heightMapTexture, PIXEL_TYPE::PIXEL);
+	//Texture* grass_texture = Texture::CreateTexture("Textures/Grass_Color.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	//Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Normal.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 
-	Mesh* waterPlane = ShittyOBJLoader::Load("Models/Water_Plane.obj", dx11.GetDevice());
-	Object* water = new Object(waterPlane, waterMat);
-	water->GetTransform().Translate({ 102, 6.0f, 102 });
-	water->GetTransform().SetRotation({ 0,0,0 });
-	water->GetTransform().Scale(2*1.2, 2 * 1.2, 2 * 1.2);
-	AddObject(water);
+	//
+	//Texture* sand_texture = Texture::CreateTexture("Textures/Sand_Color_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);	
+	//Texture* sand_normal = Texture::CreateTexture("Textures/Sand_Normal_2.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	//
+	//Material* terrainMat = new Material(terrainShader, dx11);
+	//terrainMat->SetTexture(0, grass_texture, PIXEL_TYPE::PIXEL);
+	//terrainMat->SetTexture(1, sand_texture, PIXEL_TYPE::PIXEL);
 
-	water->isWater = true;
+	//terrainMat->SetTexture(2, grass_normal, PIXEL_TYPE::PIXEL);
+	//terrainMat->SetTexture(3, sand_normal, PIXEL_TYPE::PIXEL);
+	//terrainMat->GetMaterialData().hasNormalTexture = true;
+
+	///*Material* test_material = new Material(terrainShader, dx11);
+	//Texture* m_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	//test_material->SetTexture(ALBEDO_MATERIAL_TYPE, m_texture, PIXEL_TYPE::PIXEL);
+	//test_material->GetMaterialData().hasNormalTexture = false;*/
+
+	//test.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice());
+	//AddObject(new Object(test.GetMesh(), terrainMat));
+
+
+	//// ------- water shader
+
+	//Shader* waterShader = new Shader();
+	//waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
+	//waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
+	//std::cout << "test";
+	//Texture* heightMapTexture = Texture::CreateTexture("Textures/map_displacement_for_water.png", dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	//Material* waterMat = new Material(waterShader, dx11);
+	//
+	//waterMat->SetTexture(0, heightMapTexture, PIXEL_TYPE::PIXEL);
+
+	//Mesh* waterPlane = ShittyOBJLoader::Load("Models/Water_Plane.obj", dx11.GetDevice());
+	//Object* water = new Object(waterPlane, waterMat);
+	//water->GetTransform().Translate({ 102, 6.0f, 102 });
+	//water->GetTransform().SetRotation({ 0,0,0 });
+	//water->GetTransform().Scale(2*1.2, 2 * 1.2, 2 * 1.2);
+	//AddObject(water);
+
+	//water->isWater = true;
 
 
 	// ------ PLAYER
-	Shader* toonShader = new Shader();
-	toonShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
-	toonShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
+	//Shader* toonShader = new Shader();
+	//toonShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+	//toonShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 
-	this->player = new Player(dev_monkey_mesh, new Material(toonShader, dx11), controller, &test, gui, dx11, static_cast<Scene*>(this));
-	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
-	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
-	this->player->GetTransform().SetPosition({ 30, 7, 30 });
-	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
-	AddObject(this->player);
+	//this->player = new Player(dev_monkey_mesh, new Material(toonShader, dx11), controller, &test, gui, dx11, static_cast<Scene*>(this));
+	////player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
+	////player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
+	//this->player->GetTransform().SetPosition({ 30, 7, 30 });
+	//this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
+	//AddObject(this->player);
 
-	
-	spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &test, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
-	spawnObjects->SpawnEnemy();
+	//
+	//spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &test, dev_monkey_mesh, new Material(defaultShader, dx11), this->player);
+	//spawnObjects->SpawnEnemy();
 	/*this->enemy = new Enemy(dev_monkey_mesh, new Material(defaultShader, dx11), &test, dx11);
 	this->enemy->GetTransform().Translate(5, 12, 15);
 	this->enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
@@ -151,7 +151,7 @@ void DevScene::Load()
 	this->enemy->GetTransform().Scale(0.3, 0.3, 0.3);
 	this->enemy->SetTarget(this->player);
 	AddObject(this->enemy);*/
-	this->player->SetEnemy(spawnObjects->GetEnemy());
+	/*this->player->SetEnemy(spawnObjects->GetEnemy());*/
 	/*this->coconutPickUp = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	coconutPickUp->GetTransform().Translate(10, 2, 15);
 	AddObject(coconutPickUp);*/
@@ -192,11 +192,11 @@ void DevScene::Load()
 	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
 
 	// Add objects
-	gui->AddGUIObject(gametimerText, "gametimerText");
-	gui->AddGUIObject(fpsText, "fpsText");
-	gui->AddGUIObject(healthFrame, "healthFrame");
-	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
-	gui->AddGUIObject(actionbarRight, "actionbarRight");
+	//gui->AddGUIObject(gametimerText, "gametimerText");
+	//gui->AddGUIObject(fpsText, "fpsText");
+	//gui->AddGUIObject(healthFrame, "healthFrame");
+	//gui->AddGUIObject(actionbarLeft, "actionbarLeft");
+	//gui->AddGUIObject(actionbarRight, "actionbarRight");
 
 	// Set GUI
 	renderer->SetGUI(gui);
@@ -225,7 +225,7 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {	
-	spawnObjects->SpawnEnemy();
+	/*spawnObjects->SpawnEnemy();*/
 	
 	Scene::Update(deltaTime);
 
@@ -233,12 +233,12 @@ void DevScene::Update(const float& deltaTime)
 	fpsTimer.Start();			
 	
 	// Change all weapons to vector
-	for(auto i : coconuts)
-		player->UpdateHands(i);
-	for (auto i : spoons)
-		player->UpdateHands(i);
+	//for(auto i : coconuts)
+	//	player->UpdateHands(i);
+	//for (auto i : spoons)
+	//	player->UpdateHands(i);
+	////
 	//
-	
 		
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 	controller->Update(deltaTime);
@@ -252,26 +252,26 @@ void DevScene::Update(const float& deltaTime)
 	
 
 
-	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f)
-	{
-		gametimerText->SetString("Move to exit");
-		gametimerText->SetPosition(window.GetWidth() / 2.0f - 80.0f, 0.0f);
-		canWin = true;
-	}
+	//if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f)
+	//{
+	//	gametimerText->SetString("Move to exit");
+	//	gametimerText->SetPosition(window.GetWidth() / 2.0f - 80.0f, 0.0f);
+	//	canWin = true;
+	//}
 
-	if (player->GetPlayerHealth() <= 0.0f)
-	{
-		gametimerText->SetString("You lost");
-		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
-		SetNextScene(false);
-	}
+	//if (player->GetPlayerHealth() <= 0.0f)
+	//{
+	//	gametimerText->SetString("You lost");
+	//	gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
+	//	SetNextScene(false);
+	//}
 
-	if (canWin && player->GetWorldBounds().Overlaps(allObjects[0]->GetWorldBounds()))
-	{
-		gametimerText->SetString("You won");
-		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
-		SetNextScene(true);
-	}
+	//if (canWin && player->GetWorldBounds().Overlaps(allObjects[0]->GetWorldBounds()))
+	//{
+	//	gametimerText->SetString("You won");
+	//	gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
+	//	SetNextScene(true);
+	//}
 }
 
 Scene* DevScene::GetNextScene() const
@@ -292,7 +292,7 @@ void DevScene::CreateSceneObjects()
 	Object* plane = AssimpHandler::loadFbxObject("Models/Plane.fbx", dx11, billboard);
 	plane->GetTransform().Translate(33, 15, 33);
 	plane->GetTransform().Scale(3, 3, 3);
-	plane->GetTransform().SetRotation({ 0,0, 0 });
+	plane->GetTransform().SetRotation({ -MathHelper::PI/2,0, 0 });
 	AddObject(plane);
 
 	Shader* defaultShader = new Shader();
@@ -301,7 +301,7 @@ void DevScene::CreateSceneObjects()
 	Object* plane2 = AssimpHandler::loadFbxObject("Models/Plane.fbx", dx11, defaultShader);
 	plane2->GetTransform().Translate(43, 15, 33);
 	plane2->GetTransform().Scale(3, 3, 3);
-	plane2->GetTransform().SetRotation({ 0, 0, 0 });
+	plane2->GetTransform().SetRotation({ -MathHelper::PI/2, 0, 0 });
 	AddObject(plane2);
 
 	if (false)

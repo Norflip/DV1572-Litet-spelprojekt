@@ -22,10 +22,13 @@ VS_OUTPUT main(VS_INPUT input)
 	VS_OUTPUT output;
 	output.uv = input.uv;
 
-	float3 worldPosTest = mul(input.position, world).xyz;
-	float3 testPos = objCentre + ((worldPosTest.x - objCentre.x) * cameraRight)+ ((worldPosTest.z - objCentre.z) * cameraUp);
-	output.position = float4(testPos,1);
-	output.worldPosition = testPos;
+	//Fuck this line of code in particular
+	float3 testPos = objCentre + (mul(float3(input.position.x,0,0)  , cameraRight)) + (mul(float3(0, input.position.y,  0 ) , cameraUp));
+
+	output.position = mul(float4(testPos,1),vp);
+	//output.position.x += cameraRight.y*10;
+	//float3 worldPosTest = mul(input.position, world).xyz;
+	output.worldPosition = mul(input.position, world).xyz;
 
 	//output.worldPosition = float3(0,0,0);
 	output.tangent = normalize(mul(input.tangent, world).xyz);
