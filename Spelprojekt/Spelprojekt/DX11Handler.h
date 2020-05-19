@@ -28,8 +28,9 @@ public:
 	IDXGISwapChain* GetSwapChain() const { return this->swapchain; }
 	RenderTarget* GetBackbuffer() const { return this->backbuffer; }
 
-	ID3D11RasterizerState* GetWaterRasterizer() { return this->waterRaster; }
-	ID3D11RasterizerState* GetRasterizer() { return this->rasterizerState; }
+	ID3D11RasterizerState* GetShadowRasterizerState() { return this->shadowRasterizerState; }
+	ID3D11RasterizerState* GetWaterRasterizerState() { return this->waterRasterizerState; }
+	ID3D11RasterizerState* GetMainRasterizerState() { return this->mainRasterizerState; }
 
 	void SetRenderTarget(RenderTarget* target) { this->backbuffer = target; }
 	ID3D11Texture2D* GetBackBufferPtr() const { return this->backBufferPtr; }
@@ -52,9 +53,11 @@ private:
 	ID3D11Device* device;
 	ID3D11DeviceContext* context;
 	IDXGISwapChain* swapchain;
-	ID3D11RasterizerState* rasterizerState;
-	ID3D11RasterizerState* waterRaster;
 	
+	ID3D11RasterizerState* mainRasterizerState;
+	ID3D11RasterizerState* waterRasterizerState;
+	ID3D11RasterizerState* shadowRasterizerState;
+
 	ID3D11Texture2D* backBufferPtr;
 	DXGI_SWAP_CHAIN_DESC swapChainDescription;
 	RenderTarget* backbuffer;

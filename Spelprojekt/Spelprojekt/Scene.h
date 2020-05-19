@@ -58,6 +58,8 @@ protected:
 	Window& window;
 	DX11Handler& dx11;
 
+	DirectX::XMVECTOR cameraFocusPosition;
+
 	Resources resources;
 	Entities entities;
 

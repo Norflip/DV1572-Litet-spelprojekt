@@ -60,8 +60,8 @@ void Object::UpdateLocalBounds()
 	}
 }
 
-void Object::Render(Renderer* renderer, DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
+void Object::Render(Renderer* renderer, DirectX::XMMATRIX worldDisplacement, DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
 {
 	if(IsVisible())
-		renderer->DrawMesh(mesh, transform.GetWorldMatrix(), view, projection);
+		renderer->DrawMesh(mesh, transform.GetWorldMatrix() * worldDisplacement, view, projection);
 }

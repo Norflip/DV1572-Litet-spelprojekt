@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include "ConstantBuffers.h"
 
-enum class PIXEL_TYPE
+enum class SHADER_BIND_TYPE
 {
 	VERTEX,
 	PIXEL
@@ -27,8 +27,10 @@ public:
 	void SetMaterialData(MaterialData materialData) { this->materialData = materialData; }
 	MaterialData& GetMaterialData() { return this->materialData; }
 
-	void SetTexture(size_t index, Texture* texture, PIXEL_TYPE type);
+	void SetTexture(size_t index, Texture* texture, SHADER_BIND_TYPE type);
 	Texture* GetTexture(size_t index) const;
+
+	void SetSampler(size_t index, ID3D11SamplerState* sampler, SHADER_BIND_TYPE type);
 
 	Shader* GetShader() const { return this->shader; }
 	void Bind(ID3D11DeviceContext*);
@@ -41,7 +43,8 @@ private:
 	ID3D11Buffer* buffer;
 	MaterialData materialData;
 
-	std::unordered_map<size_t, std::pair<Texture*, PIXEL_TYPE>> textureMap;
+	std::unordered_map<size_t, std::pair<Texture*, SHADER_BIND_TYPE>> textureMap;
+	std::unordered_map<size_t, std::pair<Texture*, SHADER_BIND_TYPE>> samplerMap;
 };
 
 static size_t material_id_counter = 0;

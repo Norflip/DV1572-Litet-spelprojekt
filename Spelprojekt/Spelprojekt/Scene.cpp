@@ -55,10 +55,11 @@ void Scene::Render()
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object
 	
+	renderer->ShadowPass(this->cameraFocusPosition, sceneBounds, camera, &entities);
+
 	//dx11.GetContext()->RSSetState(dx11.GetRasterizer());
 	renderer->SetDeferredRenderTarget();
 	renderer->ClearRenderTarget();
-
 
 	std::vector<Object*> inView = entities.AllEntities();
 	std::sort(inView.begin(), inView.end(), m_CompareRenderList); // O(N·log(N))
@@ -91,7 +92,7 @@ void Scene::Render()
 			lastMaterialID = material->GetID();
 		}
 
-		i->Render(renderer, view, projection);
+		i->Render(renderer, DirectX::XMMatrixIdentity(), view, projection);
 	}
 
 	//UpdateAddRemoveSceneQueues();

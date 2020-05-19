@@ -5,7 +5,10 @@ cbuffer WorldConstantBuffer : register(b0)
 {
 	matrix mvp;
 	matrix world;
-	
+	matrix invWorld;
+	matrix invView;
+	matrix shadowTransform;
+
 	float time;
 
 	float3 wvb_pad0;
@@ -26,6 +29,9 @@ cbuffer LightConstantBuffer : register(b1)
 	float4 sunColor;
 	float3 sunDirection;
 	float sunIntensity;
+
+	matrix sunView;
+	matrix sunProjection;
 
 	float3 eyePosition;
 	int pointLightCount;

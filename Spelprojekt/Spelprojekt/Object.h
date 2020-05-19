@@ -43,7 +43,7 @@ public:
 	void UpdateLocalBounds();
 	size_t GetID() const { return this->id; }
 
-	virtual void Render(Renderer*, DirectX::XMMATRIX view, DirectX::XMMATRIX projection);
+	virtual void Render(Renderer*, DirectX::XMMATRIX worldDisplacement, DirectX::XMMATRIX view, DirectX::XMMATRIX projection);
 	virtual void Update(const float& deltaTime) {};
 	virtual void FixedUpdate(const float& fixedDeltaTime) {};
 

@@ -129,6 +129,8 @@ void IntroScene::Unload()
 
 void IntroScene::Update(const float& deltaTime)
 {
+	this->cameraFocusPosition = { 0,0,5 };
+
 	Scene::Update(deltaTime);
 	controller->Update(deltaTime);
 	introGUI->Update();

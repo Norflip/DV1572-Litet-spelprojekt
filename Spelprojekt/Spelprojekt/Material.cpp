@@ -27,9 +27,9 @@ Material::~Material()
 {
 }
 
-void Material::SetTexture(size_t index, Texture* texture, PIXEL_TYPE type)
+void Material::SetTexture(size_t index, Texture* texture, SHADER_BIND_TYPE type)
 {
-	auto pair = std::pair<Texture*, PIXEL_TYPE>(texture, type);
+	auto pair = std::pair<Texture*, SHADER_BIND_TYPE>(texture, type);
 
 	// rename 'hi'
 	// Searches the textureMap for the given index.
@@ -70,12 +70,12 @@ void Material::Unbind(ID3D11DeviceContext* context)
 	while (iterator != textureMap.end())
 	{
 		size_t index = (*iterator).first;
-		PIXEL_TYPE flag = (*iterator).second.second;
+		SHADER_BIND_TYPE flag = (*iterator).second.second;
 
 
 		texture = (*iterator).second.first;
 
-		if (flag == PIXEL_TYPE::PIXEL)
+		if (flag == SHADER_BIND_TYPE::PIXEL)
 		{
 			//if (sampler != nullptr)
 			//{
@@ -86,7 +86,7 @@ void Material::Unbind(ID3D11DeviceContext* context)
 			//}
 			context->PSSetShaderResources(index, 1, pSRV);
 		}
-		else if (flag == PIXEL_TYPE::VERTEX)
+		else if (flag == SHADER_BIND_TYPE::VERTEX)
 		{
 			context->VSSetShaderResources(index, 1, pSRV);
 		}
@@ -109,20 +109,20 @@ void Material::Bind(ID3D11DeviceContext* context)
 	while (iterator != textureMap.end())
 	{
 		size_t index = (*iterator).first;
-		PIXEL_TYPE flag = (*iterator).second.second;
+		SHADER_BIND_TYPE flag = (*iterator).second.second;
 		texture = (*iterator).second.first;
 
 		ID3D11ShaderResourceView* srv = texture->GetSRV();
 		ID3D11SamplerState* sampler = texture->GetSampler();
 
-		if (flag == PIXEL_TYPE::PIXEL)
+		if (flag == SHADER_BIND_TYPE::PIXEL)
 		{
 			//if (sampler != nullptr)
 				context->PSSetSamplers(index, 1, &sampler);
 
 			context->PSSetShaderResources(index, 1, &srv);
 		}
-		else if (flag == PIXEL_TYPE::VERTEX)
+		else if (flag == SHADER_BIND_TYPE::VERTEX)
 		{
 			//if (sampler != nullptr)
 				context->VSSetSamplers(index, 1, &sampler);

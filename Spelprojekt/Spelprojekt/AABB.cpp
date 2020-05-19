@@ -61,6 +61,14 @@ DirectX::XMVECTOR AABB::GetCenter() const
 	return DirectX::XMVectorAdd(min, DirectX::XMVectorScale(DirectX::XMVectorSubtract(max, min), 0.5f));
 }
 
+float AABB::GetRadius() const
+{
+	DirectX::XMFLOAT3 size;
+	DirectX::XMStoreFloat3(&size, GetSize());
+
+	return sqrtf(size.x * size.x + size.y * size.y + size.z * size.z);
+}
+
 bool AABB::Overlaps(const AABB& other)
 {
 	DirectX::XMFLOAT3 minf, maxf, otherMin, otherMax;

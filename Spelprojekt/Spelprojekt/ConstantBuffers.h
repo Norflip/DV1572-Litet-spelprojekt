@@ -8,6 +8,9 @@ struct WorldData
 {
 	DirectX::XMMATRIX mvp;
 	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX invWorld;
+	DirectX::XMMATRIX invView;
+	DirectX::XMMATRIX shadowTransform;
 
 	float time;
 	float pad[3];
@@ -29,6 +32,10 @@ struct LightData
 	DirectX::XMFLOAT4 sunColor;
 	DirectX::XMFLOAT3 sunDirection;
 	float sunIntensity;
+
+	DirectX::XMMATRIX sunView;
+	DirectX::XMMATRIX sunProjection;
+	DirectX::XMMATRIX shadowTransform;
 
 	DirectX::XMFLOAT3 eyePosition;
 	int pointLightCount;
