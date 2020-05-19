@@ -4,6 +4,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "AABB.h"
+
 class Renderer;
 
 class Object
@@ -28,7 +29,7 @@ public:
 
 	void UpdateLocalBounds();
 
-	virtual void Render(Renderer*, DirectX::XMMATRIX view, DirectX::XMMATRIX projection);
+	virtual void Render(Renderer*, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, DirectX::XMFLOAT3 right, DirectX::XMFLOAT3 up);
 	virtual void Update(const float& deltaTime) {};
 	virtual void FixedUpdate(const float& fixedDeltaTime) {};
 

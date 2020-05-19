@@ -93,8 +93,11 @@ void Scene::Render()
 					/*if (object->isWater) {
 						dx11.GetContext()->RSSetState(dx11.GetRasterizer());
 					}*/
-										
-					object->Render(renderer, view, projection);
+					DirectX::XMFLOAT3 right;
+					DirectX::XMStoreFloat3(&right, camera->GetTransform().Right());
+					DirectX::XMFLOAT3 up;
+					DirectX::XMStoreFloat3(&up, camera->GetTransform().Up());
+					object->Render(renderer, view, projection,  right, up);
 
 					/*if(object->isWater) {
 						dx11.GetContext()->RSSetState(dx11.GetWaterRasterizer());

@@ -44,14 +44,18 @@ void Renderer::ClearRenderTarget()
 	dx11.GetContext()->ClearDepthStencilView(currentRenderTarget->GetDepthStencil(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
-void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
+void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, DirectX::XMFLOAT3 right, DirectX::XMFLOAT3 up, DirectX::XMFLOAT3 centre)
 {
 	// update the world buffer content
 	cb_world.mvp = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMMatrixMultiply(world, view), projection));
 	cb_world.world = DirectX::XMMatrixTranspose(world);
 	cb_world.time = static_cast<float>(timer.GetMilisecondsElapsed()) / 1000.0f;
+	cb_world.vp = DirectX::XMMatrixMultiply(view, projection);
+	cb_world.cameraRight = right;
+	cb_world.cameraUp = up;
+	cb_world.centre = centre;
 	cb_geometry.view = view;
-
+	
 
 	dx11.GetContext()->UpdateSubresource(worldBuffer_ptr, 0, 0, &cb_world, 0, 0);
 	dx11.GetContext()->UpdateSubresource(geoBuffer_ptr, 0, 0, &cb_geometry, 0, 0);

@@ -5,6 +5,10 @@ cbuffer WorldConstantBuffer : register(b0)
 {
 	matrix mvp;
 	matrix world;
+	matrix vp;
+	float3 objCentre;
+	float3 cameraRight;
+	float3 cameraUp;
 	float time;
 	float3 wvb_pad0;
 };

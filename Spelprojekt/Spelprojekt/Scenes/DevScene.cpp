@@ -286,7 +286,7 @@ void DevScene::CreateSceneObjects()
 	Shader* billboard = new Shader();
 
 	
-	billboard->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
+	billboard->LoadVertexShader(L"Shaders/Billboard_vs.hlsl", "main", dx11.GetDevice());
 	billboard->LoadGeometryShader(L"Shaders/Billboard.hlsl", "main", dx11.GetDevice());
 	billboard->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
 	Object* plane = AssimpHandler::loadFbxObject("Models/Plane.fbx", dx11, billboard);

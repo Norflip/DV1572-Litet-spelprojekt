@@ -27,13 +27,12 @@ void main(triangle VS_OUTPUT input[3], inout TriangleStream<GS_OUTPUT>output)
 
 
 
-
-	float halfWidth = input[0].position.y - input[0].position.y;
-	float center = input[0].position.y + halfWidth;
-	float3 vertexPosition_worldspace =
-		particleCenter_wordspace
-		+ CameraRight_worldspace * squareVertices.x * BillboardSize.x
-		+ CameraUp_worldspace * squareVertices.y * BillboardSize.y;
+	//float halfWidth = input[0].position.y - input[0].position.y;
+	//float center = input[0].position.y + halfWidth;
+	//float3 vertexPosition_worldspace =
+	//	particleCenter_wordspace
+	//	+ CameraRight_worldspace * squareVertices.x * BillboardSize.x
+	//	+ CameraUp_worldspace * squareVertices.y * BillboardSize.y;
 
 	for (int i = 0; i < 3; i++)
 	{

@@ -54,7 +54,11 @@ void Object::UpdateLocalBounds()
 	}
 }
 
-void Object::Render(Renderer* renderer, DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
+void Object::Render(Renderer* renderer, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, DirectX::XMFLOAT3 right, DirectX::XMFLOAT3 up)
 {
-	renderer->DrawMesh(mesh, transform.GetWorldMatrix(), view, projection);
+	
+	DirectX::XMFLOAT3 centre = DirectX::XMFLOAT3(0,0,0);
+	DirectX::XMStoreFloat3(&centre, this->GetWorldBounds().GetCenter());
+
+	renderer->DrawMesh(mesh, transform.GetWorldMatrix(), view, projection, right, up, centre);
 }

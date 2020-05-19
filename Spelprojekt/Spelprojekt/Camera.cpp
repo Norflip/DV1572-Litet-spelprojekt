@@ -40,7 +40,7 @@ DirectX::XMMATRIX Camera::GetOrthographic() const
 
 DirectX::XMMATRIX Camera::GetVP()
 {
-	return DirectX::XMMATRIX();
+	return DirectX::XMMatrixMultiply(  view, projection);
 }
 
 bool Camera::IsBoundsInView(const AABB& aabb) const

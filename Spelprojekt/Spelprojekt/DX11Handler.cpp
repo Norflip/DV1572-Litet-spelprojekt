@@ -69,7 +69,7 @@ void DX11Handler::SetWireframeMode(bool useWireframe)
 	D3D11_FILL_MODE mode = useWireframe ? D3D11_FILL_WIREFRAME : D3D11_FILL_SOLID;
 
 	rasterizerDescription.FillMode = mode; //if we want wireframe, fill etc
-	rasterizerDescription.CullMode = D3D11_CULL_BACK;
+	rasterizerDescription.CullMode = D3D11_CULL_NONE;
 
 	///* Filips nasty shit >:D
 	rasterizerDescription.DepthClipEnable = true;
