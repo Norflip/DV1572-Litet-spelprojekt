@@ -36,6 +36,7 @@ public:
 	void SetArrow(Object*);
 	void UpdateLookAtPosition();
 
+	Object* GetWinArea() { return this->winArea; };
 private:
 	void InitWeapons();
 	void UpdateMovement(float FixedDeltaTime);

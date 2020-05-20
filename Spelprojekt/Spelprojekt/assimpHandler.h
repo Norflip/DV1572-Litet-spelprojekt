@@ -6,8 +6,6 @@
 #include <assimp/postprocess.h>
 
 #include <vector>
-#include <unordered_map>
-
 #include "Mesh.h"
 #include "Logger.h"
 #include "Texture.h"
@@ -25,14 +23,6 @@ namespace AssimpHandler
 
 		AssimpData() : mesh(nullptr), material(nullptr) {}
 	};
-
-	inline DirectX::XMMATRIX convertMatrix(aiMatrix4x4 matrix)
-	{
-		DirectX::XMMATRIX temp = DirectX::XMMatrixSet(matrix.a1, matrix.a2, matrix.a3, matrix.a4, matrix.b1, matrix.b2, matrix.b3, matrix.b4,
-			matrix.c1, matrix.c2, matrix.c3, matrix.c4, matrix.d1, matrix.d2, matrix.d3, matrix.d4);
-
-		return temp;
-	}
 
 	inline void addBoneData(MeshVertex& vertexStruct, unsigned int vertexID, float weight)
 	{
@@ -89,35 +79,34 @@ namespace AssimpHandler
 
 		// Create a new mesh
 		Mesh* tempMesh = new Mesh();
+
+		// TEST AV SKELETON KLASS //
 		// If the scene contains more than 0 bones, then we want to collect the bone information for animations
+		Skeleton* tempSkeleton = new Skeleton();
 		if (scene->mMeshes[0]->mNumBones > 0)
 		{
-			int counter = 0;
-			tempMesh->globalInverseTransform = DirectX::XMMATRIX(&scene->mRootNode->mTransformation.Inverse().a1);
-			//tempMesh->globalInverseTransform = convertMatrix(scene->mRootNode->mTransformation.Inverse());
-			//tempMesh->globalInverseTransform = DirectX::XMMatrixTranspose(tempMesh->globalInverseTransform);
+			tempSkeleton->SetGlobalMeshInverseTransform(DirectX::XMMATRIX(&scene->mRootNode->mTransformation.Inverse().a1));
 
 			for (unsigned int i = 0; i < scene->mMeshes[0]->mNumBones; i++)
 			{
 				unsigned int boneIndex = 0;
 				std::string boneName(scene->mMeshes[0]->mBones[i]->mName.data);
-				if (tempMesh->boneMapping.find(boneName) == tempMesh->boneMapping.end())
+				if (tempSkeleton->boneMapping.find(boneName) == tempSkeleton->boneMapping.end())
 				{
-					boneIndex = tempMesh->numBones;
-					tempMesh->numBones++;
-					BoneInfo bi;
-					tempMesh->boneInfo.push_back(bi);
-					tempMesh->boneMapping[boneName] = boneIndex;
-					tempMesh->boneInfo[boneIndex].boneOffset = DirectX::XMMATRIX(&scene->mMeshes[0]->mBones[i]->mOffsetMatrix.a1);
-					//tempMesh->boneInfo[boneIndex].boneOffset = convertMatrix(scene->mMeshes[0]->mBones[i]->mOffsetMatrix);
-					//tempMesh->boneInfo[boneIndex].boneOffset = DirectX::XMMatrixTranspose(tempMesh->boneInfo[boneIndex].boneOffset);
+					boneIndex = tempSkeleton->GetNumberOfBones();
+					tempSkeleton->AddBoneAmount();
+					tempSkeleton->boneMapping[boneName] = boneIndex;
+					Joint bone;
+					bone.SetInverseBindPose(DirectX::XMMATRIX(&scene->mMeshes[0]->mBones[i]->mOffsetMatrix.a1));
+					bone.SetBoneName(scene->mMeshes[0]->mBones[i]->mName.data);
+					tempSkeleton->AddNewBone(bone);
+					float stop = 0;
 				}
 				else
 				{
-					boneIndex = tempMesh->boneMapping[boneName];
+					boneIndex = tempSkeleton->boneMapping[boneName];
 				}
 
-				tempMesh->boneInfo[boneIndex].boneName = scene->mMeshes[0]->mBones[i]->mName.data;
 				for (unsigned int j = 0; j < scene->mMeshes[0]->mBones[i]->mNumWeights; j++)
 				{
 					unsigned int vertexId = scene->mMeshes[0]->mBones[i]->mWeights[j].mVertexId;
@@ -128,38 +117,11 @@ namespace AssimpHandler
 						vertices[vertexId].IDS[0] = boneIndex;
 						vertices[vertexId].weights[0] = weight;
 					}
-					else if (vertices[vertexId].weights[1] == 0.0f)
-					{
-						vertices[vertexId].IDS[1] = boneIndex;
-						vertices[vertexId].weights[1] = weight;
-					}
-					else if (vertices[vertexId].weights[2] == 0.0f)
-					{
-						vertices[vertexId].IDS[2] = boneIndex;
-						vertices[vertexId].weights[2] = weight;
-					}
-					else if (vertices[vertexId].weights[3] == 0.0f)
-					{
-						vertices[vertexId].IDS[3] = boneIndex;
-						vertices[vertexId].weights[3] = weight;
-					}
-
-					//addBoneData(vertices[vertexId], boneIndex, weight);
-					//vertices[vertexId].addBoneData(boneIndex, weight);
 				}
 			}
-
 		}
-
 		newMesh = MeshCreator::CreateMesh(vertices, indices, device);
-		newMesh->numBones = tempMesh->numBones;
-		newMesh->globalInverseTransform = tempMesh->globalInverseTransform;
-
-		for (int i = 0; i < tempMesh->boneInfo.size(); i++)
-		{
-			newMesh->boneInfo.push_back(tempMesh->boneInfo[i]);
-		}
-		newMesh->boneMapping.insert(tempMesh->boneMapping.begin(), tempMesh->boneMapping.end());
+		newMesh->skeleton = tempSkeleton;
 
 		return newMesh;
 	}
@@ -181,26 +143,6 @@ namespace AssimpHandler
 		texture = Texture::CreateTexture(fileName, dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 		return texture;
 	}
-
-	//inline Texture* loadNormalMapFromFbx(DX11Handler& dx11, aiString path)
-	//{
-	//	Texture* normalMap = nullptr;
-	//	std::string fileName = "Textures/";
-
-	//	// Convert the filepath to a regular string and crop it so it will only be the name of the normalMap
-	//	std::string nameString = path.C_Str();
-	//	std::size_t pos = nameString.find_last_of("/\\");
-
-	//	// Add "Textures/" to the name, so it will find it in our projekt folder
-	//	fileName += nameString.substr(pos + 1);
-
-	//	// Can be used as debug, print the name of the texture
-	//	//Logger::Write(fileName);
-
-	//	// Create a new normal map and return it
-	//	normalMap = Texture::CreateTexture(fileName, dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	//	return normalMap;
-	//}
 
 	inline MaterialData* getMaterialFromFbx(const aiScene* scene)
 	{
@@ -367,19 +309,13 @@ namespace AssimpHandler
 		scalingOut = start + factor * delta;
 	}
 
-	inline void readNodeHierarchy(float animationTime, const aiScene* scene, aiNode* node, DirectX::XMMATRIX& parentTransform, Mesh* mesh)
-	//inline void readNodeHierarchy(float animationTime, const aiScene* scene, aiNode* node, aiMatrix4x4& parentTransform, Mesh* mesh)
+	inline void ReadNodeHierarchy(float animationTime, const aiScene* scene, aiNode* node, DirectX::XMMATRIX& parentTransform, Skeleton* skeleton)
 	{
-
 		std::string nodeName = node->mName.data;
 		const aiAnimation* animation = scene->mAnimations[0];
-		//aiMatrix4x4& transformation = node->mTransformation;
 		DirectX::XMMATRIX nodeTransformation = DirectX::XMMATRIX(&node->mTransformation.a1);
 
-		//nodeTransformation = convertMatrix(node->mTransformation);
 		const aiNodeAnim* nodeAnim = findNodeAnim(animation, nodeName);
-
-		DirectX::XMMATRIX anim = DirectX::XMMatrixIdentity();
 
 		if (nodeAnim)
 		{
@@ -393,54 +329,47 @@ namespace AssimpHandler
 			DirectX::XMVECTOR trans = DirectX::XMVectorSet(translation.x, translation.y, translation.z, 1.0f);
 			DirectX::XMVECTOR rotate = DirectX::XMVectorSet(rotation.x, rotation.y, rotation.z, 1.0f);
 
-			/*DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(scaling.x, scaling.y, scaling.z);
-			DirectX::XMMATRIX trans = DirectX::XMMatrixTranslation(translation.x, translation.y, translation.z);
-			DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(rotation.x, rotation.y, rotation.z, rotation.w));*/
 
 			DirectX::XMVECTOR origin = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-			//nodeTransformation = trans * rotate * scale;
-			//nodeTransformation = scale * rotate * trans;
+
 			nodeTransformation = DirectX::XMMatrixAffineTransformation(scale, origin, rotate, trans);
 			nodeTransformation = DirectX::XMMatrixTranspose(nodeTransformation);
-			float stop = 0;
+			float stopp = 0;
 		}
 
 		DirectX::XMMATRIX globalTransform = parentTransform * nodeTransformation;
-		//DirectX::XMMATRIX globalTransform = nodeTransformation * parentTransform;
-		float stop = 0;
-		if (mesh->boneMapping.find(nodeName) != mesh->boneMapping.end())
+		float stopp = 0;
+
+		if (skeleton->boneMapping.find(nodeName) != skeleton->boneMapping.end())
 		{
-			unsigned int boneIndex = mesh->boneMapping[nodeName];
-			DirectX::XMMATRIX final = mesh->globalInverseTransform * globalTransform * mesh->boneInfo[boneIndex].boneOffset;
-			//DirectX::XMMATRIX final = mesh->boneInfo[boneIndex].boneOffset * globalTransform * mesh->globalInverseTransform;
-			mesh->boneInfo[boneIndex].finalTransformation = final;
-			float stop = 0;
+			unsigned int boneIndex = skeleton->boneMapping[nodeName];
+			skeleton->GetBone(boneIndex).SetGlobalTransform(globalTransform);
+			DirectX::XMMATRIX final = skeleton->GetGlobalMeshInverse() * globalTransform * skeleton->GetBone(boneIndex).GetInverseBindPose();
+			skeleton->GetBone(boneIndex).SetFinalTransformation(final);
+			float stopp = 0;
 		}
 
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{
-			Logger::Write(node->mChildren[i]->mName.data);
-			readNodeHierarchy(animationTime, scene, node->mChildren[i], globalTransform, mesh);
+			ReadNodeHierarchy(animationTime, scene, node->mChildren[i], globalTransform, skeleton);
 		}
-
 	}
 
-	inline void BoneTransform(const aiScene* scene, float timeInSeconds, std::vector<DirectX::XMMATRIX>& transforms, Mesh* mesh)
-	//inline void BoneTransform(const aiScene* scene, float timeInSeconds, std::vector<aiMatrix4x4>& transforms, Mesh* mesh)
+	inline void UpdateTransforms(const aiScene* scene, float timeInSeconds, std::vector<DirectX::XMMATRIX>& transforms, Skeleton* skeleton)
 	{
 		DirectX::XMMATRIX identity = DirectX::XMMatrixIdentity();
-		//aiMatrix4x4 identity = aiMatrix4x4(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 
 		float ticksPerSecond = (float)(scene->mAnimations[0]->mTicksPerSecond != 0 ? scene->mAnimations[0]->mTicksPerSecond : 25.0f);
 		float timeInTicks = timeInSeconds * ticksPerSecond;
 		float animationTime = fmod(timeInTicks, (float)scene->mAnimations[0]->mDuration);
 
-		readNodeHierarchy(animationTime, scene, scene->mRootNode, identity, mesh);
-		//readAnimationData(scene, scene->mRootNode, identity, mesh);
-		transforms.resize(mesh->numBones);
-		for (unsigned int i = 0; i < mesh->numBones; i++)
+		ReadNodeHierarchy(animationTime, scene, scene->mRootNode, identity, skeleton);
+		transforms.resize(skeleton->GetNumberOfBones());
+
+		for (unsigned int i = 0; i < skeleton->GetNumberOfBones(); i++)
 		{
-			transforms[i] = mesh->boneInfo[i].finalTransformation;
+			transforms[i] = skeleton->GetBone(i).GetFinalTransformation();
+			float stopp = 0;
 		}
 	}
 
@@ -498,11 +427,8 @@ namespace AssimpHandler
 				object.material->GetMaterialData().hasNormalTexture = true;
 				
 			}
-
 			object.material->SetTexture(ALBEDO_MATERIAL_TYPE, texture, PIXEL_TYPE::PIXEL);
-
 		}
-		
 		return object;
 	}
 }

@@ -1,11 +1,6 @@
 
 #define MAX_LIGHTS 32
 
-//struct boneData
-//{
-//	matrix boneTransforms;
-//};
-
 cbuffer WorldConstantBuffer : register(b0)
 {
 	matrix mvp;
@@ -14,7 +9,6 @@ cbuffer WorldConstantBuffer : register(b0)
 	float time;
 
 	float3 wvb_pad0;
-	//boneData data[70];
 	matrix boneTransforms[70];
 };
 

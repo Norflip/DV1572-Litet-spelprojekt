@@ -37,15 +37,10 @@ VS_OUTPUT animation(VS_INPUT input)
 {
 	VS_OUTPUT output;
 
-	//float4 positions = input.position;
 	float4 positions = float4(0.0f, 0.0f, 0.0f, 0.0f);
 	float3 normals = float3(0.0f, 0.0f, 0.0f);
 	float3 tangents = float3(0.0f, 0.0f, 0.0f);
 
-	/*if (input.weights[1] == 0.0f)
-	{
-		input.weights[0] = 1.0f;
-	}*/
 
 	positions += mul(input.position, boneTransforms[input.IDS.x]) * input.weights.x;
 	//positions += mul(input.position, boneTransforms[input.IDS.y]) * input.weights.y;

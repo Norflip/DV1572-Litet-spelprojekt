@@ -24,10 +24,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	this->levelMusic = sound;	
 	this->soundeffects = soundeffect;
 
-	//Object* animation = new Object(ObjectLayer::Player, AssimpHandler::loadFbxObject("Animations/sista.fbx", dx11, animationShader));
-	//animation->GetTransform().SetPosition({ 55, 10, 60 });
-	//animation->GetTransform().Scale(2.5, 2.5, 2.5);
-	//AddObject(animation);
 }
 
 DevScene::~DevScene()
@@ -135,22 +131,18 @@ void DevScene::Load()
 	animationShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "animation", dx11.GetDevice());
 
 	// ------ PLAYER
-	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Animations/sista.fbx", dx11, animationShader);
+	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, animationShader);
 
 	this->player = new Player(playerModel, controller, &ground, gui, wagon, dx11,  static_cast<Scene*>(this));
-	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
-	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
-	this->player->GetTransform().SetPosition({ 55, 7, 55 });
+
+	this->player->GetTransform().SetPosition({ 55, 4, 55 });
+	this->player->GetTransform().Scale(2.0, 2.0, 2.0);
 	this->player->SetLayer(ObjectLayer::Player);
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });	
 	AddObject(this->player);
 			
-
 	// ANIMATION SCHEISSE
-	this->assimpScene = imp.ReadFile("Animations/sista.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
-
-
-
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Walk_Cycle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
 
 	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, soundeffects);
 	this->spawnObjects->SetEnemy();
@@ -235,10 +227,10 @@ void DevScene::Update(const float& deltaTime)
 	Scene::Update(deltaTime);
 
 	float seconds = (float)gametimer.getSecondsElapsed();
-	//const aiScene* scene = imp.ReadFile("Animations/Glasse_Walk_Y_UP_REBOUND.fbx", aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
-	//const aiScene* scene = imp.ReadFile("Animations/sista.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate | aiProcess_LimitBoneWeights);
-	AssimpHandler::BoneTransform(this->assimpScene, seconds, this->player->GetMesh()->boneTransforms, this->player->GetMesh());
 	
+	//AssimpHandler::BoneTransform(this->assimpScene, seconds, this->player->GetMesh()->boneTransforms, this->player->GetMesh());
+	AssimpHandler::UpdateTransforms(this->assimpScene, seconds, this->player->GetMesh()->boneTransforms, this->player->GetMesh()->skeleton);
+
 	//FPS STUFF
 	fpsTimer.Start();			
 	
@@ -275,7 +267,7 @@ void DevScene::Update(const float& deltaTime)
 		SetNextScene(false);
 	}
 
-	if (canWin && player->GetWorldBounds().Overlaps(entities.AllEntities()[0]->GetWorldBounds()))
+	if (canWin && player->GetWorldBounds().Overlaps(this->player->GetWinArea()->GetWorldBounds()))
 	{
 		gametimerText->SetString("You won");
 		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);

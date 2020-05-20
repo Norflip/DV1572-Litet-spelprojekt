@@ -54,30 +54,7 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 
 	for (int i = 0; i < mesh->boneTransforms.size(); i++)
 	{
-		/*cb_world.boneTransforms[0][0] = mesh->boneTransforms[i].a1;
-		cb_world.boneTransforms[0][1] = mesh->boneTransforms[i].b1;
-		cb_world.boneTransforms[0][2] = mesh->boneTransforms[i].c1;
-		cb_world.boneTransforms[0][3] = mesh->boneTransforms[i].d1;
-
-		cb_world.boneTransforms[1][0] = mesh->boneTransforms[i].a2;
-		cb_world.boneTransforms[1][1] = mesh->boneTransforms[i].b2;
-		cb_world.boneTransforms[1][2] = mesh->boneTransforms[i].c2;
-		cb_world.boneTransforms[1][3] = mesh->boneTransforms[i].d2;
-
-		cb_world.boneTransforms[2][0] = mesh->boneTransforms[i].a3;
-		cb_world.boneTransforms[2][1] = mesh->boneTransforms[i].b3;
-		cb_world.boneTransforms[2][2] = mesh->boneTransforms[i].c3;
-		cb_world.boneTransforms[2][3] = mesh->boneTransforms[i].d3;
-
-		cb_world.boneTransforms[3][0] = mesh->boneTransforms[i].a4;
-		cb_world.boneTransforms[3][1] = mesh->boneTransforms[i].b4;
-		cb_world.boneTransforms[3][2] = mesh->boneTransforms[i].c4;
-		cb_world.boneTransforms[3][3] = mesh->boneTransforms[i].d4;*/
-
-		//cb_world.boneTransforms[i] = DirectX::XMMatrixIdentity();
-		//cb_world.boneTransforms[i] = DirectX::XMMatrixTranspose(mesh->boneTransforms[i]);
 		cb_world.boneTransforms[i] = mesh->boneTransforms[i];
-
 	}
 
 
