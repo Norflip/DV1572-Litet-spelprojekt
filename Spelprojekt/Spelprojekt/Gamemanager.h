@@ -18,6 +18,8 @@ public:
 	SoundHandler* GetSoundeffectHandler() { return this->soundeffect; }
 	
 	// Musictrack settings
+	void SetCurrentTrack(int i) { this->currentTrack = i; }
+	int GetCurrentTrack() { return this->currentTrack; }
 	void SetMusictrack(std::string musictrack) { this->currentMusictrack = musictrack; }
 	std::string GetMusicTrack() { return this->currentMusictrack; }
 
@@ -27,7 +29,6 @@ public:
 	void SetCurrentSoundVolume(float currentVol) { this->soundVol = currentVol; };
 	float GetCurrentSoundVolume() { return this->soundVol; }
 
-
 	// Difficulty 
 	void SetTotalEnemies(int enemies) { this->nrOfEnemies = enemies; }
 	void SetTimer(int time) { this->timer = time; }
@@ -36,7 +37,6 @@ public:
 	void SetCurrentVsync(std::string vsyncOn, std::string vsyncOff) { this->vsyncLastOn = vsyncOn; this->vsyncLastOff = vsyncOff; }
 	std::string GetLastVsyncOff() { return this->vsyncLastOff; }
 	std::string GetLastVsyncOn() { return this->vsyncLastOn; }
-
 
 private:
 	DX11Handler* dxhandler;
@@ -50,6 +50,7 @@ private:
 
 	SoundHandler* soundeffect;
 	SoundHandler* music;
+	int currentTrack;
 	std::string currentMusictrack;
 	
 	std::string vsyncLastOn;

@@ -2,7 +2,7 @@
 
 
 
-IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool& exitGame, SoundHandler* soundeffect, Gamemanager* gamemanager) : Scene(name, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
+IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool& exitGame,  Gamemanager* gamemanager) : Scene(name, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
 {
 	sceneName = "IntroScene";
 	this->camera = new Camera(90.0f, window.GetWidth(), window.GetHeight());
@@ -15,15 +15,11 @@ IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, 
 	lights.SetSunIntensity(0.9f);
 
 	
-	// Music and soundeffects
-
-	this->soundeffects = soundeffect;
-	this->soundeffects->SetGlobalVolume(1.0f);
-
-
+	// Gamemanager
 	this->gamemanager = gamemanager;	
+	gamemanager->GetSoundeffectHandler()->SetGlobalVolume(gamemanager->GetCurrentSoundVolume());
 	gamemanager->GetMusicHandler()->LoadSound("Monster", "SoundEffects/MonstersInc.wav");
-	
+	gamemanager->GetMusicHandler()->SetGlobalVolume(gamemanager->GetCurrentMusicVolume());	
 }
 
 IntroScene::~IntroScene()
@@ -37,7 +33,7 @@ void IntroScene::Load()
 	gamemanager->GetMusicHandler()->PlaySound("Monster", gamemanager->GetCurrentMusicVolume());
 
 	GUI* gui = new GUI(dx11);
-	introGUI = new IntroGUI(gui, dx11, controller, this, soundeffects, gamemanager);
+	introGUI = new IntroGUI(gui, dx11, controller, this, gamemanager);
 	renderer->SetGUI(gui);
 		
 	// save the shaders somewhere, remember to clean it up

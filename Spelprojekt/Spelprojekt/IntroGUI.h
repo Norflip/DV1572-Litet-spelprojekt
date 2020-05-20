@@ -11,7 +11,7 @@ class IntroScene;
 class IntroGUI
 {
 public:
-	IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scenes, SoundHandler* soundeffect, Gamemanager* gamemanager);
+	IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scenes, Gamemanager* gamemanager); // tabrot soundeffect
 	~IntroGUI();
 	enum class Menu
 	{
@@ -46,6 +46,9 @@ private:
 	void ClearGUI();
 	bool first = true;
 	Menu menu = Menu::start;
+
+	bool switchTrack = false;
+
 	DX11Handler& dx11;
 	GUI* gui;
 	Input* input;
@@ -58,14 +61,14 @@ private:
 	bool vsyncOn = false;
 
 	Gamemanager* gamemanager;
-	SoundHandler* soundeffects;
+
 	float volumeScale = 0.1f;	
 	float maxVolume = 1.0f;
 	float minVolume = 0.0f;
 	float currentMusicVolume = 1.0f;
 	float currentSoundVolume = 1.0f;
 
-	Soundtrack soundtrack = Soundtrack::Track1;
+	Soundtrack soundtrack;// = Soundtrack::Track1;
 	bool oneChecked;
 	bool twoChecked;
 	bool threeChecked;		

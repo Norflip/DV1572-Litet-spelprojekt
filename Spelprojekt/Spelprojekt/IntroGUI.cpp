@@ -1,12 +1,10 @@
 #include "IntroGUI.h"
 
-IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scene, SoundHandler* soundeffect, Gamemanager* gamemanager) : dx11(dx11)
+IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scene, Gamemanager* gamemanager) : dx11(dx11)    // tabrot soundeffect
 {
     this->currentScene = scene;
     this->gui = gui;
     this->input = cameraController->getInput();
-
-    this->soundeffects = soundeffect;
 
     this->lastOff = "Sprites/off_isON.png";
     this->lastOn = "Sprites/on_isOFF.png";
@@ -16,7 +14,6 @@ IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraControll
     this->threeChecked = false;
       
     this->gamemanager = gamemanager;
-
 }
 
 IntroGUI::~IntroGUI()
@@ -52,29 +49,68 @@ void IntroGUI::Update()
     }
 
     ///////////////////////////////////////
-        
-    switch(soundtrack) {
-    case Soundtrack::Track1:
-        oneChecked = true;
-        twoChecked = false;
-        threeChecked = false;
-        gamemanager->SetMusictrack("SoundEffects/Ben.wav");
+       
+    
+        /*if (gamemanager->GetCurrentTrack() == 1) {
+            soundtrack = Soundtrack::Track1;
+        }
+        if (gamemanager->GetCurrentTrack() == 2) {
+            soundtrack = Soundtrack::Track2;
+        }
+        if (gamemanager->GetCurrentTrack() == 3) {
+            soundtrack = Soundtrack::Track3;
+        }
 
-        break;
-    case Soundtrack::Track2:
-        oneChecked = false;
-        twoChecked = true;
-        threeChecked = false;
-        gamemanager->SetMusictrack("SoundEffects/FluffingDuck.wav");
-        break;
-    case Soundtrack::Track3:
-        oneChecked = false;
-        twoChecked = false;
-        threeChecked = true;
-        gamemanager->SetMusictrack("SoundEffects/Cuphead.wav");
-        break;
-    }
 
+        switch (soundtrack) {
+        case Soundtrack::Track1:
+            oneChecked = true;
+            twoChecked = false;
+            threeChecked = false;
+            gamemanager->SetMusictrack("SoundEffects/Ben.wav");
+            switchTrack = false;
+            break;
+        case Soundtrack::Track2:
+            oneChecked = false;
+            twoChecked = true;
+            threeChecked = false;
+            gamemanager->SetMusictrack("SoundEffects/FluffingDuck.wav");
+            switchTrack = false;
+            break;
+        case Soundtrack::Track3:
+            oneChecked = false;
+            twoChecked = false;
+            threeChecked = true;
+            gamemanager->SetMusictrack("SoundEffects/Cuphead.wav");
+            switchTrack = false;
+            break;
+        }*/
+
+        switch (gamemanager->GetCurrentTrack()) {
+        case 1:
+            oneChecked = true;
+            twoChecked = false;
+            threeChecked = false;
+            gamemanager->SetMusictrack("SoundEffects/Ben.wav");
+            switchTrack = false;
+            break;
+        case 2:
+            oneChecked = false;
+            twoChecked = true;
+            threeChecked = false;
+            gamemanager->SetMusictrack("SoundEffects/FluffingDuck.wav");
+            switchTrack = false;
+            break;
+        case 3:
+            oneChecked = false;
+            twoChecked = false;
+            threeChecked = true;
+            gamemanager->SetMusictrack("SoundEffects/Cuphead.wav");
+            switchTrack = false;
+            break;
+        }
+
+    
 }
 
 void IntroGUI::Start()
@@ -86,6 +122,7 @@ void IntroGUI::Start()
         //ClearGUI();
         currentScene->setNextScene();
     }
+
     GUISprite* options = static_cast<GUISprite*>(gui->GetGUIList()->at("options"));
     if (options->Clicked(input))
     {
@@ -93,6 +130,7 @@ void IntroGUI::Start()
         menu = Menu::options;
         first = true;
     }
+
     // SOUNDTRACK
     GUISprite* soundtrack = static_cast<GUISprite*>(gui->GetGUIList()->at("soundtracks"));
     if (soundtrack->Clicked(input))
@@ -173,12 +211,10 @@ void IntroGUI::Options()
             currentMusicVolume -= volumeScale;
             gamemanager->SetCurrentMusicVolume(currentMusicVolume);
             gamemanager->GetMusicHandler()->SetGlobalVolume(gamemanager->GetCurrentMusicVolume());
-
         }      
     }
 
-    GUISprite* highMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightmusicvolume"));
-    
+    GUISprite* highMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightmusicvolume"));    
     if (highMusicVolume->Clicked(input) && gamemanager->GetCurrentMusicVolume() != 1)
     {
         if (gamemanager->GetCurrentMusicVolume() < 1 )
@@ -212,32 +248,32 @@ void IntroGUI::Options()
 
 
     // Set current volume for sounds
-    GUISprite* soundsVolBar = static_cast<GUISprite*>(gui->GetGUIList()->at("SoundsBar"));
-    currentSoundVolume = soundeffects->GetGlobalVolume();
-    soundsVolBar->VolumeBar(maxVolume, currentSoundVolume);
+    GUISprite* soundsVolBar = static_cast<GUISprite*>(gui->GetGUIList()->at("SoundsBar"));    
 
     GUISprite* lowSoundVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("leftsoundvolume"));
-    if (lowSoundVolume->Clicked(input))
+    if (lowSoundVolume->Clicked(input) && gamemanager->GetCurrentSoundVolume() != 0)
     {
-        if (soundeffects->GetGlobalVolume() > 0.0f) {
-            currentSoundVolume = soundeffects->GetGlobalVolume();
+        if (gamemanager->GetCurrentSoundVolume() > 0.0f) {
+            currentSoundVolume = gamemanager->GetCurrentSoundVolume();
             currentSoundVolume -= volumeScale;
-            this->soundeffects->SetGlobalVolume(currentSoundVolume);
-            soundsVolBar->VolumeBar(maxVolume, currentSoundVolume);
+            gamemanager->SetCurrentSoundVolume(currentSoundVolume);
+            gamemanager->GetSoundeffectHandler()->SetGlobalVolume(gamemanager->GetCurrentSoundVolume());
         }
     }
 
     GUISprite* highSoundVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightsoundvolume"));
-    if (highSoundVolume->Clicked(input))
+    if (highSoundVolume->Clicked(input) && gamemanager->GetCurrentSoundVolume() != 1)
     {
-        if (soundeffects->GetGlobalVolume() < 1.0f)
+        if (gamemanager->GetCurrentSoundVolume() < 1.0f)
         {
-            currentSoundVolume = soundeffects->GetGlobalVolume();
+            currentSoundVolume = gamemanager->GetCurrentSoundVolume();
             currentSoundVolume += volumeScale;
-            this->soundeffects->SetGlobalVolume(currentSoundVolume);
-            soundsVolBar->VolumeBar(maxVolume, currentSoundVolume);
+            gamemanager->SetCurrentSoundVolume(currentSoundVolume);
+            gamemanager->GetSoundeffectHandler()->SetGlobalVolume(gamemanager->GetCurrentSoundVolume());
         }
     }
+
+    soundsVolBar->VolumeBar(maxVolume, gamemanager->GetCurrentSoundVolume());
 
     // mouseover
     if (lowSoundVolume->MouseOver(input)) {
@@ -458,21 +494,24 @@ void IntroGUI::Soundtracks()
 
     if (checkboxone->Clicked(input)) {
         if (oneChecked == false) {
-            soundtrack = Soundtrack::Track1;
+            gamemanager->SetCurrentTrack(1);
+          //  soundtrack = Soundtrack::Track1;
         }
     }
 
     GUISprite* checkboxtwo = static_cast<GUISprite*>(gui->GetGUIList()->at("checktwo"));
     if (checkboxtwo->Clicked(input)) {
         if (twoChecked == false) {
-            soundtrack = Soundtrack::Track2;
+            gamemanager->SetCurrentTrack(2);
+          //  soundtrack = Soundtrack::Track2;
         }
     }
 
     GUISprite* checkboxthree = static_cast<GUISprite*>(gui->GetGUIList()->at("checkthree"));
     if (checkboxthree->Clicked(input)) {
         if (threeChecked == false) {
-            soundtrack = Soundtrack::Track3;
+            gamemanager->SetCurrentTrack(3);
+           // soundtrack = Soundtrack::Track3;
         }
     }
 

@@ -32,10 +32,11 @@ public:
 
 	bool exitGame = false;
 private:
-	//Variables
+	// Variables
 	Window window;
 	DX11Handler dx11;
 
+	// Gamemanager for... everything
 	Gamemanager* gamemanager;
 
 	//Scenes for the game
@@ -43,11 +44,8 @@ private:
 	Scene* gameScene;
 	Scene* introScene;
 	Scene* endScene;
-	// new
-	SoundHandler* soundEffect;
 
 	std::vector<Scene*>scenes;
-
 	Renderer* deferredRenderer;
 
 	bool pauseGame = true;

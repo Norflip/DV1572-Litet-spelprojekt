@@ -1,6 +1,6 @@
 #include "DevScene.h"
 
-DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, SoundHandler* soundeffect, Gamemanager* gamemanager) : Scene("DevScene", renderer, dx11, window), scenes(scenes)
+DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, Gamemanager* gamemanager) : Scene("DevScene", renderer, dx11, window), scenes(scenes) // tabort soundeffect
 {
 	//----- GUI SHIET |  Set gui last |
 
@@ -29,7 +29,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 
 	// Soundhandler
 
-	this->soundeffects = soundeffect;
+	//this->soundeffects = soundeffect; // tabort soundeffect
 	this->gamemanager = gamemanager;
 }
 
@@ -150,7 +150,7 @@ void DevScene::Load()
 			
 	
 
-	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, soundeffects);
+	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, /*soundeffects,*/ gamemanager);	// tabort soundeffect
 	this->spawnObjects->SetEnemy();
 	this->spawnObjects->SetEnemiesToEliminate(totalEnemiesLeft);
 	AddObject(this->spawnObjects);	
@@ -159,7 +159,7 @@ void DevScene::Load()
 	AssimpHandler::AssimpData coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 	// Coconuts
 	for (int i = 0; i < 11; i++) {
-		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);
+		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, /*soundeffects,*/ gamemanager); // tabort soundeffect
 		this->coconuts[i]->SetLayer(ObjectLayer::Projectile);
 		AddObject(coconuts[i]);
 	}		
@@ -180,7 +180,7 @@ void DevScene::Load()
 	AssimpHandler::AssimpData slev = AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, defaultShader);			
 	// Spoon
 	for (int i = 0; i < 5; i++) {
-		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);
+		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 }, /*soundeffects,*/ gamemanager);
 		this->spoons[i]->SetLayer(ObjectLayer::None);	// ÄNDAR SEN
 		AddObject(spoons[i]);
  	}			

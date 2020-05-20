@@ -11,7 +11,7 @@ class Player;
 class Enemy : public Object
 {
 	public: 
-		Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&, SoundHandler* soundeffect);
+		Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&, Gamemanager* gamemanager);
 		Enemy(const Enemy& other);
 		~Enemy();
 
@@ -39,7 +39,7 @@ class Enemy : public Object
 		float enemyHeight = 4.65f;	
 		
 		// new
-		SoundHandler* hitSound;
-
+		//SoundHandler* hitSound;
+		Gamemanager* gamemanager;
 		int pointGiven;
 };

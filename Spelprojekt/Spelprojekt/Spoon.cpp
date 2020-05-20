@@ -1,6 +1,6 @@
 #include "Spoon.h"
 
-Spoon::Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData model, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, SoundHandler* soundeffect)
+Spoon::Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData model, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, /*SoundHandler* soundeffect,*/ Gamemanager* gamemanager)
 {
 	GetTransform().SetPosition(position);
 	GetTransform().SetRotation(rotation);
@@ -15,8 +15,11 @@ Spoon::Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandle
 	this->attack = false;
 	this->damage = 5.0f;
 	this->WeaponTypeName = "Slev";
-	this->weaponSound = soundeffect;
-	this->weaponSound->LoadSound("Swoosh", "SoundEffects/Swoosh.wav");
+	//this->weaponSound = soundeffect;	// tabort
+	//this->weaponSound->LoadSound("Swoosh", "SoundEffects/Swoosh.wav"); // tabort
+
+	this->gamemanager = gamemanager;
+	this->gamemanager->GetSoundeffectHandler()->LoadSound("Swooshsound", "SoundEffects/Swoosh.wav");
 
 	this->used = 0;
 }
@@ -33,7 +36,10 @@ Spoon::Spoon(const Spoon& other)
 	this->attack = false;
 	this->damage = other.damage;
 	this->WeaponTypeName = other.WeaponTypeName;
-	this->weaponSound = other.weaponSound;
+	//this->weaponSound = other.weaponSound; // tabort
+
+	this->gamemanager = other.gamemanager;
+
 	this->used = 0;
 }
 

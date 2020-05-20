@@ -5,7 +5,7 @@ EndGUI::EndGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, 
     this->currentScene = scenes;
     this->gui = gui;
     this->input = cameraController->getInput();
-    this->soundeffects = soundeffect;
+   // this->soundeffects = soundeffect;   //tabort
 
     this->gamemanager = gamemanager;
 }
@@ -93,9 +93,12 @@ void EndGUI::LoadStart()
 
         // Lose sound
         this->gamemanager->GetMusicHandler()->StopSound();
+        this->gamemanager->GetMusicHandler()->DeleteTrack("Levelsound");
         if (!playedOnce) {
-            this->soundeffects->LoadSound("Lose", "SoundEffects/Fail.wav");
-            this->soundeffects->PlaySound("Lose", this->soundeffects->GetGlobalVolume());
+            this->gamemanager->GetSoundeffectHandler()->LoadSound("Lose", "SoundEffects/Fail.wav");
+            this->gamemanager->GetSoundeffectHandler()->PlaySound("Lose", gamemanager->GetCurrentSoundVolume());
+           // this->soundeffects->LoadSound("Lose", "SoundEffects/Fail.wav");
+           // this->soundeffects->PlaySound("Lose", this->soundeffects->GetGlobalVolume());
             playedOnce = true;
         }
         

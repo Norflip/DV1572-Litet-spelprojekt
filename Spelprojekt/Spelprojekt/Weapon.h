@@ -5,6 +5,7 @@
 #include "Object.h"
 #include "GUIActionbar.h"
 #include "SoundHandler.h"
+#include "Gamemanager.h"
 
 class Weapon 
 	: public Object
