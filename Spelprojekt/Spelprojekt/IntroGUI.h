@@ -65,8 +65,8 @@ private:
 	float volumeScale = 0.1f;	
 	float maxVolume = 1.0f;
 	float minVolume = 0.0f;
-	float currentMusicVolume = 1.0f;
-	float currentSoundVolume = 1.0f;
+	float currentMusicVolume;
+	float currentSoundVolume;
 
 	Soundtrack soundtrack;// = Soundtrack::Track1;
 	bool oneChecked;

@@ -14,8 +14,11 @@ Gamemanager::Gamemanager(DX11Handler& dx11)
 	this->soundVol = 1.0f;
 	this->soundeffect->SetGlobalVolume(this->soundVol);
 
+	// Level soundtrack from start
 	this->currentTrack = 1;
 	this->currentMusictrack = "SoundEffects/Ben.wav";
+
+	this->vsyncState = false;
 }
 
 Gamemanager::~Gamemanager()
