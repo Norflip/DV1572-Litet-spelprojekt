@@ -5,16 +5,17 @@
 #include "CameraController.h"
 #include "assimpHandler.h"
 #include "Resources.h"
+#include "Gamemanager.h"
 
 class IntroGUI;
 #include "IntroGui.h"
-#include "SoundHandler.h"
+//#include "SoundHandler.h"
 #include "Terrain.h"
 class IntroScene : public Scene
 {
 
 public:
-	IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool &exitGame, SoundHandler* sound, SoundHandler* soundeffect);
+	IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool &exitGame, Gamemanager* gamemanager);
 	virtual ~IntroScene();
 
 	void Load() override;
@@ -22,7 +23,6 @@ public:
 
 	void Update(const float& deltaTime) override;
 	Scene* GetNextScene() const override;
-
 
 	CameraController* controller;
 	GUISprite* healthFrame;
@@ -33,11 +33,8 @@ private:
 	IntroGUI* introGUI;
 	Input* input;
 	std::vector<Scene*>& scenes;
-
-	// Music and sounds
-	SoundHandler* mainmenuMusic;
-	SoundHandler* soundeffects;
-
-	float volumeScale = 0.1f; 
+		
+	Gamemanager* gamemanager;
+	//float volumeScale = 0.1f; 
 };
 

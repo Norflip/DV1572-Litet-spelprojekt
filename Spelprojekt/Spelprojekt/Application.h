@@ -10,6 +10,7 @@
 #include "Timer.h"
 #include <vector>
 #include "EndScene.h"
+#include "Gamemanager.h"
 
 class Application
 {
@@ -31,9 +32,12 @@ public:
 
 	bool exitGame = false;
 private:
-	//Variables
+	// Variables
 	Window window;
 	DX11Handler dx11;
+
+	// Gamemanager for... everything
+	Gamemanager* gamemanager;
 
 	//Scenes for the game
 	Scene* currentScene;
@@ -41,12 +45,7 @@ private:
 	Scene* introScene;
 	Scene* endScene;
 
-	// new
-	SoundHandler* music;
-	SoundHandler* soundEffect;
-
 	std::vector<Scene*>scenes;
-
 	Renderer* deferredRenderer;
 
 	bool pauseGame = true;

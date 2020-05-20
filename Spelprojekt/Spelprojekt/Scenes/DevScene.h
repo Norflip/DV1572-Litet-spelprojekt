@@ -28,7 +28,7 @@ class DevScene : public Scene
 
 public:
 	
-	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, SoundHandler*, SoundHandler*);
+	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, Gamemanager* gamemanager);
 	virtual ~DevScene();
 
 	void Load() override;
@@ -50,10 +50,7 @@ public:
 private:
 	CameraController* controller;
 
-	// Sounds
-	SoundHandler* levelMusic;
-	SoundHandler* soundeffects;
-	/////////////////////
+	Gamemanager* gamemanager;
 
 	GUIText* gametimerText;
 	GUIText* fpsText;

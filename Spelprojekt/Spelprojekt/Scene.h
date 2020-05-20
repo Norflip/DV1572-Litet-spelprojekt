@@ -9,6 +9,7 @@
 #include "SoundHandler.h"
 #include "Entities.h"
 #include "Resources.h"
+#include "Gamemanager.h"
 
 class Scene
 {
@@ -60,6 +61,8 @@ protected:
 
 	Resources resources;
 	Entities entities;
+
+	
 
 	//std::vector<Object*> objectsToAdd;
 	//std::vector<Object*> objectsToRemove;

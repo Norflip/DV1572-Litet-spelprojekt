@@ -1,12 +1,12 @@
 #include "EndGUI.h"
 
-EndGUI::EndGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, EndScene* scenes, SoundHandler* music, SoundHandler* soundeffect) : dx11(dx11)
+EndGUI::EndGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, EndScene* scenes, Gamemanager* gamemanager) : dx11(dx11)
 {
     this->currentScene = scenes;
     this->gui = gui;
     this->input = cameraController->getInput();
-    this->musicsound = music;
-    this->soundeffects = soundeffect;
+
+    this->gamemanager = gamemanager;
 }
 
 EndGUI::~EndGUI()
@@ -91,13 +91,13 @@ void EndGUI::LoadStart()
         winLose = new GUISprite(dx11, "Sprites/Glassbokal_lose.png", 0.0f, 0.0f);
 
         // Lose sound
-        this->musicsound->StopSound();
+        this->gamemanager->GetMusicHandler()->StopSound();
+        this->gamemanager->GetMusicHandler()->DeleteTrack("Levelsound");
         if (!playedOnce) {
-            this->soundeffects->LoadSound("Lose", "SoundEffects/Fail.wav");
-            this->soundeffects->PlaySound("Lose", this->soundeffects->GetGlobalVolume());
+            this->gamemanager->GetSoundeffectHandler()->LoadSound("Lose", "SoundEffects/Fail.wav");
+            this->gamemanager->GetSoundeffectHandler()->PlaySound("Lose", gamemanager->GetCurrentSoundVolume());
             playedOnce = true;
-        }
-        
+        }        
     }
 
     GUISprite* restart = new GUISprite(dx11, "Sprites/restart.png", 0.0f, 0.0f);       

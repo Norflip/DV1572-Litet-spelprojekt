@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "Terrain.h"
 #include "assimpHandler.h"
-#include "SoundHandler.h"
+//#include "SoundHandler.h"
 
 class Player;
 
@@ -11,7 +11,7 @@ class Player;
 class Enemy : public Object
 {
 	public: 
-		Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&, SoundHandler* soundeffect);
+		Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&, Gamemanager* gamemanager);
 		Enemy(const Enemy& other);
 		~Enemy();
 
@@ -37,9 +37,7 @@ class Enemy : public Object
 		DirectX::XMFLOAT3 currentPosition;
 		float nextDir = 0.0f;
 		float enemyHeight = 4.65f;	
-		
-		// new
-		SoundHandler* hitSound;
-
+				
+		Gamemanager* gamemanager;
 		int pointGiven;
 };
