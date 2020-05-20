@@ -137,7 +137,7 @@ void DevScene::Load()
 			
 	
 
-	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, soundeffects);
+	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, soundeffects, &this->entities);
 	this->spawnObjects->SetEnemy();
 	AddObject(this->spawnObjects);	
 		
@@ -203,9 +203,9 @@ void DevScene::Load()
 	gametimer.Start();	
 
 	// Play scenemusic
-	this->levelMusic->StopSound();
+	/*this->levelMusic->StopSound();
 	this->levelMusic->LoadSound("Levelsound", this->levelMusic->GetLevelSoundtrack());
-	levelMusic->PlaySound("Levelsound", levelMusic->GetGlobalVolume());
+	levelMusic->PlaySound("Levelsound", levelMusic->GetGlobalVolume());*/
 }
 
 void DevScene::Unload()

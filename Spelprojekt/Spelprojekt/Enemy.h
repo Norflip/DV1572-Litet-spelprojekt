@@ -11,7 +11,7 @@ class Player;
 class Enemy : public Object
 {
 	public: 
-		Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&, SoundHandler* soundeffect);
+		Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&, SoundHandler* soundeffect, Entities* entities);
 		Enemy(const Enemy& other);
 		~Enemy();
 
@@ -30,6 +30,11 @@ class Enemy : public Object
 		float scaleXZ;
 		Player* player;
 		Object* FBXModel;
+		Entities* entities;
+		void BoidsAlgoritm(float fixedDeltaTime);
+		DirectX::XMVECTOR RuleSeparation(ObjectLayer object);
+		//std::vector<Grid*> open;
+		//std::vector<Grid*> closed;
 
 		DirectX::XMFLOAT3 currentPosition;
 		float nextDir = 0.0f;

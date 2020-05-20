@@ -16,7 +16,7 @@
 //
 //}
 
-SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player, SoundHandler* soundeffect) : Object(ObjectLayer::None, mesh, material), dx11(dx11)
+SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player, SoundHandler* soundeffect, Entities* entities) : Object(ObjectLayer::None, mesh, material), dx11(dx11)
 {
 	this->dx11 = dx11;
 	this->scene = scene;
@@ -28,6 +28,7 @@ SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Me
 	this->enemy = nullptr;
 	this->soundeffects = soundeffect;
 	SetVisible(false);
+	this->entities = entities;
 }
 
 void SpawnObjects::Update(const float& deltaTime)
@@ -46,7 +47,7 @@ void SpawnObjects::SetEnemy()
 {
 	AssimpHandler::AssimpData enemyModel = AssimpHandler::loadFbxObject("Models/IcecreamEnemy.fbx", dx11, material->GetShader());
 
-	testEnemy = new Enemy(enemyModel, terrain, dx11, soundeffects);
+	testEnemy = new Enemy(enemyModel, terrain, dx11, soundeffects, entities);
 	testEnemy->GetTransform().Translate(30, 7, 35);
 	testEnemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	testEnemy->SetTarget(player);
@@ -74,7 +75,8 @@ void SpawnObjects::UpdateSpawnEnemy()
 	if (nrOfEnemies < spawnedEnemies && randX != lastRandX)
 	{
 		enemy = new Enemy(*testEnemy);
-		enemy->GetTransform().Translate(randX, 7, randZ);
+		//enemy->GetTransform().Translate(randX, 7, randZ);
+		enemy->GetTransform().Translate(50, 7, 50);
 		enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 		enemy->SetTarget(player);
 		scene->AddObject(enemy);
