@@ -47,25 +47,22 @@ void IntroGUI::Update()
              
     switch (gamemanager->GetCurrentTrack()) {
     case 1:
-        oneChecked = true;
-        twoChecked = false;
-        threeChecked = false;
+        trackoneChecked = true;
+        tracktwoChecked = false;
+        trackthreeChecked = false;
         gamemanager->SetMusictrack("SoundEffects/Ben.wav");
-        switchTrack = false;
         break;
     case 2:
-        oneChecked = false;
-        twoChecked = true;
-        threeChecked = false;
+        trackoneChecked = false;
+        tracktwoChecked = true;
+        trackthreeChecked = false;
         gamemanager->SetMusictrack("SoundEffects/FluffingDuck.wav");
-        switchTrack = false;
         break;
     case 3:
-        oneChecked = false;
-        twoChecked = false;
-        threeChecked = true;
+        trackoneChecked = false;
+        tracktwoChecked = false;
+        trackthreeChecked = true;
         gamemanager->SetMusictrack("SoundEffects/Cuphead.wav");
-        switchTrack = false;
         break;
     }
 
@@ -81,6 +78,34 @@ void IntroGUI::Update()
         this->lastOn = "Sprites/on_isOFF.png";
         break;
     }    
+
+    ///////////////////////////////////////
+
+
+    switch (gamemanager->GetDifficultyState()) {
+    case 1:
+        lastEasy = "Sprites/easy_active.png";
+        lastMedium = "Sprites/medium.png";
+        lastHard = "Sprites/hard.png";
+        gamemanager->SetTotalEnemies(20);
+        gamemanager->SetTimer(120.0f);
+        break;
+    case 2:
+        lastEasy = "Sprites/easy.png";
+        lastMedium = "Sprites/medium_active.png";
+        lastHard = "Sprites/hard.png";
+        gamemanager->SetTotalEnemies(40);
+        gamemanager->SetTimer(160.0f);
+        break;
+    case 3:
+        lastEasy = "Sprites/easy.png";
+        lastMedium = "Sprites/medium.png";
+        lastHard = "Sprites/hard_active.png";
+        gamemanager->SetTotalEnemies(60);
+        gamemanager->SetTimer(200.0f);
+        break;
+    }
+
 }
 
 void IntroGUI::Start()
@@ -117,18 +142,9 @@ void IntroGUI::Start()
         menu = Menu::quit;
         first = true;
     }
-                
-
+        
 
     // MOUSEOVER
-    // To options
-    if (options->MouseOver(input)) {
-        options->SetWICSprite(dx11, "Sprites/options_mouseover.png");
-    }
-    else {
-        options->SetWICSprite(dx11, "Sprites/options.png");
-    }
-
     // play
     if (play->MouseOver(input)) {
         play->SetWICSprite(dx11, "Sprites/play_mouseover.png");
@@ -137,14 +153,14 @@ void IntroGUI::Start()
         play->SetWICSprite(dx11, "Sprites/play.png");
     }
 
-    //quit
-    if (quit->MouseOver(input)) {
-        quit->SetWICSprite(dx11, "Sprites/quit_mouseover.png");
+    // To options
+    if (options->MouseOver(input)) {
+        options->SetWICSprite(dx11, "Sprites/options_mouseover.png");
     }
     else {
-        quit->SetWICSprite(dx11, "Sprites/quit.png");
-    }
-                
+        options->SetWICSprite(dx11, "Sprites/options.png");
+    }    
+
     // Soundtrack
     if (soundtrack->MouseOver(input)) {
         soundtrack->SetWICSprite(dx11, "Sprites/soundtracks_mouseover.png");
@@ -153,6 +169,13 @@ void IntroGUI::Start()
         soundtrack->SetWICSprite(dx11, "Sprites/soundtracks.png");
     }
 
+    //quit
+    if (quit->MouseOver(input)) {
+        quit->SetWICSprite(dx11, "Sprites/quit_mouseover.png");
+    }
+    else {
+        quit->SetWICSprite(dx11, "Sprites/quit.png");
+    }  
 }
 
 void IntroGUI::LoadStart()
@@ -162,7 +185,6 @@ void IntroGUI::LoadStart()
     //LOAD ALL GUI OBJECTS FOR START, ONCE
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 200.0f), "play");    
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 300.0f), "options");
-    // SOUNDTRACK
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/soundtracks.png", 100.0f, 400.0f), "soundtracks");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/quit.png", 100.0f, 500.0f), "quit");
     first = false;
@@ -389,6 +411,42 @@ void IntroGUI::Options()
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+    GUISprite* easyButton = static_cast<GUISprite*>(gui->GetGUIList()->at("easydif"));
+    if (easyButton->Clicked(input) && gamemanager->GetDifficultyState() != 1)
+        gamemanager->SetDifficultyState(1);
+    
+    GUISprite* mediumButton = static_cast<GUISprite*>(gui->GetGUIList()->at("mediumdif"));
+    if (mediumButton->Clicked(input) && gamemanager->GetDifficultyState() != 2)
+        gamemanager->SetDifficultyState(2);
+
+    GUISprite* hardButton = static_cast<GUISprite*>(gui->GetGUIList()->at("harddif"));
+    if (hardButton->Clicked(input) && gamemanager->GetDifficultyState() != 3)
+        gamemanager->SetDifficultyState(3);
+    
+    
+    if (easyButton->MouseOver(input) && gamemanager->GetDifficultyState() != 1) {
+        
+        easyButton->SetWICSprite(dx11, "Sprites/easy_mouseover.png");
+    }
+    else {
+        easyButton->SetWICSprite(dx11, lastEasy);
+    }
+
+    if (mediumButton->MouseOver(input) && gamemanager->GetDifficultyState() != 2) {
+        mediumButton->SetWICSprite(dx11, "Sprites/medium_mouseover.png");
+    }
+    else {
+        mediumButton->SetWICSprite(dx11, lastMedium);
+    }
+
+    if (hardButton->MouseOver(input) && gamemanager->GetDifficultyState() != 3) {
+        hardButton->SetWICSprite(dx11, "Sprites/hard_mouseover.png");
+    }
+    else {
+        hardButton->SetWICSprite(dx11, lastHard);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     GUISprite* backtointroNEW = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
 
@@ -441,9 +499,9 @@ void IntroGUI::LoadOptions()
     // difficultys
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/difficulty.png", 100.0f, 400.0f), "difficulty");
 
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/easy_active.png", 400, 415.0f), "easydif");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/medium.png", 600, 415.0f), "mediumdif");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/hard.png", 800, 415.0f), "harddif");
+    gui->AddGUIObject(new GUISprite(dx11, lastEasy, 400, 415.0f), "easydif");
+    gui->AddGUIObject(new GUISprite(dx11, lastMedium, 600, 415.0f), "mediumdif");
+    gui->AddGUIObject(new GUISprite(dx11, lastHard, 800, 415.0f), "harddif");
 
     // back to intro
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
@@ -457,33 +515,33 @@ void IntroGUI::Soundtracks()
     GUISprite* checkboxone = static_cast<GUISprite*>(gui->GetGUIList()->at("checkone"));
 
     if (checkboxone->Clicked(input)) {
-        if (oneChecked == false) {
+        if (trackoneChecked == false) {
             gamemanager->SetCurrentTrack(1);
         }
     }
 
     GUISprite* checkboxtwo = static_cast<GUISprite*>(gui->GetGUIList()->at("checktwo"));
     if (checkboxtwo->Clicked(input)) {
-        if (twoChecked == false) {
+        if (tracktwoChecked == false) {
             gamemanager->SetCurrentTrack(2);
         }
     }
 
     GUISprite* checkboxthree = static_cast<GUISprite*>(gui->GetGUIList()->at("checkthree"));
     if (checkboxthree->Clicked(input)) {
-        if (threeChecked == false) {
+        if (trackthreeChecked == false) {
             gamemanager->SetCurrentTrack(3);
         }
     }
 
     // Mouseover on checkboxes
     GUISprite* ben = static_cast<GUISprite*>(gui->GetGUIList()->at("bensong"));   
-    if (checkboxone->MouseOver(input) && !oneChecked) {
+    if (checkboxone->MouseOver(input) && !trackoneChecked) {
         checkboxone->SetWICSprite(dx11, "Sprites/checkbox_mouseover.png");
         ben->SetWICSprite(dx11, "Sprites/bensong.png");
     }
     else{  
-        if (oneChecked) {
+        if (trackoneChecked) {
             checkboxone->SetWICSprite(dx11, "Sprites/checkbox_checked.png");
             ben->SetWICSprite(dx11, "Sprites/bensong_active.png");
         }        
@@ -494,12 +552,12 @@ void IntroGUI::Soundtracks()
     }
 
     GUISprite* duck = static_cast<GUISprite*>(gui->GetGUIList()->at("ducksong"));    
-    if (checkboxtwo->MouseOver(input) && !twoChecked) {
+    if (checkboxtwo->MouseOver(input) && !tracktwoChecked) {
         duck->SetWICSprite(dx11, "Sprites/ducksong.png");
         checkboxtwo->SetWICSprite(dx11, "Sprites/checkbox_mouseover.png");
     }
     else {
-        if (twoChecked) {
+        if (tracktwoChecked) {
             checkboxtwo->SetWICSprite(dx11, "Sprites/checkbox_checked.png");
             duck->SetWICSprite(dx11, "Sprites/ducksong_active.png");
         }            
@@ -511,13 +569,13 @@ void IntroGUI::Soundtracks()
     }
 
     GUISprite* cup = static_cast<GUISprite*>(gui->GetGUIList()->at("cupsong"));
-    if (checkboxthree->MouseOver(input) && !threeChecked) {
+    if (checkboxthree->MouseOver(input) && !trackthreeChecked) {
         cup->SetWICSprite(dx11, "Sprites/cupsong.png");
         checkboxthree->SetWICSprite(dx11, "Sprites/checkbox_mouseover.png");
         
     }
     else {
-        if (threeChecked) {
+        if (trackthreeChecked) {
             checkboxthree->SetWICSprite(dx11, "Sprites/checkbox_checked.png");
             cup->SetWICSprite(dx11, "Sprites/cupsong_active.png");
         }            

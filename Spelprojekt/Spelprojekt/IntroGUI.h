@@ -20,14 +20,7 @@ public:
 		soundtracks,
 		quit
 	};
-
-	enum class Soundtrack
-	{
-		Track1,
-		Track2,
-		Track3,
-	};
-		
+			
 	void Update();
 
 	void Start();	//Game starts here
@@ -46,30 +39,28 @@ private:
 	void ClearGUI();
 	bool first = true;
 	Menu menu = Menu::start;
-
-	bool switchTrack = false;
-
+	
 	DX11Handler& dx11;
 	GUI* gui;
 	Input* input;
 	IntroScene* currentScene;
 
-	// Vsync
-	std::string lastOn, lastOff;
-
-	// music and sounds
-	bool vsyncOn = false;
-
 	Gamemanager* gamemanager;
 
+	// Vsync
+	std::string lastOn, lastOff;	
+	bool vsyncOn = false;
+		
+	// Music and sound stuff //
 	float volumeScale = 0.1f;	
 	float maxVolume = 1.0f;
-	float minVolume = 0.0f;
 	float currentMusicVolume;
 	float currentSoundVolume;
+		
+	bool trackoneChecked;
+	bool tracktwoChecked;
+	bool trackthreeChecked;		
+	//	-	-	//	-	-	//	
 
-	Soundtrack soundtrack;// = Soundtrack::Track1;
-	bool oneChecked;
-	bool twoChecked;
-	bool threeChecked;		
+	std::string lastEasy, lastMedium, lastHard;
 };

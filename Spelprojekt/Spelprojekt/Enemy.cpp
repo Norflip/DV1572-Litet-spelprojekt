@@ -14,10 +14,6 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 
-	//this->hitSound = soundeffect; // tabort
-	//this->hitSound->LoadSound("Hit", "SoundEffects/Kick.wav");
-	//this->hitSound->LoadSound("Hit", "SoundEffects/Punch.wav");	// tabort
-
 	this->gamemanager = gamemanager;
 	this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
 }
@@ -33,9 +29,6 @@ Enemy::Enemy(const Enemy& other)
 	this->movementspeed = other.movementspeed;
 	this->currentPosition = other.currentPosition;
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
-
-	//this->hitSound = other.hitSound;							// tabort
-	//this->hitSound->LoadSound("Hit", "SoundEffects/Punch.wav"); // tabort
 
 	this->gamemanager = other.gamemanager;
 	this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
@@ -83,7 +76,6 @@ void Enemy::SetTarget(Player* player)
 
 void Enemy::HitSound()
 {
-	//this->hitSound->PlaySound("Hit", this->hitSound->GetGlobalVolume());	// tabort
 	gamemanager->GetSoundeffectHandler()->PlaySound("HitEnemy", gamemanager->GetCurrentSoundVolume());
 }
 

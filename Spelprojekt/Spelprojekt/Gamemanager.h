@@ -4,13 +4,7 @@
 
 class Gamemanager {
 public:
-
-	enum class Difficulty {
-		Easy,
-		Medium,
-		Hard
-	};
-
+		
 	Gamemanager(DX11Handler&);
 	~Gamemanager();
 
@@ -28,15 +22,20 @@ public:
 	float GetCurrentMusicVolume() { return this->musicVol; }
 	void SetCurrentSoundVolume(float currentVol) { this->soundVol = currentVol; };
 	float GetCurrentSoundVolume() { return this->soundVol; }
-
-	// Difficulty 
-	void SetTotalEnemies(int enemies) { this->nrOfEnemies = enemies; }
-	void SetTimer(int time) { this->timer = time; }
-
+	
 	// VSync setting
 	bool GetCurrentVsyncState() { return this->vsyncState; }
 	void SetCurrentVSyncState(bool vsync) { this->vsyncState = vsync; }
-		
+
+	// Difficulty 	
+	void SetDifficultyState(int dif) { this->difficultystate = dif; }
+	int GetDifficultyState() { return this->difficultystate; }
+
+	void SetTotalEnemies(int enemies) { this->nrOfEnemies = enemies; }
+	int GetTotalEnemies() { return this->nrOfEnemies; }
+
+	void SetTimer(float time) { this->timer = time; }
+	float GetTimer() { return this->timer; }		
 
 private:
 	DX11Handler* dxhandler;
@@ -50,12 +49,9 @@ private:
 	std::string currentMusictrack;
 	
 	bool vsyncState;
-
-	std::string lastEasy;
-	std::string lastMedium;
-	std::string lastHard;
-
+		
 	// Different for different difficulty
-	int timer;
+	int difficultystate;
+	float timer;
 	int nrOfEnemies;
 };

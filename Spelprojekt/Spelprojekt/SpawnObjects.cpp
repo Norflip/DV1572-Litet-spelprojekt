@@ -26,7 +26,6 @@ SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Me
 	this->player = player;
 	this->testEnemy = nullptr;
 	this->enemy = nullptr;
-	//this->soundeffects = soundeffect;
 	SetVisible(false);
 	this->enemiesToEliminate = 0;
 	this->gamemanager = gamemanager;
@@ -48,7 +47,7 @@ void SpawnObjects::SetEnemy()
 {
 	AssimpHandler::AssimpData enemyModel = AssimpHandler::loadFbxObject("Models/IcecreamEnemy.fbx", dx11, material->GetShader());
 
-	testEnemy = new Enemy(enemyModel, terrain, dx11, /*soundeffects,*/ gamemanager);
+	testEnemy = new Enemy(enemyModel, terrain, dx11, gamemanager);
 	testEnemy->GetTransform().Translate(30, 7, 35);
 	testEnemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	testEnemy->SetTarget(player);

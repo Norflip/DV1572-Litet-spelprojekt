@@ -9,7 +9,7 @@
 
 class IntroGUI;
 #include "IntroGui.h"
-#include "SoundHandler.h"
+//#include "SoundHandler.h"
 #include "Terrain.h"
 class IntroScene : public Scene
 {
@@ -24,7 +24,6 @@ public:
 	void Update(const float& deltaTime) override;
 	Scene* GetNextScene() const override;
 
-
 	CameraController* controller;
 	GUISprite* healthFrame;
 	void setNextScene();
@@ -34,11 +33,8 @@ private:
 	IntroGUI* introGUI;
 	Input* input;
 	std::vector<Scene*>& scenes;
-
-	// Music and sounds
-	SoundHandler* mainmenuMusic;
-	SoundHandler* soundeffects;
+		
 	Gamemanager* gamemanager;
-	float volumeScale = 0.1f; 
+	//float volumeScale = 0.1f; 
 };
 

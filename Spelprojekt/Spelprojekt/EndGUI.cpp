@@ -1,11 +1,10 @@
 #include "EndGUI.h"
 
-EndGUI::EndGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, EndScene* scenes, SoundHandler* soundeffect, Gamemanager* gamemanager) : dx11(dx11)
+EndGUI::EndGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, EndScene* scenes, Gamemanager* gamemanager) : dx11(dx11)
 {
     this->currentScene = scenes;
     this->gui = gui;
     this->input = cameraController->getInput();
-   // this->soundeffects = soundeffect;   //tabort
 
     this->gamemanager = gamemanager;
 }
@@ -97,11 +96,8 @@ void EndGUI::LoadStart()
         if (!playedOnce) {
             this->gamemanager->GetSoundeffectHandler()->LoadSound("Lose", "SoundEffects/Fail.wav");
             this->gamemanager->GetSoundeffectHandler()->PlaySound("Lose", gamemanager->GetCurrentSoundVolume());
-           // this->soundeffects->LoadSound("Lose", "SoundEffects/Fail.wav");
-           // this->soundeffects->PlaySound("Lose", this->soundeffects->GetGlobalVolume());
             playedOnce = true;
-        }
-        
+        }        
     }
 
     GUISprite* restart = new GUISprite(dx11, "Sprites/restart.png", 0.0f, 0.0f);       

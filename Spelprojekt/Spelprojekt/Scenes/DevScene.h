@@ -51,8 +51,6 @@ private:
 	CameraController* controller;
 
 	Gamemanager* gamemanager;
-	// Sounds
-	/////////////////////
 
 	GUIText* gametimerText;
 	GUIText* fpsText;
