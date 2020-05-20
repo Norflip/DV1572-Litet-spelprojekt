@@ -1,6 +1,6 @@
 #include "EndScene.h"
 
-EndScene::EndScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, std::string sceneName, bool& exitGame, SoundHandler* musicsound, SoundHandler* soundeffect) : Scene(sceneName, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
+EndScene::EndScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, std::string sceneName, bool& exitGame, SoundHandler* soundeffect, Gamemanager* gamemanager) : Scene(sceneName, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
 {
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
 	this->nextScene = nullptr;
@@ -8,8 +8,9 @@ EndScene::EndScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	window.GetInput()->LockCursor(false);
 
 	this->didWin = false;
-	this->endSceneMusic = musicsound;
 	this->soundeffects = soundeffect;
+
+	this->gamemanager = gamemanager;
 }
 
 EndScene::~EndScene()
@@ -21,7 +22,7 @@ void EndScene::Load()
 {
 	GUI* gui = new GUI(dx11);
 	
-	endGUI = new EndGUI(gui, dx11, controller, this, endSceneMusic, soundeffects);
+	endGUI = new EndGUI(gui, dx11, controller, this, soundeffects, gamemanager);
 	renderer->SetGUI(gui);
 
 	Shader* defaultShader = new Shader();
@@ -32,7 +33,8 @@ void EndScene::Load()
 
 void EndScene::Unload()
 {
-	this->endSceneMusic->StopSound();
+	this->gamemanager->GetMusicHandler()->StopSound();
+
 	this->soundeffects->StopSound();
 }
 

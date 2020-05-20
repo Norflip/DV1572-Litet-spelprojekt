@@ -44,7 +44,6 @@ private:
 	Scene* introScene;
 	Scene* endScene;
 	// new
-	SoundHandler* music;
 	SoundHandler* soundEffect;
 
 	std::vector<Scene*>scenes;

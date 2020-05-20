@@ -9,6 +9,7 @@
 #include "SoundHandler.h"
 #include "Entities.h"
 #include "Resources.h"
+#include "Gamemanager.h"
 
 class Scene
 {

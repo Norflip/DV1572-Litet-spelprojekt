@@ -11,15 +11,14 @@ Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(fal
 	Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
 
 	// Sounhandler for all scenes
-	this->music = new SoundHandler();
 	this->soundEffect = new SoundHandler();
 
 	this->gamemanager = new Gamemanager(dx11);
 
 	// default scene.. devScene at the moment. Different sceness for the actual game, main menu, game over(?) etc 
-	this->gameScene = new DevScene(this->deferredRenderer, this->dx11, this->window, scenes, music, soundEffect);
-	this->endScene = new EndScene(this->deferredRenderer, this->dx11, this->window, scenes, "EndScene", exitGame, music, soundEffect);
-	this->introScene = new IntroScene("IntroScene", this->deferredRenderer, this->dx11, this->window, scenes, exitGame, music, soundEffect, gamemanager);
+	this->gameScene = new DevScene(this->deferredRenderer, this->dx11, this->window, scenes, soundEffect, gamemanager);
+	this->endScene = new EndScene(this->deferredRenderer, this->dx11, this->window, scenes, "EndScene", exitGame, soundEffect, gamemanager);
+	this->introScene = new IntroScene("IntroScene", this->deferredRenderer, this->dx11, this->window, scenes, exitGame, soundEffect, gamemanager);
 	
 
 	scenes.push_back(endScene);

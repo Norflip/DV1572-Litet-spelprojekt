@@ -1,6 +1,6 @@
 #include "DevScene.h"
 
-DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, SoundHandler* sound, SoundHandler* soundeffect) : Scene("DevScene", renderer, dx11, window), scenes(scenes)
+DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, SoundHandler* soundeffect, Gamemanager* gamemanager) : Scene("DevScene", renderer, dx11, window), scenes(scenes)
 {
 	//----- GUI SHIET |  Set gui last |
 
@@ -28,8 +28,9 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	this->timeUntilEnd = 10.0f;
 
 	// Soundhandler
-	this->levelMusic = sound;	
+
 	this->soundeffects = soundeffect;
+	this->gamemanager = gamemanager;
 }
 
 DevScene::~DevScene()
@@ -220,9 +221,10 @@ void DevScene::Load()
 	gametimer.Start();	
 
 	// Play scenemusic
-	this->levelMusic->StopSound();
-	this->levelMusic->LoadSound("Levelsound", this->levelMusic->GetLevelSoundtrack());
-	levelMusic->PlaySound("Levelsound", levelMusic->GetGlobalVolume());
+	gamemanager->GetMusicHandler()->StopSound();
+	gamemanager->GetMusicHandler()->LoadSound("Levelsound", gamemanager->GetMusicTrack());
+	gamemanager->GetMusicHandler()->PlaySound("Levelsound", gamemanager->GetCurrentMusicVolume());
+
 	testSpeed.Stop();
 	std::cout << std::endl << "loadTime:  " << testSpeed.GetMilisecondsElapsed() << std::endl;
 }

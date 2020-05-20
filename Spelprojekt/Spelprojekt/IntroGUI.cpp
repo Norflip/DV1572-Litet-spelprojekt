@@ -1,11 +1,11 @@
 #include "IntroGUI.h"
 
-IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scene, SoundHandler* sound, SoundHandler* soundeffect) : dx11(dx11)
+IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scene, SoundHandler* soundeffect, Gamemanager* gamemanager) : dx11(dx11)
 {
     this->currentScene = scene;
     this->gui = gui;
     this->input = cameraController->getInput();
-    this->mainSound = sound;   
+
     this->soundeffects = soundeffect;
 
     this->lastOff = "Sprites/off_isON.png";
@@ -15,6 +15,8 @@ IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraControll
     this->twoChecked = false;
     this->threeChecked = false;
       
+    this->gamemanager = gamemanager;
+
 }
 
 IntroGUI::~IntroGUI()
@@ -56,19 +58,20 @@ void IntroGUI::Update()
         oneChecked = true;
         twoChecked = false;
         threeChecked = false;
-        mainSound->SetLevelSoundtrack("SoundEffects/Ben.wav");
+        gamemanager->SetMusictrack("SoundEffects/Ben.wav");
+
         break;
     case Soundtrack::Track2:
         oneChecked = false;
         twoChecked = true;
         threeChecked = false;
-        mainSound->SetLevelSoundtrack("SoundEffects/FluffingDuck.wav");
+        gamemanager->SetMusictrack("SoundEffects/FluffingDuck.wav");
         break;
     case Soundtrack::Track3:
         oneChecked = false;
         twoChecked = false;
         threeChecked = true;
-        mainSound->SetLevelSoundtrack("SoundEffects/Cuphead.wav");
+        gamemanager->SetMusictrack("SoundEffects/Cuphead.wav");
         break;
     }
 
@@ -161,32 +164,33 @@ void IntroGUI::Options()
 {   
     // Set current volume for music
     GUISprite* musicVolBar = static_cast<GUISprite*>(gui->GetGUIList()->at("MusicBar"));    
-    currentMusicVolume = mainSound->GetGlobalVolume();
-    musicVolBar->VolumeBar(maxVolume, currentMusicVolume);
 
     GUISprite* lowMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("leftmusicvolume"));
-    if (lowMusicVolume->Clicked(input))
+    if (lowMusicVolume->Clicked(input) && gamemanager->GetCurrentMusicVolume() != 0)
     {
-        if (mainSound->GetGlobalVolume() > minVolume) {
-            currentMusicVolume = mainSound->GetGlobalVolume();
+        if (gamemanager->GetCurrentMusicVolume() > 0) {
+            currentMusicVolume = gamemanager->GetCurrentMusicVolume();
             currentMusicVolume -= volumeScale;
-            this->mainSound->SetGlobalVolume(currentMusicVolume);
-            musicVolBar->VolumeBar(maxVolume, currentMusicVolume);
+            gamemanager->SetCurrentMusicVolume(currentMusicVolume);
+            gamemanager->GetMusicHandler()->SetGlobalVolume(gamemanager->GetCurrentMusicVolume());
+
         }      
     }
 
     GUISprite* highMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightmusicvolume"));
     
-    if (highMusicVolume->Clicked(input))
+    if (highMusicVolume->Clicked(input) && gamemanager->GetCurrentMusicVolume() != 1)
     {
-        if (mainSound->GetGlobalVolume() < maxVolume)
+        if (gamemanager->GetCurrentMusicVolume() < 1 )
         {
-            currentMusicVolume = mainSound->GetGlobalVolume();
+            currentMusicVolume = gamemanager->GetCurrentMusicVolume();
             currentMusicVolume += volumeScale;
-            this->mainSound->SetGlobalVolume(currentMusicVolume);
-            musicVolBar->VolumeBar(maxVolume, currentMusicVolume);
+            gamemanager->SetCurrentMusicVolume(currentMusicVolume);
+            gamemanager->GetMusicHandler()->SetGlobalVolume(gamemanager->GetCurrentMusicVolume());
         }           
     }
+
+    musicVolBar->VolumeBar(maxVolume, gamemanager->GetCurrentMusicVolume());
 
     // mouseover
     if (lowMusicVolume->MouseOver(input)) {

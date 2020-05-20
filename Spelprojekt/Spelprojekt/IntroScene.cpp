@@ -2,7 +2,7 @@
 
 
 
-IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool& exitGame, SoundHandler* sound, SoundHandler* soundeffect, Gamemanager* gamemanager) : Scene(name, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
+IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool& exitGame, SoundHandler* soundeffect, Gamemanager* gamemanager) : Scene(name, renderer, dx11, window), scenes(scenes), exitGame(exitGame)
 {
 	sceneName = "IntroScene";
 	this->camera = new Camera(90.0f, window.GetWidth(), window.GetHeight());
@@ -16,19 +16,13 @@ IntroScene::IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, 
 
 	
 	// Music and soundeffects
-	this->mainmenuMusic = sound;
-	this->mainmenuMusic->SetGlobalVolume(0.5f);
-	//this->mainmenuMusic->LoadSound("Cait", "SoundEffects/cait.wav");
-	this->mainmenuMusic->LoadSound("Cait", "SoundEffects/MonstersInc.wav");			// mainmenu music??
-	//this->mainmenuMusic->LoadSound("Cait", "SoundEffects/FluffingDuck.wav");		// mainmenu music??
 
 	this->soundeffects = soundeffect;
 	this->soundeffects->SetGlobalVolume(1.0f);
 
 
-
 	this->gamemanager = gamemanager;	
-	gamemanager->GetMusicHandler()->LoadSound("Cait", "SoundEffects/MonstersInc.wav");
+	gamemanager->GetMusicHandler()->LoadSound("Monster", "SoundEffects/MonstersInc.wav");
 	
 }
 
@@ -40,11 +34,10 @@ IntroScene::~IntroScene()
 void IntroScene::Load()
 {	
 	// Set music volume from beginning		
-	///mainmenuMusic->PlaySound("Cait", mainmenuMusic->GetGlobalVolume());
-	gamemanager->GetMusicHandler()->PlaySound("Cait", 0.1f);
+	gamemanager->GetMusicHandler()->PlaySound("Monster", gamemanager->GetCurrentMusicVolume());
 
 	GUI* gui = new GUI(dx11);
-	introGUI = new IntroGUI(gui, dx11, controller, this, mainmenuMusic, soundeffects);
+	introGUI = new IntroGUI(gui, dx11, controller, this, soundeffects, gamemanager);
 	renderer->SetGUI(gui);
 		
 	// save the shaders somewhere, remember to clean it up

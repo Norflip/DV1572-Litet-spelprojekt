@@ -11,7 +11,7 @@ class IntroScene;
 class IntroGUI
 {
 public:
-	IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scenes, SoundHandler* sound, SoundHandler* soundeffect);
+	IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scenes, SoundHandler* soundeffect, Gamemanager* gamemanager);
 	~IntroGUI();
 	enum class Menu
 	{
@@ -56,7 +56,8 @@ private:
 
 	// music and sounds
 	bool vsyncOn = false;
-	SoundHandler* mainSound;
+
+	Gamemanager* gamemanager;
 	SoundHandler* soundeffects;
 	float volumeScale = 0.1f;	
 	float maxVolume = 1.0f;

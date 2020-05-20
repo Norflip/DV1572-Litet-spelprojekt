@@ -22,8 +22,11 @@ public:
 	std::string GetMusicTrack() { return this->currentMusictrack; }
 
 	// Volumes for soundhandlers
-	void SetCurrentVolume(SoundHandler* handler, float currentVol) { handler->SetGlobalVolume(currentVol); };
-	float GetCurrentVolume(SoundHandler* handler) { return handler->GetGlobalVolume(); }
+	void SetCurrentMusicVolume(float currentVol) { this->musicVol = currentVol; };
+	float GetCurrentMusicVolume() { return this->musicVol; }
+	void SetCurrentSoundVolume(float currentVol) { this->soundVol = currentVol; };
+	float GetCurrentSoundVolume() { return this->soundVol; }
+
 
 	// Difficulty 
 	void SetTotalEnemies(int enemies) { this->nrOfEnemies = enemies; }

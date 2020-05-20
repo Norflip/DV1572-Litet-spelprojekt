@@ -10,7 +10,7 @@ class EndGUI;
 class EndScene : public Scene
 {
 public:
-	EndScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, std::string sceneName, bool& exitGame, SoundHandler* musicsound, SoundHandler* soundeffect);
+	EndScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, std::string sceneName, bool& exitGame, /*SoundHandler* musicsound,*/ SoundHandler* soundeffect, Gamemanager* gamemanager);
 	virtual ~EndScene();
 
 	void Load() override;
@@ -24,6 +24,8 @@ public:
 	void SetNextScene(std::string whichScene);
 	bool getWinOrLose();
 private:
+
+	Gamemanager* gamemanager;
 
 	CameraController* controller;
 	SoundHandler* endSceneMusic;
