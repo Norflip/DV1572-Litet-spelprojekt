@@ -6,8 +6,6 @@
 #include <assimp/postprocess.h>
 
 #include <vector>
-#include <unordered_map>
-
 #include "Mesh.h"
 #include "Logger.h"
 #include "Texture.h"
@@ -26,32 +24,35 @@ namespace AssimpHandler
 		AssimpData() : mesh(nullptr), material(nullptr) {}
 	};
 
+	inline void addBoneData(MeshVertex& vertexStruct, unsigned int vertexID, float weight)
+	{
+		for (unsigned int i = 0; i < 4; i++)
+		{
+			if (vertexStruct.weights[i] == 0.0f)
+			{
+				vertexStruct.IDS[i] += vertexID;
+				vertexStruct.weights[i] += weight;
+				return;
+			}
+		}
+	}
+
 	inline Mesh* loadMesh(const aiScene* scene, ID3D11Device* device)
 	{
-		Mesh* mesh = nullptr;
+		Mesh* newMesh = nullptr;
 
 		std::vector<MeshVertex> vertices;
 		std::vector<unsigned int> indices;
 		std::vector<DirectX::XMFLOAT2> uvs;
 		std::vector<DirectX::XMFLOAT3> normals;
 
-		std::unordered_map<std::string, int> boneMap;
-		std::unordered_map<int, int> bone_index_map1;
-		std::unordered_map<int, int> bone_index_map2;
-
-		for (int b = 0; b < scene->mMeshes[0]->mNumBones; b++)
-		{
-			aiBone* bone = scene->mMeshes[0]->mBones[b];
-			std::string boneName = bone->mName.C_Str();
-			boneMap.insert({ boneName, b });
-
-		}
+		int nrOfVertices;
 		// For every mesh in the scene
 		for (int i = 0; i < 1; i++)
 		{
 			// Current mesh and amount of vertices
 			aiMesh* meshes = scene->mMeshes[i];
-			int nrOfVertices = meshes->mNumVertices;
+			nrOfVertices = meshes->mNumVertices;
 
 			// For every vertex in the current mesh
 			for (int j = 0; j < nrOfVertices; j++)
@@ -67,7 +68,7 @@ namespace AssimpHandler
 			}
 
 			// For every face, stores the indices
-			for (int faceIndex = 0; faceIndex < meshes->mNumFaces; faceIndex++)
+			for (unsigned int faceIndex = 0; faceIndex < meshes->mNumFaces; faceIndex++)
 			{
 				//assert(meshes->mFaces[faceIndex].mNumIndices == 3u);
 				indices.push_back(meshes->mFaces[faceIndex].mIndices[0u]);
@@ -75,10 +76,55 @@ namespace AssimpHandler
 				indices.push_back(meshes->mFaces[faceIndex].mIndices[2u]);
 			}
 		}
-			
-		// Create a new mesh and then return it
-		mesh = MeshCreator::CreateMesh(vertices, indices, device);
-		return mesh;
+
+		// Create a new mesh
+		Mesh* tempMesh = new Mesh();
+
+		// TEST AV SKELETON KLASS //
+		// If the scene contains more than 0 bones, then we want to collect the bone information for animations
+		Skeleton* tempSkeleton = new Skeleton();
+		if (scene->mMeshes[0]->mNumBones > 0)
+		{
+			tempSkeleton->SetGlobalMeshInverseTransform(DirectX::XMMATRIX(&scene->mRootNode->mTransformation.Inverse().a1));
+
+			for (unsigned int i = 0; i < scene->mMeshes[0]->mNumBones; i++)
+			{
+				unsigned int boneIndex = 0;
+				std::string boneName(scene->mMeshes[0]->mBones[i]->mName.data);
+				if (tempSkeleton->boneMapping.find(boneName) == tempSkeleton->boneMapping.end())
+				{
+					boneIndex = tempSkeleton->GetNumberOfBones();
+					tempSkeleton->AddBoneAmount();
+					tempSkeleton->boneMapping[boneName] = boneIndex;
+					Joint bone;
+					bone.SetInverseBindPose(DirectX::XMMATRIX(&scene->mMeshes[0]->mBones[i]->mOffsetMatrix.a1));
+					bone.SetBoneName(scene->mMeshes[0]->mBones[i]->mName.data);
+					tempSkeleton->AddNewBone(bone);
+					float stop = 0;
+				}
+				else
+				{
+					boneIndex = tempSkeleton->boneMapping[boneName];
+				}
+
+				for (unsigned int j = 0; j < scene->mMeshes[0]->mBones[i]->mNumWeights; j++)
+				{
+					unsigned int vertexId = scene->mMeshes[0]->mBones[i]->mWeights[j].mVertexId;
+					float weight = scene->mMeshes[0]->mBones[i]->mWeights[j].mWeight;
+
+					if (vertices[vertexId].weights[0] == 0.0f)
+					{
+						vertices[vertexId].IDS[0] = boneIndex;
+						vertices[vertexId].weights[0] = weight;
+					}
+				}
+			}
+		}
+
+		newMesh = MeshCreator::CreateMesh(vertices, indices, device);
+		newMesh->skeleton = tempSkeleton;
+
+		return newMesh;
 	}
 
 	inline Texture* loadTextureFromFbx(DX11Handler& dx11, aiString path)
@@ -98,26 +144,6 @@ namespace AssimpHandler
 		texture = Texture::CreateTexture(fileName, dx11);
 		return texture;
 	}
-
-	//inline Texture* loadNormalMapFromFbx(DX11Handler& dx11, aiString path)
-	//{
-	//	Texture* normalMap = nullptr;
-	//	std::string fileName = "Textures/";
-
-	//	// Convert the filepath to a regular string and crop it so it will only be the name of the normalMap
-	//	std::string nameString = path.C_Str();
-	//	std::size_t pos = nameString.find_last_of("/\\");
-
-	//	// Add "Textures/" to the name, so it will find it in our projekt folder
-	//	fileName += nameString.substr(pos + 1);
-
-	//	// Can be used as debug, print the name of the texture
-	//	//Logger::Write(fileName);
-
-	//	// Create a new normal map and return it
-	//	normalMap = Texture::CreateTexture(fileName, dx11, true, D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
-	//	return normalMap;
-	//}
 
 	inline MaterialData* getMaterialFromFbx(const aiScene* scene)
 	{
@@ -145,7 +171,127 @@ namespace AssimpHandler
 		return material;
 	}
 
-	inline AssimpData loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader, ID3D11SamplerState* sampler = nullptr)
+	inline const aiNodeAnim* findNodeAnim(const aiAnimation* animation, const std::string nodeName)
+	{
+		for (unsigned int i = 0; i < animation->mNumChannels; i++)
+		{
+			const aiNodeAnim* nodeAnim = animation->mChannels[i];
+			if (std::string(nodeAnim->mNodeName.data) == nodeName)
+			{
+				return nodeAnim;
+			}
+		}
+		return NULL;
+	}
+
+	inline void getPositionInAnimation(aiVector3D& position, unsigned int keyframe, const aiNodeAnim* nodeAnim)
+	{
+		// Check if there are more than 1 key of translation, otherwise return the translation at keyframe 0
+		if (nodeAnim->mNumPositionKeys == 1)
+		{
+			position = nodeAnim->mPositionKeys[0].mValue;
+			return;
+		}
+
+		const aiVector3D& pos = nodeAnim->mPositionKeys[keyframe].mValue;
+		position = pos;
+
+	}
+
+	inline void getRotationInAnimation(aiQuaternion& rotation, unsigned int keyframe, const aiNodeAnim* nodeAnim)
+	{
+		// Check if there are more than 1 key of rotation, otherwise return the rotation at keyframe 0
+		if (nodeAnim->mNumRotationKeys == 1)
+		{
+			rotation = nodeAnim->mRotationKeys[0].mValue;
+			return;
+		}
+
+		aiQuaternion& rot = nodeAnim->mRotationKeys[keyframe].mValue;
+		rot.Normalize();
+		rotation = rot;
+	}
+
+	inline void getScaleInAnimation(aiVector3D& scale, unsigned int keyframe, const aiNodeAnim* nodeAnim)
+	{
+		// Check if there are more than 1 key of scaling, otherwise return the scaling at keyframe 0
+		if (nodeAnim->mNumScalingKeys == 1)
+		{
+			scale = nodeAnim->mScalingKeys[0].mValue;
+			return;
+		}
+
+		aiVector3D& scaling = nodeAnim->mScalingKeys[keyframe].mValue;
+		scale = scaling;
+	}
+
+	inline void ReadSceneHierarchy(unsigned int keyframe, const aiScene* scene, aiNode* node, DirectX::XMMATRIX parentTransform, Animation* animation, Skeleton* skeleton)
+	{
+		std::string nodeName = node->mName.data;
+		const aiAnimation* assimpAnimation = scene->mAnimations[0];
+		DirectX::XMMATRIX nodeTransformation = DirectX::XMMATRIX(&node->mTransformation.a1);
+
+		const aiNodeAnim* nodeAnim = findNodeAnim(assimpAnimation, nodeName);
+
+		if (nodeAnim)
+		{
+			aiVector3D scaling, translation;
+			aiQuaternion rotation;
+
+			getPositionInAnimation(translation, keyframe, nodeAnim);
+			getRotationInAnimation(rotation, keyframe, nodeAnim);
+			getScaleInAnimation(scaling, keyframe, nodeAnim);
+
+			DirectX::XMVECTOR scale = DirectX::XMVectorSet(scaling.x, scaling.y, scaling.z, 1.0f);
+			DirectX::XMVECTOR trans = DirectX::XMVectorSet(translation.x, translation.y, translation.z, 1.0f);
+			DirectX::XMVECTOR rotate = DirectX::XMVectorSet(rotation.x, rotation.y, rotation.z, 1.0f);
+			DirectX::XMVECTOR origin = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+
+			nodeTransformation = DirectX::XMMatrixAffineTransformation(scale, origin, rotate, trans);
+			nodeTransformation = DirectX::XMMatrixTranspose(nodeTransformation);
+		}
+		
+		DirectX::XMMATRIX globalTransform = parentTransform * nodeTransformation;
+
+		if (skeleton->boneMapping.find(nodeName) != skeleton->boneMapping.end())
+		{
+			unsigned int boneIndex = skeleton->boneMapping[nodeName];
+
+			// Save these to the animation struct, just for future references
+			animation->GetBone(boneIndex).SetGlobalTransform(globalTransform);
+			animation->GetBone(boneIndex).SetInverseBindPose(skeleton->GetBone(boneIndex).GetInverseBindPose());
+
+			DirectX::XMMATRIX final = skeleton->GetGlobalMeshInverse() * globalTransform * skeleton->GetBone(boneIndex).GetInverseBindPose();
+			animation->GetBone(boneIndex).SetFinalTransformation(final);
+		}
+
+		for (unsigned int i = 0; i < node->mNumChildren; i++)
+		{
+			ReadSceneHierarchy(keyframe, scene, node->mChildren[i], globalTransform, animation, skeleton);
+		}
+
+	}
+
+	inline void saveAnimationData(const aiScene* scene, Skeleton* skeleton, std::string animName)
+	{
+		DirectX::XMMATRIX identity = DirectX::XMMatrixIdentity();
+		float animationLength = (float)scene->mAnimations[0]->mDuration;
+		Animation* newAnimation =  new Animation();
+
+		newAnimation->SetLength(animationLength);
+		newAnimation->SetBoneAmount(skeleton->GetNumberOfBones());
+		newAnimation->GetBoneVector().resize(newAnimation->GetNumberOfBones());
+		newAnimation->SetName(animName);
+
+		for (unsigned int i = 0; i < animationLength; i++)
+		{
+			ReadSceneHierarchy(i, scene, scene->mRootNode, identity, newAnimation, skeleton);
+		}
+		
+		skeleton->animations.push_back(newAnimation);
+	}
+
+	inline AssimpData loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader)
 	{
 		if (sampler == nullptr)
 			sampler = dx11.GetDefaultSampler();
@@ -156,8 +302,6 @@ namespace AssimpHandler
 		Assimp::Importer imp;
 		const aiScene* scene = imp.ReadFile(filepath, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
 		AssimpData object;
-
-
 
 		if (scene == nullptr)
 		{
@@ -203,11 +347,9 @@ namespace AssimpHandler
 				object.material->GetMaterialData().hasNormalTexture = true;
 				
 			}
-
 			object.material->SetTexture(ALBEDO_MATERIAL_TYPE, texture, SHADER_BIND_TYPE::PIXEL);
 			object.material->SetSampler(ALBEDO_MATERIAL_TYPE, sampler, SHADER_BIND_TYPE::PIXEL);
 		}
-		
 		return object;
 	}
 }

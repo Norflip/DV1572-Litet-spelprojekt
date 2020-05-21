@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+
 #define MAX_LIGHTS 32
 
 const int WORLD_CONSTANT_BUFFER_SLOT = 0;
@@ -20,6 +21,7 @@ struct WorldData
 
 	float time;
 	float pad[3];
+	DirectX::XMMATRIX boneTransforms[70];
 };
 
 __declspec(align(16))

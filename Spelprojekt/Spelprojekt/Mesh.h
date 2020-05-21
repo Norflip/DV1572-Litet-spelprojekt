@@ -2,6 +2,9 @@
 #include <d3d11.h>  
 #include <DirectXMath.h>
 #include <vector>
+#include <map>
+#include <string>
+#include "Skeleton.h"
 
 struct MeshVertex
 {
@@ -9,10 +12,13 @@ struct MeshVertex
 	DirectX::XMFLOAT2 uv;
 	DirectX::XMFLOAT3 normal;
 	DirectX::XMFLOAT3 tangent;
+	float weights[4];
+	int IDS[4];
 
-	MeshVertex() : position(0, 0, 0), uv(0, 0), normal(0, 0, 0), tangent(0, 0, 0) {}
-	MeshVertex(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT3 normal, DirectX::XMFLOAT3 tangent) 
-		: position(position), uv(uv), normal(normal), tangent(tangent) {}
+	MeshVertex() : position(0, 0, 0), uv(0, 0), normal(0, 0, 0), tangent(0, 0, 0), weights{ 0.0f, 0.0f, 0.0f, 0.0f }, IDS{ -1,-1,-1,-1 } {}
+	MeshVertex(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT3 normal, DirectX::XMFLOAT3 tangent)
+		: position(position), uv(uv), normal(normal), tangent(tangent), weights{ 0.0f, 0.0f, 0.0f, 0.0f }, IDS{ -1,-1,-1,-1 } {}
+
 };
 
 struct Mesh
@@ -22,6 +28,8 @@ struct Mesh
 
 	ID3D11Buffer* indexBuffer;
 	std::vector<unsigned int> indices;
+
+	Skeleton* skeleton;
 
 	~Mesh()
 	{

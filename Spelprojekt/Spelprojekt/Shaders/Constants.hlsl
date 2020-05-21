@@ -5,6 +5,8 @@ cbuffer WorldConstantBuffer : register(b0)
 {
 	matrix mvp;
 	matrix world;
+	matrix invWorld;
+	matrix invView;
 
 	float3 objCentre;
 	float wvb_pad0;
@@ -18,8 +20,8 @@ cbuffer WorldConstantBuffer : register(b0)
 	float time;
 	float3 wvb_pad3;
 
-	matrix invWorld;
-	matrix invView;
+	matrix boneTransforms[70];
+
 };
 
 //---- light buffer

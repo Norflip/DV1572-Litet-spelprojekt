@@ -35,7 +35,8 @@ public:
 	void Unload() override;
 
 	void Update(const float& deltaTime) override;
-		
+	void FixedUpdate(const float& fixedDeltaTime) override;
+
 	// update time function?
 	Scene* GetNextScene() const override;
 
@@ -84,4 +85,7 @@ private:
 
 	SpawnObjects* spawnObjects;
 	Object* arrow;
+
+	const aiScene* assimpScene;
+	Assimp::Importer imp;
 };
