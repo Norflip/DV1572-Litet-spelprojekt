@@ -187,6 +187,7 @@ void IntroGUI::LoadStart()
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 300.0f), "options");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/soundtracks.png", 100.0f, 400.0f), "soundtracks");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/quit.png", 100.0f, 500.0f), "quit");
+
     first = false;
 }
 

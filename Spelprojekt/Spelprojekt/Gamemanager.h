@@ -1,6 +1,11 @@
 #pragma once
 #include "DX11Handler.h"
+#include "GUI.h"
+//#include "GUIText.h"
 #include "SoundHandler.h"
+
+
+const int MAXSCORES = 6;	// 6 is for new score + sortation
 
 class Gamemanager {
 public:
@@ -37,9 +42,15 @@ public:
 	void SetTimer(float time) { this->timer = time; }
 	float GetTimer() { return this->timer; }		
 
+	// Highscore	
+	void SetCurrentScore(int score) { this->currentScore = score; };
+	int GetCurrentScore() { return this->currentScore; }
+	void SortHighscore(std::string name[], int points[], int totalscores);
+	void UpdateHighscore(GUI* gui, int score);
+
 private:
 	DX11Handler* dxhandler;
-	
+
 	float musicVol;
 	float soundVol;		
 
@@ -54,4 +65,15 @@ private:
 	int difficultystate;
 	float timer;
 	int nrOfEnemies;
+
+	// Highscore stuff...
+	std::ofstream writeToHighscore;
+	std::ifstream highscoreFiles;
+
+	int currentScore;
+	int highscorePoints[MAXSCORES];
+	std::string highscorename[MAXSCORES];
+		
+	GUIText* displayPoints[MAXSCORES];
+	GUIText* displayNames[MAXSCORES];	
 };
