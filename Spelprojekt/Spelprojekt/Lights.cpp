@@ -1,11 +1,20 @@
 #include "Lights.h"
 
-Lights::Lights(size_t width, size_t height) : lightBuffer_ptr(nullptr), width(width), height(height) 
+Lights::Lights(size_t screenWidth, size_t screenHeight, size_t width, size_t height) : lightBuffer_ptr(nullptr), width(width), height(height)
 {
-	lightConstantBuffer.ssao_scale = 1.5f;
+	// FUNGERAR
+	/*lightConstantBuffer.ssao_scale = 1.5f;
 	lightConstantBuffer.ssao_bias = 0.1f;
-	lightConstantBuffer.ssao_intensity = 3.0f;
-	lightConstantBuffer.ssao_radius = 1.5f;
+	lightConstantBuffer.ssao_intensity = 2.2f;
+	lightConstantBuffer.ssao_radius = 0.8f;*/
+
+	lightConstantBuffer.ssao_scale = 2.0f;
+	lightConstantBuffer.ssao_bias = 0.01f;
+	lightConstantBuffer.ssao_intensity = 3.2f;
+	lightConstantBuffer.ssao_radius = 1.2f;
+
+	lightConstantBuffer.screenSize.x = static_cast<float>(screenWidth);
+	lightConstantBuffer.screenSize.y = static_cast<float>(screenHeight);
 
 	sunCamera = new Camera(90.0f, width, height);
 }
@@ -78,7 +87,7 @@ void Lights::UpdateConstantBuffer(Camera* camera, ID3D11DeviceContext* context)
 	//lightConstantBuffer.worldToView = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(camera->GetView(), camera->GetProjection()));
 	lightConstantBuffer.worldToView = DirectX::XMMatrixTranspose(camera->GetView());
 	lightConstantBuffer.pointLightCount = pointLightMap.size();
-	lightConstantBuffer.screenSize = { static_cast<float>(width), static_cast<float>(height) };
+	//lightConstantBuffer.screenSize = { static_cast<float>(width), static_cast<float>(height) };
 
 	DirectX::XMStoreFloat3(&lightConstantBuffer.eyePosition, camera->GetTransform().GetPosition());
 	context->UpdateSubresource(lightBuffer_ptr, 0, 0, &lightConstantBuffer, 0, 0);

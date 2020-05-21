@@ -19,6 +19,5 @@ VS_OUTPUT main(VS_INPUT input)
 	output.position = mul(input.position, mvp);
 	//output.position = input.position;
 
-
 	return output;
 }

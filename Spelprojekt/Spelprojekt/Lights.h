@@ -10,7 +10,7 @@
 class Lights
 {
 public:
-	Lights(size_t width, size_t height);
+	Lights(size_t screenWidth, size_t screenHeight, size_t width, size_t height);
 	virtual ~Lights();
 
 	void Initialize(DX11Handler* dx11);

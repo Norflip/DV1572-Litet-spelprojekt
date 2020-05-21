@@ -150,8 +150,9 @@ float4 main(PixelInputType input) : SV_TARGET
 
 	float d = result / float(blurSize * blurSize);
 
-	finalColor *= (1.0f - d);
-	finalColor.w = 1.0f;
+
+	//finalColor *= d;
+	//finalColor.w = 1.0f;
 
 	/*
 	
@@ -189,10 +190,10 @@ float4 main(PixelInputType input) : SV_TARGET
 			}
 		}
 
-		visibility = saturate(0.3f + visibility);
+		visibility = saturate(0.1f + visibility);
 
 		//visibility = clamp(visibility, 0.1f, 1.0f);
 	}
 
-	return finalColor * visibility;
+	return finalColor * d *visibility;;
 }

@@ -2,7 +2,7 @@
 
 const float SHADOW_MAP_SIZE = 2048;
 
-Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11) : dx11(dx11), timer(timer), lights(96, 96), ssao(width, height), gbuffersampler(nullptr)
+Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11) : dx11(dx11), timer(timer), lights(width, height, 96, 96), ssao(width, height), gbuffersampler(nullptr)
 {
 	this->gbufferRenderTarget = new RenderTarget(4, width, height, true);
 	this->gbufferRenderTarget->Initalize(dx11.GetDevice());
@@ -20,7 +20,7 @@ Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11)
 	this->shadowRenderTarget = new RenderTarget(0, SHADOW_MAP_SIZE, SHADOW_MAP_SIZE, true);
 	this->shadowRenderTarget->Initalize(dx11.GetDevice());
 
-
+	
 	this->shadowShader = new Shader();
 	this->shadowShader->LoadPixelShader(L"Shaders/Shadow_ps.hlsl", "main", dx11.GetDevice());
 	this->shadowShader->LoadVertexShader(L"Shaders/Shadow_vs.hlsl", "main", dx11.GetDevice());
@@ -65,7 +65,8 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 	cb_world.time = static_cast<float>(timer.GetMilisecondsElapsed()) / 1000.0f;
 	cb_world.invView = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, view));
 	cb_world.invWorld = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, world));
-	cb_world.shadowTransform = DirectX::XMMatrixTranspose(world);// *lights.tShadowTransform);
+	//cb_world.shadowTransform = DirectX::XMMatrixTranspose(world);// *lights.tShadowTransform);
+
 
 
 	dx11.GetContext()->UpdateSubresource(worldBuffer_ptr, 0, 0, &cb_world, 0, 0);

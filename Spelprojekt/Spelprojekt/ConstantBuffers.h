@@ -10,7 +10,6 @@ struct WorldData
 	DirectX::XMMATRIX world;
 	DirectX::XMMATRIX invWorld;
 	DirectX::XMMATRIX invView;
-	DirectX::XMMATRIX shadowTransform;
 
 	float time;
 	float pad[3];
@@ -35,12 +34,7 @@ struct LightData
 
 	DirectX::XMMATRIX sunView;
 	DirectX::XMMATRIX sunProjection;
-	DirectX::XMMATRIX shadowTransform;
-
-	DirectX::XMFLOAT3 eyePosition;
-	int pointLightCount;
-	PointLight pointLights[MAX_LIGHTS];
-
+	
 	// SSAO
 	DirectX::XMFLOAT2 screenSize;
 	float ssao_radius;
@@ -49,6 +43,11 @@ struct LightData
 	float ssao_intensity;
 
 	float ld_pad[2];
+
+	DirectX::XMFLOAT3 eyePosition;
+	int pointLightCount;
+	PointLight pointLights[MAX_LIGHTS];
+
 };
 
 const int MATERIAL_CONSTANT_BUFFER_SLOT = 2;

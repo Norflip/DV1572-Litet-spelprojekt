@@ -16,6 +16,7 @@ float3 GetPositionViewSpace(float2 uv)
 {
 	uv.x = fmod(uv.x, 1.0f);
 	uv.y = fmod(uv.y, 1.0f);
+
 	float4 position = positionTexture.Sample(ssaoSamplerState, uv);
 	return mul(worldToView, position).xyz;
 
@@ -48,6 +49,8 @@ float2 GetRandom(float2 uv)
 	float dx = fmod(dd.x, 1.0f);
 	float dy = fmod(dd.y, 1.0f);
 
+	//return ssao_randomVectors.Sample(ssaoSamplerState, uv).xy;
+
 	return normalize(ssao_randomVectors.Sample(ssaoSamplerState, float2(dx, dy)).xy * 2.0f - 1.0f);
 }
 
@@ -56,7 +59,6 @@ float4 main(PixelInputType input) : SV_TARGET
 {
 
 	// SSAO
-
 	float3 n = GetNormalViewSpace(input.uv);
 	float3 p = GetPositionViewSpace(input.uv);
 	float2 rand = GetRandom(input.uv);
@@ -78,6 +80,6 @@ float4 main(PixelInputType input) : SV_TARGET
 		ao += SampleAO(input.uv, coord2, p, n);
 	}
 
-	ao /= (float)iterations * 4.0f;
+	ao = 1.0f - (ao / ((float)iterations * 4.0f));
 	return float4(ao, ao, ao, 1.0f);
 }

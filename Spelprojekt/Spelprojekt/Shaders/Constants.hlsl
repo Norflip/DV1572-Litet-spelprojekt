@@ -7,10 +7,8 @@ cbuffer WorldConstantBuffer : register(b0)
 	matrix world;
 	matrix invWorld;
 	matrix invView;
-	matrix shadowTransform;
 
 	float time;
-
 	float3 wvb_pad0;
 };
 
@@ -33,10 +31,6 @@ cbuffer LightConstantBuffer : register(b1)
 	matrix sunView;
 	matrix sunProjection;
 
-	float3 eyePosition;
-	int pointLightCount;
-
-	PointLight pointLights[MAX_LIGHTS];
 
 	// SSAO 
 	float2 screenSize;
@@ -44,8 +38,14 @@ cbuffer LightConstantBuffer : register(b1)
 	float ssao_scale;
 	float ssao_bias;
 	float ssao_intensity;
-
 	float2 lp_pad0;
+
+
+	float3 eyePosition;
+	int pointLightCount;
+
+	PointLight pointLights[MAX_LIGHTS];
+
 }
 
 const int MATERIAL_CONSTANT_BUFFER_SLOT = 2;

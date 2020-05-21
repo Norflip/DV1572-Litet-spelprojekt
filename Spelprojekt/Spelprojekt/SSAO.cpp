@@ -16,7 +16,7 @@ void SSAO::Initialize(DX11Handler* dx11)
 {
 	this->dx11 = dx11;
 	this->randomTexture = Texture::CreateTexture("Textures/ssaoRandom.jpg", *dx11);
-	this->sampler = dx11->CreateSampler(D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP);
+	this->sampler = dx11->GetDefaultSampler();// dx11->CreateSampler(D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP);
 
 	this->renderTarget = new RenderTarget(1, width, height, false);
 	this->renderTarget->Initalize(dx11->GetDevice());
