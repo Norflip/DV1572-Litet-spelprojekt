@@ -95,7 +95,13 @@ void Renderer::ShadowPass(DirectX::XMVECTOR focus, const AABB& bounds, Camera* c
 	for (auto object : objects)
 	{
 		if (object->IsEnabled())
-			object->Render(this, lights.tShadowTransform, sunCamera->GetView(), sunCamera->GetOrthographic());
+		{
+			DirectX::XMFLOAT3 right;
+			DirectX::XMStoreFloat3(&right, DirectX::XMVector3Normalize(camera->GetTransform().Right()));
+			DirectX::XMFLOAT3 up;
+			DirectX::XMStoreFloat3(&up, DirectX::XMVector3Normalize(camera->GetTransform().Up()));
+			object->Render(this, sunCamera->GetView(), sunCamera->GetOrthographic(), right, up);
+		}
 	}
 
 	// BIND AND STUFF
