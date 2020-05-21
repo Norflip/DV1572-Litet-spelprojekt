@@ -4,6 +4,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "RenderTarget.h"
+#include "ConstantBuffers.h"
 
 class Renderer;
 
@@ -22,8 +23,12 @@ private:
 	RenderTarget* renderTarget;
 	Texture* randomTexture;
 	Shader* shader;
+	ID3D11SamplerState* sampler;
 
 private:
 	size_t width, height;
 	DX11Handler* dx11;
+
+	SSAOBuffer ssaoData;
+	ID3D11Buffer* ssaoBuffer_ptr;
 };

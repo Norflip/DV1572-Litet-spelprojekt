@@ -8,6 +8,8 @@ struct WorldData
 {
 	DirectX::XMMATRIX mvp;
 	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX invWorld;
+	DirectX::XMMATRIX invView;
 
 	DirectX::XMFLOAT3 centre;
 	float pad0;
@@ -37,18 +39,14 @@ struct LightData
 	DirectX::XMFLOAT3 sunDirection;
 	float sunIntensity;
 
+	DirectX::XMMATRIX sunView;
+	DirectX::XMMATRIX sunProjection;
+
+
 	DirectX::XMFLOAT3 eyePosition;
 	int pointLightCount;
 	PointLight pointLights[MAX_LIGHTS];
 
-	// SSAO
-	DirectX::XMFLOAT2 screenSize;
-	float ssao_radius;
-	float ssao_scale;
-	float ssao_bias;
-	float ssao_intensity;
-
-	float ld_pad[2];
 };
 
 const int MATERIAL_CONSTANT_BUFFER_SLOT = 2;
@@ -69,4 +67,17 @@ struct MaterialData
 	bool hasAlbedoTexture;
 	bool hasNormalTexture;
 
+};
+
+const int SSAO_CONSTANT_BUFFER_SLOT = 3;
+__declspec(align(16))
+struct SSAOBuffer
+{
+	DirectX::XMFLOAT2 screenSize;
+	float ssao_radius;
+	float ssao_scale;
+	float ssao_bias;
+	float ssao_intensity;
+
+	float ld_pad[2];
 };

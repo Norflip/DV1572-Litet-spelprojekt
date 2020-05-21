@@ -55,13 +55,14 @@ void Scene::Render()
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object
 	
+	renderer->ShadowPass(this->cameraFocusPosition, sceneBounds, camera, &entities);
+
 	//dx11.GetContext()->RSSetState(dx11.GetRasterizer());
 	renderer->SetDeferredRenderTarget();
 	renderer->ClearRenderTarget();
 
-
 	std::vector<Object*> inView = entities.AllEntities();
-	std::sort(inView.begin(), inView.end(), m_CompareRenderList); // O(N·log(N))
+	std::sort(inView.begin(), inView.end(), m_CompareRenderList); // O(Nï¿½log(N))
 
 	DirectX::XMMATRIX view = camera->GetView();
 	DirectX::XMMATRIX projection = camera->GetProjection();

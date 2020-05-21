@@ -3,7 +3,12 @@
 
 SSAO::SSAO(size_t width, size_t height) : width(width), height(height), dx11(nullptr), shader(nullptr), randomTexture(nullptr)
 {
-	
+	ssaoData.ssao_scale = 2.0f;
+	ssaoData.ssao_bias = 0.01f;
+	ssaoData.ssao_intensity = 3.2f;
+	ssaoData.ssao_radius = 1.2f;
+	ssaoData.screenSize.x = static_cast<float>(width);
+	ssaoData.screenSize.y = static_cast<float>(height);
 }
 
 SSAO::~SSAO()
@@ -15,7 +20,8 @@ SSAO::~SSAO()
 void SSAO::Initialize(DX11Handler* dx11)
 {
 	this->dx11 = dx11;
-	this->randomTexture = Texture::CreateTexture("Textures/ssaoRandom.jpg", *dx11, true, D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP);
+	this->randomTexture = Texture::CreateTexture("Textures/ssaoRandom.jpg", *dx11);
+	this->sampler = dx11->GetDefaultSampler();// dx11->CreateSampler(D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP);
 
 	this->renderTarget = new RenderTarget(1, width, height, false);
 	this->renderTarget->Initalize(dx11->GetDevice());
@@ -23,6 +29,11 @@ void SSAO::Initialize(DX11Handler* dx11)
 	this->shader = new Shader();
 	this->shader->LoadVertexShader(L"Shaders/ScreenQuad_vs.hlsl", "main", dx11->GetDevice());
 	this->shader->LoadPixelShader(L"Shaders/SSAO_ps.hlsl", "main", dx11->GetDevice());
+
+	ssaoBuffer_ptr = dx11->CreateBuffer<SSAOBuffer>(ssaoData);
+
+	dx11->GetContext()->UpdateSubresource(ssaoBuffer_ptr, 0, 0, &ssaoData, 0, 0);
+	dx11->GetContext()->PSSetConstantBuffers(SSAO_CONSTANT_BUFFER_SLOT, 1, &ssaoBuffer_ptr);
 }
 
 void SSAO::Pass(Renderer* renderer, RenderTarget* gBuffer)
@@ -42,7 +53,6 @@ void SSAO::Pass(Renderer* renderer, RenderTarget* gBuffer)
 
 	// bind ssao_random texture + normal and position buffer
 	ID3D11ShaderResourceView* srv = randomTexture->GetSRV();
-	ID3D11SamplerState* sampler = randomTexture->GetSampler();
 	ID3D11ShaderResourceView** buffers = gBuffer->GetShaderResourceViews();
 
 	dx11->GetContext()->PSSetShaderResources(0, 1, &buffers[2]);

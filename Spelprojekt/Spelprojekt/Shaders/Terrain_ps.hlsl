@@ -6,11 +6,7 @@ Texture2D m_grassAlbedo : register(t1);
 Texture2D m_sandNormal : register(t2);
 Texture2D m_grassNormal : register(t3);
 
-SamplerState m_samplerState0: register(s0);
-SamplerState m_samplerState1: register(s1);
-SamplerState m_samplerState2: register(s2);
-SamplerState m_samplerState3: register(s3);
-
+SamplerState m_samplerState: register(s0);
 
 struct VS_OUTPUT
 {
@@ -45,8 +41,8 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 	
 	if (hasAlbedoTexture)
 	{
-		float4 grass = float4(m_grassAlbedo.Sample(m_samplerState0, fmod(input.uv, float2 (1, 1))));
-		float4 sand = float4(m_sandAlbedo.Sample(m_samplerState1, fmod(input.uv, float2 (1, 1))));
+		float4 grass = float4(m_grassAlbedo.Sample(m_samplerState, fmod(input.uv, float2 (1, 1))));
+		float4 sand = float4(m_sandAlbedo.Sample(m_samplerState, fmod(input.uv, float2 (1, 1))));
 		
 		float4 color = lerp(sand, grass, t);
 		
@@ -77,12 +73,12 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 		float3 bitangent = cross(input.tangent, input.normal);
 		float3x3 TBN = float3x3(input.tangent, bitangent, input.normal);
 
-		float4 normalSample0 = m_sandNormal.Sample(m_samplerState2, input.uv);
+		float4 normalSample0 = m_sandNormal.Sample(m_samplerState, input.uv);
 		normalSample0 = ((normalSample0 * 2.0f) - 1.0f);
 		float4 sandNormal = float4(normalize(mul(normalSample0.xyz, TBN)), 1.0f);
 
 
-		float4 normalSample1 = m_sandNormal.Sample(m_samplerState3, input.uv);
+		float4 normalSample1 = m_sandNormal.Sample(m_samplerState, input.uv);
 		normalSample1 = ((normalSample1 * 2.0f) - 1.0f);
 		float4 grassNormal = float4(normalize(mul(normalSample1.xyz, TBN)), 1.0f);
 

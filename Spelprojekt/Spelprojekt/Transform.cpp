@@ -78,6 +78,7 @@ void Transform::LookAtCamera(DirectX::XMVECTOR lookPosition)
 	float yaw = angle;// atan2f(direction.x / direction.y);
 
 
+
 	//float pitch = atanf(sqrtf(direction.x * direction.x + direction.y * direction.y) / direction.z);
 	float pitch = atan2(sqrtf(dZ * dZ + dX * dX), dY) - MathHelper::PI;
 

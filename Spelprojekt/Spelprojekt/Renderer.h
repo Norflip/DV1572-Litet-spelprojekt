@@ -11,6 +11,7 @@
 #include "Lights.h"
 #include "SSAO.h"
 #include "GUI.h"
+#include "Entities.h"
 
 constexpr float CLEAR_COLOR[3] = { 0.4f,0.4f,0.4f };
 
@@ -29,10 +30,13 @@ public:
 	Lights& GetLights() { return this->lights; }
 
 	void SetGUI(GUI* gui) { this->gui = gui; }
-	void DisplayFrame(Camera*);
+
+	void ShadowPass(DirectX::XMVECTOR focus, const AABB& bounds, Camera* camera, Entities* entities);
+	void DisplayFrame(Camera* camera);
 	void setVsync(bool vsync) { this->vSync = vSync; }
 
 	void DrawScreenQuad();
+
 private:
 	void DrawMesh(Mesh*);
 
@@ -40,6 +44,7 @@ private:
 	bool vSync = false;
 	DX11Handler& dx11;
 	Timer& timer;
+
 	Lights lights;
 	SSAO ssao;
 
@@ -48,6 +53,9 @@ private:
 
 	Material* meshMat;
 	GUI* gui;
+
+	RenderTarget* shadowRenderTarget;
+	Shader* shadowShader;
 
 	ID3D11Buffer* worldBuffer_ptr;
 	WorldData cb_world;

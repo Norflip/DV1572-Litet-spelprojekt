@@ -4,7 +4,6 @@ Texture2D m_albedoMap : register(t0);
 Texture2D m_normMap : register(t1);
 
 SamplerState m_samplerState: register(s0);
-SamplerState m_normSamplerState : register(s1);
 
 struct VS_OUTPUT
 {
@@ -38,7 +37,7 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 
 	if (hasNormalTexture)
 	{
-		float4 normalSample = m_normMap.Sample(m_normSamplerState, input.uv);
+		float4 normalSample = m_normMap.Sample(m_samplerState, input.uv);
 		normalSample = ((normalSample * 2.0f) - 1.0f);
 
 		float3 bitangent = cross(input.tangent, input.normal);
