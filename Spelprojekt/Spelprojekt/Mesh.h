@@ -21,13 +21,6 @@ struct MeshVertex
 
 };
 
-struct BoneInfo
-{
-	std::string boneName;
-	DirectX::XMMATRIX boneOffset = DirectX::XMMatrixIdentity();;
-	DirectX::XMMATRIX finalTransformation = DirectX::XMMatrixIdentity();
-};
-
 struct Mesh
 {
 	ID3D11Buffer* vertexBuffer;
@@ -37,15 +30,6 @@ struct Mesh
 	std::vector<unsigned int> indices;
 
 	Skeleton* skeleton;
-
-	// Används till animation
-	std::map<std::string, unsigned int> boneMapping;
-	unsigned int numBones;
-	std::vector<BoneInfo> boneInfo;
-
-	DirectX::XMMATRIX globalInverseTransform = DirectX::XMMatrixIdentity();
-
-	std::vector<DirectX::XMMATRIX> boneTransforms;
 
 	~Mesh()
 	{
@@ -66,7 +50,6 @@ namespace MeshCreator
 		mesh->vertexes = vertices;
 		mesh->indexBuffer = nullptr;
 		mesh->indices = indices;
-		mesh->numBones = 0;
 
 		// creates vertex buffer
 		D3D11_BUFFER_DESC vertexBufferDescription;

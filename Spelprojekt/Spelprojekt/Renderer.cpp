@@ -52,9 +52,12 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 	cb_world.world = DirectX::XMMatrixTranspose(world);
 	cb_world.time = static_cast<float>(timer.GetMilisecondsElapsed()) / 1000.0f;
 
-	for (int i = 0; i < mesh->boneTransforms.size(); i++)
+	if (mesh->skeleton && mesh->skeleton->animations.size() > 0)
 	{
-		cb_world.boneTransforms[i] = mesh->boneTransforms[i];
+		for (int i = 0; i < mesh->skeleton->GetNumberOfBones(); i++)
+		{
+			cb_world.boneTransforms[i] = mesh->skeleton->GetCurrentAnimation()->GetBone(i).GetFinalTransformation((unsigned int)mesh->skeleton->GetKeyframe());
+		}
 	}
 
 

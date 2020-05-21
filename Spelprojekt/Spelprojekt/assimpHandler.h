@@ -120,6 +120,7 @@ namespace AssimpHandler
 				}
 			}
 		}
+
 		newMesh = MeshCreator::CreateMesh(vertices, indices, device);
 		newMesh->skeleton = tempSkeleton;
 
@@ -183,194 +184,111 @@ namespace AssimpHandler
 		return NULL;
 	}
 
-	inline unsigned int findPosition(float animationTime, const aiNodeAnim* nodeAnim)
+	inline void getPositionInAnimation(aiVector3D& position, unsigned int keyframe, const aiNodeAnim* nodeAnim)
 	{
-		for (unsigned int i = 0; i < nodeAnim->mNumPositionKeys - 1; i++)
-		{
-			if (animationTime < (float)nodeAnim->mPositionKeys[i + 1].mTime)
-			{
-				return i;
-			}
-		}
-		assert(0);
-		return 0;
-	}
-
-	inline unsigned int findRotation(float animationTime, const aiNodeAnim* nodeAnim)
-	{
-		for (unsigned int i = 0; i < nodeAnim->mNumRotationKeys - 1; i++)
-		{
-			if (animationTime < (float)nodeAnim->mRotationKeys[i + 1].mTime)
-			{
-				return i;
-			}
-		}
-		//assert(0);
-		return 0;
-	}
-
-	inline unsigned int findScaling(float animationTime, const aiNodeAnim* nodeAnim)
-	{
-		for (unsigned int i = 0; i < nodeAnim->mNumScalingKeys - 1; i++)
-		{
-			if (animationTime < (float)nodeAnim->mScalingKeys[i + 1].mTime)
-			{
-				return i;
-			}
-		}
-		//assert(0);
-		return 0;
-	}
-
-	inline void calculatePositionInterpolation(aiVector3D& positionOut, float animationTime, const aiNodeAnim* nodeAnim)
-	{
-		/*int bla = nodeAnim->mNumPositionKeys;
-		int bla1 = nodeAnim->mNumScalingKeys;
-		int bla2 = nodeAnim->mNumRotationKeys;*/
-
-		/*std::string data = nodeAnim->mNodeName.data;
-		Logger::Write("Name of node: " + data);
-		Logger::Write("Number of position keys: " + std::to_string(bla));
-		Logger::Write("Number of rotation keys: " + std::to_string(bla2));
-		Logger::Write("Number of scaling keys: " + std::to_string(bla1));
-		Logger::Write("\n");*/
-
-
-		// Need atleast 2 values to interpolate
+		// Check if there are more than 1 key of translation, otherwise return the translation at keyframe 0
 		if (nodeAnim->mNumPositionKeys == 1)
 		{
-			positionOut = nodeAnim->mPositionKeys[0].mValue;
+			position = nodeAnim->mPositionKeys[0].mValue;
 			return;
 		}
 
-		unsigned int positionIndex = findPosition(animationTime, nodeAnim);
-		unsigned int nextPosIndex = (positionIndex + 1);
-		assert(nextPosIndex < nodeAnim->mNumPositionKeys);
-		// For positions
-		float deltaTime = (float)(nodeAnim->mPositionKeys[nextPosIndex].mTime - nodeAnim->mPositionKeys[positionIndex].mTime);
-		float factor = (animationTime - (float)nodeAnim->mPositionKeys[positionIndex].mTime) / deltaTime;
+		const aiVector3D& pos = nodeAnim->mPositionKeys[keyframe].mValue;
+		position = pos;
 
-		const aiVector3D& start = nodeAnim->mPositionKeys[positionIndex].mValue;
-		//const aiVector3D& start = nodeAnim->mPositionKeys[16].mValue;
-		const aiVector3D& end = nodeAnim->mPositionKeys[nextPosIndex].mValue;
-		aiVector3D delta = end - start;
-		positionOut = start +factor * delta;
-
-		float out = 0;
 	}
 
-	inline void calculateRotationInterpolation(aiQuaternion& rotationOut, float animationTime, const aiNodeAnim* nodeAnim)
+	inline void getRotationInAnimation(aiQuaternion& rotation, unsigned int keyframe, const aiNodeAnim* nodeAnim)
 	{
-		// Need atleast 2 values to interpolate
+		// Check if there are more than 1 key of rotation, otherwise return the rotation at keyframe 0
 		if (nodeAnim->mNumRotationKeys == 1)
 		{
-			rotationOut = nodeAnim->mRotationKeys[0].mValue;
+			rotation = nodeAnim->mRotationKeys[0].mValue;
 			return;
 		}
 
-		unsigned int rotationIndex = findRotation(animationTime, nodeAnim);
-		unsigned int nextRotIndex = (rotationIndex + 1);
-		assert(nextRotIndex < nodeAnim->mNumRotationKeys);
-		// For rotations
-		float deltaTime = (float)(nodeAnim->mRotationKeys[nextRotIndex].mTime - nodeAnim->mRotationKeys[rotationIndex].mTime);
-		float factor = (animationTime - (float)nodeAnim->mRotationKeys[rotationIndex].mTime) / deltaTime;
-		//assert(factor >= 0.0f && factor <= 1.0f);
-		aiQuaternion& startRotation = nodeAnim->mRotationKeys[rotationIndex].mValue;
-		//aiQuaternion& startRotation = nodeAnim->mRotationKeys[16].mValue;
-		aiQuaternion& endRotation = nodeAnim->mRotationKeys[nextRotIndex].mValue;
-
-		startRotation.Normalize();
-		endRotation.Normalize();
-
-		aiQuaternion::Interpolate(rotationOut, startRotation, endRotation, factor);
-		rotationOut = rotationOut.Normalize();
+		aiQuaternion& rot = nodeAnim->mRotationKeys[keyframe].mValue;
+		rot.Normalize();
+		rotation = rot;
 	}
 
-	inline void calculateScalingInterpolation(aiVector3D& scalingOut, float animationTime, const aiNodeAnim* nodeAnim)
+	inline void getScaleInAnimation(aiVector3D& scale, unsigned int keyframe, const aiNodeAnim* nodeAnim)
 	{
-		// Need atleast 2 values to interpolate
+		// Check if there are more than 1 key of scaling, otherwise return the scaling at keyframe 0
 		if (nodeAnim->mNumScalingKeys == 1)
 		{
-			scalingOut = nodeAnim->mScalingKeys[0].mValue;
+			scale = nodeAnim->mScalingKeys[0].mValue;
 			return;
 		}
 
-		unsigned int scaleIndex = findScaling(animationTime, nodeAnim);
-		unsigned int nextScaleIndex = (scaleIndex + 1);
-		assert(nextScaleIndex < nodeAnim->mNumScalingKeys);
-		// For scaling
-		float deltaTime = (float)(nodeAnim->mScalingKeys[nextScaleIndex].mTime - nodeAnim->mScalingKeys[scaleIndex].mTime);
-		float factor = (animationTime - (float)nodeAnim->mScalingKeys[scaleIndex].mTime) / deltaTime;
-		//assert(factor >= 0.0f && factor <= 1.0f);
-		aiVector3D& start = nodeAnim->mScalingKeys[scaleIndex].mValue;
-		//aiVector3D& start = nodeAnim->mScalingKeys[16].mValue;
-		aiVector3D& end = nodeAnim->mScalingKeys[nextScaleIndex].mValue;
-		aiVector3D delta = end - start;
-		scalingOut = start + factor * delta;
+		aiVector3D& scaling = nodeAnim->mScalingKeys[keyframe].mValue;
+		scale = scaling;
 	}
 
-	inline void ReadNodeHierarchy(float animationTime, const aiScene* scene, aiNode* node, DirectX::XMMATRIX& parentTransform, Skeleton* skeleton)
+	inline void ReadSceneHierarchy(unsigned int keyframe, const aiScene* scene, aiNode* node, DirectX::XMMATRIX parentTransform, Animation* animation, Skeleton* skeleton)
 	{
 		std::string nodeName = node->mName.data;
-		const aiAnimation* animation = scene->mAnimations[0];
+		const aiAnimation* assimpAnimation = scene->mAnimations[0];
 		DirectX::XMMATRIX nodeTransformation = DirectX::XMMATRIX(&node->mTransformation.a1);
 
-		const aiNodeAnim* nodeAnim = findNodeAnim(animation, nodeName);
+		const aiNodeAnim* nodeAnim = findNodeAnim(assimpAnimation, nodeName);
 
 		if (nodeAnim)
 		{
 			aiVector3D scaling, translation;
 			aiQuaternion rotation;
-			calculatePositionInterpolation(translation, animationTime, nodeAnim);
-			calculateRotationInterpolation(rotation, animationTime, nodeAnim);
-			calculateScalingInterpolation(scaling, animationTime, nodeAnim);
+
+			getPositionInAnimation(translation, keyframe, nodeAnim);
+			getRotationInAnimation(rotation, keyframe, nodeAnim);
+			getScaleInAnimation(scaling, keyframe, nodeAnim);
 
 			DirectX::XMVECTOR scale = DirectX::XMVectorSet(scaling.x, scaling.y, scaling.z, 1.0f);
 			DirectX::XMVECTOR trans = DirectX::XMVectorSet(translation.x, translation.y, translation.z, 1.0f);
 			DirectX::XMVECTOR rotate = DirectX::XMVectorSet(rotation.x, rotation.y, rotation.z, 1.0f);
-
-
 			DirectX::XMVECTOR origin = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
 			nodeTransformation = DirectX::XMMatrixAffineTransformation(scale, origin, rotate, trans);
 			nodeTransformation = DirectX::XMMatrixTranspose(nodeTransformation);
-			float stopp = 0;
 		}
-
+		
 		DirectX::XMMATRIX globalTransform = parentTransform * nodeTransformation;
-		float stopp = 0;
 
 		if (skeleton->boneMapping.find(nodeName) != skeleton->boneMapping.end())
 		{
 			unsigned int boneIndex = skeleton->boneMapping[nodeName];
-			skeleton->GetBone(boneIndex).SetGlobalTransform(globalTransform);
+
+			// Save these to the animation struct, just for future references
+			animation->GetBone(boneIndex).SetGlobalTransform(globalTransform);
+			animation->GetBone(boneIndex).SetInverseBindPose(skeleton->GetBone(boneIndex).GetInverseBindPose());
+
 			DirectX::XMMATRIX final = skeleton->GetGlobalMeshInverse() * globalTransform * skeleton->GetBone(boneIndex).GetInverseBindPose();
-			skeleton->GetBone(boneIndex).SetFinalTransformation(final);
-			float stopp = 0;
+			animation->GetBone(boneIndex).SetFinalTransformation(final);
 		}
 
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{
-			ReadNodeHierarchy(animationTime, scene, node->mChildren[i], globalTransform, skeleton);
+			ReadSceneHierarchy(keyframe, scene, node->mChildren[i], globalTransform, animation, skeleton);
 		}
+
 	}
 
-	inline void UpdateTransforms(const aiScene* scene, float timeInSeconds, std::vector<DirectX::XMMATRIX>& transforms, Skeleton* skeleton)
+	inline void saveAnimationData(const aiScene* scene, Skeleton* skeleton, std::string animName)
 	{
 		DirectX::XMMATRIX identity = DirectX::XMMatrixIdentity();
+		float animationLength = (float)scene->mAnimations[0]->mDuration;
+		Animation* newAnimation =  new Animation();
 
-		float ticksPerSecond = (float)(scene->mAnimations[0]->mTicksPerSecond != 0 ? scene->mAnimations[0]->mTicksPerSecond : 25.0f);
-		float timeInTicks = timeInSeconds * ticksPerSecond;
-		float animationTime = fmod(timeInTicks, (float)scene->mAnimations[0]->mDuration);
+		newAnimation->SetLength(animationLength);
+		newAnimation->SetBoneAmount(skeleton->GetNumberOfBones());
+		newAnimation->GetBoneVector().resize(newAnimation->GetNumberOfBones());
+		newAnimation->SetName(animName);
 
-		ReadNodeHierarchy(animationTime, scene, scene->mRootNode, identity, skeleton);
-		transforms.resize(skeleton->GetNumberOfBones());
-
-		for (unsigned int i = 0; i < skeleton->GetNumberOfBones(); i++)
+		for (unsigned int i = 0; i < animationLength; i++)
 		{
-			transforms[i] = skeleton->GetBone(i).GetFinalTransformation();
-			float stopp = 0;
+			ReadSceneHierarchy(i, scene, scene->mRootNode, identity, newAnimation, skeleton);
 		}
+		
+		skeleton->animations.push_back(newAnimation);
 	}
 
 	inline AssimpData loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader)

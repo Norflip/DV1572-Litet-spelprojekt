@@ -132,7 +132,6 @@ void DevScene::Load()
 
 	// ------ PLAYER
 	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, animationShader);
-
 	this->player = new Player(playerModel, controller, &ground, gui, wagon, dx11,  static_cast<Scene*>(this));
 
 	this->player->GetTransform().SetPosition({ 55, 4, 55 });
@@ -141,8 +140,19 @@ void DevScene::Load()
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });	
 	AddObject(this->player);
 			
-	// ANIMATION SCHEISSE
+
+	// ANIMATION SCHEISSE ///////////////////////
 	this->assimpScene = imp.ReadFile("Animations/Glasse_Walk_Cycle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Walk");
+
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Idle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Idle");
+	this->player->GetMesh()->skeleton->SetFirstAnimation(this->player->GetMesh()->skeleton->animations[1]);
+
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Attack_Right.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Attack");
+
+	this->assimpScene = nullptr;
 
 	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, soundeffects);
 	this->spawnObjects->SetEnemy();
@@ -227,10 +237,24 @@ void DevScene::Update(const float& deltaTime)
 	Scene::Update(deltaTime);
 
 	float seconds = (float)gametimer.getSecondsElapsed();
-	
-	//AssimpHandler::BoneTransform(this->assimpScene, seconds, this->player->GetMesh()->boneTransforms, this->player->GetMesh());
-	AssimpHandler::UpdateTransforms(this->assimpScene, seconds, this->player->GetMesh()->boneTransforms, this->player->GetMesh()->skeleton);
 
+
+	if (controller->getInput()->GetKey('w') || controller->getInput()->GetKey('a') || controller->getInput()->GetKey('s') || controller->getInput()->GetKey('d'))
+	{
+		this->player->GetMesh()->skeleton->SetCurrentAnimation(this->player->GetMesh()->skeleton->animations[0]);
+	}
+
+	else if (controller->getInput()->GetKey('p'))
+	{
+		this->player->GetMesh()->skeleton->SetCurrentAnimation(this->player->GetMesh()->skeleton->animations[2]);
+	}
+
+	else
+	{
+		this->player->GetMesh()->skeleton->SetCurrentAnimation(this->player->GetMesh()->skeleton->animations[1]);
+	}
+
+	
 	//FPS STUFF
 	fpsTimer.Start();			
 	
@@ -273,6 +297,14 @@ void DevScene::Update(const float& deltaTime)
 		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(true);
 	}
+}
+
+void DevScene::FixedUpdate(const float& fixedDeltaTime)
+{
+	Scene::FixedUpdate(fixedDeltaTime);
+
+	this->player->GetMesh()->skeleton->AddKeyframe();
+
 }
 
 Scene* DevScene::GetNextScene() const
@@ -647,12 +679,11 @@ void DevScene::CreateSceneObjects()
 	}
 }
 
-
 void DevScene::checkForNextScene()
 {
 	// Används inte längre
-
 	// Change scene logic
+
 	if (controller->getInput()->GetKeyDown('i'))
 	{
 		for (int i = 0; i < scenes.size(); i++)
@@ -669,7 +700,6 @@ void DevScene::checkForNextScene()
 
 		}
 	}
-	//LevelObjects.push_back(obj);
 }
 
 void DevScene::SetNextScene(bool winOrLose)

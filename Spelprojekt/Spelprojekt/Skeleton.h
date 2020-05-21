@@ -5,16 +5,8 @@
 #include "assimp/scene.h"
 #include "MathHelper.h"
 #include "Joint.h"
+#include "Animation.h"
 
-struct Animation
-{
-	unsigned int animationLength;
-	std::string animationName;
-	std::vector<Joint> bones;
-
-	Animation() { this->animationLength = 0; this->animationName = " "; this->bones.resize(this->animationLength); };
-
-};
 class Skeleton
 {
 public:
@@ -24,17 +16,25 @@ public:
 	unsigned int GetNumberOfBones();
 	DirectX::XMMATRIX GetGlobalMeshInverse();
 	Joint& GetBone(unsigned int boneIndex);
+	int GetKeyframe();
+	Animation* GetCurrentAnimation();
 
 	void SetGlobalMeshInverseTransform(DirectX::XMMATRIX matrix);
 	void AddBoneAmount();
 	void AddNewBone(Joint newBone);
+	void AddKeyframe();
+	void SetFirstAnimation(Animation* first);
+	void SetCurrentAnimation(Animation* anim);
 
 	std::map<std::string, int> boneMapping;
-	std::vector<Animation> animations;
+	std::vector<Animation*> animations;
+
 
 private:
 	std::vector<Joint> bones;
 	unsigned int numberOfBones;
 	DirectX::XMMATRIX globalMeshInverseTransform;
 
+	Animation* currentAnimation;
+	int whichKeyframe;
 };

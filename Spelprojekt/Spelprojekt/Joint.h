@@ -1,6 +1,7 @@
 #pragma once
 #include "MathHelper.h"
 #include <string>
+#include <vector>
 
 class Joint
 {
@@ -14,13 +15,15 @@ public:
 	void SetBoneName(std::string name);
 
 	DirectX::XMMATRIX GetInverseBindPose();
-	DirectX::XMMATRIX GetGlobalTransform();
-	DirectX::XMMATRIX GetFinalTransformation();
+	DirectX::XMMATRIX GetGlobalTransform(unsigned int keyframeIndex);
+	DirectX::XMMATRIX GetFinalTransformation(unsigned int keyframeIndex);
+	std::vector<DirectX::XMMATRIX>& GetGlobalTransformVector();
+	std::vector<DirectX::XMMATRIX>& GetFinalTransformVector();
 	std::string GetBoneName();
 
 private:
 	std::string boneName;
 	DirectX::XMMATRIX inverseBindPose;
-	DirectX::XMMATRIX globalTransform;
-	DirectX::XMMATRIX finalTransformation;
+	std::vector<DirectX::XMMATRIX> globalTransform;
+	std::vector<DirectX::XMMATRIX> finalTransformation;
 };
