@@ -291,7 +291,7 @@ namespace AssimpHandler
 		skeleton->animations.push_back(newAnimation);
 	}
 
-	inline AssimpData loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader)
+	inline AssimpData loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader, ID3D11SamplerState* sampler = nullptr)
 	{
 		if (sampler == nullptr)
 			sampler = dx11.GetDefaultSampler();
@@ -348,7 +348,7 @@ namespace AssimpHandler
 				
 			}
 			object.material->SetTexture(ALBEDO_MATERIAL_TYPE, texture, SHADER_BIND_TYPE::PIXEL);
-			object.material->SetSampler(ALBEDO_MATERIAL_TYPE, sampler, SHADER_BIND_TYPE::PIXEL);
+			//object.material->SetSampler(ALBEDO_MATERIAL_TYPE, sampler, SHADER_BIND_TYPE::PIXEL);
 		}
 		return object;
 	}

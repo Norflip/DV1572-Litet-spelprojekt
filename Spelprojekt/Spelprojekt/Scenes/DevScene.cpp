@@ -26,11 +26,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 	
 	this->gamemanager = gamemanager;
-
-	// Soundhandler
-	this->levelMusic = sound;	
-	this->soundeffects = soundeffect;
-
 }
 
 DevScene::~DevScene()
@@ -76,7 +71,6 @@ void DevScene::Load()
 	Object* sphere = new Object(ObjectLayer::Enviroment, dev_monkey_mesh, new Material(defaultShader, dx11));
 	Texture* monkey_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11);
 	Texture* monkey_normal = Texture::CreateTexture("Textures/rocks_normal.png", dx11);
-
 
 	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, SHADER_BIND_TYPE::PIXEL);
 	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, SHADER_BIND_TYPE::PIXEL);

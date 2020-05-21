@@ -61,7 +61,6 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 {
 	// update the world buffer content
 	cb_world.mvp = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMMatrixMultiply(world, view), projection));
-	cb_world.viewproj = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(view, projection));
 	cb_world.world = DirectX::XMMatrixTranspose(world);
 	cb_world.time = static_cast<float>(timer.GetMilisecondsElapsed()) / 1000.0f;
 	cb_world.cameraRight = right;
