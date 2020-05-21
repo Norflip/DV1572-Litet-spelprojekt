@@ -301,7 +301,7 @@ void DevScene::CreateSceneObjects()
 
 	billboard->LoadVertexShader(L"Shaders/Billboard_vs.hlsl", "main", dx11.GetDevice());
 	billboard->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
-	Object* plane = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, billboard));
+	Object* plane = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/QuadInv.fbx", dx11, billboard));
 	plane->GetTransform().Translate(33,31, 31);
 	plane->GetTransform().Scale(1, 1, 1);
 	plane->GetTransform().SetRotation({ 0,0, 0 });
