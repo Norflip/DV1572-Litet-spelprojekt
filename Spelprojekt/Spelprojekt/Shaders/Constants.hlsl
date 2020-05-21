@@ -20,7 +20,6 @@ struct PointLight
 	float radius;
 };
 
-const int LIGHT_CONSTANT_BUFFER_SLOT = 1;
 cbuffer LightConstantBuffer : register(b1)
 {
 	matrix worldToView;
@@ -32,15 +31,6 @@ cbuffer LightConstantBuffer : register(b1)
 	matrix sunProjection;
 
 
-	// SSAO 
-	float2 screenSize;
-	float ssao_radius;
-	float ssao_scale;
-	float ssao_bias;
-	float ssao_intensity;
-	float2 lp_pad0;
-
-
 	float3 eyePosition;
 	int pointLightCount;
 
@@ -48,7 +38,6 @@ cbuffer LightConstantBuffer : register(b1)
 
 }
 
-const int MATERIAL_CONSTANT_BUFFER_SLOT = 2;
 cbuffer MaterialBuffer : register (b2)
 {
 	float4 mat_ambient;
@@ -62,4 +51,15 @@ cbuffer MaterialBuffer : register (b2)
 	// bools för vilka textures som används
 	bool hasAlbedoTexture;
 	bool hasNormalTexture;
+}
+
+cbuffer SSAOBuffer : register (b3)
+{
+	// SSAO 
+	float2 screenSize;
+	float ssao_radius;
+	float ssao_scale;
+	float ssao_bias;
+	float ssao_intensity;
+	float2 lp_pad0;
 }

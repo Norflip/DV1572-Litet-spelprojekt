@@ -4,6 +4,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "RenderTarget.h"
+#include "ConstantBuffers.h"
 
 class Renderer;
 
@@ -27,4 +28,7 @@ private:
 private:
 	size_t width, height;
 	DX11Handler* dx11;
+
+	SSAOBuffer ssaoData;
+	ID3D11Buffer* ssaoBuffer_ptr;
 };

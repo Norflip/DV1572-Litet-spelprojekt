@@ -8,13 +8,6 @@ Lights::Lights(size_t screenWidth, size_t screenHeight, size_t width, size_t hei
 	lightConstantBuffer.ssao_intensity = 2.2f;
 	lightConstantBuffer.ssao_radius = 0.8f;*/
 
-	lightConstantBuffer.ssao_scale = 2.0f;
-	lightConstantBuffer.ssao_bias = 0.01f;
-	lightConstantBuffer.ssao_intensity = 3.2f;
-	lightConstantBuffer.ssao_radius = 1.2f;
-
-	lightConstantBuffer.screenSize.x = static_cast<float>(screenWidth);
-	lightConstantBuffer.screenSize.y = static_cast<float>(screenHeight);
 
 	sunCamera = new Camera(90.0f, width, height);
 }

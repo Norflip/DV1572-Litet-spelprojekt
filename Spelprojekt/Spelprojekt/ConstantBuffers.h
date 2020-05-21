@@ -34,15 +34,7 @@ struct LightData
 
 	DirectX::XMMATRIX sunView;
 	DirectX::XMMATRIX sunProjection;
-	
-	// SSAO
-	DirectX::XMFLOAT2 screenSize;
-	float ssao_radius;
-	float ssao_scale;
-	float ssao_bias;
-	float ssao_intensity;
 
-	float ld_pad[2];
 
 	DirectX::XMFLOAT3 eyePosition;
 	int pointLightCount;
@@ -68,4 +60,17 @@ struct MaterialData
 	bool hasAlbedoTexture;
 	bool hasNormalTexture;
 
+};
+
+const int SSAO_CONSTANT_BUFFER_SLOT = 3;
+__declspec(align(16))
+struct SSAOBuffer
+{
+	DirectX::XMFLOAT2 screenSize;
+	float ssao_radius;
+	float ssao_scale;
+	float ssao_bias;
+	float ssao_intensity;
+
+	float ld_pad[2];
 };

@@ -136,7 +136,7 @@ float4 main(PixelInputType input) : SV_TARGET
 	const int blurSize = 4;
 	float2 texel = 1.0f / screenSize;
 
-	float result = 0.0f;
+	float ssaoResult = 0.0f;
 	float hlim = float(-blurSize) * 0.5f + 0.5f;
 
 	for (int x = 0; x < blurSize; x++)
@@ -144,12 +144,12 @@ float4 main(PixelInputType input) : SV_TARGET
 		for (int y = 0; y < blurSize; y++)
 		{
 			float2 offset = (float2(x, y) * hlim) * texel;
-			result += ssaoTexture.Sample(ssaoSamplerState, input.uv + offset).x;
+			ssaoResult += ssaoTexture.Sample(ssaoSamplerState, input.uv + offset).x;
 		}
 	}
 
-	float d = result / float(blurSize * blurSize);
-
+	ssaoResult = ssaoResult / float(blurSize * blurSize);
+	//ssaoResult = saturate(0.3f + ssaoResult);
 
 	//finalColor *= d;
 	//finalColor.w = 1.0f;
@@ -161,7 +161,7 @@ float4 main(PixelInputType input) : SV_TARGET
 	*/
 
 	const float bias = 0.00001f;
-	const float PCFSpread = 700.0f; // 2k works aswell
+	const float PCFSpread = 1200.0f; // 2k works aswell
 
 	float4 lightViewPosition = mul(mul(position, sunView), sunProjection);
 
@@ -176,6 +176,7 @@ float4 main(PixelInputType input) : SV_TARGET
 	if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
 	{
 		float lightDepthValue = (lightViewPosition.z / lightViewPosition.w) - bias;		
+
 		const uint POSSION_DISK_SAMPLE_COUNT = 8;
 
 		for (int i = 0; i < POSSION_DISK_SAMPLE_COUNT; i++)
@@ -190,10 +191,10 @@ float4 main(PixelInputType input) : SV_TARGET
 			}
 		}
 
-		visibility = saturate(0.1f + visibility);
+		visibility = saturate(0.3f + visibility);
 
 		//visibility = clamp(visibility, 0.1f, 1.0f);
 	}
 
-	return finalColor * d *visibility;;
+	return finalColor * ssaoResult *visibility;;
 }
