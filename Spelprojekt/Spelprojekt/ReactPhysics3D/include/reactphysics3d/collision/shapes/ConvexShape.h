@@ -27,7 +27,7 @@
 #define REACTPHYSICS3D_CONVEX_SHAPE_H
 
 // Libraries
-#include <reactphysics3d/collision/shapes/CollisionShape.h>
+#include "CollisionShape.h"
 
 /// ReactPhysics3D namespace
 namespace reactphysics3d {
@@ -59,7 +59,7 @@ class ConvexShape : public CollisionShape {
         // -------------------- Methods -------------------- //
 
         /// Constructor
-        ConvexShape(CollisionShapeName name, CollisionShapeType type, MemoryAllocator& allocator, decimal margin = decimal(0.0));
+        ConvexShape(CollisionShapeName name, CollisionShapeType type, decimal margin = decimal(0.0));
 
         /// Destructor
         virtual ~ConvexShape() override = default;

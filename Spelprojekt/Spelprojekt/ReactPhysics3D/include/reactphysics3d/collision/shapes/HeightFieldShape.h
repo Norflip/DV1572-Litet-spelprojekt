@@ -27,14 +27,65 @@
 #define REACTPHYSICS3D_HEIGHTFIELD_SHAPE_H
 
 // Libraries
-#include <reactphysics3d/collision/shapes/ConcaveShape.h>
-#include <reactphysics3d/collision/shapes/AABB.h>
+#include "ConcaveShape.h"
+#include "collision/shapes/AABB.h"
 
 namespace reactphysics3d {
 
 class HeightFieldShape;
 class Profiler;
 class TriangleShape;
+
+// Class TriangleOverlapCallback
+/**
+ * This class is used for testing AABB and triangle overlap for raycasting
+ */
+class TriangleOverlapCallback : public TriangleCallback {
+
+    protected:
+
+        const Ray& mRay;
+        ProxyShape* mProxyShape;
+        RaycastInfo& mRaycastInfo;
+        bool mIsHit;
+        decimal mSmallestHitFraction;
+        const HeightFieldShape& mHeightFieldShape;
+        MemoryAllocator& mAllocator;
+		
+#ifdef IS_PROFILING_ACTIVE
+
+		/// Pointer to the profiler
+		Profiler* mProfiler;
+
+#endif
+
+    public:
+
+        // Constructor
+        TriangleOverlapCallback(const Ray& ray, ProxyShape* proxyShape, RaycastInfo& raycastInfo,
+                                const HeightFieldShape& heightFieldShape, MemoryAllocator& allocator)
+                               : mRay(ray), mProxyShape(proxyShape), mRaycastInfo(raycastInfo),
+                                 mHeightFieldShape (heightFieldShape), mAllocator(allocator) {
+            mIsHit = false;
+            mSmallestHitFraction = mRay.maxFraction;
+        }
+
+        bool getIsHit() const {return mIsHit;}
+
+        /// Raycast test between a ray and a triangle of the heightfield
+        virtual void testTriangle(const Vector3* trianglePoints, const Vector3* verticesNormals, uint shapeId) override;
+
+#ifdef IS_PROFILING_ACTIVE
+
+		/// Set the profiler
+		void setProfiler(Profiler* profiler) {
+			mProfiler = profiler;
+		}
+
+#endif
+
+};
+
 
 // Class HeightFieldShape
 /**
@@ -91,16 +142,13 @@ class HeightFieldShape : public ConcaveShape {
         /// Local AABB of the height field (without scaling)
         AABB mAABB;
 
+        /// Scaling vector
+        const Vector3 mScaling;
+
         // -------------------- Methods -------------------- //
 
-        /// Constructor
-        HeightFieldShape(int nbGridColumns, int nbGridRows, decimal minHeight, decimal maxHeight,
-                         const void* heightFieldData, HeightDataType dataType, MemoryAllocator& allocator,
-                         int upAxis = 1, decimal integerHeightScale = 1.0f,
-                         const Vector3& scaling = Vector3(1,1,1));
-
         /// Raycast method with feedback information
-        virtual bool raycast(const Ray& ray, RaycastInfo& raycastInfo, Collider* collider, MemoryAllocator& allocator) const override;
+        virtual bool raycast(const Ray& ray, RaycastInfo& raycastInfo, ProxyShape* proxyShape, MemoryAllocator& allocator) const override;
 
         /// Return the number of bytes used by the collision shape
         virtual size_t getSizeInBytes() const override;
@@ -122,16 +170,25 @@ class HeightFieldShape : public ConcaveShape {
         /// Compute the shape Id for a given triangle
         uint computeTriangleShapeId(uint iIndex, uint jIndex, uint secondTriangleIncrement) const;
 
+    public:
+
+        /// Constructor
+        HeightFieldShape(int nbGridColumns, int nbGridRows, decimal minHeight, decimal maxHeight,
+                         const void* heightFieldData, HeightDataType dataType,
+                         int upAxis = 1, decimal integerHeightScale = 1.0f,
+                         const Vector3& scaling = Vector3(1,1,1));
+
         /// Destructor
         virtual ~HeightFieldShape() override = default;
-
-    public:
 
         /// Deleted copy-constructor
         HeightFieldShape(const HeightFieldShape& shape) = delete;
 
         /// Deleted assignment operator
         HeightFieldShape& operator=(const HeightFieldShape& shape) = delete;
+
+        /// Return the scaling factor
+        const Vector3& getScaling() const;
 
         /// Return the number of rows in the height field
         int getNbRows() const;
@@ -151,10 +208,11 @@ class HeightFieldShape : public ConcaveShape {
         /// Return the local bounds of the shape in x, y and z directions.
         virtual void getLocalBounds(Vector3& min, Vector3& max) const override;
 
+        /// Return the local inertia tensor of the collision shape
+        virtual void computeLocalInertiaTensor(Matrix3x3& tensor, decimal mass) const override;
+
         /// Use a callback method on all triangles of the concave shape inside a given AABB
-        virtual void computeOverlappingTriangles(const AABB& localAABB, List<Vector3>& triangleVertices,
-                                                   List<Vector3>& triangleVerticesNormals, List<uint>& shapeIds,
-                                                   MemoryAllocator& allocator) const override;
+        virtual void testAllTriangles(TriangleCallback& callback, const AABB& localAABB) const override;
 
         /// Return the string representation of the shape
         virtual std::string to_string() const override;
@@ -163,8 +221,12 @@ class HeightFieldShape : public ConcaveShape {
 
         friend class ConvexTriangleAABBOverlapCallback;
         friend class ConcaveMeshRaycastCallback;
-        friend class PhysicsCommon;
 };
+
+// Return the scaling factor
+inline const Vector3& HeightFieldShape::getScaling() const {
+    return mScaling;
+}
 
 // Return the number of rows in the height field
 inline int HeightFieldShape::getNbRows() const {
@@ -189,9 +251,6 @@ inline size_t HeightFieldShape::getSizeInBytes() const {
 // Return the height of a given (x,y) point in the height field
 inline decimal HeightFieldShape::getHeightAt(int x, int y) const {
 
-    assert(x >= 0 && x < mNbColumns);
-    assert(y >= 0 && y < mNbRows);
-
     switch(mHeightDataType) {
         case HeightDataType::HEIGHT_FLOAT_TYPE : return ((float*)mHeightFieldData)[y * mNbColumns + x];
         case HeightDataType::HEIGHT_DOUBLE_TYPE : return ((double*)mHeightFieldData)[y * mNbColumns + x];
@@ -203,6 +262,23 @@ inline decimal HeightFieldShape::getHeightAt(int x, int y) const {
 // Return the closest inside integer grid value of a given floating grid value
 inline int HeightFieldShape::computeIntegerGridValue(decimal value) const {
     return (value < decimal(0.0)) ? value - decimal(0.5) : value + decimal(0.5);
+}
+
+// Return the local inertia tensor
+/**
+ * @param[out] tensor The 3x3 inertia tensor matrix of the shape in local-space
+ *                    coordinates
+ * @param mass Mass to use to compute the inertia tensor of the collision shape
+ */
+inline void HeightFieldShape::computeLocalInertiaTensor(Matrix3x3& tensor, decimal mass) const {
+
+    // Default inertia tensor
+    // Note that this is not very realistic for a concave triangle mesh.
+    // However, in most cases, it will only be used static bodies and therefore,
+    // the inertia tensor is not used.
+    tensor.setAllValues(mass, 0, 0,
+                        0, mass, 0,
+                        0, 0, mass);
 }
 
 // Compute the shape Id for a given triangle

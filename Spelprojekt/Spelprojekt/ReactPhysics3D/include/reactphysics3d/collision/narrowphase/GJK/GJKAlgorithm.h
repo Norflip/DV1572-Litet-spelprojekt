@@ -27,19 +27,17 @@
 #define REACTPHYSICS3D_GJK_ALGORITHM_H
 
 // Libraries
-#include <reactphysics3d/decimal.h>
-#include <reactphysics3d/configuration.h>
+#include "decimal.h"
 
 /// ReactPhysics3D namespace
 namespace reactphysics3d {
 
 // Declarations
 class ContactManifoldInfo;
-struct NarrowPhaseInfoBatch;
+struct NarrowPhaseInfo;
 class ConvexShape;
 class Profiler;
 class VoronoiSimplex;
-template<typename T> class List;
 
 // Constants
 constexpr decimal REL_ERROR = decimal(1.0e-3);
@@ -65,7 +63,7 @@ class GJKAlgorithm {
 
         // -------------------- Attributes -------------------- //
 
-#ifdef IS_RP3D_PROFILING_ENABLED
+#ifdef IS_PROFILING_ACTIVE
 
 		/// Pointer to the profiler
 		Profiler* mProfiler;
@@ -97,10 +95,9 @@ class GJKAlgorithm {
         GJKAlgorithm& operator=(const GJKAlgorithm& algorithm) = delete;
 
         /// Compute a contact info if the two bounding volumes collide.
-        void testCollision(NarrowPhaseInfoBatch& narrowPhaseInfoBatch, uint batchStartIndex,
-                           uint batchNbItems, List<GJKResult>& gjkResults);
+        GJKResult testCollision(NarrowPhaseInfo* narrowPhaseInfo, bool reportContacts);
 
-#ifdef IS_RP3D_PROFILING_ENABLED
+#ifdef IS_PROFILING_ACTIVE
 
 		/// Set the profiler
 		void setProfiler(Profiler* profiler);
@@ -109,7 +106,7 @@ class GJKAlgorithm {
 
 };
 
-#ifdef IS_RP3D_PROFILING_ENABLED
+#ifdef IS_PROFILING_ACTIVE
 
 // Set the profiler
 inline void GJKAlgorithm::setProfiler(Profiler* profiler) {

@@ -27,7 +27,7 @@
 #define REACTPHYSICS3D_LINKED_LIST_H
 
 // Libraries
-#include <reactphysics3d/memory/MemoryAllocator.h>
+#include "memory/MemoryAllocator.h"
 
 namespace reactphysics3d {
 

@@ -27,8 +27,8 @@
 #define	REACTPHYSICS3D_TRANSFORM_H
 
 // Libraries
-#include <reactphysics3d/mathematics/Vector3.h>
-#include <reactphysics3d/mathematics/Quaternion.h>
+#include "Vector3.h"
+#include "Quaternion.h"
 
 // ReactPhysiscs3D namespace
 namespace reactphysics3d {

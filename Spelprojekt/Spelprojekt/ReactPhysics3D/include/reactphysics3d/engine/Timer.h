@@ -29,7 +29,7 @@
 // Libraries
 #include <ctime>
 #include <cassert>
-#include <reactphysics3d/configuration.h>
+#include "configuration.h"
 
 #if defined(WINDOWS_OS)   // For Windows platform
    #define NOMINMAX       // This is used to avoid definition of max() and min() macros

@@ -27,8 +27,8 @@
 #define REACTPHYSICS3D_SPHERE_SHAPE_H
 
 // Libraries
-#include <reactphysics3d/collision/shapes/ConvexShape.h>
-#include <reactphysics3d/mathematics/mathematics.h>
+#include "ConvexShape.h"
+#include "mathematics/mathematics.h"
 
 // ReactPhysics3D namespace
 namespace reactphysics3d {
@@ -50,27 +50,27 @@ class SphereShape : public ConvexShape {
 
         // -------------------- Methods -------------------- //
 
-        /// Constructor
-        SphereShape(decimal radius, MemoryAllocator& allocator);
-
         /// Return a local support point in a given direction without the object margin
         virtual Vector3 getLocalSupportPointWithoutMargin(const Vector3& direction) const override;
 
         /// Return true if a point is inside the collision shape
-        virtual bool testPointInside(const Vector3& localPoint, Collider* collider) const override;
+        virtual bool testPointInside(const Vector3& localPoint, ProxyShape* proxyShape) const override;
 
         /// Raycast method with feedback information
-        virtual bool raycast(const Ray& ray, RaycastInfo& raycastInfo, Collider* collider, MemoryAllocator& allocator) const override;
+        virtual bool raycast(const Ray& ray, RaycastInfo& raycastInfo, ProxyShape* proxyShape, MemoryAllocator& allocator) const override;
 
         /// Return the number of bytes used by the collision shape
         virtual size_t getSizeInBytes() const override;
 
-        /// Destructor
-        virtual ~SphereShape() override = default;
-
     public :
 
         // -------------------- Methods -------------------- //
+
+        /// Constructor
+        SphereShape(decimal radius);
+
+        /// Destructor
+        virtual ~SphereShape() override = default;
 
         /// Deleted copy-constructor
         SphereShape(const SphereShape& shape) = delete;
@@ -81,9 +81,6 @@ class SphereShape : public ConvexShape {
         /// Return the radius of the sphere
         decimal getRadius() const;
 
-        /// Set the radius of the sphere
-        void setRadius(decimal radius);
-
         /// Return true if the collision shape is a polyhedron
         virtual bool isPolyhedron() const override;
 
@@ -91,41 +88,21 @@ class SphereShape : public ConvexShape {
         virtual void getLocalBounds(Vector3& min, Vector3& max) const override;
 
         /// Return the local inertia tensor of the collision shape
-        virtual Vector3 getLocalInertiaTensor(decimal mass) const override;
-
-        /// Compute and return the volume of the collision shape
-        virtual decimal getVolume() const override;
+        virtual void computeLocalInertiaTensor(Matrix3x3& tensor, decimal mass) const override;
 
         /// Update the AABB of a body using its collision shape
         virtual void computeAABB(AABB& aabb, const Transform& transform) const override;
 
         /// Return the string representation of the shape
         virtual std::string to_string() const override;
-
-        // ----- Friendship ----- //
-
-        friend class PhysicsCommon;
 };
 
 // Get the radius of the sphere
 /**
- * @return Radius of the sphere
+ * @return Radius of the sphere (in meters)
  */
 inline decimal SphereShape::getRadius() const {
     return mMargin;
-}
-
-// Set the radius of the sphere
-/// Note that you might want to recompute the inertia tensor and center of mass of the body
-/// after changing the radius of the collision shape
-/**
- * @param radius Radius of the sphere
- */
-inline void SphereShape::setRadius(decimal radius) {
-   assert(radius > decimal(0.0));
-   mMargin = radius;
-
-   notifyColliderAboutChangedSize();
 }
 
 // Return true if the collision shape is a polyhedron
@@ -133,7 +110,7 @@ inline void SphereShape::setRadius(decimal radius) {
  * @return False because the sphere shape is not a polyhedron
  */
 inline bool SphereShape::isPolyhedron() const {
-    return false;
+        return false;
 }
 
 // Return the number of bytes used by the collision shape
@@ -172,20 +149,19 @@ inline void SphereShape::getLocalBounds(Vector3& min, Vector3& max) const {
 
 // Return the local inertia tensor of the sphere
 /**
+ * @param[out] tensor The 3x3 inertia tensor matrix of the shape in local-space
+ *                    coordinates
  * @param mass Mass to use to compute the inertia tensor of the collision shape
  */
-inline Vector3 SphereShape::getLocalInertiaTensor(decimal mass) const {
+inline void SphereShape::computeLocalInertiaTensor(Matrix3x3& tensor, decimal mass) const {
     decimal diag = decimal(0.4) * mass * mMargin * mMargin;
-    return Vector3(diag, diag, diag);
-}
-
-// Compute and return the volume of the collision shape
-inline decimal SphereShape::getVolume() const {
-    return decimal(4.0) / decimal(3.0) * reactphysics3d::PI * mMargin * mMargin * mMargin;
+    tensor.setAllValues(diag, 0.0, 0.0,
+                        0.0, diag, 0.0,
+                        0.0, 0.0, diag);
 }
 
 // Return true if a point is inside the collision shape
-inline bool SphereShape::testPointInside(const Vector3& localPoint, Collider* collider) const {
+inline bool SphereShape::testPointInside(const Vector3& localPoint, ProxyShape* proxyShape) const {
     return (localPoint.lengthSquare() < mMargin * mMargin);
 }
 

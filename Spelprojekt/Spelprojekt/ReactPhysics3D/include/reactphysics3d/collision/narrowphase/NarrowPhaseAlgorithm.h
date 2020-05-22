@@ -27,16 +27,16 @@
 #define REACTPHYSICS3D_NARROW_PHASE_ALGORITHM_H
 
 // Libraries
-#include <reactphysics3d/configuration.h>
 
 /// Namespace ReactPhysics3D
 namespace reactphysics3d {
 
-class CollisionDetectionSystem;
+class CollisionDetection;
+class Body;
 class ContactManifoldInfo;
 class DefaultPoolAllocator;
 class OverlappingPair;
-struct NarrowPhaseInfoBatch;
+struct NarrowPhaseInfo;
 struct ContactPointInfo;
 class Profiler;
 class MemoryAllocator;
@@ -62,7 +62,7 @@ class NarrowPhaseCallback {
 /**
  * This abstract class is the base class for a  narrow-phase collision
  * detection algorithm. The goal of the narrow phase algorithm is to
- * compute information about the contact between two colliders.
+ * compute information about the contact between two proxy shapes.
  */
 class NarrowPhaseAlgorithm {
 
@@ -70,7 +70,7 @@ class NarrowPhaseAlgorithm {
 
         // -------------------- Attributes -------------------- //
 
-#ifdef IS_RP3D_PROFILING_ENABLED
+#ifdef IS_PROFILING_ACTIVE
 
 		/// Pointer to the profiler
 		Profiler* mProfiler;
@@ -78,7 +78,6 @@ class NarrowPhaseAlgorithm {
 #endif
 
     public :
-
 
         // -------------------- Methods -------------------- //
 
@@ -94,7 +93,11 @@ class NarrowPhaseAlgorithm {
         /// Deleted assignment operator
         NarrowPhaseAlgorithm& operator=(const NarrowPhaseAlgorithm& algorithm) = delete;
 
-#ifdef IS_RP3D_PROFILING_ENABLED
+        /// Compute a contact info if the two bounding volumes collide
+        virtual bool testCollision(NarrowPhaseInfo* narrowPhaseInfo, bool reportContacts,
+                                   MemoryAllocator& memoryAllocator)=0;
+
+#ifdef IS_PROFILING_ACTIVE
 
 		/// Set the profiler
 		void setProfiler(Profiler* profiler);
@@ -103,7 +106,7 @@ class NarrowPhaseAlgorithm {
 
 };
 
-#ifdef IS_RP3D_PROFILING_ENABLED
+#ifdef IS_PROFILING_ACTIVE
 
 // Set the profiler
 inline void NarrowPhaseAlgorithm::setProfiler(Profiler* profiler) {

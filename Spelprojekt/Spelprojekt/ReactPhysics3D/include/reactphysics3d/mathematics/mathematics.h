@@ -27,15 +27,15 @@
 #define REACTPHYSICS3D_MATHEMATICS_H
 
 // Libraries
-#include <reactphysics3d/mathematics/Matrix3x3.h>
-#include <reactphysics3d/mathematics/Matrix2x2.h>
-#include <reactphysics3d/mathematics/Quaternion.h>
-#include <reactphysics3d/mathematics/Vector3.h>
-#include <reactphysics3d/mathematics/Vector2.h>
-#include <reactphysics3d/mathematics/Transform.h>
-#include <reactphysics3d/mathematics/Ray.h>
-#include <reactphysics3d/configuration.h>
-#include <reactphysics3d/mathematics/mathematics_functions.h>
+#include "Matrix3x3.h"
+#include "Matrix2x2.h"
+#include "Quaternion.h"
+#include "Vector3.h"
+#include "Vector2.h"
+#include "Transform.h"
+#include "Ray.h"
+#include "configuration.h"
+#include "mathematics_functions.h"
 #include <cstdio>
 #include <cassert>
 #include <cmath>

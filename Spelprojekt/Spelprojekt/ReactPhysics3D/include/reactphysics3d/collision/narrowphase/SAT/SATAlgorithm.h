@@ -27,8 +27,8 @@
 #define REACTPHYSICS3D_SAT_ALGORITHM_H
 
 // Libraries
-#include <reactphysics3d/decimal.h>
-#include <reactphysics3d/collision/HalfEdgeStructure.h>
+#include "decimal.h"
+#include "collision/HalfEdgeStructure.h"
 
 /// ReactPhysics3D namespace
 namespace reactphysics3d {
@@ -37,7 +37,7 @@ namespace reactphysics3d {
 class CapsuleShape;
 class SphereShape;
 class ContactManifoldInfo;
-struct NarrowPhaseInfoBatch;
+struct NarrowPhaseInfo;
 class ConvexPolyhedronShape;
 class MemoryAllocator;
 class Profiler;
@@ -61,24 +61,10 @@ class SATAlgorithm {
         static const decimal SEPARATING_AXIS_RELATIVE_TOLERANCE;
         static const decimal SEPARATING_AXIS_ABSOLUTE_TOLERANCE;
 
-        /// True means that if two shapes were colliding last time (previous frame) and are still colliding
-        /// we use the previous (minimum penetration depth) axis to clip the colliding features and we don't
-        /// recompute a new (minimum penetration depth) axis. This value must be true for a dynamic simulation
-        /// because it uses temporal coherence and clip the colliding features with the previous
-        /// axis (this is good for stability). However, when we use the testCollision() methods, the penetration
-        /// depths might be very large and we always want the current true axis with minimum penetration depth.
-        /// In this case, this value must be set to false. Consider the following situation. Two shapes start overlaping
-        /// with "x" being the axis of minimum penetration depth. Then, if the shapes move but are still penetrating,
-        /// it is possible that the axis of minimum penetration depth changes for axis "y" for instance. If this value
-        /// is true, we will always use the axis of the previous collision test and therefore always report that the
-        /// penetrating axis is "x" even if it has changed to axis "y" during the collision. This is not what we want
-        /// when we call the testCollision() methods.
-        bool mClipWithPreviousAxisIfStillColliding;
-
         /// Memory allocator
         MemoryAllocator& mMemoryAllocator;
 
-#ifdef IS_RP3D_PROFILING_ENABLED
+#ifdef IS_PROFILING_ACTIVE
 
 		/// Pointer to the profiler
 		Profiler* mProfiler;
@@ -133,7 +119,7 @@ class SATAlgorithm {
         bool computePolyhedronVsPolyhedronFaceContactPoints(bool isMinPenetrationFaceNormalPolyhedron1, const ConvexPolyhedronShape* polyhedron1,
                                                             const ConvexPolyhedronShape* polyhedron2, const Transform& polyhedron1ToPolyhedron2,
                                                             const Transform& polyhedron2ToPolyhedron1, uint minFaceIndex,
-                                                            NarrowPhaseInfoBatch& narrowPhaseInfoBatch, uint batchIndex) const;
+                                                            NarrowPhaseInfo* narrowPhaseInfo, decimal minPenetrationDepth) const;
 
 
     public :
@@ -141,7 +127,7 @@ class SATAlgorithm {
         // -------------------- Methods -------------------- //
 
         /// Constructor
-        SATAlgorithm(bool clipWithPreviousAxisIfStillColliding, MemoryAllocator& memoryAllocator);
+        SATAlgorithm(MemoryAllocator& memoryAllocator);
 
         /// Destructor
         ~SATAlgorithm() = default;
@@ -153,27 +139,26 @@ class SATAlgorithm {
         SATAlgorithm& operator=(const SATAlgorithm& algorithm) = delete;
 
         /// Test collision between a sphere and a convex mesh
-        bool testCollisionSphereVsConvexPolyhedron(NarrowPhaseInfoBatch& narrowPhaseInfoBatch,
-                                                   uint batchStartIndex, uint batchNbItems) const;
+        bool testCollisionSphereVsConvexPolyhedron(NarrowPhaseInfo* narrowPhaseInfo, bool reportContacts) const;
 
         /// Test collision between a capsule and a convex mesh
-        bool testCollisionCapsuleVsConvexPolyhedron(NarrowPhaseInfoBatch& narrowPhaseInfoBatch, uint batchIndex) const;
+        bool testCollisionCapsuleVsConvexPolyhedron(NarrowPhaseInfo* narrowPhaseInfo, bool reportContacts) const;
 
         /// Compute the two contact points between a polyhedron and a capsule when the separating axis is a face normal of the polyhedron
         bool computeCapsulePolyhedronFaceContactPoints(uint referenceFaceIndex, decimal capsuleRadius, const ConvexPolyhedronShape* polyhedron,
                                                        decimal penetrationDepth, const Transform& polyhedronToCapsuleTransform,
                                                        Vector3& normalWorld, const Vector3& separatingAxisCapsuleSpace,
                                                        const Vector3& capsuleSegAPolyhedronSpace, const Vector3& capsuleSegBPolyhedronSpace,
-                                                       NarrowPhaseInfoBatch& narrowPhaseInfoBatch, uint batchIndex, bool isCapsuleShape1) const;
+                                                       NarrowPhaseInfo* narrowPhaseInfo, bool isCapsuleShape1) const;
 
         // This method returns true if an edge of a polyhedron and a capsule forms a face of the Minkowski Difference
         bool isMinkowskiFaceCapsuleVsEdge(const Vector3& capsuleSegment, const Vector3& edgeAdjacentFace1Normal,
                                           const Vector3& edgeAdjacentFace2Normal) const;
 
         /// Test collision between two convex meshes
-        bool testCollisionConvexPolyhedronVsConvexPolyhedron(NarrowPhaseInfoBatch& narrowPhaseInfoBatch, uint batchStartIndex, uint batchNbItems) const;
+        bool testCollisionConvexPolyhedronVsConvexPolyhedron(NarrowPhaseInfo* narrowPhaseInfo, bool reportContacts) const;
 
-#ifdef IS_RP3D_PROFILING_ENABLED
+#ifdef IS_PROFILING_ACTIVE
 
 		/// Set the profiler
 		void setProfiler(Profiler* profiler);
@@ -182,7 +167,7 @@ class SATAlgorithm {
 
 };
 
-#ifdef IS_RP3D_PROFILING_ENABLED
+#ifdef IS_PROFILING_ACTIVE
 
 // Set the profiler
 inline void SATAlgorithm::setProfiler(Profiler* profiler) {

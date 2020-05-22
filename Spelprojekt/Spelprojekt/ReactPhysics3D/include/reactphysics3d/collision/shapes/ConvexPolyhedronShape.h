@@ -27,8 +27,8 @@
 #define REACTPHYSICS3D_CONVEX_POLYHEDRON_H
 
 // Libraries
-#include <reactphysics3d/collision/shapes/ConvexShape.h>
-#include <reactphysics3d/collision/HalfEdgeStructure.h>
+#include "ConvexShape.h"
+#include "collision/HalfEdgeStructure.h"
 
 /// ReactPhysics3D namespace
 namespace reactphysics3d {
@@ -47,7 +47,7 @@ class ConvexPolyhedronShape : public ConvexShape {
         // -------------------- Methods -------------------- //
 
         /// Constructor
-        ConvexPolyhedronShape(CollisionShapeName name, MemoryAllocator& allocator);
+        ConvexPolyhedronShape(CollisionShapeName name);
 
         /// Destructor
         virtual ~ConvexPolyhedronShape() override = default;

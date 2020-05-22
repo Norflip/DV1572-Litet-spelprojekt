@@ -27,8 +27,8 @@
 #define REACTPHYSICS3D_CAPSULE_SHAPE_H
 
 // Libraries
-#include <reactphysics3d/collision/shapes/ConvexShape.h>
-#include <reactphysics3d/mathematics/mathematics.h>
+#include "ConvexShape.h"
+#include "mathematics/mathematics.h"
 
 // ReactPhysics3D namespace
 namespace reactphysics3d {
@@ -57,17 +57,14 @@ class CapsuleShape : public ConvexShape {
 
         // -------------------- Methods -------------------- //
 
-        /// Constructor
-        CapsuleShape(decimal radius, decimal height, MemoryAllocator& allocator);
-
         /// Return a local support point in a given direction without the object margin
         virtual Vector3 getLocalSupportPointWithoutMargin(const Vector3& direction) const override;
 
         /// Return true if a point is inside the collision shape
-        virtual bool testPointInside(const Vector3& localPoint, Collider* collider) const override;
+        virtual bool testPointInside(const Vector3& localPoint, ProxyShape* proxyShape) const override;
 
         /// Raycast method with feedback information
-        virtual bool raycast(const Ray& ray, RaycastInfo& raycastInfo, Collider* collider, MemoryAllocator& allocator) const override;
+        virtual bool raycast(const Ray& ray, RaycastInfo& raycastInfo, ProxyShape* proxyShape, MemoryAllocator& allocator) const override;
 
         /// Raycasting method between a ray one of the two spheres end cap of the capsule
         bool raycastWithSphereEndCap(const Vector3& point1, const Vector3& point2,
@@ -77,12 +74,15 @@ class CapsuleShape : public ConvexShape {
         /// Return the number of bytes used by the collision shape
         virtual size_t getSizeInBytes() const override;
 
-        /// Destructor
-        virtual ~CapsuleShape() override = default;
-
     public :
 
         // -------------------- Methods -------------------- //
+
+        /// Constructor
+        CapsuleShape(decimal radius, decimal height);
+
+        /// Destructor
+        virtual ~CapsuleShape() override = default;
 
         /// Deleted copy-constructor
         CapsuleShape(const CapsuleShape& shape) = delete;
@@ -93,33 +93,20 @@ class CapsuleShape : public ConvexShape {
         /// Return the radius of the capsule
         decimal getRadius() const;
 
-        /// Set the radius of the capsule
-        void setRadius(decimal radius);
-
         /// Return the height of the capsule
         decimal getHeight() const;
 
-        /// Set the height of the capsule
-        void setHeight(decimal height);
-
         /// Return the local bounds of the shape in x, y and z directions
         virtual void getLocalBounds(Vector3& min, Vector3& max) const override;
-
-        /// Compute and return the volume of the collision shape
-        virtual decimal getVolume() const override;
 
         /// Return true if the collision shape is a polyhedron
         virtual bool isPolyhedron() const override;
 
         /// Return the local inertia tensor of the collision shape
-        virtual Vector3 getLocalInertiaTensor(decimal mass) const override;
+        virtual void computeLocalInertiaTensor(Matrix3x3& tensor, decimal mass) const override;
 
         /// Return the string representation of the shape
         virtual std::string to_string() const override;
-
-        // ----- Friendship ----- //
-
-        friend class PhysicsCommon;
 };
 
 // Get the radius of the capsule
@@ -130,41 +117,12 @@ inline decimal CapsuleShape::getRadius() const {
     return mMargin;
 }
 
-// Set the radius of the capsule
-/// Note that you might want to recompute the inertia tensor and center of mass of the body
-/// after changing the radius of the collision shape
-/**
- * @param radius The radius of the capsule (in meters)
- */
-inline void CapsuleShape::setRadius(decimal radius) {
-    // TODO : Throw a library error here if radius is not larger than zero
-    assert(radius > decimal(0.0));
-    mMargin = radius;
-
-    notifyColliderAboutChangedSize();
-}
-
 // Return the height of the capsule
 /**
  * @return The height of the capsule shape (in meters)
  */
 inline decimal CapsuleShape::getHeight() const {
     return mHalfHeight + mHalfHeight;
-}
-
-// Set the height of the capsule
-/// Note that you might want to recompute the inertia tensor and center of mass of the body
-/// after changing the height of the collision shape
-/**
- * @param height The height of the capsule (in meters)
- */
-inline void CapsuleShape::setHeight(decimal height) {
-
-    // TODO : Throw a library error here if radius is not larger than zero
-    assert(height > decimal(0.0));
-    mHalfHeight = height * decimal(0.5);
-
-    notifyColliderAboutChangedSize();
 }
 
 // Return the number of bytes used by the collision shape
@@ -189,11 +147,6 @@ inline void CapsuleShape::getLocalBounds(Vector3& min, Vector3& max) const {
     min.x = -mMargin;
     min.y = -max.y;
     min.z = min.x;
-}
-
-// Compute and return the volume of the collision shape
-inline decimal CapsuleShape::getVolume() const {
-    return reactphysics3d::PI * mMargin * mMargin * (decimal(4.0) * mMargin / decimal(3.0) + decimal(2.0) * mHalfHeight);
 }
 
 // Return true if the collision shape is a polyhedron

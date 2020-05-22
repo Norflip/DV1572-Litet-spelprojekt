@@ -27,14 +27,15 @@
 #define	REACTPHYSICS3D_SPHERE_VS_CAPSULE_ALGORITHM_H
 
 // Libraries
-#include <reactphysics3d/collision/narrowphase/NarrowPhaseAlgorithm.h>
+#include "NarrowPhaseAlgorithm.h"
+
 
 /// Namespace ReactPhysics3D
 namespace reactphysics3d {
 
 // Declarations
+class Body;
 class ContactPoint;
-struct SphereVsCapsuleNarrowPhaseInfoBatch;
 
 // Class SphereVsCapsuleAlgorithm
 /**
@@ -65,8 +66,7 @@ class SphereVsCapsuleAlgorithm : public NarrowPhaseAlgorithm {
 		SphereVsCapsuleAlgorithm& operator=(const SphereVsCapsuleAlgorithm& algorithm) = delete;
 
         /// Compute the narrow-phase collision detection between a sphere and a capsule
-        bool testCollision(SphereVsCapsuleNarrowPhaseInfoBatch& narrowPhaseInfoBatch, uint batchStartIndex,
-                           uint batchNbItems, MemoryAllocator& memoryAllocator);
+        virtual bool testCollision(NarrowPhaseInfo* narrowPhaseInfo, bool reportContacts, MemoryAllocator& memoryAllocator) override;
 };
 
 }

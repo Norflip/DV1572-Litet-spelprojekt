@@ -27,7 +27,7 @@
 #define REACTPHYSICS3D_RAY_H
 
 // Libraries
-#include <reactphysics3d/mathematics/Vector3.h>
+#include "Vector3.h"
 
 /// ReactPhysics3D namespace
 namespace reactphysics3d {

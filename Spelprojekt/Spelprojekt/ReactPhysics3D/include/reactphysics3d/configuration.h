@@ -32,8 +32,8 @@
 #include <utility>
 #include <sstream>
 #include <string>
-#include <reactphysics3d/decimal.h>
-#include <reactphysics3d/containers/Pair.h>
+#include "decimal.h"
+#include "containers/Pair.h"
 
 // Windows platform
 #if defined(WIN32) ||defined(_WIN32) || defined(_WIN64) ||defined(__WIN32__) || defined(__WINDOWS__)
@@ -53,6 +53,8 @@ using uint = unsigned int;
 using uchar = unsigned char;
 using ushort = unsigned short;
 using luint = long unsigned int;
+using bodyindex = luint;
+using bodyindexpair = Pair<bodyindex, bodyindex>;
 
 using int8 = std::int8_t;
 using uint8 = std::uint8_t;
@@ -60,12 +62,6 @@ using int16 = std::int16_t;
 using uint16 = std::uint16_t;
 using int32 = std::int32_t;
 using uint32 = std::uint32_t;
-using int64 = std::int64_t;
-using uint64 = std::uint64_t;
-
-// TODO : Delete this
-struct Entity;
-using bodypair = Pair<Entity, Entity>;
 
 // ------------------- Enumerations ------------------- //
 
@@ -100,12 +96,99 @@ constexpr decimal PI = decimal(3.14159265);
 constexpr decimal PI_TIMES_2 = decimal(6.28318530);
 
 /// In the broad-phase collision detection (dynamic AABB tree), the AABBs are
-/// inflated by a constant percentage of its size to allow the collision shape to move a little bit
-/// without triggering a large modification of the tree each frame which can be costly
-constexpr decimal DYNAMIC_TREE_FAT_AABB_INFLATE_PERCENTAGE = decimal(0.08);
+/// inflated with a constant gap to allow the collision shape to move a little bit
+/// without triggering a large modification of the tree which can be costly
+constexpr decimal DYNAMIC_TREE_AABB_GAP = decimal(0.1);
+
+/// In the broad-phase collision detection (dynamic AABB tree), the AABBs are
+/// also inflated in direction of the linear motion of the body by mutliplying the
+/// followin constant with the linear velocity and the elapsed time between two frames.
+constexpr decimal DYNAMIC_TREE_AABB_LIN_GAP_MULTIPLIER = decimal(1.7);
 
 /// Current version of ReactPhysics3D
 const std::string RP3D_VERSION = std::string("0.7.1");
+
+/// Structure WorldSettings
+/**
+ * This class is used to describe some settings of a physics world.
+ */
+struct WorldSettings {
+
+    /// Name of the world
+    std::string worldName = "";
+
+    /// Distance threshold for two contact points for a valid persistent contact (in meters)
+    decimal persistentContactDistanceThreshold = decimal(0.03);
+
+    /// Default friction coefficient for a rigid body
+    decimal defaultFrictionCoefficient = decimal(0.3);
+
+    /// Default bounciness factor for a rigid body
+    decimal defaultBounciness = decimal(0.5);
+
+    /// Velocity threshold for contact velocity restitution
+    decimal restitutionVelocityThreshold = decimal(1.0);
+
+    /// Default rolling resistance
+    decimal defaultRollingRestistance = decimal(0.0);
+
+    /// True if the sleeping technique is enabled
+    bool isSleepingEnabled = true;
+
+    /// Number of iterations when solving the velocity constraints of the Sequential Impulse technique
+    uint defaultVelocitySolverNbIterations = 10;
+
+    /// Number of iterations when solving the position constraints of the Sequential Impulse technique
+    uint defaultPositionSolverNbIterations = 5;
+
+    /// Time (in seconds) that a body must stay still to be considered sleeping
+    float defaultTimeBeforeSleep = 1.0f;
+
+    /// A body with a linear velocity smaller than the sleep linear velocity (in m/s)
+    /// might enter sleeping mode.
+    decimal defaultSleepLinearVelocity = decimal(0.02);
+
+    /// A body with angular velocity smaller than the sleep angular velocity (in rad/s)
+    /// might enter sleeping mode
+    decimal defaultSleepAngularVelocity = decimal(3.0) * (PI / decimal(180.0));
+
+    /// Maximum number of contact manifolds in an overlapping pair that involves two
+    /// convex collision shapes.
+    int nbMaxContactManifoldsConvexShape = 1;
+
+    /// Maximum number of contact manifolds in an overlapping pair that involves at
+    /// least one concave collision shape.
+    int nbMaxContactManifoldsConcaveShape = 3;
+
+    /// This is used to test if two contact manifold are similar (same contact normal) in order to
+    /// merge them. If the cosine of the angle between the normals of the two manifold are larger
+    /// than the value bellow, the manifold are considered to be similar.
+    decimal cosAngleSimilarContactManifold = decimal(0.95);
+
+    /// Return a string with the world settings
+    std::string to_string() const {
+
+        std::stringstream ss;
+
+        ss << "worldName=" << worldName << std::endl;
+        ss << "persistentContactDistanceThreshold=" << persistentContactDistanceThreshold << std::endl;
+        ss << "defaultFrictionCoefficient=" << defaultFrictionCoefficient << std::endl;
+        ss << "defaultBounciness=" << defaultBounciness << std::endl;
+        ss << "restitutionVelocityThreshold=" << restitutionVelocityThreshold << std::endl;
+        ss << "defaultRollingRestistance=" << defaultRollingRestistance << std::endl;
+        ss << "isSleepingEnabled=" << isSleepingEnabled << std::endl;
+        ss << "defaultVelocitySolverNbIterations=" << defaultVelocitySolverNbIterations << std::endl;
+        ss << "defaultPositionSolverNbIterations=" << defaultPositionSolverNbIterations << std::endl;
+        ss << "defaultTimeBeforeSleep=" << defaultTimeBeforeSleep << std::endl;
+        ss << "defaultSleepLinearVelocity=" << defaultSleepLinearVelocity << std::endl;
+        ss << "defaultSleepAngularVelocity=" << defaultSleepAngularVelocity << std::endl;
+        ss << "nbMaxContactManifoldsConvexShape=" << nbMaxContactManifoldsConvexShape << std::endl;
+        ss << "nbMaxContactManifoldsConcaveShape=" << nbMaxContactManifoldsConcaveShape << std::endl;
+        ss << "cosAngleSimilarContactManifold=" << cosAngleSimilarContactManifold << std::endl;
+
+        return ss.str();
+    }
+};
 
 }
 

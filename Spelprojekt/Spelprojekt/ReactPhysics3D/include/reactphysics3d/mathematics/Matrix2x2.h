@@ -28,7 +28,7 @@
 
 // Libraries
 #include <cassert>
-#include <reactphysics3d/mathematics/Vector2.h>
+#include "Vector2.h"
 
 /// ReactPhysics3D namespace
 namespace reactphysics3d {

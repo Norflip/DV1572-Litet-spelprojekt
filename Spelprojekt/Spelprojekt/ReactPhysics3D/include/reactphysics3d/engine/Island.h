@@ -27,7 +27,7 @@
 #define REACTPHYSICS3D_ISLAND_H
 
 // Libraries
-#include <reactphysics3d/constraint/Joint.h>
+#include "constraint/Joint.h"
 
 namespace reactphysics3d {
 
@@ -53,18 +53,25 @@ class Island {
         /// Array with all the contact manifolds between bodies of the island
         ContactManifold** mContactManifolds;
 
+        /// Array with all the joints between bodies of the island
+        Joint** mJoints;
+
         /// Current number of bodies in the island
         uint mNbBodies;
 
         /// Current number of contact manifold in the island
         uint mNbContactManifolds;
 
+        /// Current number of joints in the island
+        uint mNbJoints;
+
     public:
 
         // -------------------- Methods -------------------- //
 
         /// Constructor
-        Island(uint nbMaxBodies, uint nbMaxContactManifolds, MemoryManager& memoryManager);
+        Island(uint nbMaxBodies, uint nbMaxContactManifolds, uint nbMaxJoints,
+               MemoryManager& memoryManager);
 
         /// Destructor
         ~Island();
@@ -99,9 +106,12 @@ class Island {
         /// Return a pointer to the array of contact manifolds
         ContactManifold** getContactManifolds();
 
+        /// Return a pointer to the array of joints
+        Joint** getJoints();
+
         // -------------------- Friendship -------------------- //
 
-        friend class PhysicsWorld;
+        friend class DynamicsWorld;
 };
 
 // Add a body into the island
@@ -117,6 +127,12 @@ inline void Island::addContactManifold(ContactManifold* contactManifold) {
     mNbContactManifolds++;
 }
 
+// Add a joint into the island
+inline void Island::addJoint(Joint* joint) {
+    mJoints[mNbJoints] = joint;
+    mNbJoints++;
+}
+
 // Return the number of bodies in the island
 inline uint Island::getNbBodies() const {
     return mNbBodies;
@@ -127,6 +143,11 @@ inline uint Island::getNbContactManifolds() const {
     return mNbContactManifolds;
 }
 
+// Return the number of joints in the island
+inline uint Island::getNbJoints() const {
+    return mNbJoints;
+}
+
 // Return a pointer to the array of bodies
 inline RigidBody** Island::getBodies() {
     return mBodies;
@@ -135,6 +156,11 @@ inline RigidBody** Island::getBodies() {
 // Return a pointer to the array of contact manifolds
 inline ContactManifold** Island::getContactManifolds() {
     return mContactManifolds;
+}
+
+// Return a pointer to the array of joints
+inline Joint** Island::getJoints() {
+    return mJoints;
 }
 
 }

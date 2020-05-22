@@ -27,13 +27,14 @@
 #define	REACTPHYSICS3D_SPHERE_VS_CONVEX_POLYHEDRON_ALGORITHM_H
 
 // Libraries
-#include <reactphysics3d/collision/narrowphase/NarrowPhaseAlgorithm.h>
+#include "NarrowPhaseAlgorithm.h"
 
 /// Namespace ReactPhysics3D
 namespace reactphysics3d {
 
 // Declarations
 class ContactPoint;
+class Body;
 
 // Class SphereVsConvexPolyhedronAlgorithm
 /**
@@ -70,8 +71,7 @@ class SphereVsConvexPolyhedronAlgorithm : public NarrowPhaseAlgorithm {
         SphereVsConvexPolyhedronAlgorithm& operator=(const SphereVsConvexPolyhedronAlgorithm& algorithm) = delete;
 
         /// Compute the narrow-phase collision detection between a sphere and a convex polyhedron
-        bool testCollision(NarrowPhaseInfoBatch& narrowPhaseInfoBatch, uint batchStartIndex, uint batchNbItems,
-                           bool clipWithPreviousAxisIfStillColliding, MemoryAllocator& memoryAllocator);
+        virtual bool testCollision(NarrowPhaseInfo* narrowPhaseInfo, bool reportContacts, MemoryAllocator& memoryAllocator) override;
 };
 
 }

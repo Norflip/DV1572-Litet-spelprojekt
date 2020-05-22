@@ -27,16 +27,17 @@
 #define REACTPHYSICS3D_CONVEX_MESH_SHAPE_H
 
 // Libraries
-#include <reactphysics3d/collision/shapes/ConvexPolyhedronShape.h>
-#include <reactphysics3d/mathematics/mathematics.h>
-#include <reactphysics3d/collision/PolyhedronMesh.h>
+#include "ConvexPolyhedronShape.h"
+#include "mathematics/mathematics.h"
+#include "collision/PolyhedronMesh.h"
 
 /// ReactPhysics3D namespace
 namespace reactphysics3d {
 
 // Declaration
+class CollisionWorld;
 class GJKAlgorithm;
-class PhysicsWorld;
+class CollisionWorld;
 
 // Class ConvexMeshShape
 /**
@@ -60,13 +61,10 @@ class ConvexMeshShape : public ConvexPolyhedronShape {
         /// Mesh maximum bounds in the three local x, y and z directions
         Vector3 mMaxBounds;
 
-        /// Scale of the mesh
-        Vector3 mScale;
+        /// Local scaling
+        const Vector3 mScaling;
 
         // -------------------- Methods -------------------- //
-
-        /// Constructor
-        ConvexMeshShape(PolyhedronMesh* polyhedronMesh,  MemoryAllocator& allocator, const Vector3& scale = Vector3(1,1,1));
 
         /// Recompute the bounds of the mesh
         void recalculateBounds();
@@ -75,20 +73,23 @@ class ConvexMeshShape : public ConvexPolyhedronShape {
         virtual Vector3 getLocalSupportPointWithoutMargin(const Vector3& direction) const override;
 
         /// Return true if a point is inside the collision shape
-        virtual bool testPointInside(const Vector3& localPoint, Collider* collider) const override;
+        virtual bool testPointInside(const Vector3& localPoint, ProxyShape* proxyShape) const override;
 
         /// Raycast method with feedback information
-        virtual bool raycast(const Ray& ray, RaycastInfo& raycastInfo, Collider* collider, MemoryAllocator& allocator) const override;
+        virtual bool raycast(const Ray& ray, RaycastInfo& raycastInfo, ProxyShape* proxyShape, MemoryAllocator& allocator) const override;
 
         /// Return the number of bytes used by the collision shape
         virtual size_t getSizeInBytes() const override;
 
-        /// Destructor
-        virtual ~ConvexMeshShape() override = default;
-
     public :
 
         // -------------------- Methods -------------------- //
+
+        /// Constructor
+        ConvexMeshShape(PolyhedronMesh* polyhedronMesh, const Vector3& scaling = Vector3(1,1,1));
+
+        /// Destructor
+        virtual ~ConvexMeshShape() override = default;
 
         /// Deleted copy-constructor
         ConvexMeshShape(const ConvexMeshShape& shape) = delete;
@@ -96,17 +97,14 @@ class ConvexMeshShape : public ConvexPolyhedronShape {
         /// Deleted assignment operator
         ConvexMeshShape& operator=(const ConvexMeshShape& shape) = delete;
 
-        /// Return the scale
-        const Vector3& getScale() const;
-
-        /// Set the scale
-        void setScale(const Vector3& scale);
+        /// Return the scaling vector
+        const Vector3& getScaling() const;
 
         /// Return the local bounds of the shape in x, y and z directions
         virtual void getLocalBounds(Vector3& min, Vector3& max) const override;
 
         /// Return the local inertia tensor of the collision shape.
-        virtual Vector3 getLocalInertiaTensor(decimal mass) const override;
+        virtual void computeLocalInertiaTensor(Matrix3x3& tensor, decimal mass) const override;
 
         /// Return the number of faces of the polyhedron
         virtual uint getNbFaces() const override;
@@ -135,15 +133,8 @@ class ConvexMeshShape : public ConvexPolyhedronShape {
         /// Return the centroid of the polyhedron
         virtual Vector3 getCentroid() const override;
 
-        /// Compute and return the volume of the collision shape
-        virtual decimal getVolume() const override;
-
         /// Return the string representation of the shape
         virtual std::string to_string() const override;
-
-        // ----- Friendship ----- //
-
-        friend class PhysicsCommon;
 };
 
 // Return the number of bytes used by the collision shape
@@ -152,17 +143,8 @@ inline size_t ConvexMeshShape::getSizeInBytes() const {
 }
 
 // Return the scaling vector
-inline const Vector3& ConvexMeshShape::getScale() const {
-    return mScale;
-}
-
-// Set the scale
-/// Note that you might want to recompute the inertia tensor and center of mass of the body
-/// after changing the scale of a collision shape
-inline void ConvexMeshShape::setScale(const Vector3& scale) {
-    mScale = scale;
-    recalculateBounds();
-    notifyColliderAboutChangedSize();
+inline const Vector3& ConvexMeshShape::getScaling() const {
+    return mScaling;
 }
 
 // Return the local bounds of the shape in x, y and z directions
@@ -179,16 +161,20 @@ inline void ConvexMeshShape::getLocalBounds(Vector3& min, Vector3& max) const {
 /// The local inertia tensor of the convex mesh is approximated using the inertia tensor
 /// of its bounding box.
 /**
+* @param[out] tensor The 3x3 inertia tensor matrix of the shape in local-space
+*                    coordinates
 * @param mass Mass to use to compute the inertia tensor of the collision shape
 */
-inline Vector3 ConvexMeshShape::getLocalInertiaTensor(decimal mass) const {
-    const decimal factor = (decimal(1.0) / decimal(3.0)) * mass;
-    const Vector3 realExtent = decimal(0.5) * (mMaxBounds - mMinBounds);
+inline void ConvexMeshShape::computeLocalInertiaTensor(Matrix3x3& tensor, decimal mass) const {
+    decimal factor = (decimal(1.0) / decimal(3.0)) * mass;
+    Vector3 realExtent = decimal(0.5) * (mMaxBounds - mMinBounds);
     assert(realExtent.x > 0 && realExtent.y > 0 && realExtent.z > 0);
-    const decimal xSquare = realExtent.x * realExtent.x;
-    const decimal ySquare = realExtent.y * realExtent.y;
-    const decimal zSquare = realExtent.z * realExtent.z;
-    return Vector3(factor * (ySquare + zSquare), factor * (xSquare + zSquare), factor * (xSquare + ySquare));
+    decimal xSquare = realExtent.x * realExtent.x;
+    decimal ySquare = realExtent.y * realExtent.y;
+    decimal zSquare = realExtent.z * realExtent.z;
+    tensor.setAllValues(factor * (ySquare + zSquare), 0.0, 0.0,
+                        0.0, factor * (xSquare + zSquare), 0.0,
+                        0.0, 0.0, factor * (xSquare + ySquare));
 }
 
 // Return the number of faces of the polyhedron
@@ -227,7 +213,7 @@ inline const HalfEdgeStructure::Edge& ConvexMeshShape::getHalfEdge(uint edgeInde
 // Return the position of a given vertex
 inline Vector3 ConvexMeshShape::getVertexPosition(uint vertexIndex) const {
     assert(vertexIndex < getNbVertices());
-    return mPolyhedronMesh->getVertex(vertexIndex) * mScale;
+    return mPolyhedronMesh->getVertex(vertexIndex) * mScaling;
 }
 
 // Return the normal vector of a given face of the polyhedron
@@ -238,13 +224,7 @@ inline Vector3 ConvexMeshShape::getFaceNormal(uint faceIndex) const {
 
 // Return the centroid of the polyhedron
 inline Vector3 ConvexMeshShape::getCentroid() const {
-    return mPolyhedronMesh->getCentroid() * mScale;
-}
-
-
-// Compute and return the volume of the collision shape
-inline decimal ConvexMeshShape::getVolume() const {
-    return mPolyhedronMesh->getVolume();
+    return mPolyhedronMesh->getCentroid() * mScaling;
 }
 
 }

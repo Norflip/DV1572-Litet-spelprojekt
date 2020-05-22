@@ -27,8 +27,8 @@
 #define REACTPHYSICS3D_CONCAVE_SHAPE_H
 
 // Libraries
-#include <reactphysics3d/collision/shapes/CollisionShape.h>
-#include <reactphysics3d/collision/shapes/TriangleShape.h>
+#include "CollisionShape.h"
+#include "TriangleShape.h"
 
 // ReactPhysics3D namespace
 namespace reactphysics3d {
@@ -65,20 +65,17 @@ class ConcaveShape : public CollisionShape {
         /// Raycast test type for the triangle (front, back, front-back)
         TriangleRaycastSide mRaycastTestType;
 
-        /// Scale of the shape
-        Vector3 mScale;
-
         // -------------------- Methods -------------------- //
 
         /// Return true if a point is inside the collision shape
-        virtual bool testPointInside(const Vector3& localPoint, Collider* collider) const override;
+        virtual bool testPointInside(const Vector3& localPoint, ProxyShape* proxyShape) const override;
 
     public :
 
         // -------------------- Methods -------------------- //
 
         /// Constructor
-        ConcaveShape(CollisionShapeName name, MemoryAllocator& allocator, const Vector3& scaling);
+        ConcaveShape(CollisionShapeName name);
 
         /// Destructor
         virtual ~ConcaveShape() override = default;
@@ -95,15 +92,6 @@ class ConcaveShape : public CollisionShape {
         // Set the raycast test type (front, back, front-back)
         void setRaycastTestType(TriangleRaycastSide testType);
 
-        /// Return the scale of the shape
-        const Vector3& getScale() const;
-
-        /// Set the scale of the shape
-        void setScale(const Vector3& scale);
-
-        /// Return the local inertia tensor of the collision shape
-        virtual Vector3 getLocalInertiaTensor(decimal mass) const override;
-
         /// Return true if the collision shape is convex, false if it is concave
         virtual bool isConvex() const override;
 
@@ -111,12 +99,7 @@ class ConcaveShape : public CollisionShape {
         virtual bool isPolyhedron() const override;
 
         /// Use a callback method on all triangles of the concave shape inside a given AABB
-        virtual void computeOverlappingTriangles(const AABB& localAABB, List<Vector3>& triangleVertices,
-                                                 List<Vector3>& triangleVerticesNormals, List<uint>& shapeIds,
-                                                 MemoryAllocator& allocator) const=0;
-
-        /// Compute and return the volume of the collision shape
-        virtual decimal getVolume() const override;
+        virtual void testAllTriangles(TriangleCallback& callback, const AABB& localAABB) const=0;
 };
 
 // Return true if the collision shape is convex, false if it is concave
@@ -130,7 +113,7 @@ inline bool ConcaveShape::isPolyhedron() const {
 }
 
 // Return true if a point is inside the collision shape
-inline bool ConcaveShape::testPointInside(const Vector3& localPoint, Collider* collider) const {
+inline bool ConcaveShape::testPointInside(const Vector3& localPoint, ProxyShape* proxyShape) const {
     return false;
 }
 
@@ -146,34 +129,6 @@ inline TriangleRaycastSide ConcaveShape::getRaycastTestType() const {
 inline void ConcaveShape::setRaycastTestType(TriangleRaycastSide testType) {
     mRaycastTestType = testType;
 }
-
-// Return the scale of the shape
-inline const Vector3& ConcaveShape::getScale() const {
-    return mScale;
-}
-
-// Set the scale of the shape
-/// Note that you might want to recompute the inertia tensor and center of mass of the body
-/// after changing the scale of a collision shape
-inline void ConcaveShape::setScale(const Vector3& scale) {
-    mScale = scale;
-
-    notifyColliderAboutChangedSize();
-}
-
-// Return the local inertia tensor of the shape
-/**
- * @param mass Mass to use to compute the inertia tensor of the collision shape
- */
-inline Vector3 ConcaveShape::getLocalInertiaTensor(decimal mass) const {
-
-    // Default inertia tensor
-    // Note that this is not very realistic for a concave triangle mesh.
-    // However, in most cases, it will only be used static bodies and therefore,
-    // the inertia tensor is not used.
-    return Vector3(mass, mass, mass);
-}
-
 
 }
 

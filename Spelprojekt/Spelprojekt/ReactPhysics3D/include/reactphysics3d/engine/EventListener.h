@@ -27,8 +27,7 @@
 #define REACTPHYSICS3D_EVENT_LISTENER_H
 
 // Libraries
-#include <reactphysics3d/collision/CollisionCallback.h>
-#include <reactphysics3d/collision/OverlapCallback.h>
+#include "collision/CollisionCallback.h"
 
 namespace reactphysics3d {
 
@@ -37,39 +36,36 @@ namespace reactphysics3d {
  * This class can be used to receive event callbacks from the physics engine.
  * In order to receive callbacks, you need to create a new class that inherits from
  * this one and you must override the methods you need. Then, you need to register your
- * new event listener class to the physics world using the PhysicsWorld::setEventListener()
+ * new event listener class to the physics world using the DynamicsWorld::setEventListener()
  * method.
  */
-class EventListener : public CollisionCallback {
+class EventListener {
 
     public :
-
-        enum class ErrorType {
-            Warning,
-            InvalidParameter,
-            InvalidOperation,
-            InternalError
-        };
-
-        // ---------- Methods ---------- //
 
         /// Constructor
         EventListener() = default;
 
         /// Destructor
-        virtual ~EventListener() override = default;
+        virtual ~EventListener() = default;
 
-        /// Called when some contacts occur
+        /// Called when a new contact point is found between two bodies
         /**
-         * @param callbackData Contains information about all the contacts
+         * @param contact Information about the contact
          */
-        virtual void onContact(const CollisionCallback::CallbackData& callbackData) override {}
+        virtual void newContact(const CollisionCallback::CollisionCallbackInfo& collisionInfo) {}
 
-        /// Called when some trigger events occur
-        /**
-         * @param callbackData Contains information about all the triggers that are colliding
-         */
-        virtual void onTrigger(const OverlapCallback::CallbackData& callbackData) {}
+        /// Called at the beginning of an internal tick of the simulation step.
+        /// Each time the DynamicsWorld::update() method is called, the physics
+        /// engine will do several internal simulation steps. This method is
+        /// called at the beginning of each internal simulation step.
+        virtual void beginInternalTick() {}
+
+        /// Called at the end of an internal tick of the simulation step.
+        /// Each time the DynamicsWorld::update() metho is called, the physics
+        /// engine will do several internal simulation steps. This method is
+        /// called at the end of each internal simulation step.
+        virtual void endInternalTick() {}
 };
 
 }

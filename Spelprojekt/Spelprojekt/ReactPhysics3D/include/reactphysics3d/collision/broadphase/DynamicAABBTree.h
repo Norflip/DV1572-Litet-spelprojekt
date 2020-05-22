@@ -27,15 +27,14 @@
 #define REACTPHYSICS3D_DYNAMIC_AABB_TREE_H
 
 // Libraries
-#include <reactphysics3d/configuration.h>
-#include <reactphysics3d/collision/shapes/AABB.h>
-#include <reactphysics3d/containers/Set.h>
+#include "configuration.h"
+#include "collision/shapes/AABB.h"
 
 /// Namespace ReactPhysics3D
 namespace reactphysics3d {
 
 // Declarations
-class BroadPhaseSystem;
+class BroadPhaseAlgorithm;
 class BroadPhaseRaycastTestCallback;
 class DynamicAABBTreeOverlapCallback;
 class CollisionBody;
@@ -54,7 +53,7 @@ struct TreeNode {
     // -------------------- Constants -------------------- //
 
     /// Null tree node constant
-    const static int32 NULL_TREE_NODE;
+    const static int NULL_TREE_NODE;
 
     // -------------------- Attributes -------------------- //
 
@@ -130,7 +129,8 @@ class DynamicAABBTreeRaycastCallback {
 // Class DynamicAABBTree
 /**
  * This class implements a dynamic AABB tree that is used for broad-phase
- * collision detection. The following implementation is
+ * collision detection. This data structure is inspired by Nathanael Presson's
+ * dynamic tree implementation in BulletPhysics. The following implementation is
  * based on the one from Erin Catto in Box2D as described in the book
  * "Introduction to Game Physics with Box2D" by Ian Parberry.
  */
@@ -147,21 +147,22 @@ class DynamicAABBTree {
         TreeNode* mNodes;
 
         /// ID of the root node of the tree
-        int32 mRootNodeID;
+        int mRootNodeID;
 
         /// ID of the first node of the list of free (allocated) nodes in the tree that we can use
-        int32 mFreeNodeID;
+        int mFreeNodeID;
 
         /// Number of allocated nodes in the tree
-        int32 mNbAllocatedNodes;
+        int mNbAllocatedNodes;
 
         /// Number of nodes in the tree
-        int32 mNbNodes;
+        int mNbNodes;
 
-        /// The fat AABB is the initial AABB inflated by a given percentage of its size.
-        decimal mFatAABBInflatePercentage;
+        /// Extra AABB Gap used to allow the collision shape to move a little bit
+        /// without triggering a large modification of the tree which can be costly
+        decimal mExtraAABBGap;
 
-#ifdef IS_RP3D_PROFILING_ENABLED
+#ifdef IS_PROFILING_ACTIVE
 
 		/// Pointer to the profiler
 		Profiler* mProfiler;
@@ -171,25 +172,25 @@ class DynamicAABBTree {
         // -------------------- Methods -------------------- //
 
         /// Allocate and return a node to use in the tree
-        int32 allocateNode();
+        int allocateNode();
 
         /// Release a node
-        void releaseNode(int32 nodeID);
+        void releaseNode(int nodeID);
 
         /// Insert a leaf node in the tree
-        void insertLeafNode(int32 nodeID);
+        void insertLeafNode(int nodeID);
 
         /// Remove a leaf node from the tree
-        void removeLeafNode(int32 nodeID);
+        void removeLeafNode(int nodeID);
 
         /// Balance the sub-tree of a given node using left or right rotations.
-        int32 balanceSubTreeAtNode(int32 nodeID);
+        int balanceSubTreeAtNode(int nodeID);
 
         /// Compute the height of a given node in the tree
-        int computeHeight(int32 nodeID);
+        int computeHeight(int nodeID);
 
         /// Internally add an object into the tree
-        int32 addObjectInternal(const AABB& aabb);
+        int addObjectInternal(const AABB& aabb);
 
         /// Initialize the tree
         void init();
@@ -200,7 +201,7 @@ class DynamicAABBTree {
         void check() const;
 
         /// Check if the node structure is valid (for debugging purpose)
-        void checkNode(int32 nodeID) const;
+        void checkNode(int nodeID) const;
 
 #endif
 
@@ -209,38 +210,35 @@ class DynamicAABBTree {
         // -------------------- Methods -------------------- //
 
         /// Constructor
-        DynamicAABBTree(MemoryAllocator& allocator, decimal fatAABBInflatePercentage = decimal(0.0));
+        DynamicAABBTree(MemoryAllocator& allocator, decimal extraAABBGap = decimal(0.0));
 
         /// Destructor
         ~DynamicAABBTree();
 
         /// Add an object into the tree (where node data are two integers)
-        int32 addObject(const AABB& aabb, int32 data1, int32 data2);
+        int addObject(const AABB& aabb, int32 data1, int32 data2);
 
         /// Add an object into the tree (where node data is a pointer)
-        int32 addObject(const AABB& aabb, void* data);
+        int addObject(const AABB& aabb, void* data);
 
         /// Remove an object from the tree
-        void removeObject(int32 nodeID);
+        void removeObject(int nodeID);
 
         /// Update the dynamic tree after an object has moved.
-        bool updateObject(int32 nodeID, const AABB& newAABB, bool forceReinsert = false);
+        bool updateObject(int nodeID, const AABB& newAABB, const Vector3& displacement, bool forceReinsert = false);
 
         /// Return the fat AABB corresponding to a given node ID
-        const AABB& getFatAABB(int32 nodeID) const;
+        const AABB& getFatAABB(int nodeID) const;
 
         /// Return the pointer to the data array of a given leaf node of the tree
-        int32* getNodeDataInt(int32 nodeID) const;
+        int32* getNodeDataInt(int nodeID) const;
 
         /// Return the data pointer of a given leaf node of the tree
-        void* getNodeDataPointer(int32 nodeID) const;
-
-        /// Report all shapes overlapping with all the shapes in the map in parameter
-        void reportAllShapesOverlappingWithShapes(const List<int32>& nodesToTest, size_t startIndex,
-                                                  size_t endIndex, List<Pair<int32, int32>>& outOverlappingNodes) const;
+        void* getNodeDataPointer(int nodeID) const;
 
         /// Report all shapes overlapping with the AABB given in parameter.
-        void reportAllShapesOverlappingWithAABB(const AABB& aabb, List<int>& overlappingNodes) const;
+        void reportAllShapesOverlappingWithAABB(const AABB& aabb,
+                                                DynamicAABBTreeOverlapCallback& callback) const;
 
         /// Ray casting method
         void raycast(const Ray& ray, DynamicAABBTreeRaycastCallback& callback) const;
@@ -254,7 +252,7 @@ class DynamicAABBTree {
         /// Clear all the nodes and reset the tree
         void reset();
 
-#ifdef IS_RP3D_PROFILING_ENABLED
+#ifdef IS_PROFILING_ACTIVE
 
 		/// Set the profiler
 		void setProfiler(Profiler* profiler);
@@ -269,20 +267,20 @@ inline bool TreeNode::isLeaf() const {
 }
 
 // Return the fat AABB corresponding to a given node ID
-inline const AABB& DynamicAABBTree::getFatAABB(int32 nodeID) const {
+inline const AABB& DynamicAABBTree::getFatAABB(int nodeID) const {
     assert(nodeID >= 0 && nodeID < mNbAllocatedNodes);
     return mNodes[nodeID].aabb;
 }
 
 // Return the pointer to the data array of a given leaf node of the tree
-inline int32* DynamicAABBTree::getNodeDataInt(int32 nodeID) const {
+inline int32* DynamicAABBTree::getNodeDataInt(int nodeID) const {
     assert(nodeID >= 0 && nodeID < mNbAllocatedNodes);
     assert(mNodes[nodeID].isLeaf());
     return mNodes[nodeID].dataInt;
 }
 
 // Return the pointer to the data pointer of a given leaf node of the tree
-inline void* DynamicAABBTree::getNodeDataPointer(int32 nodeID) const {
+inline void* DynamicAABBTree::getNodeDataPointer(int nodeID) const {
     assert(nodeID >= 0 && nodeID < mNbAllocatedNodes);
     assert(mNodes[nodeID].isLeaf());
     return mNodes[nodeID].dataPointer;
@@ -295,9 +293,9 @@ inline AABB DynamicAABBTree::getRootAABB() const {
 
 // Add an object into the tree. This method creates a new leaf node in the tree and
 // returns the ID of the corresponding node.
-inline int32 DynamicAABBTree::addObject(const AABB& aabb, int32 data1, int32 data2) {
+inline int DynamicAABBTree::addObject(const AABB& aabb, int32 data1, int32 data2) {
 
-    int32 nodeId = addObjectInternal(aabb);
+    int nodeId = addObjectInternal(aabb);
 
     mNodes[nodeId].dataInt[0] = data1;
     mNodes[nodeId].dataInt[1] = data2;
@@ -307,16 +305,16 @@ inline int32 DynamicAABBTree::addObject(const AABB& aabb, int32 data1, int32 dat
 
 // Add an object into the tree. This method creates a new leaf node in the tree and
 // returns the ID of the corresponding node.
-inline int32 DynamicAABBTree::addObject(const AABB& aabb, void* data) {
+inline int DynamicAABBTree::addObject(const AABB& aabb, void* data) {
 
-    int32 nodeId = addObjectInternal(aabb);
+    int nodeId = addObjectInternal(aabb);
 
     mNodes[nodeId].dataPointer = data;
 
     return nodeId;
 }
 
-#ifdef IS_RP3D_PROFILING_ENABLED
+#ifdef IS_PROFILING_ACTIVE
 
 // Set the profiler
 inline void DynamicAABBTree::setProfiler(Profiler* profiler) {

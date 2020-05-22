@@ -28,13 +28,13 @@
 
 // Libraries
 #include <cassert>
-#include <reactphysics3d/configuration.h>
+#include "configuration.h"
 
 namespace reactphysics3d {
 
 // Class Material
 /**
- * This class contains the material properties of a collider that will be use for
+ * This class contains the material properties of a rigid body that will be use for
  * the dynamics simulation like the friction coefficient or the bounciness of the rigid
  * body.
  */
@@ -53,24 +53,18 @@ class Material {
         /// Bounciness during collisions (between 0 and 1) where 1 is for a very bouncy body
         decimal mBounciness;
 
-        /// Density of mass used to compute the mass of the collider
-        decimal mMassDensity;
+    public :
 
         // -------------------- Methods -------------------- //
 
         /// Constructor
-        Material(decimal frictionCoefficient, decimal rollingResistance, decimal bounciness,
-                 decimal massDensity = decimal(1.0));
+        Material(const WorldSettings& worldSettings);
 
         /// Copy-constructor
         Material(const Material& material);
 
         /// Destructor
         ~Material() = default;
-
-    public :
-
-        // -------------------- Methods -------------------- //
 
         /// Return the bounciness
         decimal getBounciness() const;
@@ -90,21 +84,11 @@ class Material {
         /// Set the rolling resistance factor
         void setRollingResistance(decimal rollingResistance);
 
-        /// Return the mass density of the collider
-        decimal getMassDensity() const;
-
-        /// Set the mass density of the collider
-        void setMassDensity(decimal massDensity);
-
         /// Return a string representation for the material
         std::string to_string() const;
 
         /// Overloaded assignment operator
         Material& operator=(const Material& material);
-
-        // ---------- Friendship ---------- //
-
-        friend class Collider;
 };
 
 // Return the bounciness
@@ -164,19 +148,6 @@ inline decimal Material::getRollingResistance() const {
 inline void Material::setRollingResistance(decimal rollingResistance) {
     assert(rollingResistance >= 0);
     mRollingResistance = rollingResistance;
-}
-
-// Return the mass density of the collider
-inline decimal Material::getMassDensity() const {
-   return mMassDensity;
-}
-
-// Set the mass density of the collider
-/**
- * @param massDensity The mass density of the collider
- */
-inline void Material::setMassDensity(decimal massDensity) {
-   mMassDensity = massDensity;
 }
 
 // Return a string representation for the material

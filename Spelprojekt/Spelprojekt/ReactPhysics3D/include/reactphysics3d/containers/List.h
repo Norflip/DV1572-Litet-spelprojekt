@@ -27,8 +27,8 @@
 #define REACTPHYSICS3D_LIST_H
 
 // Libraries
-#include <reactphysics3d/configuration.h>
-#include <reactphysics3d/memory/MemoryAllocator.h>
+#include "configuration.h"
+#include "memory/MemoryAllocator.h"
 #include <cassert>
 #include <cstring>
 #include <iterator>
@@ -39,7 +39,7 @@ namespace reactphysics3d {
 // Class List
 /**
  * This class represents a simple generic list with custom memory allocator.
- */
+  */
 template<typename T>
 class List {
 
@@ -79,10 +79,8 @@ class List {
                 using value_type = T;
                 using difference_type = std::ptrdiff_t;
                 using pointer = T*;
-                using const_pointer = T const*;
                 using reference = T&;
-                using const_reference = const T&;
-                using iterator_category = std::random_access_iterator_tag;
+                using iterator_category = std::bidirectional_iterator_tag;
 
                 /// Constructor
                 Iterator() = default;
@@ -100,19 +98,13 @@ class List {
                 }
 
                 /// Deferencable
-                reference operator*() {
-                    assert(mCurrentIndex >= 0 && mCurrentIndex < mSize);
-                    return mBuffer[mCurrentIndex];
-                }
-
-                /// Const Deferencable
-                const_reference operator*() const {
+                reference operator*() const {
                     assert(mCurrentIndex >= 0 && mCurrentIndex < mSize);
                     return mBuffer[mCurrentIndex];
                 }
 
                 /// Deferencable
-                const_pointer operator->() const {
+                pointer operator->() const {
                     assert(mCurrentIndex >= 0 && mCurrentIndex < mSize);
                     return &(mBuffer[mCurrentIndex]);
                 }
@@ -145,53 +137,6 @@ class List {
                     Iterator tmp = *this;
                     mCurrentIndex--;
                     return tmp;
-                }
-               
-                /// Plus operator
-                Iterator operator+(const difference_type& n) {
-                    return Iterator(mBuffer, mCurrentIndex + n, mSize);
-                }
-               
-                /// Plus operator
-                Iterator& operator+=(const difference_type& n) {
-                    mCurrentIndex += n;
-                    return *this;
-                }
-               
-                /// Minus operator
-                Iterator operator-(const difference_type& n) {
-                    return Iterator(mBuffer, mCurrentIndex - n, mSize);
-                }
-                
-                /// Minus operator
-                Iterator& operator-=(const difference_type& n) {
-                    mCurrentIndex -= n;
-                    return *this;
-                }
-
-                /// Difference operator
-                difference_type operator-(const Iterator& iterator) const {
-                   return mCurrentIndex - iterator.mCurrentIndex;
-                }
-
-                /// Comparison operator
-                bool operator<(const Iterator& other) const {
-                    return mCurrentIndex < other.mCurrentIndex;
-                }
-
-                /// Comparison operator
-                bool operator>(const Iterator& other) const {
-                    return mCurrentIndex > other.mCurrentIndex;
-                }
-
-                /// Comparison operator
-                bool operator<=(const Iterator& other) const {
-                    return mCurrentIndex <= other.mCurrentIndex;
-                }
-
-                /// Comparison operator
-                bool operator>=(const Iterator& other) const {
-                    return mCurrentIndex >= other.mCurrentIndex;
                 }
 
                 /// Equality operator (it == end())
@@ -243,7 +188,10 @@ class List {
             if (mCapacity > 0) {
 
                 // Clear the list
-                clear(true);
+                clear();
+
+                // Release the memory allocated on the heap
+                mAllocator.release(mBuffer, mCapacity * sizeof(T));
             }
         }
 
@@ -294,17 +242,6 @@ class List {
             mSize++;
         }
 
-        /// Add a given numbers of elements at the end of the list but do not init them
-        void addWithoutInit(uint nbElements) {
-
-            // If we need to allocate more memory
-            if (mSize == mCapacity) {
-                reserve(mCapacity == 0 ? nbElements : (mCapacity + nbElements) * 2);
-            }
-
-            mSize += nbElements;
-        }
-
         /// Try to find a given item of the list and return an iterator
         /// pointing to that element if it exists in the list. Otherwise,
         /// this method returns the end() iterator
@@ -331,7 +268,8 @@ class List {
            return removeAt(it.mCurrentIndex);
         }
 
-        /// Remove an element from the list at a given index (all the following items will be moved)
+        /// Remove an element from the list at a given index and return an
+        /// iterator pointing to the element after the removed one (or end() if none)
         Iterator removeAt(uint index) {
 
           assert(index >= 0 && index < mSize);
@@ -372,7 +310,7 @@ class List {
         }
 
         /// Clear the list
-        void clear(bool releaseMemory = false) {
+        void clear() {
 
             // Call the destructor of each element
             for (uint i=0; i < mSize; i++) {
@@ -380,16 +318,6 @@ class List {
             }
 
             mSize = 0;
-
-            // If we need to release all the allocated memory
-            if (releaseMemory && mCapacity > 0) {
-
-                // Release the memory allocated on the heap
-                mAllocator.release(mBuffer, mCapacity * sizeof(T));
-
-                mBuffer = nullptr;
-                mCapacity = 0;
-            }
         }
 
         /// Return the number of elements in the list

@@ -27,7 +27,7 @@
 #define REACTPHYSICS3D_POLYGON_VERTEX_ARRAY_H
 
 // Libraries
-#include <reactphysics3d/configuration.h>
+#include "configuration.h"
 #include <cassert>
 
 namespace reactphysics3d {

@@ -27,8 +27,8 @@
 #define REACTPHYSICS3D_QUATERNION_H
 
 // Libraries
-#include <reactphysics3d/decimal.h>
-#include <reactphysics3d/mathematics/Vector3.h>
+#include "decimal.h"
+#include "Vector3.h"
 
 /// ReactPhysics3D namespace
 namespace reactphysics3d {

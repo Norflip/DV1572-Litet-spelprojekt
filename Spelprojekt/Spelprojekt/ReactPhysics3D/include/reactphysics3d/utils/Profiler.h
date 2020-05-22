@@ -27,14 +27,13 @@
 #define REACTPHYSICS3D_PROFILER_H
 
 // If profiling is enabled
-#ifdef IS_RP3D_PROFILING_ENABLED
-
+#ifdef IS_PROFILING_ACTIVE
 
 // Libraries
-#include <reactphysics3d/configuration.h>
-#include <reactphysics3d/engine/Timer.h>
+#include "configuration.h"
+#include "engine/Timer.h"
 #include <fstream>
-#include <reactphysics3d/containers/List.h>
+#include "containers/List.h"
 
 /// ReactPhysics3D namespace
 namespace reactphysics3d {
@@ -292,14 +291,8 @@ class Profiler {
         /// Starting profiling time
         long double mProfilingStartTime;
 
-        /// Number of allocated destinations
-        uint mNbAllocatedDestinations;
-
-        /// Number of destinations
-        uint mNbDestinations;
-
-        /// Array with all the output destinations
-        Destination** mDestinations;
+        /// All the output destinations
+        List<Destination*> mDestinations;
 
         /// Recursively print the report of a given node of the profiler tree
         void printRecursiveNodeReport(ProfileNodeIterator* iterator,  int spacing,
@@ -311,16 +304,15 @@ class Profiler {
 		/// Destroy the profiler (release the memory)
 		void destroy();
 
-
     public :
 
         // -------------------- Methods -------------------- //
 
-        /// Constructor
+		/// Constructor
         Profiler();
 
-        /// Destructor
-        ~Profiler();
+		/// Destructor
+		~Profiler();
 
         /// Method called when we want to start profiling a block of code.
         void startProfilingBlock(const char *name);
@@ -344,9 +336,6 @@ class Profiler {
         /// Return an iterator over the profiler tree starting at the root
         ProfileNodeIterator* getIterator();
 
-        // Allocate memory for the destinations
-        void allocatedDestinations(uint nbDestinationsToAllocate);
-
         // Add a file destination to the profiler
         void addFileDestination(const std::string& filePath, Format format);
 
@@ -358,9 +347,6 @@ class Profiler {
 
         /// Print the report of the profiler in every output destinations
         void printReport();
-
-        // ---------- Friendship ---------- //
-        friend class PhysicsCommon;
 };
 
 // Class ProfileSample

@@ -1,6 +1,6 @@
 /********************************************************************************
 * ReactPhysics3D physics library, http://www.reactphysics3d.com                 *
-* Copyright (c) 2010-2018 Daniel Chappuis                                       *
+* Copyright (c) 2010-2019 Daniel Chappuis                                       *
 *********************************************************************************
 *                                                                               *
 * This software is provided 'as-is', without any express or implied warranty.   *
@@ -27,9 +27,8 @@
 #define REACTPHYSICS3D_DEFAULT_ALLOCATOR_H
 
 // Libraries
-#include <reactphysics3d/memory/MemoryAllocator.h>
+#include "memory/MemoryAllocator.h"
 #include <cstdlib>
-#include <iostream>
 
 /// ReactPhysics3D namespace
 namespace reactphysics3d {
@@ -51,7 +50,6 @@ class DefaultAllocator : public MemoryAllocator {
         /// Allocate memory of a given size (in bytes) and return a pointer to the
         /// allocated memory.
         virtual void* allocate(size_t size) override {
-
             return malloc(size);
         }
 

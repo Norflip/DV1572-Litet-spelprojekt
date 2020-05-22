@@ -27,7 +27,7 @@
 #define REACTPHYSICS3D_HALF_EDGE_STRUCTURE_MESH_H
 
 // Libraries
-#include <reactphysics3d/mathematics/mathematics.h>
+#include "mathematics/mathematics.h"
 
 namespace reactphysics3d {
 

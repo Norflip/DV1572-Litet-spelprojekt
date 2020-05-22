@@ -27,13 +27,14 @@
 #define REACTPHYSICS3D_MAP_H
 
 // Libraries
-#include <reactphysics3d/memory/MemoryAllocator.h>
-#include <reactphysics3d/mathematics/mathematics_functions.h>
-#include <reactphysics3d/containers/Pair.h>
+#include "memory/MemoryAllocator.h"
+#include "mathematics/mathematics_functions.h"
+#include "containers/Pair.h"
 #include <cstring>
 #include <stdexcept>
 #include <functional>
 #include <limits>
+
 
 namespace reactphysics3d {
 
@@ -42,7 +43,7 @@ namespace reactphysics3d {
  * This class represents a simple generic associative map. This map is
  * implemented with a hash table.
   */
-template<typename K, typename V, class Hash = std::hash<K>, class KeyEqual = std::equal_to<K>>
+template<typename K, typename V>
 class Map {
 
     private:
@@ -122,7 +123,6 @@ class Map {
 
             // Compute the next larger prime size
             mCapacity = getPrimeSize(capacity);
-            assert(mCapacity >= 0);
 
             // Allocate memory for the buckets
             mBuckets = static_cast<int*>(mAllocator.allocate(mCapacity * sizeof(int)));
@@ -142,8 +142,6 @@ class Map {
             mNbUsedEntries = 0;
             mNbFreeEntries = 0;
             mFreeIndex = -1;
-
-            assert(size() >= 0);
         }
 
         /// Expand the capacity of the map
@@ -202,8 +200,6 @@ class Map {
             mCapacity = newCapacity;
             mBuckets = newBuckets;
             mEntries = newEntries;
-
-            assert(mCapacity >= 0);
         }
 
         /// Return the index of the entry with a given key or -1 if there is no entry with this key
@@ -211,12 +207,11 @@ class Map {
 
             if (mCapacity > 0) {
 
-               const size_t hashCode = Hash()(key);
+               size_t hashCode = std::hash<K>()(key);
                int bucket = hashCode % mCapacity;
-               auto keyEqual = KeyEqual();
 
                for (int i = mBuckets[bucket]; i >= 0; i = mEntries[i].next) {
-                   if (mEntries[i].hashCode == hashCode && keyEqual(mEntries[i].keyValue->first, key)) {
+                   if (mEntries[i].hashCode == hashCode && mEntries[i].keyValue->first == key) {
                        return i;
                    }
                }
@@ -243,6 +238,32 @@ class Map {
             }
 
             return number;
+        }
+
+        /// Clear and reset the map
+        void reset() {
+
+            // If elements have been allocated
+            if (mCapacity > 0) {
+
+                // Clear the map
+                clear();
+
+                // Destroy the entries
+                for (int i=0; i < mCapacity; i++) {
+                    mEntries[i].~Entry();
+                }
+
+                mAllocator.release(mBuckets, mCapacity * sizeof(int));
+                mAllocator.release(mEntries, mCapacity * sizeof(Entry));
+
+                mNbUsedEntries = 0;
+                mNbFreeEntries = 0;
+                mCapacity = 0;
+                mBuckets = nullptr;
+                mEntries = nullptr;
+                mFreeIndex = -1;
+            }
         }
 
     public:
@@ -375,8 +396,6 @@ class Map {
           :mNbUsedEntries(map.mNbUsedEntries), mNbFreeEntries(map.mNbFreeEntries), mCapacity(map.mCapacity),
            mBuckets(nullptr), mEntries(nullptr), mAllocator(map.mAllocator), mFreeIndex(map.mFreeIndex) {
 
-            assert(capacity() >= 0);
-
             if (mCapacity > 0) {
 
                 // Allocate memory for the buckets
@@ -386,7 +405,7 @@ class Map {
                 mEntries = static_cast<Entry*>(mAllocator.allocate(mCapacity * sizeof(Entry)));
 
                 // Copy the buckets
-                std::uninitialized_copy(map.mBuckets, map.mBuckets + mCapacity, mBuckets);
+                std::uninitialized_copy(map.mBuckets, map.mBuckets + mCapacity, mBuckets); 
 
                 // Copy the entries
                 for (int i=0; i < mCapacity; i++) {
@@ -398,17 +417,13 @@ class Map {
                        new (mEntries[i].keyValue) Pair<K,V>(*(map.mEntries[i].keyValue));
                     }
                 }
-
             }
-
-            assert(size() >= 0);
-            assert((*this) == map);
         }
 
         /// Destructor
         ~Map() {
 
-            clear(true);
+            reset();
         }
 
         /// Allocate memory for a given number of elements
@@ -439,18 +454,16 @@ class Map {
             }
 
             // Compute the hash code of the key
-            const size_t hashCode = Hash()(keyValue.first);
+            size_t hashCode = std::hash<K>()(keyValue.first);
 
             // Compute the corresponding bucket index
             int bucket = hashCode % mCapacity;
-
-            auto keyEqual = KeyEqual();
 
             // Check if the item is already in the map
             for (int i = mBuckets[bucket]; i >= 0; i = mEntries[i].next) {
 
                 // If there is already an item with the same key in the map
-                if (mEntries[i].hashCode == hashCode && keyEqual(mEntries[i].keyValue->first, keyValue.first)) {
+                if (mEntries[i].hashCode == hashCode && mEntries[i].keyValue->first == keyValue.first) {
 
                     if (insertIfAlreadyPresent) {
 
@@ -493,7 +506,6 @@ class Map {
                 mNbUsedEntries++;
             }
 
-            assert(size() >= 0);
             assert(mEntries[entryIndex].keyValue == nullptr);
             mEntries[entryIndex].hashCode = hashCode;
             mEntries[entryIndex].next = mBuckets[bucket];
@@ -519,14 +531,12 @@ class Map {
 
             if (mCapacity > 0) {
 
-                const size_t hashcode = Hash()(key);
+                size_t hashcode = std::hash<K>()(key);
                 int bucket = hashcode % mCapacity;
                 int last = -1;
-                auto keyEqual = KeyEqual();
-
                 for (int i = mBuckets[bucket]; i >= 0; last = i, i = mEntries[i].next) {
 
-                    if (mEntries[i].hashCode == hashcode &&  keyEqual(mEntries[i].keyValue->first, key)) {
+                    if (mEntries[i].hashCode == hashcode && mEntries[i].keyValue->first == key) {
 
                         if (last < 0 ) {
                            mBuckets[bucket] = mEntries[i].next;
@@ -562,20 +572,16 @@ class Map {
                 }
             }
 
-            assert(size() >= 0);
-
             // Return the end iterator
             return end();
         }
 
         /// Clear the map
-        void clear(bool releaseMemory = false) {
+        void clear() {
 
             if (mNbUsedEntries > 0) {
 
-                // Remove the key/value pair of each entry
                 for (int i=0; i < mCapacity; i++) {
-
                     mBuckets[i] = -1;
                     mEntries[i].next = -1;
                     if (mEntries[i].keyValue != nullptr) {
@@ -588,25 +594,6 @@ class Map {
                 mFreeIndex = -1;
                 mNbUsedEntries = 0;
                 mNbFreeEntries = 0;
-
-                assert(size() >= 0);
-            }
-
-            // If elements have been allocated
-            if (releaseMemory && mCapacity > 0) {
-
-                // Destroy the entries
-                for (int i=0; i < mCapacity; i++) {
-                    mEntries[i].~Entry();
-                }
-
-                // Release memory
-                mAllocator.release(mBuckets, mCapacity * sizeof(int));
-                mAllocator.release(mEntries, mCapacity * sizeof(Entry));
-
-                mCapacity = 0;
-                mBuckets = nullptr;
-                mEntries = nullptr;
             }
 
             assert(size() == 0);
@@ -614,7 +601,6 @@ class Map {
 
         /// Return the number of elements in the map
         int size() const {
-            assert(mNbUsedEntries - mNbFreeEntries >= 0);
             return mNbUsedEntries - mNbFreeEntries;
         }
 
@@ -633,13 +619,11 @@ class Map {
 
             if (mCapacity > 0) {
 
-               const size_t hashCode = Hash()(key);
+               size_t hashCode = std::hash<K>()(key);
                bucket = hashCode % mCapacity;
 
-               auto keyEqual = KeyEqual();
-
                for (int i = mBuckets[bucket]; i >= 0; i = mEntries[i].next) {
-                   if (mEntries[i].hashCode == hashCode && keyEqual(mEntries[i].keyValue->first, key)) {
+                   if (mEntries[i].hashCode == hashCode && mEntries[i].keyValue->first == key) {
                        entry = i;
                        break;
                    }
@@ -665,7 +649,6 @@ class Map {
             }
 
             if (entry == -1) {
-                assert(false);
                 throw std::runtime_error("No item with given key has been found in the map");
             }
 
@@ -726,14 +709,13 @@ class Map {
             // Check for self assignment
             if (this != &map) {
 
-                // Clear the map
-                clear(true);
+                // Reset the map
+                reset();
 
                 if (map.mCapacity > 0) {
 
                     // Compute the next larger prime size
                     mCapacity = getPrimeSize(map.mCapacity);
-                    assert(mCapacity >= 0);
 
                     // Allocate memory for the buckets
                     mBuckets = static_cast<int*>(mAllocator.allocate(mCapacity * sizeof(int)));
@@ -760,8 +742,6 @@ class Map {
                     mFreeIndex = map.mFreeIndex;
                 }
             }
-
-            assert(size() >= 0);
 
             return *this;
         }
@@ -794,15 +774,15 @@ class Map {
         }
 };
 
-template<typename K, typename V, class Hash, class KeyEqual>
-const int Map<K,V, Hash, KeyEqual>::PRIMES[NB_PRIMES] = {3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
+template<typename K, typename V>
+const int Map<K,V>::PRIMES[NB_PRIMES] = {3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
                              1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
                              17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437,
                              187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263,
                              1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559};
 
-template<typename K, typename V, class Hash, class KeyEqual>
-int Map<K,V, Hash, KeyEqual>::LARGEST_PRIME = -1;
+template<typename K, typename V>
+int Map<K,V>::LARGEST_PRIME = -1;
 
 }
 

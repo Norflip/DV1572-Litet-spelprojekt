@@ -28,11 +28,13 @@
 
 // Libraries
 #include <cassert>
-#include <reactphysics3d/mathematics/mathematics_functions.h>
-#include <reactphysics3d/decimal.h>
+#include "mathematics_functions.h"
+#include "decimal.h"
+
 
 /// ReactPhysics3D namespace
 namespace reactphysics3d {
+
 
 // Class Vector2
 /**

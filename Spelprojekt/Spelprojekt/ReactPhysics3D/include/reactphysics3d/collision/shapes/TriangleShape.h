@@ -27,8 +27,8 @@
 #define REACTPHYSICS3D_TRIANGLE_SHAPE_H
 
 // Libraries
-#include <reactphysics3d/mathematics/mathematics.h>
-#include <reactphysics3d/collision/shapes/ConvexPolyhedronShape.h>
+#include "mathematics/mathematics.h"
+#include "ConvexPolyhedronShape.h"
 
 /// ReactPhysics3D namespace
 namespace reactphysics3d {
@@ -87,11 +87,11 @@ class TriangleShape : public ConvexPolyhedronShape {
         /// Get a smooth contact normal for collision for a triangle of the mesh
         Vector3 computeSmoothLocalContactNormalForTriangle(const Vector3& localContactPoint) const;
 
-        /// Return true if a point is inside the collider
-        virtual bool testPointInside(const Vector3& localPoint, Collider* collider) const override;
+        /// Return true if a point is inside the collision shape
+        virtual bool testPointInside(const Vector3& localPoint, ProxyShape* proxyShape) const override;
 
         /// Raycast method with feedback information
-        virtual bool raycast(const Ray& ray, RaycastInfo& raycastInfo, Collider* collider,
+        virtual bool raycast(const Ray& ray, RaycastInfo& raycastInfo, ProxyShape* proxyShape,
                              MemoryAllocator& allocator) const override;
 
         /// Return the number of bytes used by the collision shape
@@ -107,16 +107,16 @@ class TriangleShape : public ConvexPolyhedronShape {
                                       const Transform& worldToOtherShapeTransform, decimal penetrationDepth, bool isTriangleShape1,
                                       Vector3& outNewLocalContactPointOtherShape, Vector3& outSmoothWorldContactTriangleNormal) const;
 
+    public:
+
+        // -------------------- Methods -------------------- //
+
         /// Constructor
         TriangleShape(const Vector3* vertices, const Vector3* verticesNormals,
                       uint shapeId, MemoryAllocator& allocator);
 
         /// Destructor
         virtual ~TriangleShape() override = default;
-
-    public:
-
-        // -------------------- Methods -------------------- //
 
         /// Deleted copy-constructor
         TriangleShape(const TriangleShape& shape) = delete;
@@ -128,7 +128,7 @@ class TriangleShape : public ConvexPolyhedronShape {
         virtual void getLocalBounds(Vector3& min, Vector3& max) const override;
 
         /// Return the local inertia tensor of the collision shape
-        virtual Vector3 getLocalInertiaTensor(decimal mass) const override;
+        virtual void computeLocalInertiaTensor(Matrix3x3& tensor, decimal mass) const override;
 
         /// Update the AABB of a body using its collision shape
         virtual void computeAABB(AABB& aabb, const Transform& transform) const override;
@@ -166,9 +166,6 @@ class TriangleShape : public ConvexPolyhedronShape {
         /// Return the centroid of the polyhedron
         virtual Vector3 getCentroid() const override;
 
-        /// Compute and return the volume of the collision shape
-        virtual decimal getVolume() const override;
-
         /// This method compute the smooth mesh contact with a triangle in case one of the two collision shapes is a triangle. The idea in this case is to use a smooth vertex normal of the triangle mesh
         static void computeSmoothTriangleMeshContact(const CollisionShape* shape1, const CollisionShape* shape2,
                                                      Vector3& localContactPointShape1, Vector3& localContactPointShape2,
@@ -183,8 +180,6 @@ class TriangleShape : public ConvexPolyhedronShape {
         friend class ConcaveMeshRaycastCallback;
         friend class TriangleOverlapCallback;
         friend class MiddlePhaseTriangleCallback;
-        friend class HeightFieldShape;
-        friend class CollisionDetectionSystem;
 };
 
 // Return the number of bytes used by the collision shape
@@ -222,12 +217,12 @@ inline void TriangleShape::getLocalBounds(Vector3& min, Vector3& max) const {
  *                    coordinates
  * @param mass Mass to use to compute the inertia tensor of the collision shape
  */
-inline Vector3 TriangleShape::getLocalInertiaTensor(decimal mass) const {
-    return Vector3(0, 0, 0);
+inline void TriangleShape::computeLocalInertiaTensor(Matrix3x3& tensor, decimal mass) const {
+    tensor.setToZero();
 }
 
 // Return true if a point is inside the collision shape
-inline bool TriangleShape::testPointInside(const Vector3& localPoint, Collider* collider) const {
+inline bool TriangleShape::testPointInside(const Vector3& localPoint, ProxyShape* proxyShape) const {
     return false;
 }
 
@@ -305,11 +300,6 @@ inline void TriangleShape::setRaycastTestType(TriangleRaycastSide testType) {
 inline std::string TriangleShape::to_string() const {
     return "TriangleShape{v1=" + mPoints[0].to_string() + ", v2=" + mPoints[1].to_string() + "," +
             "v3=" + mPoints[2].to_string() + "}";
-}
-
-// Compute and return the volume of the collision shape
-inline decimal TriangleShape::getVolume() const {
-    return decimal(0.0);
 }
 
 }
