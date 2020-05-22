@@ -47,6 +47,9 @@ public:
 	int GetCurrentScore() { return this->currentScore; }
 	void SortHighscore(std::string name[], int points[], int totalscores);
 	void UpdateHighscore(GUI* gui, int score);
+	void DisplayHighscore(GUI* gui);/*
+	GUIText** GetNames() { return displayNames; }
+	GUIText** GetPoints() { return displayPoints; }*/
 
 private:
 	DX11Handler* dxhandler;

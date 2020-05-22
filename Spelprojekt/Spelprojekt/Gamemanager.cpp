@@ -86,6 +86,58 @@ void Gamemanager::UpdateHighscore(GUI* gui, int score)
 	}	
 }
 
+void Gamemanager::DisplayHighscore(GUI* gui)
+{
+	GUIText* newHighscoreName[5];
+	for (int i = 0; i < 5; i++) {
+		newHighscoreName[i] = new GUIText(*displayNames[i]);
+		newHighscoreName[i]->SetFontSize({ 1.5f, 1.5f });
+	}
+
+	newHighscoreName[0]->SetPosition(210, 215);
+	newHighscoreName[1]->SetPosition(210, 265);
+	newHighscoreName[2]->SetPosition(210, 320);
+	newHighscoreName[3]->SetPosition(210, 373);
+	newHighscoreName[4]->SetPosition(210, 425);
+	
+	gui->AddGUIObject(newHighscoreName[0], "firstname");
+	gui->AddGUIObject(newHighscoreName[1], "secondname");
+	gui->AddGUIObject(newHighscoreName[2], "thirdname");
+	gui->AddGUIObject(newHighscoreName[3], "fourthname");
+	gui->AddGUIObject(newHighscoreName[4], "fifthname");
+
+	GUIText* newHighscore[5];
+	for (int i = 0; i < 5; i++) {
+		newHighscore[i] = new GUIText(*displayPoints[i]);
+		newHighscore[i]->SetFontSize({ 1.5f, 1.5f });
+	}
+
+	newHighscore[0]->SetPosition(415, 215);
+	newHighscore[1]->SetPosition(415, 265);
+	newHighscore[2]->SetPosition(415, 320);
+	newHighscore[3]->SetPosition(415, 373);
+	newHighscore[4]->SetPosition(415, 425);
+
+	gui->AddGUIObject(newHighscore[0], "firstscore");
+	gui->AddGUIObject(newHighscore[1], "secondscore");
+	gui->AddGUIObject(newHighscore[2], "thirdscore");
+	gui->AddGUIObject(newHighscore[3], "fourthscore");
+	gui->AddGUIObject(newHighscore[4], "fifthscore");
+
+	for (int i = 0; i < 5; i++) {
+		if (newHighscoreName[i]->GetString() == "LATEST") {
+			newHighscoreName[i]->SetFontColor({ 0,1,0,1 });
+			newHighscore[i]->SetFontColor({ 0,1,0,1 });
+		}
+		else {
+			newHighscoreName[i]->SetFontColor({ 1,0,0,1 });
+			newHighscore[i]->SetFontColor({ 1,0,0,1 });
+		}
+	}
+	
+
+}
+
 void Gamemanager::SortHighscore(std::string name[], int points[], int totalscores)
 {
 	for (int i = 0; i < totalscores; i++)
