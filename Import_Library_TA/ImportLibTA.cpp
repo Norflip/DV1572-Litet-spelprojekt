@@ -27,24 +27,29 @@ namespace ImportLibTA
 		std::cout << std::endl;
 		std::cout << std::endl;
 
-		ReadMeshHeader RMHeader[2];
+		//ReadMeshHeader RMHeader[2];
 		//ReadMeshHeader* *RMHeader = new ReadMeshHeader*[RSHeader.nrOfMeshes];
-		reader.read((char*)&RMHeader, sizeof(ReadMeshHeader) * RSHeader.nrOfMeshes);
+
+		//ReadMeshHeader* meshHeaderPtr = (ReadMeshHeader*)malloc(sizeof(ReadMeshHeader) * RSHeader.nrOfMeshes);
+
+		ReadMeshHeader* meshHeaderPtr = new ReadMeshHeader[RSHeader.nrOfMeshes];
+
+		reader.read((char*)&meshHeaderPtr, sizeof(ReadMeshHeader) * RSHeader.nrOfMeshes);
 
 		for (int i = 0; i < RSHeader.nrOfMeshes; i++) {
 			std::cout << "Mesh " << meshCounter << std::endl;
-			std::cout << RMHeader[i].meshIndex << std::endl;
-			std::cout << RMHeader[i].meshName << std::endl;
-			std::cout << RMHeader[i].nrOfPolygons << std::endl;
-			std::cout << RMHeader[i].nrOfMaterials << std::endl;
+			std::cout << meshHeaderPtr[i].meshIndex << std::endl;
+			std::cout << meshHeaderPtr[i].meshName << std::endl;
+			std::cout << meshHeaderPtr[i].nrOfPolygons << std::endl;
+			std::cout << meshHeaderPtr[i].nrOfMaterials << std::endl;
 			std::cout << std::endl;
 			std::cout << std::endl;
 
 			meshCounter++;
 			ReadVertexHeader RVHeader[21]; // behöver nå sätt att dynamsikt sätta värden här. bör vara RMHeader[i].nrOfPolygons ( 21 polygoner totalt, 12 på den ena, 9 på den andra)
-			reader.read((char*)&RVHeader, sizeof(ReadVertexHeader) * RMHeader[i].nrOfPolygons);
+			reader.read((char*)&RVHeader, sizeof(ReadVertexHeader) * meshHeaderPtr[i].nrOfPolygons);
 
-			for (int k = 0; k < RMHeader[i].nrOfPolygons; k++) {
+			for (int k = 0; k < meshHeaderPtr[i].nrOfPolygons; k++) {
 				std::cout << "Polygon " <<polygonCounter<< std::endl << std::endl;
 				std::cout << "Position" << std::endl;
 				for (int j = 0; j < 3; j++){
