@@ -166,7 +166,8 @@ void DevScene::Load()
 	// ------ WEAPONS
 	AssimpHandler::AssimpData coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
 
-	// Coconuts
+	
+	// ------ COCOSNUT
 	for (int i = 0; i < 11; i++) {
 		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, gamemanager); 
 		this->coconuts[i]->SetLayer(ObjectLayer::Projectile);
@@ -281,8 +282,8 @@ void DevScene::Update(const float& deltaTime)
 		player->UpdateHands(i);
 	//
 
+	// Display enemies left and points
 	totalEnemies->SetString(std::to_string(this->spawnObjects->GetEnemiesLeftToEliminate()));
-
 	totalScore->SetString(std::to_string(player->GetPoints()));
 		
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
@@ -295,6 +296,7 @@ void DevScene::Update(const float& deltaTime)
 
 	gametimerText->SetString("Time until extraction: " + std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd))));
 	
+	
 	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f)
 	{
 		arrow->SetVisible(true);
@@ -305,13 +307,19 @@ void DevScene::Update(const float& deltaTime)
 
 	if (player->GetPlayerHealth() <= 0.0f)
 	{
+		// SET CURRENTSCORE TO GAMEMANAGER
+		gamemanager->SetCurrentScore(player->GetPoints() - 50);
+
 		gametimerText->SetString("You lost");
 		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(false);
 	}
 
 	if (canWin && player->GetWorldBounds().Overlaps(this->player->GetWinArea()->GetWorldBounds()))
-	{
+	{	
+		// SET CURRENTSCORE TO GAMEMANAGER
+		gamemanager->SetCurrentScore(player->GetPoints() + 30);	// Different extra points for different difficulties
+
 		gametimerText->SetString("You won");
 		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(true);
@@ -335,7 +343,6 @@ void DevScene::CreateSceneObjects()
 {
 
 	Shader* billboard = new Shader();
-
 
 	billboard->LoadVertexShader(L"Shaders/Billboard_vs.hlsl", "main", dx11.GetDevice());
 	billboard->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());

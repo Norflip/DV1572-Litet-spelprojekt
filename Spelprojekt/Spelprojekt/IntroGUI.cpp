@@ -36,6 +36,11 @@ void IntroGUI::Update()
             LoadSoundtracks();
         Soundtracks();
         break;
+    case Menu::highscore:
+        if (first)
+            LoadHighscore();
+        Highscore();
+        break;
     case Menu::quit:
         if (first)
             LoadQuit();
@@ -135,6 +140,15 @@ void IntroGUI::Start()
         first = true;
     }
 
+    // HIGHSCORE
+    GUISprite* highscore = static_cast<GUISprite*>(gui->GetGUIList()->at("highscore"));
+    if (highscore->Clicked(input))
+    {
+        //ClearGUI();
+        menu = Menu::highscore;
+        first = true;
+    }
+
     GUISprite* quit = static_cast<GUISprite*>(gui->GetGUIList()->at("quit"));
     if (quit->Clicked(input))
     {
@@ -169,6 +183,15 @@ void IntroGUI::Start()
         soundtrack->SetWICSprite(dx11, "Sprites/soundtracks.png");
     }
 
+    // Highscore
+    if (highscore->MouseOver(input)) {
+        highscore->SetWICSprite(dx11, "Sprites/highscore_mouseover.png");
+    }
+    else {
+        highscore->SetWICSprite(dx11, "Sprites/highscore.png");
+    }
+       
+
     //quit
     if (quit->MouseOver(input)) {
         quit->SetWICSprite(dx11, "Sprites/quit_mouseover.png");
@@ -183,10 +206,12 @@ void IntroGUI::LoadStart()
     ClearGUI();
     
     //LOAD ALL GUI OBJECTS FOR START, ONCE
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 200.0f), "play");    
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 300.0f), "options");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/soundtracks.png", 100.0f, 400.0f), "soundtracks");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 100.0f), "play");    
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 200.0f), "options");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/soundtracks.png", 100.0f, 300.0f), "soundtracks");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/highscore.png", 100.0f, 400.0f), "highscore");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/quit.png", 100.0f, 500.0f), "quit");
+
     first = false;
 }
 
@@ -629,6 +654,44 @@ void IntroGUI::LoadSoundtracks()
     GUISprite* cupsong = new GUISprite(dx11, "Sprites/cupsong.png", 200.0f, 340.0f);
     gui->AddGUIObject(cupsong, "cupsong");
     
+    GUISprite* backtomenu = new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f);
+    gui->AddGUIObject(backtomenu, "goback");
+
+    first = false;
+}
+
+void IntroGUI::Highscore()
+{
+    GUISprite* backtoint = static_cast<GUISprite*>(gui->GetGUIList()->at("goback"));
+
+    if (backtoint->Clicked(input)) {
+        first = true;
+        menu = Menu::start;
+    }
+
+    // mouseover
+    if (backtoint->MouseOver(input))
+    {
+        backtoint->SetWICSprite(dx11, "Sprites/backtointro_mouseover.png");
+    }
+    else {
+        backtoint->SetWICSprite(dx11, "Sprites/backtointro.png");
+    }
+    
+}
+
+void IntroGUI::LoadHighscore()
+{
+    ClearGUI();
+    GUISprite* highscoretitle = new GUISprite(dx11, "Sprites/highscoretitle.png", 90.0f, 65.0f);
+    gui->AddGUIObject(highscoretitle, "highscoretitle");
+
+    GUISprite* highscoreframe = new GUISprite(dx11, "Sprites/highscorelistframe.png", 80.0f, 150.0f);
+    gui->AddGUIObject(highscoreframe, "highscoreframe");
+
+    gamemanager->DisplayHighscore(gui);
+
+
     GUISprite* backtomenu = new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f);
     gui->AddGUIObject(backtomenu, "goback");
 
