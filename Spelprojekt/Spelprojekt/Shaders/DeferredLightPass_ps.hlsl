@@ -191,10 +191,9 @@ float4 main(PixelInputType input) : SV_TARGET
 			}
 		}
 
-		visibility = saturate(0.3f + visibility);
-
-		//visibility = clamp(visibility, 0.1f, 1.0f);
+		visibility = saturate(0.2f + visibility);
 	}
+
 
 	//return  max(1.055 * pow(C_lin, 0.416666667) - 0.055, 0);
 
