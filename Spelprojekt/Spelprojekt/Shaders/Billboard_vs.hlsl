@@ -23,9 +23,9 @@ VS_OUTPUT main(VS_INPUT input)
 	output.uv = input.uv;
 
 	//Fuck this line of code in particular
-	float3 testPos = objCentre + (input.position.x * cameraRight * 3) + (input.position.y * cameraUp * 3);
+	float3 testPos = (objCentre + (input.position.x * cameraRight * 1) + (input.position.y * cameraUp * 1));
 
-	output.position = mul(float4(testPos, 1), mvp);
+	output.position = mul(float4(testPos, 1), vp);
 	output.worldPosition = mul(input.position, world).xyz;
 
 	output.tangent = normalize(mul(input.tangent, world).xyz);

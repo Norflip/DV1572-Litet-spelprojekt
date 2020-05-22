@@ -11,7 +11,7 @@ struct WorldData
 	DirectX::XMMATRIX world;
 	DirectX::XMMATRIX invWorld;
 	DirectX::XMMATRIX invView;
-
+	DirectX::XMMATRIX vp;
 	DirectX::XMFLOAT3 centre;
 	float pad0;
 	DirectX::XMFLOAT3 cameraRight;

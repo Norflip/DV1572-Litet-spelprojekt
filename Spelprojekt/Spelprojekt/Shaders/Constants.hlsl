@@ -7,7 +7,7 @@ cbuffer WorldConstantBuffer : register(b0)
 	matrix world;
 	matrix invWorld;
 	matrix invView;
-
+	matrix vp;
 	float3 objCentre;
 	float wvb_pad0;
 

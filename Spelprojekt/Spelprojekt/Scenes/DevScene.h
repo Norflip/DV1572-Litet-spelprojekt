@@ -85,7 +85,7 @@ private:
 
 	SpawnObjects* spawnObjects;
 	Object* arrow;
-
+	Object* billBoard;
 	const aiScene* assimpScene;
 	Assimp::Importer imp;
 };
