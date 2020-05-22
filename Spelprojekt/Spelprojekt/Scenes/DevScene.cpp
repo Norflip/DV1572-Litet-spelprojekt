@@ -249,9 +249,10 @@ void DevScene::Unload()
 
 void DevScene::Update(const float& deltaTime)
 {	
+
 	this->cameraFocusPosition = player->GetTransform().GetPosition();
 	Scene::Update(deltaTime);
-
+	billBoard->GetTransform().SetPosition({ player->GetTransform().GetPosition().m128_f32[0],player->GetTransform().GetPosition().m128_f32[1]+6, player->GetTransform().GetPosition().m128_f32[2] });
 
 	float seconds = (float)gametimer.getSecondsElapsed();
 
@@ -342,15 +343,17 @@ Scene* DevScene::GetNextScene() const
 void DevScene::CreateSceneObjects()
 {
 
-	Shader* billboard = new Shader();
+	Shader* billboardShader = new Shader();
 
-	billboard->LoadVertexShader(L"Shaders/Billboard_vs.hlsl", "main", dx11.GetDevice());
-	billboard->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
-	Object* plane = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/QuadInv.fbx", dx11, billboard));
-	plane->GetTransform().Translate(33,31, 31);
-	plane->GetTransform().Scale(1, 1, 1);
-	plane->GetTransform().SetRotation({ 0,0, 0 });
-	AddObject(plane);
+
+	billboardShader->LoadVertexShader(L"Shaders/Billboard_vs.hlsl", "main", dx11.GetDevice());
+	billboardShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+
+	billBoard = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/QuadInv.fbx", dx11, billboardShader));
+	billBoard->GetTransform().Translate(55, 12, 55);
+	billBoard->GetTransform().Scale(1, 1, 1);
+	billBoard->GetTransform().SetRotation({ 0,0, 0 });
+	AddObject(billBoard);
 
 	if (true)
 	{
