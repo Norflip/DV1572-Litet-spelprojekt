@@ -310,6 +310,7 @@ void DevScene::CreateSceneObjects()
 	positions.push_back(DirectX::XMFLOAT3(33, 33, 33));
 	positions.push_back(DirectX::XMFLOAT3(35, 35, 35));
 	MeshCreator::MakeMeshInstanced(plane->GetMesh(), positions, dx11.GetDevice());
+	plane->isInstanced = true;
 	AddObject(plane);
 
 	if (true)

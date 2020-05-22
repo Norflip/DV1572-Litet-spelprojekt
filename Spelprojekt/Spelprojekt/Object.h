@@ -57,7 +57,7 @@ public:
 	/*int getVerterxCount();
 	int GetInstanceCount();*/
 	bool isWater = false;
-	
+	bool isInstanced = false;
 private:
 
 	Transform transform;

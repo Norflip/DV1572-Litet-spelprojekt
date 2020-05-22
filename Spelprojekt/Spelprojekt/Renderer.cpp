@@ -140,7 +140,10 @@ void Renderer::DrawMeshInstanced(Mesh* mesh)
 	ID3D11Buffer* bufferPointers[2];
 
 	strides[0] = sizeof(MeshVertex);
-	strides[1] = sizeof(DirectX::XMFLOAT3);
+	//std::cout << sizeof(DirectX::XMFLOAT3);
+
+
+	strides[1] = sizeof(DirectX::XMFLOAT3)*4; // according to https://stackoverflow.com/questions/19500901/c-directx11-execution-warning-355-and-356-incorrect-stride-size
 	offsets[0] = 0;
 	offsets[1] = 0;
 	bufferPointers[0] = mesh->vertexBuffer;

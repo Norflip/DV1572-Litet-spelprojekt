@@ -90,6 +90,36 @@ void Shader::LoadVertexShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device)
 	HRESULT vsInputLayoutResult = device->CreateInputLayout(INPUT_LAYOUT_V_UV_N_T, ARRAYSIZE(INPUT_LAYOUT_V_UV_N_T), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &inputLayout);
 	assert(SUCCEEDED(vsInputLayoutResult));
 }
+void Shader::LoadVertexShaderInstanced(LPCWSTR path, LPCSTR entry, ID3D11Device* device)
+{
+	ID3DBlob* errorBlob = nullptr;
+	ID3DBlob* vertexShaderBlob = nullptr;
+
+	HRESULT	vertShaderSucc = D3DCompileFromFile
+	(
+		path,
+		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		entry,
+		"vs_5_0",
+		0,
+		0,
+		&vertexShaderBlob,
+		&errorBlob
+	);
+
+	if (FAILED(vertShaderSucc) && errorBlob)
+	{
+		PrintShaderError(errorBlob);
+		errorBlob->Release();
+	}
+
+	HRESULT vsCompileResult = device->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), nullptr, &this->vertexShader);
+	assert(SUCCEEDED(vsCompileResult));
+
+	HRESULT vsInputLayoutResult = device->CreateInputLayout(INPUT_LAYOUT_V_UV_N_T, ARRAYSIZE(INPUT_LAYOUT_V_UV_N_T), vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &inputLayout);
+	assert(SUCCEEDED(vsInputLayoutResult));
+}
 
 void Shader::Bind(ID3D11DeviceContext* context)
 {

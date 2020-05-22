@@ -11,7 +11,9 @@ constexpr D3D11_INPUT_ELEMENT_DESC INPUT_LAYOUT_V_UV_N_T[] =
 	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,	 0, D3D11_INPUT_PER_VERTEX_DATA, 0},		// 0 + 12 b = 12 b		// D3D11_APPEND_ALIGNED_ELEMENT
 	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0,	12, D3D11_INPUT_PER_VERTEX_DATA, 0},		// 12 + 8 b = 20 b		
 	{"NORMAL",	 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,	20, D3D11_INPUT_PER_VERTEX_DATA, 0},		// 20 + 12 b = 32b
-	{"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT,  0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0}			// 32 + 12 b = 44b
+	{"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT,  0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},		// 32 + 12 b = 44b
+	{"INSTANCEPOS", 0, DXGI_FORMAT_R32G32_FLOAT,    1,	0, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+	
 };
 
 class Shader
@@ -27,6 +29,7 @@ public:
 	ID3D11PixelShader* GetPixelShader() const { return this->pixelShader; }
 	
 	void LoadVertexShader(LPCWSTR path, LPCSTR entry, ID3D11Device* device);
+	void LoadVertexShaderInstanced(LPCWSTR path, LPCSTR entry, ID3D11Device* device);
 	ID3D11VertexShader* GetVertexShader() const { return this->vertexShader; }
 	ID3D11InputLayout* GetInputLayout() const { return this->inputLayout; }
 

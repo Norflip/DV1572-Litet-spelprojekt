@@ -65,6 +65,11 @@ void Object::Render(Renderer* renderer, DirectX::XMMATRIX view, DirectX::XMMATRI
 	DirectX::XMFLOAT3 centre = { 0,0,0 };
 	DirectX::XMStoreFloat3(&centre, this->transform.GetPosition());
 
-	if(IsVisible())
+	if (isInstanced)
+	{
+		renderer->DrawMeshInstanced(mesh, transform.GetWorldMatrix(), view, projection, right, up, centre);
+	}
+	else if(IsVisible())
 		renderer->DrawMesh(mesh, transform.GetWorldMatrix(), view, projection, right, up, centre);
+	
 }
