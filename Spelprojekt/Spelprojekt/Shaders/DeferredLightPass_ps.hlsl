@@ -196,5 +196,8 @@ float4 main(PixelInputType input) : SV_TARGET
 		//visibility = clamp(visibility, 0.1f, 1.0f);
 	}
 
-	return finalColor * ssaoResult *visibility;;
+	//return  max(1.055 * pow(C_lin, 0.416666667) - 0.055, 0);
+
+	float gamma = 2.2f;
+	return saturate(pow(finalColor, 1.0f / gamma) * ssaoResult * visibility);
 }
