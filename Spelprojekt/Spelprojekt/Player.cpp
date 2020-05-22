@@ -26,6 +26,7 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->arrow = nullptr;
 
 	this->points = 0;
+		
 }
 
 Player::~Player()
@@ -231,7 +232,8 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			weapon->Use();
 			//activeWeapon = nullptr;
 		}
-		else {
+		else {			
+			weapon->PlayBreaksound();
 			weapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());
 			weapon->direction = GetTransform().GetRotation();
 			weapon->PlaySoundEffect();

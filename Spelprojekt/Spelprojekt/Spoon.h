@@ -17,10 +17,11 @@ public:
 	void MeleeAttack(float deltaTime);
 	void FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);	
 	void PlaySoundEffect() override { gamemanager->GetSoundeffectHandler()->PlaySound("Swooshsound", gamemanager->GetCurrentSoundVolume()); }
-
+	void PlayBreaksound() override { gamemanager->GetSoundeffectHandler()->PlaySound("Break", gamemanager->GetCurrentSoundVolume()); }
 	void Use() override { this->used++; };
 	int CheckUsage() override { return this->used; }
 private:	
+
 	//int movementspeeds = 3;
 	Gamemanager* gamemanager;
 };

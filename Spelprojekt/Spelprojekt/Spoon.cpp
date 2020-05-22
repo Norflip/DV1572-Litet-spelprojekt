@@ -19,6 +19,8 @@ Spoon::Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandle
 	this->gamemanager = gamemanager;
 	this->gamemanager->GetSoundeffectHandler()->LoadSound("Swooshsound", "SoundEffects/Swoosh.wav");
 
+	this->gamemanager->GetSoundeffectHandler()->LoadSound("Break", "SoundEffects/spoonbreak.wav");
+
 	this->used = 0;
 }
 

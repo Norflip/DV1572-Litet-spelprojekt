@@ -22,6 +22,7 @@ public:
 	virtual GUIActionbar* GetWeaponSprite() { return this->weaponSprite; }	
 	virtual std::string GetWeaponTypename() { return this->WeaponTypeName; } 		
 	virtual void PlaySoundEffect() {}
+	virtual void PlayBreaksound()  {}
 	virtual int CheckUsage() { return this->used; }
 	virtual void Use() {};
 

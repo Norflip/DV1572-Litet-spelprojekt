@@ -84,6 +84,14 @@ void EndGUI::LoadStart()
     
     if (currentScene->getWinOrLose() == true) {
        winLose = new GUISprite(dx11, "Sprites/Glassbokal_Win.png", 0.0f, 0.0f);
+       this->gamemanager->GetMusicHandler()->StopSound();
+       this->gamemanager->GetMusicHandler()->DeleteTrack("Levelsound");
+
+       if (!playedOnce) {
+           this->gamemanager->GetSoundeffectHandler()->LoadSound("Win", "SoundEffects/tadaWin.wav");
+           this->gamemanager->GetSoundeffectHandler()->PlaySound("Win", gamemanager->GetCurrentSoundVolume());
+           playedOnce = true;
+       }
 
     }
     else {
