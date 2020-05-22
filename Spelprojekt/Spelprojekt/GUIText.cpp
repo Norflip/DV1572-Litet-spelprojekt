@@ -17,7 +17,7 @@ GUIText::GUIText(DX11Handler& dx11, const std::string& display, float x, float y
 	this->x = x;
 	this->y = y;
 	this->SetString(display);
-	this->spriteFont = new DirectX::SpriteFont(dx11.GetDevice(), L"SpriteFonts/comic_sans_ms_16.spritefont");
+	this->spriteFont = new DirectX::SpriteFont(dx11.GetDevice(),  L"SpriteFonts/comic_sans_ms_16.spritefont");
 	this->fontColor = DirectX::Colors::White;
 	this->fontSize = DirectX::XMFLOAT2(1.0f, 1.0f);
 }

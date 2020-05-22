@@ -31,6 +31,9 @@ bool Input::GetKeyDown(const char& c) const
 {
 	if(keyboardState[tolower(c)].state && !keyboardState[tolower(c)].previousState != 0)
 		std::cout << keyboardState[tolower(c)].state && !keyboardState[tolower(c)].previousState;
+
+
+
 	return keyboardState[tolower(c)].state && !keyboardState[tolower(c)].previousState;
 }
 
@@ -159,6 +162,10 @@ void Input::HandleMessage(UINT umsg, WPARAM wParam, LPARAM lParam)
 void Input::UpdateState()
 {
 	mouseDelta = { 0,0 };
+	
+	while (!keyqueue.empty())
+		keyqueue.pop();
+	
 
 	for (size_t i = 0; i < 256; i++)
 		keyboardState[i].previousState = keyboardState[i].state;
@@ -170,8 +177,10 @@ void Input::UpdateState()
 	{
 		KeyboardEvent keyboardEvent = keyboardBuffer.front();
 		keyboardBuffer.pop();
-
 		keyboardState[keyboardEvent.key].state = keyboardEvent.state;
+
+		if (GetKeyDown(keyboardEvent.key))
+			keyqueue.push(keyboardEvent.key);
 	}
 
 	while (!mouseBuffer.empty())
@@ -190,6 +199,18 @@ void Input::UpdateState()
 			mouseDelta = mouseEvent.pt;
 		}
 	}
+}
+
+char Input::PullKeyChar()
+{
+	if (keyqueue.empty())
+	{
+		char key = keyqueue.front();
+		keyqueue.pop();
+		return key;
+	}
+
+	return 0;
 }
 
 void Input::SetKeyState(char key, bool state)

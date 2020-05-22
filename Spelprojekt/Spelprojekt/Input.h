@@ -60,6 +60,9 @@ public:
 	bool IsCursorLocked() const { return this->lockCursor; }
 	void HandleMessage (UINT umsg, WPARAM wParam, LPARAM lParam);
 	void UpdateState();
+	
+	bool KeyQueueIsEmpty() const { return this->keyqueue.empty(); }
+	char PullKeyChar();
 
 private:
 	void SetKeyState(char key, bool state);
@@ -71,6 +74,7 @@ private:
 	bool lockCursor;
 	POINTS current_mpos;
 	POINTS mouseDelta;
+	std::queue<char> keyqueue;
 
 	// mouse 
 	std::queue<MouseEvent> mouseBuffer;

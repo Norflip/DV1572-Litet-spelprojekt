@@ -14,6 +14,10 @@ SoundHandler::SoundHandler()
 	assert(SUCCEEDED(hr));
 }
 
+SoundHandler::~SoundHandler()
+{
+}
+
 void SoundHandler::LoadSound(std::string key, std::string filePath)
 {
 	std::wstring convertString(filePath.begin(), filePath.end());
@@ -67,4 +71,14 @@ void SoundHandler::StopSound()
 		delete soundMap[key];
 	}*/
 		
+}
+
+void SoundHandler::DeleteTrack(std::string key)
+{
+	if (HasKey(key))
+	{
+		//soundEffect = new DirectX::SoundEffect(audioEngine, convertString.c_str());
+		soundMap.erase( key );
+	}
+
 }

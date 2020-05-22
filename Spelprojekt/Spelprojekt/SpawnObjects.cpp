@@ -16,7 +16,7 @@
 //
 //}
 
-SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player, SoundHandler* soundeffect) : Object(ObjectLayer::None, mesh, material), dx11(dx11)
+SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player, Gamemanager* gamemanager) : Object(ObjectLayer::None, mesh, material), dx11(dx11)
 {
 	this->dx11 = dx11;
 	this->scene = scene;
@@ -26,8 +26,9 @@ SpawnObjects::SpawnObjects(DX11Handler& dx11, Scene* scene, Terrain* terrain, Me
 	this->player = player;
 	this->testEnemy = nullptr;
 	this->enemy = nullptr;
-	this->soundeffects = soundeffect;
 	SetVisible(false);
+	this->enemiesToEliminate = 0;
+	this->gamemanager = gamemanager;
 }
 
 void SpawnObjects::Update(const float& deltaTime)
@@ -46,7 +47,7 @@ void SpawnObjects::SetEnemy()
 {
 	AssimpHandler::AssimpData enemyModel = AssimpHandler::loadFbxObject("Models/IcecreamEnemy.fbx", dx11, material->GetShader());
 
-	testEnemy = new Enemy(enemyModel, terrain, dx11, soundeffects);
+	testEnemy = new Enemy(enemyModel, terrain, dx11, gamemanager);
 	testEnemy->GetTransform().Translate(30, 7, 35);
 	testEnemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	testEnemy->SetTarget(player);
@@ -93,6 +94,8 @@ void SpawnObjects::UpdateRemoveEnemy()
 			if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(i->GetWorldBounds()))
 			{
 				i->HitSound();
+				enemiesToEliminate--;
+				player->IncreasePoints(i->GivePoints());
 				scene->RemoveObject(i);
 				RemoveEnemy(i);
 				scene->RemoveObject(player->GetActiveWeapon());
@@ -123,4 +126,10 @@ Enemy* SpawnObjects::GetEnemy()
 void SpawnObjects::SetSpawnedEnemies(int spawnedEnemies)
 {
 	this->spawnedEnemies = spawnedEnemies;
+}
+
+void SpawnObjects::SetEnemiesToEliminate(int nrOfenemies)
+{
+	this->enemiesToEliminate = nrOfenemies;
+
 }

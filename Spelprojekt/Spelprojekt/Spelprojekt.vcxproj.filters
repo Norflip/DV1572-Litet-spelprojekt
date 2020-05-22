@@ -138,6 +138,18 @@
     <ClCompile Include="SSAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Gamemanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>  
+    <ClCompile Include="Skeleton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Joint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -278,6 +290,18 @@
     <ClInclude Include="SSAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Gamemanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Skeleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Joint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\Constants.hlsl">
@@ -320,6 +344,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\SSAO_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Billboard_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #include "Projectile.h"
 
-Projectile::Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData modelData, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, SoundHandler* soundeffect)
+Projectile::Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData modelData, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, Gamemanager* gamemanager)
 {	
 	GetTransform().SetPosition(position);
 	GetTransform().SetRotation(rotation);
@@ -15,8 +15,9 @@ Projectile::Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, As
 	this->attack = false;
 	this->damage = 10.0f;
 	this->WeaponTypeName = "Coconut";
-	this->weaponSound = soundeffect;
-	this->weaponSound->LoadSound("Explo", "SoundEffects/Explo1.wav");
+
+	this->gamemanager = gamemanager;
+	this->gamemanager->GetSoundeffectHandler()->LoadSound("Explosion", "SoundEffects/Explo1.wav");
 }
 
 Projectile::Projectile(const Projectile& other)
@@ -31,7 +32,9 @@ Projectile::Projectile(const Projectile& other)
 	this->attack = false;
 	this->damage = other.damage;
 	WeaponTypeName = other.WeaponTypeName;
-	this->weaponSound = other.weaponSound;
+
+	this->gamemanager = other.gamemanager;
+	this->gamemanager->GetSoundeffectHandler()->LoadSound("Explosion", "SoundEffects/Explo1.wav");	// kanske tabort
 }
 
 

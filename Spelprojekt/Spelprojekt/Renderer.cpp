@@ -57,16 +57,28 @@ void Renderer::ClearRenderTarget()
 		dx11.GetContext()->ClearDepthStencilView(currentRenderTarget->GetDepthStencil(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
-void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
+void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, DirectX::XMFLOAT3 right, DirectX::XMFLOAT3 up, DirectX::XMFLOAT3 centre)
 {
 	// update the world buffer content
 	cb_world.mvp = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMMatrixMultiply(world, view), projection));
 	cb_world.world = DirectX::XMMatrixTranspose(world);
 	cb_world.time = static_cast<float>(timer.GetMilisecondsElapsed()) / 1000.0f;
+	cb_world.cameraRight = right;
+	cb_world.cameraUp = up;
+	cb_world.centre = centre;
 	cb_world.invView = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, view));
 	cb_world.invWorld = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, world));
 	//cb_world.shadowTransform = DirectX::XMMatrixTranspose(world);// *lights.tShadowTransform);
 
+
+
+	if (mesh->skeleton && mesh->skeleton->animations.size() > 0)
+	{
+		for (int i = 0; i < mesh->skeleton->GetNumberOfBones(); i++)
+		{
+			cb_world.boneTransforms[i] = mesh->skeleton->GetCurrentAnimation()->GetBone(i).GetFinalTransformation((unsigned int)mesh->skeleton->GetKeyframe());
+		}
+	}
 
 
 	dx11.GetContext()->UpdateSubresource(worldBuffer_ptr, 0, 0, &cb_world, 0, 0);
@@ -92,7 +104,13 @@ void Renderer::ShadowPass(DirectX::XMVECTOR focus, const AABB& bounds, Camera* c
 	for (auto object : objects)
 	{
 		if (object->IsEnabled())
-			object->Render(this, lights.tShadowTransform, sunCamera->GetView(), sunCamera->GetOrthographic());
+		{
+			DirectX::XMFLOAT3 right;
+			DirectX::XMStoreFloat3(&right, DirectX::XMVector3Normalize(camera->GetTransform().Right()));
+			DirectX::XMFLOAT3 up;
+			DirectX::XMStoreFloat3(&up, DirectX::XMVector3Normalize(camera->GetTransform().Up()));
+			object->Render(this, sunCamera->GetView(), sunCamera->GetOrthographic(), right, up);
+		}
 	}
 
 	// BIND AND STUFF

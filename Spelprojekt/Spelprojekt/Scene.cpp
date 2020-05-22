@@ -62,7 +62,7 @@ void Scene::Render()
 	renderer->ClearRenderTarget();
 
 	std::vector<Object*> inView = entities.AllEntities();
-	std::sort(inView.begin(), inView.end(), m_CompareRenderList); // O(N·log(N))
+	std::sort(inView.begin(), inView.end(), m_CompareRenderList); // O(Nï¿½log(N))
 
 	DirectX::XMMATRIX view = camera->GetView();
 	DirectX::XMMATRIX projection = camera->GetProjection();
@@ -91,8 +91,11 @@ void Scene::Render()
 			material->Bind(dx11.GetContext());
 			lastMaterialID = material->GetID();
 		}
-
-		i->Render(renderer, DirectX::XMMatrixIdentity(), view, projection);
+		DirectX::XMFLOAT3 right;
+		DirectX::XMStoreFloat3(&right, DirectX::XMVector3Normalize(camera->GetTransform().Right()));
+		DirectX::XMFLOAT3 up;
+		DirectX::XMStoreFloat3(&up, DirectX::XMVector3Normalize(camera->GetTransform().Up()));
+		i->Render(renderer, view, projection, right,up);
 	}
 
 	//UpdateAddRemoveSceneQueues();

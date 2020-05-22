@@ -28,14 +28,15 @@ class DevScene : public Scene
 
 public:
 	
-	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, SoundHandler*, SoundHandler*);
+	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, Gamemanager* gamemanager);
 	virtual ~DevScene();
 
 	void Load() override;
 	void Unload() override;
 
 	void Update(const float& deltaTime) override;
-		
+	void FixedUpdate(const float& fixedDeltaTime) override;
+
 	// update time function?
 	Scene* GetNextScene() const override;
 
@@ -50,15 +51,17 @@ public:
 private:
 	CameraController* controller;
 
-	// Sounds
-	SoundHandler* levelMusic;
-	SoundHandler* soundeffects;
-	/////////////////////
+	Gamemanager* gamemanager;
 
 	GUIText* gametimerText;
 	GUIText* fpsText;
 	GUISprite* healthFrame;
-		
+	GUISprite* score;
+	GUIText* totalScore;
+	GUISprite* enemies;
+	GUIText* totalEnemies;
+	int totalEnemiesLeft = 10;
+
 	GUIActionbar* actionbarLeft;
 	GUIActionbar* actionbarRight;
 
@@ -82,4 +85,7 @@ private:
 
 	SpawnObjects* spawnObjects;
 	Object* arrow;
+
+	const aiScene* assimpScene;
+	Assimp::Importer imp;
 };

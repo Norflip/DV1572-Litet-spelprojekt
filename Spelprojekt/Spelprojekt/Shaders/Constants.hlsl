@@ -8,8 +8,20 @@ cbuffer WorldConstantBuffer : register(b0)
 	matrix invWorld;
 	matrix invView;
 
+	float3 objCentre;
+	float wvb_pad0;
+
+	float3 cameraRight;
+	float wvb_pad1;
+
+	float3 cameraUp;
+	float wvb_pad2;
+
 	float time;
-	float3 wvb_pad0;
+	float3 wvb_pad3;
+
+	matrix boneTransforms[70];
+
 };
 
 //---- light buffer
@@ -48,7 +60,7 @@ cbuffer MaterialBuffer : register (b2)
 	float3 mb_pad;
 	//float reflectivity;
 
-	// bools för vilka textures som används
+	// bools fï¿½r vilka textures som anvï¿½nds
 	bool hasAlbedoTexture;
 	bool hasNormalTexture;
 }

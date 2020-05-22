@@ -36,6 +36,12 @@ public:
 	void SetArrow(Object*);
 	void UpdateLookAtPosition();
 
+
+	int GetPoints() { return this->points; }
+	void IncreasePoints(int points) { this->points += points; }
+
+	Object* GetWinArea() { return this->winArea; };
+
 private:
 	void InitWeapons();
 	void UpdateMovement(float FixedDeltaTime);
@@ -80,5 +86,7 @@ private:
 	DirectX::XMVECTOR arrowRotation;
 	Object* arrow;
 	Object* winArea;
+
+	int points;
 }; 
 

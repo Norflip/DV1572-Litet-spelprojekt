@@ -20,7 +20,7 @@ class SpawnObjects : public Object
 {
 	public:
 		SpawnObjects(Entities* entities, Terrain* terrain, AssimpHandler::AssimpData modelData, Player* player, DX11Handler& dx11);
-		SpawnObjects(DX11Handler&, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player, SoundHandler* soundeffect);
+		SpawnObjects(DX11Handler&, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player, Gamemanager* gamemanager);
 		~SpawnObjects() {};
 
 		void Update(const float& deltaTime) override;
@@ -31,6 +31,10 @@ class SpawnObjects : public Object
 		void RemoveEnemy(Enemy*);
 		Enemy* GetEnemy();
 		void SetSpawnedEnemies(int spawnedEnemies);
+
+		void SetEnemiesToEliminate(int nrOfenemies);
+		int GetEnemiesLeftToEliminate() { return this->enemiesToEliminate; }
+
 	private:
 		void UpdateSpawnEnemy();
 		void UpdateRemoveEnemy();
@@ -48,8 +52,9 @@ class SpawnObjects : public Object
 		Enemy* enemy;
 		Object* object;
 
-		SoundHandler* soundeffects;
+		Gamemanager* gamemanager;
 
+		int enemiesToEliminate;
 		int nrOfEnemies = 0;
 		int spawnedEnemies = 5;
 		float randX, randZ, lastRandX, lastRandZ;

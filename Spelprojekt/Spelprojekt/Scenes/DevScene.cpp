@@ -1,11 +1,18 @@
 #include "DevScene.h"
 
-DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, SoundHandler* sound, SoundHandler* soundeffect) : Scene("DevScene", renderer, dx11, window), scenes(scenes)
+DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, Gamemanager* gamemanager) : Scene("DevScene", renderer, dx11, window), scenes(scenes) // tabort soundeffect
 {
 	//----- GUI SHIET |  Set gui last |
 
 	gametimerText = new GUIText(dx11, "Time until extraction", window.GetWidth() / 2.0f - 150.0f, 0);
 	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f - 100.0f, 30);
+	totalScore = new GUIText(dx11, "Score", 210.0f, 5.0f);
+	totalScore->SetFontSize({ 3.0f, 3.0f });
+	totalScore->SetFontColor({ 1,0,0,1 });
+
+	totalEnemies = new GUIText(dx11, "Enemiesleft", 250, 70);
+	totalEnemies->SetFontSize({ 2.0f, 2.0f });
+	totalEnemies->SetFontColor({ 0.5,1,0,1 });
 
 	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
 	window.GetInput()->LockCursor(false);
@@ -14,14 +21,11 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	lights.SetSunDirection({ 0, -1, 0 });
 	lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
 	lights.SetSunIntensity(0.6f);
-
+		
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
-	this->timeUntilEnd = 10.0f;
-
-	// Soundhandler
-	this->levelMusic = sound;	
-	this->soundeffects = soundeffect;
+	
+	this->gamemanager = gamemanager;
 }
 
 DevScene::~DevScene()
@@ -31,13 +35,20 @@ DevScene::~DevScene()
 
 void DevScene::Load()
 {		
+	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
+	this->totalEnemiesLeft = gamemanager->GetTotalEnemies();
+	this->timeUntilEnd = 3.0f; // gamemanager->GetTimer();		// get time from gamemanager
+
 	Timer testSpeed;
 	testSpeed.Start();
+
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
 	actionbarRight = new GUIActionbar(dx11, "Sprites/Actionbar.png", 400.0f, 650.0f);
-
+	score = new GUISprite(dx11, "Sprites/score.png", 10.0f ,19.0f);
+	enemies = new GUISprite(dx11, "Sprites/enemiesleft.png", 10, 80);
+	
 	//--------------------------------
 	// Create GUI for Devscene
 	GUI* gui = new GUI(dx11);
@@ -60,7 +71,6 @@ void DevScene::Load()
 	Object* sphere = new Object(ObjectLayer::Enviroment, dev_monkey_mesh, new Material(defaultShader, dx11));
 	Texture* monkey_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11);
 	Texture* monkey_normal = Texture::CreateTexture("Textures/rocks_normal.png", dx11);
-
 
 	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, SHADER_BIND_TYPE::PIXEL);
 	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, SHADER_BIND_TYPE::PIXEL);
@@ -120,29 +130,45 @@ void DevScene::Load()
 	toonShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
 	toonShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 
-	// ------ PLAYER
-	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Models/GlasseSmall.fbx", dx11, toonShader);
+	Shader* animationShader = new Shader();
+	animationShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+	animationShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "animation", dx11.GetDevice());
 
+	// ------ PLAYER
+	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, animationShader);
 	this->player = new Player(playerModel, controller, &ground, gui, wagon, dx11,  static_cast<Scene*>(this));
-	//player->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, PIXEL_TYPE::PIXEL);
-	//player->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, PIXEL_TYPE::PIXEL);
-	this->player->GetTransform().SetPosition({ 55, 7, 55 });
+
+	this->player->GetTransform().SetPosition({ 55, 4, 55 });
+	this->player->GetTransform().Scale(2.0, 2.0, 2.0);
 	this->player->SetLayer(ObjectLayer::Player);
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });	
 	AddObject(this->player);
 			
-	
+	// ANIMATION SCHEISSE ///////////////////////
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Walk_Cycle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Walk");
 
-	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, soundeffects);
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Idle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Idle");
+	this->player->GetMesh()->skeleton->SetFirstAnimation(this->player->GetMesh()->skeleton->animations[1]);
+
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Attack_Right.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Attack");
+
+	this->assimpScene = nullptr;
+
+
+	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, gamemanager);	
 	this->spawnObjects->SetEnemy();
+	this->spawnObjects->SetEnemiesToEliminate(totalEnemiesLeft);
 	AddObject(this->spawnObjects);	
 		
 	// ------ WEAPONS
 	AssimpHandler::AssimpData coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
+
 	// Coconuts
-	for (int i = 0; i < 11; i++) 
-	{
-		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);
+	for (int i = 0; i < 11; i++) {
+		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, gamemanager); 
 		this->coconuts[i]->SetLayer(ObjectLayer::Projectile);
 		AddObject(coconuts[i]);
 	}		
@@ -164,7 +190,7 @@ void DevScene::Load()
 	AssimpHandler::AssimpData slev = AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, defaultShader);			
 	// Spoon
 	for (int i = 0; i < 5; i++) {
-		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 }, soundeffects /* player->GetTransform().GetRotation()*/);
+		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 }, gamemanager);
 		this->spoons[i]->SetLayer(ObjectLayer::None);	// ÄNDAR SEN
 		AddObject(spoons[i]);
  	}			
@@ -194,6 +220,10 @@ void DevScene::Load()
 	gui->AddGUIObject(healthFrame, "healthFrame");
 	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
 	gui->AddGUIObject(actionbarRight, "actionbarRight");
+	gui->AddGUIObject(score, "score");
+	gui->AddGUIObject(totalScore, "totalscore");
+	gui->AddGUIObject(enemies, "enemiesleft");
+	gui->AddGUIObject(totalEnemies, "totalenemiesleft");
 
 	// Set GUI
 	renderer->SetGUI(gui);
@@ -201,9 +231,10 @@ void DevScene::Load()
 	gametimer.Start();	
 
 	// Play scenemusic
-	this->levelMusic->StopSound();
-	this->levelMusic->LoadSound("Levelsound", this->levelMusic->GetLevelSoundtrack());
-	levelMusic->PlaySound("Levelsound", levelMusic->GetGlobalVolume());
+	gamemanager->GetMusicHandler()->StopSound();
+	gamemanager->GetMusicHandler()->LoadSound("Levelsound", gamemanager->GetMusicTrack());
+	gamemanager->GetMusicHandler()->PlaySound("Levelsound", gamemanager->GetCurrentMusicVolume());
+
 	testSpeed.Stop();
 	std::cout << std::endl << "loadTime:  " << testSpeed.GetMilisecondsElapsed() << std::endl;
 }
@@ -220,6 +251,25 @@ void DevScene::Update(const float& deltaTime)
 	this->cameraFocusPosition = player->GetTransform().GetPosition();
 	Scene::Update(deltaTime);
 
+
+	float seconds = (float)gametimer.getSecondsElapsed();
+
+
+	if (controller->getInput()->GetKey('w') || controller->getInput()->GetKey('a') || controller->getInput()->GetKey('s') || controller->getInput()->GetKey('d'))
+	{
+		this->player->GetMesh()->skeleton->SetCurrentAnimation(this->player->GetMesh()->skeleton->animations[0]);
+	}
+
+	else if (controller->getInput()->GetKey('p'))
+	{
+		this->player->GetMesh()->skeleton->SetCurrentAnimation(this->player->GetMesh()->skeleton->animations[2]);
+	}
+
+	else
+	{
+		this->player->GetMesh()->skeleton->SetCurrentAnimation(this->player->GetMesh()->skeleton->animations[1]);
+	}
+
 	//FPS STUFF
 	fpsTimer.Start();			
 	
@@ -230,7 +280,11 @@ void DevScene::Update(const float& deltaTime)
 	for (auto i : spoons)
 		player->UpdateHands(i);
 	//
-	
+
+	totalEnemies->SetString(std::to_string(this->spawnObjects->GetEnemiesLeftToEliminate()));
+
+	totalScore->SetString(std::to_string(player->GetPoints()));
+		
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 	controller->Update(deltaTime);
 	
@@ -256,12 +310,20 @@ void DevScene::Update(const float& deltaTime)
 		SetNextScene(false);
 	}
 
-	if (canWin && player->GetWorldBounds().Overlaps(entities.AllEntities()[0]->GetWorldBounds()))
+	if (canWin && player->GetWorldBounds().Overlaps(this->player->GetWinArea()->GetWorldBounds()))
 	{
 		gametimerText->SetString("You won");
 		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(true);
 	}
+}
+
+void DevScene::FixedUpdate(const float& fixedDeltaTime)
+{
+	Scene::FixedUpdate(fixedDeltaTime);
+
+	this->player->GetMesh()->skeleton->AddKeyframe();
+
 }
 
 Scene* DevScene::GetNextScene() const
@@ -271,6 +333,17 @@ Scene* DevScene::GetNextScene() const
 
 void DevScene::CreateSceneObjects()
 {
+
+	Shader* billboard = new Shader();
+
+
+	billboard->LoadVertexShader(L"Shaders/Billboard_vs.hlsl", "main", dx11.GetDevice());
+	billboard->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+	Object* plane = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/QuadInv.fbx", dx11, billboard));
+	plane->GetTransform().Translate(33,31, 31);
+	plane->GetTransform().Scale(1, 1, 1);
+	plane->GetTransform().SetRotation({ 0,0, 0 });
+	AddObject(plane);
 
 	if (true)
 	{
@@ -636,12 +709,11 @@ void DevScene::CreateSceneObjects()
 	}
 }
 
-
 void DevScene::checkForNextScene()
 {
 	// Används inte längre
-
 	// Change scene logic
+
 	if (controller->getInput()->GetKeyDown('i'))
 	{
 		for (int i = 0; i < scenes.size(); i++)
@@ -658,7 +730,6 @@ void DevScene::checkForNextScene()
 
 		}
 	}
-	//LevelObjects.push_back(obj);
 }
 
 void DevScene::SetNextScene(bool winOrLose)

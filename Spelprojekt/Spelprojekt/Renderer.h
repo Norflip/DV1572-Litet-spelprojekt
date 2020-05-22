@@ -25,7 +25,7 @@ public:
 	void SetRenderTarget(RenderTarget* renderTarget);
 
 	void ClearRenderTarget();
-	void DrawMesh(Mesh*, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection);
+	void DrawMesh(Mesh*, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection, DirectX::XMFLOAT3 right, DirectX::XMFLOAT3 up, DirectX::XMFLOAT3 centre);
 
 	Lights& GetLights() { return this->lights; }
 
