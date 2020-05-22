@@ -305,6 +305,11 @@ void DevScene::CreateSceneObjects()
 	plane->GetTransform().Translate(33,31, 31);
 	plane->GetTransform().Scale(1, 1, 1);
 	plane->GetTransform().SetRotation({ 0,0, 0 });
+
+	std::vector<DirectX::XMFLOAT3> positions;
+	positions.push_back(DirectX::XMFLOAT3(33, 33, 33));
+	positions.push_back(DirectX::XMFLOAT3(35, 35, 35));
+	MeshCreator::MakeMeshInstanced(plane->GetMesh(), positions, dx11.GetDevice());
 	AddObject(plane);
 
 	if (true)

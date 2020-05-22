@@ -17,11 +17,18 @@ struct MeshVertex
 
 struct Mesh
 {
+
+
+
 	ID3D11Buffer* vertexBuffer;
 	std::vector<MeshVertex> vertexes;
 
 	ID3D11Buffer* indexBuffer;
 	std::vector<unsigned int> indices;
+
+	ID3D11Buffer* instanceBuffer;
+	std::vector<DirectX::XMFLOAT3> positions;
+	int nrOfInstances;
 
 	~Mesh()
 	{
@@ -34,14 +41,15 @@ struct Mesh
 
 namespace MeshCreator
 {
-	inline Mesh* CreateMesh(std::vector<MeshVertex> vertices, std::vector<unsigned int> indices, ID3D11Device* device)
+	inline Mesh* CreateMesh(std::vector<MeshVertex> vertices, std::vector<unsigned int> indices, ID3D11Device* device, int nrOfInstances = 1)
 	{
 		Mesh* mesh = new Mesh();
-
+		mesh->nrOfInstances = nrOfInstances;
 		mesh->vertexBuffer = nullptr;
 		mesh->vertexes = vertices;
 		mesh->indexBuffer = nullptr;
 		mesh->indices = indices;
+		mesh->instanceBuffer = nullptr;
 
 		// creates vertex buffer
 		D3D11_BUFFER_DESC vertexBufferDescription;
@@ -74,9 +82,39 @@ namespace MeshCreator
 
 		HRESULT indexBufferResult = device->CreateBuffer(&indexBufferDescription, &indexBuffer_subResource, &mesh->indexBuffer);
 		assert(SUCCEEDED(indexBufferResult));
+
+
+
+
 		return mesh;
 	}
 
+
+	inline Mesh* MakeMeshInstanced(Mesh* mesh, std::vector<DirectX::XMFLOAT3> positions, ID3D11Device* device, int nrOfInstances = 2)
+	{
+	
+		// creates instance buffer
+		D3D11_BUFFER_DESC instanceBufferDescription;
+		instanceBufferDescription.Usage = D3D11_USAGE_DEFAULT;
+		instanceBufferDescription.ByteWidth = sizeof(DirectX::XMFLOAT3) * nrOfInstances;
+		instanceBufferDescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		instanceBufferDescription.CPUAccessFlags = 0;
+		instanceBufferDescription.MiscFlags = 0;
+		instanceBufferDescription.StructureByteStride = 0;
+
+		D3D11_SUBRESOURCE_DATA instanceBuffer_subResource;
+		instanceBuffer_subResource.pSysMem = positions.data();
+		instanceBuffer_subResource.SysMemPitch = 0;
+		instanceBuffer_subResource.SysMemSlicePitch = 0;
+
+		// Create the instance buffer.
+		HRESULT instanceBufferResult = device->CreateBuffer(&instanceBufferDescription, &instanceBuffer_subResource, &mesh->instanceBuffer);
+		assert(SUCCEEDED(instanceBufferResult));
+
+		// Release the instance array now that the instance buffer has been created and loaded.
+
+		return mesh;
+	}
 	inline Mesh* CreateScreenQuad(ID3D11Device* device)
 	{
 		const float wh = 1.0f;// (width / 2.0f);

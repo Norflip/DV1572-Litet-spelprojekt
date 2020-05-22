@@ -54,10 +54,12 @@ public:
 	bool IsEnabled() const { return this->enabled; }
 	bool IsVisible() const { return this->visible; }
 	void SetVisible(bool visible) { this->visible = visible; }
-
+	/*int getVerterxCount();
+	int GetInstanceCount();*/
 	bool isWater = false;
 	
 private:
+
 	Transform transform;
 	AABB localBounds;
 	ObjectLayer layer;
@@ -66,6 +68,7 @@ private:
 	size_t id;
 	bool enabled;
 	bool visible = true;
+
 };
 
 static size_t object_id_counter = 0;
