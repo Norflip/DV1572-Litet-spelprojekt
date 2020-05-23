@@ -1,5 +1,5 @@
 #include "Player.h"
-Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, Object* winArea, DX11Handler& dx11, Scene* scene)
+Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, Object* winArea, DX11Handler& dx11, Scene* scene, Gamemanager* gamemanager)
 	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11)
 {
 	this->movementspeed = 7;
@@ -28,6 +28,9 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->points = 0;
 	this->isMoving = false;
 	this->attacking = false;
+
+	this->gamemanager = gamemanager;
+	//this->gamemanager->GetSoundeffectHandler()->LoadSound("PlayerHit", "SoundEffects/playerHit.wav");
 }
 
 Player::~Player()
@@ -52,6 +55,7 @@ void Player::Update(const float& deltaTime)
 void Player::TakeDamage()
 {
 	if (input->GetMouseButtonDown(1) && playerHealth != 0.0f) {
+		//gamemanager->GetSoundeffectHandler()->PlaySound("PlayerHit", gamemanager->GetCurrentSoundVolume());
 		playerHealth -= 10.0f;
 		healthbar->HealthBar(100.0f, playerHealth);
 	}

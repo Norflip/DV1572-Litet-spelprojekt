@@ -136,7 +136,7 @@ void DevScene::Load()
 
 	// ------ PLAYER
 	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, animationShader);
-	this->player = new Player(playerModel, controller, &ground, gui, wagon, dx11,  static_cast<Scene*>(this));
+	this->player = new Player(playerModel, controller, &ground, gui, wagon, dx11,  static_cast<Scene*>(this), gamemanager);
 
 	this->player->GetTransform().SetPosition({ 55, 4, 55 });
 	this->player->GetTransform().Scale(2.0, 2.0, 2.0);
