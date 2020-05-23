@@ -49,7 +49,8 @@ private:
 	void TriggerAttack();
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 	float ShortestRotation(float currentDir, float nextDir);
-	
+	void UpdateAnimations();
+
 private:
 
 	Input* input;
@@ -88,5 +89,7 @@ private:
 	Object* winArea;
 
 	int points;
+	bool isMoving;
+	bool attacking;
 }; 
 

@@ -26,7 +26,8 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->arrow = nullptr;
 
 	this->points = 0;
-		
+	this->isMoving = false;
+	this->attacking = false;
 }
 
 Player::~Player()
@@ -44,6 +45,7 @@ void Player::Update(const float& deltaTime)
 	TakeDamage();
 
 	UpdateLookAtPosition();
+	UpdateAnimations();
 }
 
 
@@ -66,17 +68,30 @@ void Player::UpdateMovement(float fixedDeltaTime)
 		float dx = 0.0f;
 		float dz = 0.0f;
 
-		if (input->GetKey('w'))
+		if (input->GetKey('w') && !this->attacking)
+		{
 			dz += 1.0f;
-
-		if (input->GetKey('a'))
+			this->isMoving = true;
+		}
+		else if (input->GetKey('a') && !this->attacking)
+		{
 			dx -= 1.0f;
-
-		if (input->GetKey('s'))
+			this->isMoving = true;
+		}
+		else if (input->GetKey('s') && !this->attacking)
+		{
 			dz -= 1.0f;
-
-		if (input->GetKey('d'))
+			this->isMoving = true;
+		}
+		else if (input->GetKey('d') && !this->attacking)
+		{
 			dx += 1.0f;
+			this->isMoving = true;
+		}
+		else
+		{
+			this->isMoving = false;
+		}
 
 		bool changedir = false;
 		if(dx != 0.0f || dz != 0.0f)
@@ -123,9 +138,6 @@ void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) + MathHelper::PI * 2, 0 });
 	if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) > MathHelper::PI * 2)
 		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) - MathHelper::PI * 2, 0 });
-	
-
-
 
 }
 
@@ -143,6 +155,24 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 	else
 		returnValue = nextDir - currentDir + MathHelper::PI * 2.0f;
 	return returnValue;
+}
+
+void Player::UpdateAnimations()
+{
+	if (this->isMoving)
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[0]);
+	}
+
+	else if (this->attacking)
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[2]);
+	}
+
+	else
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[1]);
+	}
 }
 
 void Player::UpdateHands(Weapon* obj)
@@ -197,7 +227,9 @@ void Player::UseWeapon()
 {
 	// Left hand
 	if (input->GetMouseButtonDown(0) && lefthandFull) {
+		this->attacking = true;
 		WeaponUsage(leftWeapon, lefthandFull);
+		
 
 		if (!lefthandFull)
 			gui->RemoveGUIObject("Left Actionbar");
@@ -205,10 +237,17 @@ void Player::UseWeapon()
 
 	// Right hand
 	if (input->GetMouseButtonDown(1) && righthandFull) {
+		this->attacking = true;
 		WeaponUsage(rightWeapon, righthandFull);
+		
 
 		if (!righthandFull)
 			gui->RemoveGUIObject("Right Actionbar");
+	}
+
+	if (this->GetMesh()->skeleton->GetKeyframe() == this->GetMesh()->skeleton->GetCurrentAnimation()->GetLength() - 4)
+	{
+		this->attacking = false;
 	}
 }
 

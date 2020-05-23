@@ -254,24 +254,6 @@ void DevScene::Update(const float& deltaTime)
 	Scene::Update(deltaTime);
 	billBoard->GetTransform().SetPosition({ player->GetTransform().GetPosition().m128_f32[0],player->GetTransform().GetPosition().m128_f32[1]+6, player->GetTransform().GetPosition().m128_f32[2] });
 
-	float seconds = (float)gametimer.getSecondsElapsed();
-
-
-	if (controller->getInput()->GetKey('w') || controller->getInput()->GetKey('a') || controller->getInput()->GetKey('s') || controller->getInput()->GetKey('d'))
-	{
-		this->player->GetMesh()->skeleton->SetCurrentAnimation(this->player->GetMesh()->skeleton->animations[0]);
-	}
-
-	else if (controller->getInput()->GetKey('p'))
-	{
-		this->player->GetMesh()->skeleton->SetCurrentAnimation(this->player->GetMesh()->skeleton->animations[2]);
-	}
-
-	else
-	{
-		this->player->GetMesh()->skeleton->SetCurrentAnimation(this->player->GetMesh()->skeleton->animations[1]);
-	}
-
 	//FPS STUFF
 	fpsTimer.Start();			
 	
