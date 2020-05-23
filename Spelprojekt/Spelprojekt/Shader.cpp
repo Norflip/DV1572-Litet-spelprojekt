@@ -3,7 +3,7 @@
 Shader::Shader() : pixelShader(nullptr), vertexShader(nullptr), inputLayout(nullptr)
 {
 	this->id = shader_id_counter++;
-	Logger::Write("Created shader with id " + std::to_string(this->id));
+	//Logger::Write("Created shader with id " + std::to_string(this->id));
 
 	flags = D3DCOMPILE_ENABLE_STRICTNESS;
 #ifdef _DEBUG

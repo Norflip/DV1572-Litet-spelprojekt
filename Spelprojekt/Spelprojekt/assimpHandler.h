@@ -137,9 +137,6 @@ namespace AssimpHandler
 		std::size_t pos = nameString.find_last_of("/\\");
 		fileName += nameString.substr(pos + 1);
 
-		// Can be used for debug, print the name of the texture
-		Logger::Write(fileName);
-
 		// Create a new texture and then return it
 		texture = Texture::CreateTexture(fileName, dx11);
 		return texture;
@@ -275,50 +272,56 @@ namespace AssimpHandler
 	inline void saveAnimationData(const aiScene* scene, Skeleton* skeleton, std::string animName)
 	{
 		DirectX::XMMATRIX identity = DirectX::XMMatrixIdentity();
-		float animationLength = (float)scene->mAnimations[0]->mDuration;
-		Animation* newAnimation =  new Animation();
-
-		newAnimation->SetLength(animationLength);
-		newAnimation->SetBoneAmount(skeleton->GetNumberOfBones());
-		newAnimation->GetBoneVector().resize(newAnimation->GetNumberOfBones());
-		newAnimation->SetName(animName);
-
-		for (unsigned int i = 0; i < animationLength; i++)
+		if (!scene->mAnimations[0])
 		{
-			ReadSceneHierarchy(i, scene, scene->mRootNode, identity, newAnimation, skeleton);
+			Logger::Write("There was no animations in: " + animName);
 		}
-		
-		Animation* test = new Animation;
-		test->SetLength(animationLength * 2 - 2);
-		test->SetBoneAmount(skeleton->GetNumberOfBones());
-		test->GetBoneVector().resize(newAnimation->GetNumberOfBones());
-		test->SetName(animName);
-
-		for (int i = 0; i < newAnimation->GetNumberOfBones(); i++)
+		else
 		{
-			for (int j = 0; j < newAnimation->GetLength(); j++)
+			float animationLength = (float)scene->mAnimations[0]->mDuration;
+			Animation* newAnimation = new Animation();
+
+			newAnimation->SetLength(animationLength);
+			newAnimation->SetBoneAmount(skeleton->GetNumberOfBones());
+			newAnimation->GetBoneVector().resize(newAnimation->GetNumberOfBones());
+			newAnimation->SetName(animName);
+
+			for (unsigned int i = 0; i < animationLength; i++)
 			{
-				if (j == 0 || j == newAnimation->GetLength() - 1)
+				ReadSceneHierarchy(i, scene, scene->mRootNode, identity, newAnimation, skeleton);
+			}
+
+			Animation* test = new Animation;
+			test->SetLength(animationLength * 2 - 2);
+			test->SetBoneAmount(skeleton->GetNumberOfBones());
+			test->GetBoneVector().resize(newAnimation->GetNumberOfBones());
+			test->SetName(animName);
+
+			for (int i = 0; i < newAnimation->GetNumberOfBones(); i++)
+			{
+				for (int j = 0; j < newAnimation->GetLength(); j++)
 				{
-					test->GetBone(i).SetFinalTransformation(newAnimation->GetBone(i).GetFinalTransformation(j));
-				}
-				else
-				{
-					test->GetBone(i).SetFinalTransformation(newAnimation->GetBone(i).GetFinalTransformation(j));
-					test->GetBone(i).SetFinalTransformation(newAnimation->GetBone(i).GetFinalTransformation(j));
+					if (j == 0 || j == newAnimation->GetLength() - 1)
+					{
+						test->GetBone(i).SetFinalTransformation(newAnimation->GetBone(i).GetFinalTransformation(j));
+					}
+					else
+					{
+						test->GetBone(i).SetFinalTransformation(newAnimation->GetBone(i).GetFinalTransformation(j));
+						test->GetBone(i).SetFinalTransformation(newAnimation->GetBone(i).GetFinalTransformation(j));
+					}
 				}
 			}
-		}
 
-		skeleton->animations.push_back(test);
+			skeleton->animations.push_back(test);
+		}
+		
 	}
 
 	inline AssimpData loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader, ID3D11SamplerState* sampler = nullptr)
 	{
 		if (sampler == nullptr)
 			sampler = dx11.GetDefaultSampler();
-
-		Logger::Write("CHECKING IF LOADING EVERY FRAME");
 
 		// Open the scene from the file
 		Assimp::Importer imp;
@@ -329,6 +332,7 @@ namespace AssimpHandler
 		{
 			Logger::Write("Couldnt open file with Assimp");
 		}
+
 		else
 		{
 			Texture* normalMap = nullptr;
@@ -370,7 +374,6 @@ namespace AssimpHandler
 				
 			}
 			object.material->SetTexture(ALBEDO_MATERIAL_TYPE, texture, SHADER_BIND_TYPE::PIXEL);
-			//object.material->SetSampler(ALBEDO_MATERIAL_TYPE, sampler, SHADER_BIND_TYPE::PIXEL);
 		}
 		return object;
 	}

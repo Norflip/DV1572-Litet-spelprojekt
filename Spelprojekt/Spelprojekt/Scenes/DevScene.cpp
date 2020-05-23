@@ -37,7 +37,7 @@ void DevScene::Load()
 {		
 	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
 	this->totalEnemiesLeft = gamemanager->GetTotalEnemies();
-	this->timeUntilEnd = 3.0f; // gamemanager->GetTimer();		// get time from gamemanager
+	this->timeUntilEnd = 10.0f; // gamemanager->GetTimer();		// get time from gamemanager
 
 	Timer testSpeed;
 	testSpeed.Start();
@@ -280,7 +280,7 @@ void DevScene::Update(const float& deltaTime)
 	gametimerText->SetString("Time until extraction: " + std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd))));
 	
 	
-	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f)
+	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f || this->spawnObjects->GetEnemiesLeftToEliminate() == 0)
 	{
 		arrow->SetVisible(true);
 		gametimerText->SetString("Move to exit");

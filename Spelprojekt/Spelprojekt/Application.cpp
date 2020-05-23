@@ -8,7 +8,7 @@ Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(fal
 
 	// Opens the console
 	Logger::Open();
-	Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
+	//Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
 		
 	// Gamemanager for..... everything?
 	this->gamemanager = new Gamemanager(dx11);

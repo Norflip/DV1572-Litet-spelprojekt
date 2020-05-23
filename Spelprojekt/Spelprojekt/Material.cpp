@@ -10,7 +10,7 @@
 Material::Material(Shader* shader, DX11Handler& dx11) : shader(shader)
 {
 	this->id = material_id_counter++;
-	Logger::Write("Created material with id " + std::to_string(this->id));
+	//Logger::Write("Created material with id " + std::to_string(this->id));
 
 	this->buffer = dx11.CreateBuffer<MaterialData>(materialData);
 
