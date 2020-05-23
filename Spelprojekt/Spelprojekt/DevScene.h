@@ -1,33 +1,27 @@
 #pragma once
-#include "../Scene.h"
-#include "../Logger.h"
-#include "../Camera.h"
+#include "Scene.h"
+#include "Logger.h"
+#include "Camera.h"
 #include <vector>
-#include "../ShittyOBJLoader.h"
-#include "../Input.h"
-#include "../CameraController.h"
-#include "../Terrain.h"
-#include "../assimpHandler.h"
+#include "ShittyOBJLoader.h"
+#include "Input.h"
+#include "CameraController.h"
+#include "Terrain.h"
+#include "assimpHandler.h"
 
-#include "../Projectile.h"
-#include "../Spoon.h"
-
-//#include "../Player.h"
-// new
-#include "../Timer.h"
-#include "../GUI.h"
-#include "../AABB.h"
-#include "../SpawnObjects.h"
-
-
-//#include <string>
+#include "Projectile.h"
+#include "Spoon.h"
+#include "Timer.h"
+#include "GUI.h"
+#include "AABB.h"
+#include "SpawnObjects.h"
+#include "Enemy.h"
 
 class DevScene : public Scene
 {
 	const char DEBUG_CAMERA_KEY = 'f';
 
 public:
-	
 	DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, Gamemanager* gamemanager);
 	virtual ~DevScene();
 
@@ -47,11 +41,13 @@ public:
 	void checkForNextScene();
 	void SetNextScene(bool winOrLose);
 
+private:
+	void UpdateGUI(const float& deltaTime);
 
 private:
 	CameraController* controller;
-
 	Gamemanager* gamemanager;
+	SpawnObjects* spawner;
 
 	GUIText* gametimerText;
 	GUIText* fpsText;
@@ -60,17 +56,12 @@ private:
 	GUIText* totalScore;
 	GUISprite* enemies;
 	GUIText* totalEnemies;
-	int totalEnemiesLeft = 10;
 
 	GUIActionbar* actionbarLeft;
 	GUIActionbar* actionbarRight;
 
-	Projectile* coconuts[11];
-	Spoon* spoons[5];
-
-	// Level design
-	//std::vector<Object*> pickups;
-	//std::vector<Object*> levelObjects;
+//	Projectile* coconuts[11];
+//	Spoon* spoons[5];
 
 	std::vector<Scene*>& scenes;
 	Player* player;
@@ -83,7 +74,6 @@ private:
 	float timeUntilEnd;
 	bool canWin;
 
-	SpawnObjects* spawnObjects;
 	Object* arrow;
 
 	const aiScene* assimpScene;

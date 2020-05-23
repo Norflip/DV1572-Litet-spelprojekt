@@ -1,26 +1,24 @@
 #pragma once
 #include "Weapon.h"
+#include "Gamemanager.h"
 //#include "SoundHandler.h"
 
 class Projectile :
 	public Weapon 
 {
 public:
-	Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData modelData, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, Gamemanager* gamemanager);
+	Projectile(AssimpHandler::AssimpData modelData, Gamemanager* gamemanager, Terrain* terrain, DX11Handler& dx11);
 	Projectile(const Projectile& other);
+	virtual ~Projectile();
 
-	~Projectile();
 	void Update(const float& deltaTime) override;
 
 	GUIActionbar* GetWeaponSprite() override { return this->weaponSprite; } 	
-	std::string GetWeaponTypename() override { return this->WeaponTypeName; }
-	float DamageGiven() override { return this->damage; }
-	void HasAttacked(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;		
+	void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;
 	void rangedAttack(float deltaTime);	
 	void PlaySoundEffect() override { gamemanager->GetSoundeffectHandler()->PlaySound("Explosion", gamemanager->GetCurrentSoundVolume()); }
 	
 private:		
 	int movementspeed = 3;
-	Gamemanager* gamemanager;
 };
 

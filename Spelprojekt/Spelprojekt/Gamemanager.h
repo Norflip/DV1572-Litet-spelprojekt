@@ -2,11 +2,11 @@
 #include "DX11Handler.h"
 #include "SoundHandler.h"
 
-class Gamemanager {
+class Gamemanager 
+{
 public:
-		
-	Gamemanager(DX11Handler&);
-	~Gamemanager();
+	Gamemanager(DX11Handler* dx11);
+	virtual ~Gamemanager();
 
 	SoundHandler* GetMusicHandler() { return this->music; }
 	SoundHandler* GetSoundeffectHandler() { return this->soundeffect; }
@@ -38,7 +38,7 @@ public:
 	float GetTimer() { return this->timer; }		
 
 private:
-	DX11Handler* dxhandler;
+	DX11Handler* dx11;
 	
 	float musicVol;
 	float soundVol;		

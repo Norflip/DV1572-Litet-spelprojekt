@@ -297,7 +297,7 @@ void IntroGUI::Options()
             vsyncON->SetWICSprite(dx11, lastOn);
             vsyncOFF->SetWICSprite(dx11, lastOff);
 
-            currentScene->getRenderer()->setVsync(true);
+            currentScene->GetRenderer()->setVsync(true);
         }    
 
        /*
@@ -390,7 +390,7 @@ void IntroGUI::Options()
             vsyncON->SetWICSprite(dx11, lastOn);
             vsyncOFF->SetWICSprite(dx11, lastOff);
 
-            currentScene->getRenderer()->setVsync(false);
+            currentScene->GetRenderer()->setVsync(false);
         }
     }
 

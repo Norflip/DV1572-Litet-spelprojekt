@@ -2,7 +2,6 @@
 #include "Scene.h"
 #include "Terrain.h"
 #include "assimpHandler.h"
-//#include "SoundHandler.h"
 
 class Player;
 

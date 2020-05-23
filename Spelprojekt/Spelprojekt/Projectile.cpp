@@ -1,50 +1,35 @@
 #include "Projectile.h"
 
-Projectile::Projectile(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData modelData, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, Gamemanager* gamemanager)
+// ändra weaponType om vi lägger till flera olika
+Projectile::Projectile(AssimpHandler::AssimpData modelData, Gamemanager* gamemanager, Terrain* terrain, DX11Handler& dx11) : Weapon(WeaponType::Coconut, ObjectLayer::Pickup, gamemanager, modelData)
 {	
-	GetTransform().SetPosition(position);
-	GetTransform().SetRotation(rotation);
-
-	SetMesh(modelData.mesh);
-	SetMaterial(modelData.material);
-	
 	this->movementspeed = 3;
-	this->direction = rotation; // makes us shoot in the direction of the object initial rotation
+	this->direction = { 0,0,0 }; // makes us shoot in the direction of the object initial rotation
 	this->weaponSprite = new GUIActionbar(dx11, "Sprites/CoconutNew.png", 0.0f, 0.0f);
 
 	this->attack = false;
-	this->damage = 10.0f;
-	this->WeaponTypeName = "Coconut";
-
-	this->gamemanager = gamemanager;
-	this->gamemanager->GetSoundeffectHandler()->LoadSound("Explosion", "SoundEffects/Explo1.wav");
+	this->weaponDamage = 10.0f;
+	//this->gamemanager->GetSoundeffectHandler()->LoadSound("Explosion", "SoundEffects/Explo1.wav");
 }
 
-Projectile::Projectile(const Projectile& other)
+Projectile::Projectile(const Projectile& other) : Weapon(WeaponType::Coconut, ObjectLayer::Pickup, other.gamemanager, other.GetMesh(), other.GetMaterial())
 {
 	GetTransform().SetPosition(other.GetTransform().GetPosition());
 	GetTransform().SetRotation(other.GetTransform().GetRotation());
-	this->SetMesh(other.GetMesh());
-	this->SetMaterial(other.GetMaterial());
-	this->direction = other.direction;
 
+	this->direction = other.direction;
 	this->weaponSprite = other.weaponSprite;
 	this->attack = false;
-	this->damage = other.damage;
-	WeaponTypeName = other.WeaponTypeName;
-
-	this->gamemanager = other.gamemanager;
-	this->gamemanager->GetSoundeffectHandler()->LoadSound("Explosion", "SoundEffects/Explo1.wav");	// kanske tabort
+	this->weaponDamage = other.weaponDamage;
+	//this->gamemanager->GetSoundeffectHandler()->LoadSound("Explosion", "SoundEffects/Explo1.wav");	// kanske tabort
 }
-
-
 
 Projectile::~Projectile()
 {
 	
 }
 
-void Projectile::HasAttacked(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
+void Projectile::TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 {
 	GetTransform().SetPosition(pos);
 	GetTransform().SetRotation(rot); 	

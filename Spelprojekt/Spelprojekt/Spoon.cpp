@@ -1,42 +1,28 @@
 #include "Spoon.h"
 
-Spoon::Spoon(const char* name, Terrain* terrain, DX11Handler& dx11, AssimpHandler::AssimpData model, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, Gamemanager* gamemanager)
+Spoon::Spoon(AssimpHandler::AssimpData model, Gamemanager* gamemanager, Terrain* terrain, DX11Handler& dx11) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup, gamemanager, model)
 {
-	GetTransform().SetPosition(position);
-	GetTransform().SetRotation(rotation);
-
-	
-	SetMesh(model.mesh);
-	SetMaterial(model.material);
 	//this->movementspeeds = 3;
-	this->direction = rotation; // makes us shoot in the direction of the object initial rotation
+	this->direction = { 0,0,0 }; // makes us shoot in the direction of the object initial rotation
 
 	this->weaponSprite = new GUIActionbar(dx11, "Sprites/Slev.png", 0.0f, 0.0f);
 	this->attack = false;
-	this->damage = 5.0f;
-	this->WeaponTypeName = "Slev";
+	this->weaponDamage = 5.0f;
 
-	this->gamemanager = gamemanager;
-	this->gamemanager->GetSoundeffectHandler()->LoadSound("Swooshsound", "SoundEffects/Swoosh.wav");
-
+//	this->gamemanager->GetSoundeffectHandler()->LoadSound("Swooshsound", "SoundEffects/Swoosh.wav");
 	this->used = 0;
 }
 
-Spoon::Spoon(const Spoon& other)
+Spoon::Spoon(const Spoon& other) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup, other.gamemanager, other.GetMesh(), other.GetMaterial())
 {
 	GetTransform().SetPosition(other.GetTransform().GetPosition());
 	GetTransform().SetRotation(other.GetTransform().GetRotation());
-	this->SetMesh(other.GetMesh());
-	this->SetMaterial(other.GetMaterial());
 	this->direction = other.direction;
 
 	this->weaponSprite = other.weaponSprite;
+	this->weaponDamage = other.weaponDamage;
+
 	this->attack = false;
-	this->damage = other.damage;
-	this->WeaponTypeName = other.WeaponTypeName;
-
-	this->gamemanager = other.gamemanager;
-
 	this->used = 0;
 }
 
@@ -45,7 +31,7 @@ Spoon::~Spoon()
 	
 }
 
-void Spoon::HasAttacked(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
+void Spoon::TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 {
 	GetTransform().SetPosition(pos);
 	GetTransform().SetRotation(rot);	

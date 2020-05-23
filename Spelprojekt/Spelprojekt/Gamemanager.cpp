@@ -1,9 +1,7 @@
 #include "Gamemanager.h"
 
-Gamemanager::Gamemanager(DX11Handler& dx11)
+Gamemanager::Gamemanager(DX11Handler* dx11) : dx11(dx11)
 {
-	this->dxhandler = &dx11;
-	
 	this->music = new SoundHandler();	
 	this->musicVol = 0.5f;
 	this->music->SetGlobalVolume(this->musicVol);

@@ -11,7 +11,7 @@ Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(fal
 	Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
 		
 	// Gamemanager for..... everything?
-	this->gamemanager = new Gamemanager(dx11);
+	this->gamemanager = new Gamemanager(&dx11);
 
 	// default scene.. devScene at the moment. Different sceness for the actual game, main menu, game over(?) etc 
 	this->gameScene = new DevScene(this->deferredRenderer, this->dx11, this->window, scenes, gamemanager);

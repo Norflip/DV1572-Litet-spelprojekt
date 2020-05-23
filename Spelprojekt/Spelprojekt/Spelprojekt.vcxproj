@@ -175,6 +175,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraController.cpp" />
+    <ClCompile Include="DevScene.cpp" />
     <ClCompile Include="DX11Handler.cpp" />
     <ClCompile Include="EndGUI.cpp" />
     <ClCompile Include="EndScene.cpp" />
@@ -209,7 +210,6 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Scenes\DevScene.cpp" />
     <ClCompile Include="SoundHandler.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -226,6 +226,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="assimpHandler.h" />
+    <ClInclude Include="DevScene.h" />
     <ClInclude Include="EndGUI.h" />
     <ClInclude Include="EndScene.h" />
     <ClInclude Include="Enemy.h" />
@@ -266,7 +267,6 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="Scenes\DevScene.h" />
     <ClInclude Include="Shader.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
