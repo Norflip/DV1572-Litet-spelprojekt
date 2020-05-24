@@ -36,6 +36,12 @@ public:
 	void SetArrow(Object*);
 	void UpdateLookAtPosition();
 
+
+	int GetPoints() { return this->points; }
+	void IncreasePoints(int points) { this->points += points; }
+
+	Object* GetWinArea() { return this->winArea; };
+
 private:
 	void InitWeapons();
 	void UpdateMovement(float FixedDeltaTime);
@@ -43,7 +49,8 @@ private:
 	void TriggerAttack();
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 	float ShortestRotation(float currentDir, float nextDir);
-	
+	void UpdateAnimations();
+
 private:
 
 	Input* input;
@@ -80,5 +87,9 @@ private:
 	DirectX::XMVECTOR arrowRotation;
 	Object* arrow;
 	Object* winArea;
+
+	int points;
+	bool isMoving;
+	bool attacking;
 }; 
 

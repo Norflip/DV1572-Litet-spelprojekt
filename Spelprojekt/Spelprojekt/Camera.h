@@ -6,11 +6,11 @@
 
 class Camera : public Object
 {
-	const float nearZ = 0.1f;
+	const float nearZ = 0.01f;
 	const float farZ = 1000.0f;
 
 public:
-
+	Camera(DirectX::XMMATRIX view, DirectX::XMMATRIX projection);
 	Camera(float fovDegrees, size_t width, size_t height);
 	virtual ~Camera();
 
@@ -20,7 +20,6 @@ public:
 	DirectX::XMMATRIX GetView() const { return this->view; }
 	DirectX::XMMATRIX GetProjection() const { return this->projection; }
 	DirectX::XMMATRIX GetOrthographic() const;
-	DirectX::XMMATRIX GetVP();
 
 	float GetAspectRatio() { return this->aspect; }
 	bool IsBoundsInView (const AABB& aabb) const;

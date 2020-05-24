@@ -5,16 +5,15 @@
 #include "ConstantBuffers.h"
 #include "DX11Handler.h"
 #include <unordered_map>
+#include "Camera.h"
 
 class Lights
 {
-	const int CONSTANT_BUFFER_SLOT = 1;
-
 public:
-	Lights();
+	Lights(size_t screenWidth, size_t screenHeight, size_t width, size_t height);
 	virtual ~Lights();
 
-	void Initialize(DX11Handler& dx11);
+	void Initialize(DX11Handler* dx11);
 
 	size_t AddPointLight(DirectX::XMFLOAT3 position, DirectX::XMFLOAT4 color, float attenuation);
 	void RemovePointLight(size_t id);
@@ -28,9 +27,19 @@ public:
 	bool IsDirty() const { return this->dirty; }
 	void SetDirty() { this->dirty = true; }
 
-	void UpdateConstantBuffer(DirectX::XMFLOAT3 eye, ID3D11DeviceContext*);
+	void UpdateConstantBuffer(Camera* camera, ID3D11DeviceContext*);
+
+	Camera* GetSunCamera() { return this->sunCamera; }
+	void UpdateCameras(DirectX::XMVECTOR focus, const AABB& bounds);
+
+	DirectX::XMMATRIX tProjection;
+	DirectX::XMMATRIX tView;
+	DirectX::XMMATRIX tShadowTransform;
 
 private:
+	size_t width, height;
+	Camera* sunCamera;
+
 	size_t pointLight_ID;
 	std::unordered_map<size_t, PointLight> pointLightMap;
 

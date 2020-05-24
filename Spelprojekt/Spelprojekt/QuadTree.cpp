@@ -48,19 +48,9 @@ void QuadTree::Insert(Object* object)
 						children[f]->Insert(objects[i]);
 				}
 
-
 				objects.erase(objects.begin() + i);
 			}
-
-
 		}
-
-		for (auto i = objects.rbegin(); i < objects.rend(); i++)
-		{
-
-		}
-
-		//objects.clear();
 	}
 }
 

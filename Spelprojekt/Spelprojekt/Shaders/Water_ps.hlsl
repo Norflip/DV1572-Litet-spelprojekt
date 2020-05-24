@@ -1,6 +1,7 @@
 #include "Constants.hlsl"
 Texture2D m_heightMap : register(t0);
 SamplerState m_heightMapState: register(s0);
+
 struct VS_OUTPUT
 {
 	float4 position		 : SV_POSITION;
@@ -32,7 +33,7 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 
 	//float intensity = dot(normalize(input.normal), DiffuseLightDirection);
 	
-	float intensity = (heightMap.x + heightMap.y + heightMap.z)/3;
+	float intensity = (heightMap.x + heightMap.y + heightMap.z) / 3;
 	if (intensity < 0)
 		intensity = 0;
 

@@ -25,18 +25,26 @@ public:
 	ID3D11Device* GetDevice() const { return this->device; }
 	ID3D11DeviceContext* GetContext() const { return this->context; }
 	IDXGISwapChain* GetSwapChain() const { return this->swapchain; }
-	RenderTarget* GetBackbuffer() const { return this->backbuffer; }
-	ID3D11RasterizerState* GetWaterRasterizer() { return this->waterRaster; }
-	ID3D11RasterizerState* GetRasterizer() { return this->rasterizerState; }
+	RenderTarget* GetBackbufferRenderTarget() const { return this->backbuffer; }
+
+	ID3D11RasterizerState* GetShadowRasterizerState() { return this->shadowRasterizerState; }
+	ID3D11RasterizerState* GetWaterRasterizerState() { return this->waterRasterizerState; }
+	ID3D11RasterizerState* GetMainRasterizerState() { return this->mainRasterizerState; }
+
+	ID3D11SamplerState* CreateSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode);
+	ID3D11SamplerState* GetDefaultSampler() const { return this->defaultSampler; }
+
+	/*
 	void SetRenderTarget(RenderTarget* target) { this->backbuffer = target; }
 	ID3D11Texture2D* GetBackBufferPtr() const { return this->backBufferPtr; }
+
 	ID3D11RenderTargetView* GetRTV() const { return this->backbufferRTV; }
 	void SetRTV(ID3D11RenderTargetView* rtv) { this->backbufferRTV = rtv; }
-	template <typename T>
-	ID3D11Buffer* CreateBuffer (T& data);
+	*/
 
+	template <typename T> ID3D11Buffer* CreateBuffer (T& data);
+	
 	void SetFullscreen(bool fullscreen);
-	void SetWireframeMode(bool);
 
 private:
 	void CreateBackbufferRenderTarget(size_t width, size_t height);
@@ -47,13 +55,18 @@ private:
 	ID3D11Device* device;
 	ID3D11DeviceContext* context;
 	IDXGISwapChain* swapchain;
-	ID3D11RasterizerState* rasterizerState;
-	ID3D11RasterizerState* waterRaster;
 	
-	ID3D11Texture2D* backBufferPtr;
+	ID3D11RasterizerState* mainRasterizerState;
+	ID3D11RasterizerState* waterRasterizerState;
+	ID3D11RasterizerState* shadowRasterizerState;
+
 	DXGI_SWAP_CHAIN_DESC swapChainDescription;
+	ID3D11Texture2D* backBufferPtr;
 	RenderTarget* backbuffer;
+
+	ID3D11SamplerState* defaultSampler;
 };
+
 
 template<typename T>
 inline ID3D11Buffer* DX11Handler::CreateBuffer(T& data)

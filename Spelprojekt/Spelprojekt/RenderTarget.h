@@ -16,10 +16,12 @@ public:
 	void Unbind(ID3D11DeviceContext*);
 
 	ID3D11RenderTargetView** GetRenderTargetViews() const { return this->rtv; }
+	ID3D11ShaderResourceView** GetShaderResourceViews() const { return this->srv; }
 
 	bool HasDepthBuffer() const { return this->createDepthBuffer; }
 	ID3D11DepthStencilView* GetDepthStencil() { return this->dsv; }
 	ID3D11DepthStencilState* GetDepthStencilState() const { return this->dss; }
+	ID3D11ShaderResourceView* GetDepthSRV() const { return this->depth_srv; }
 
 	size_t BufferCount() const { return this->bufferCount; }
 	D3D11_VIEWPORT& GetViewport() { return this->viewport; }
@@ -32,6 +34,8 @@ private:
 
 	ID3D11RenderTargetView** rtv;
 	ID3D11ShaderResourceView** srv;
+
+	ID3D11ShaderResourceView* depth_srv;
 	ID3D11DepthStencilView* dsv;
 	ID3D11DepthStencilState* dss;
 

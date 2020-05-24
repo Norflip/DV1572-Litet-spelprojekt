@@ -3,7 +3,7 @@
 Shader::Shader() : pixelShader(nullptr), vertexShader(nullptr), inputLayout(nullptr)
 {
 	this->id = shader_id_counter++;
-	Logger::Write("Created shader with id " + std::to_string(this->id));
+	//Logger::Write("Created shader with id " + std::to_string(this->id));
 
 	flags = D3DCOMPILE_ENABLE_STRICTNESS;
 #ifdef _DEBUG
@@ -96,24 +96,9 @@ void Shader::Bind(ID3D11DeviceContext* context)
 	// sets the vertex shader and layout
 	context->IASetInputLayout(inputLayout);
 	context->VSSetShader(vertexShader, 0, 0);
-	context->PSSetSamplers(0, 1, &sampler);
+
 	//sets the pixel shader	
 	context->PSSetShader(pixelShader, 0, 0);
-}
-
-void Shader::CreateSampler(ID3D11Device* device)
-{
-	D3D11_SAMPLER_DESC samplerDesc;
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 1;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	samplerDesc.MinLOD = -FLT_MAX;
-	samplerDesc.MaxLOD = FLT_MAX;
-	HRESULT hr = device->CreateSamplerState(&samplerDesc, &sampler);
 }
 
 void Shader::PrintShaderError(ID3DBlob* errorBlob)

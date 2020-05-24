@@ -3,7 +3,8 @@
 Scene::Scene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window) :
 	sceneName(name), renderer(renderer), window(window), dx11(dx11) 
 {
-	this->entities.SetBounds(AABB({ 0,0,0 }, { 250, 64, 250 }));
+	this->sceneBounds = AABB({ 0,0,0 }, { 250, 64, 250 });
+	this->entities.SetBounds(this->sceneBounds);
 	this->camera = new Camera(60.0f, window.GetWidth(), window.GetHeight());
 	this->nextScene = nullptr;
 	this->didWin = false;
@@ -54,12 +55,14 @@ void Scene::Render()
 	// itererats through the objects and passes the renderer to the object.
 	// sorts the objects based on shader -> material properties -> object
 	
+	renderer->ShadowPass(this->cameraFocusPosition, sceneBounds, camera, &entities);
+
 	//dx11.GetContext()->RSSetState(dx11.GetRasterizer());
 	renderer->SetDeferredRenderTarget();
 	renderer->ClearRenderTarget();
 
-	std::vector<Object*> inView = entities.GetObjectsInView(camera);
-	std::sort(inView.begin(), inView.end(), m_CompareRenderList); // O(N·log(N))
+	std::vector<Object*> inView = entities.AllEntities();
+	std::sort(inView.begin(), inView.end(), m_CompareRenderList); // O(Nï¿½log(N))
 
 	DirectX::XMMATRIX view = camera->GetView();
 	DirectX::XMMATRIX projection = camera->GetProjection();
@@ -88,12 +91,15 @@ void Scene::Render()
 			material->Bind(dx11.GetContext());
 			lastMaterialID = material->GetID();
 		}
-
-		i->Render(renderer, view, projection);
+		DirectX::XMFLOAT3 right;
+		DirectX::XMStoreFloat3(&right, DirectX::XMVector3Normalize(camera->GetTransform().Right()));
+		DirectX::XMFLOAT3 up;
+		DirectX::XMStoreFloat3(&up, DirectX::XMVector3Normalize(camera->GetTransform().Up()));
+		i->Render(renderer, view, projection, right,up);
 	}
 
 	//UpdateAddRemoveSceneQueues();
-	renderer->DisplayFrame(camera->GetTransform().GetPosition());
+	renderer->DisplayFrame(camera);
 }
 
 void Scene::AddObject(Object* obj)

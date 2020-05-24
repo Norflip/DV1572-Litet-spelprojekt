@@ -9,6 +9,7 @@
 #include "SoundHandler.h"
 #include "Entities.h"
 #include "Resources.h"
+#include "Gamemanager.h"
 
 class Scene
 {
@@ -36,6 +37,8 @@ public:
 	void AddObject(Object*);
 	void RemoveObject(Object*);
 
+	AABB GetSceneBounds() { return sceneBounds; }
+
 	Window& GetWindow() { return this->window; };
 	Scene* nextScene;
 	void setWinOrLose(bool didWin);
@@ -50,13 +53,18 @@ protected:
 	static bool m_CompareRenderList(Object* a, Object* b);
 
 protected:
+	AABB sceneBounds;
 	Camera* camera;
 	Renderer* renderer;
 	Window& window;
 	DX11Handler& dx11;
 
+	DirectX::XMVECTOR cameraFocusPosition;
+
 	Resources resources;
 	Entities entities;
+
+	
 
 	//std::vector<Object*> objectsToAdd;
 	//std::vector<Object*> objectsToRemove;

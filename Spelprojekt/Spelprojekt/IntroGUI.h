@@ -11,23 +11,17 @@ class IntroScene;
 class IntroGUI
 {
 public:
-	IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scenes, SoundHandler* sound, SoundHandler* soundeffect);
+	IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scenes, Gamemanager* gamemanager); // tabrot soundeffect
 	~IntroGUI();
 	enum class Menu
 	{
 		start,
 		options,
 		soundtracks,
+		highscore,
 		quit
 	};
-
-	enum class Soundtrack
-	{
-		Track1,
-		Track2,
-		Track3,
-	};
-		
+			
 	void Update();
 
 	void Start();	//Game starts here
@@ -39,6 +33,9 @@ public:
 	void Soundtracks();
 	void LoadSoundtracks();
 
+	void Highscore();
+	void LoadHighscore();
+
 	void Quit(); // Sure to Quit
 	void LoadQuit();
 
@@ -46,26 +43,28 @@ private:
 	void ClearGUI();
 	bool first = true;
 	Menu menu = Menu::start;
+	
 	DX11Handler& dx11;
 	GUI* gui;
 	Input* input;
 	IntroScene* currentScene;
 
-	// Vsync
-	std::string lastOn, lastOff;
+	Gamemanager* gamemanager;
 
-	// music and sounds
+	// Vsync
+	std::string lastOn, lastOff;	
 	bool vsyncOn = false;
-	SoundHandler* mainSound;
-	SoundHandler* soundeffects;
+		
+	// Music and sound stuff //
 	float volumeScale = 0.1f;	
 	float maxVolume = 1.0f;
-	float minVolume = 0.0f;
-	float currentMusicVolume = 1.0f;
-	float currentSoundVolume = 1.0f;
+	float currentMusicVolume;
+	float currentSoundVolume;
+		
+	bool trackoneChecked;
+	bool tracktwoChecked;
+	bool trackthreeChecked;		
+	//	-	-	//	-	-	//	
 
-	Soundtrack soundtrack = Soundtrack::Track1;
-	bool oneChecked;
-	bool twoChecked;
-	bool threeChecked;		
+	std::string lastEasy, lastMedium, lastHard;
 };

@@ -1,5 +1,10 @@
 #include "Camera.h"
 
+Camera::Camera(DirectX::XMMATRIX view, DirectX::XMMATRIX projection) : view(view), projection(projection)
+{
+	UpdatePlanes(projection, view);
+}
+
 Camera::Camera(float fovDegrees, size_t width, size_t height) : Object(ObjectLayer::None, nullptr, nullptr), width(width), height(height)
 {
 	this->aspect = static_cast<float>(width) / static_cast<float>(height);
@@ -38,10 +43,6 @@ DirectX::XMMATRIX Camera::GetOrthographic() const
 	return DirectX::XMMatrixOrthographicLH(static_cast<float>(width), static_cast<float>(height), nearZ, farZ);
 }
 
-DirectX::XMMATRIX Camera::GetVP()
-{
-	return DirectX::XMMATRIX();
-}
 
 bool Camera::IsBoundsInView(const AABB& aabb) const
 {

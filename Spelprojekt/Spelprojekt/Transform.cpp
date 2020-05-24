@@ -78,6 +78,7 @@ void Transform::LookAtCamera(DirectX::XMVECTOR lookPosition)
 	float yaw = angle;// atan2f(direction.x / direction.y);
 
 
+
 	//float pitch = atanf(sqrtf(direction.x * direction.x + direction.y * direction.y) / direction.z);
 	float pitch = atan2(sqrtf(dZ * dZ + dX * dX), dY) - MathHelper::PI;
 
@@ -124,7 +125,7 @@ void Transform::SmoothRotate(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 		nextDir = atan2(DirectX::XMVectorGetByIndex(directionVector, 0), DirectX::XMVectorGetByIndex(directionVector, 2));
 
 	//Rotates to shortest angle(in rad)
-	Rotate(0, MathHelper::ShortestRotation(currentDir, nextDir) / 10, 0);
+	Rotate(0, MathHelper::ShortestRotation(currentDir, nextDir) * (fixedDeltaTime * 3.14f), 0);
 	//GetTransform().Rotate(0, shortestRoration(currentDir, nextDir)/10, 0);
 
 	//removes rotations bigger and smaller than 360 & -360

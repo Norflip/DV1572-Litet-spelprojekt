@@ -1,12 +1,12 @@
 #include "EndGUI.h"
 
-EndGUI::EndGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, EndScene* scenes, SoundHandler* music, SoundHandler* soundeffect) : dx11(dx11)
+EndGUI::EndGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, EndScene* scenes, Gamemanager* gamemanager) : dx11(dx11)
 {
     this->currentScene = scenes;
     this->gui = gui;
     this->input = cameraController->getInput();
-    this->musicsound = music;
-    this->soundeffects = soundeffect;
+
+    this->gamemanager = gamemanager;
 }
 
 EndGUI::~EndGUI()
@@ -82,37 +82,47 @@ void EndGUI::LoadStart()
     ClearGUI();
     GUISprite* winLose;
     
-    if (currentScene->getWinOrLose() == true)
-    {
+    if (currentScene->getWinOrLose() == true) {
        winLose = new GUISprite(dx11, "Sprites/Glassbokal_Win.png", 0.0f, 0.0f);
-    }
-    else
-    {
-        winLose = new GUISprite(dx11, "Sprites/Glassbokal_lose.png", 0.0f, 0.0f);
+       this->gamemanager->GetMusicHandler()->StopSound();
+       this->gamemanager->GetMusicHandler()->DeleteTrack("Levelsound");
 
-        // Lose sound
-        this->musicsound->StopSound();
-        if (!playedOnce) {
-            this->soundeffects->LoadSound("Lose", "SoundEffects/Fail.wav");
-            this->soundeffects->PlaySound("Lose", this->soundeffects->GetGlobalVolume());
-            playedOnce = true;
-        }
+       if (!playedOnce) {
+           this->gamemanager->GetSoundeffectHandler()->LoadSound("Win", "SoundEffects/tadaWin.wav");
+           this->gamemanager->GetSoundeffectHandler()->PlaySound("Win", gamemanager->GetCurrentSoundVolume());
+           playedOnce = true;
+       }
+
+    }
+    else {
+        winLose = new GUISprite(dx11, "Sprites/Glassbokal_lose.png", 0.0f, 0.0f);
         
+        // Lose sound
+        this->gamemanager->GetMusicHandler()->StopSound();
+        this->gamemanager->GetMusicHandler()->DeleteTrack("Levelsound");
+        if (!playedOnce) {
+            this->gamemanager->GetSoundeffectHandler()->LoadSound("Lose", "SoundEffects/Fail.wav");
+            this->gamemanager->GetSoundeffectHandler()->PlaySound("Lose", gamemanager->GetCurrentSoundVolume());
+            playedOnce = true;
+        }        
     }
 
     GUISprite* restart = new GUISprite(dx11, "Sprites/restart.png", 0.0f, 0.0f);       
     GUISprite* quit = new GUISprite(dx11, "Sprites/quit.png", 0.0f, 0.0f);          
     GUISprite* menu = new GUISprite(dx11, "Sprites/backtointro.png", 0.0f, 0.0f);   
 
+    
     winLose->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (winLose->GetTextureWidth() / 2.0f), 0);
-    restart->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (restart->GetTextureWidth() / 2.0f) + 300.0f, 200.0f);
-    menu->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (menu->GetTextureWidth() / 2.0f) + 300.0f, 350.0f);
-    quit->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (quit->GetTextureWidth() / 2.0f) + 300.0f, 500.0f);
+    restart->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (restart->GetTextureWidth() / 2.0f) + 400.0f, 300.0f);
+    menu->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (menu->GetTextureWidth() / 2.0f) + 400.0f, 400.0f);
+    quit->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (quit->GetTextureWidth() / 2.0f) + 400.0f, 500.0f);
 
     gui->AddGUIObject(winLose, "winorlose");
     gui->AddGUIObject(restart, "restart");
     gui->AddGUIObject(quit, "quit");
     gui->AddGUIObject(menu, "menu");
+    gamemanager->UpdateHighscore(gui, gamemanager->GetCurrentScore());
+   
 
     first = false;
 }
@@ -145,8 +155,6 @@ void EndGUI::Quit()
         backtoscreen->SetWICSprite(dx11, "Sprites/backtointro.png");
     }
 
-
-
 }
 
 void EndGUI::LoadQuit()
@@ -155,8 +163,7 @@ void EndGUI::LoadQuit()
 
     GUISprite* imsure = new GUISprite(dx11, "Sprites/imsure.png", 0.0f, 0.0f);
     GUISprite* backtoendscreen = new GUISprite(dx11, "Sprites/backtointro.png", 0.0f, 0.0f);
-
-    imsure->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (imsure->GetTextureWidth() / 2.0f), 250.0f);
+    imsure->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (imsure->GetTextureWidth() / 2.0f), 300.0f);
     backtoendscreen->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (backtoendscreen->GetTextureWidth() / 2.0f), 400.0f);
 
     gui->AddGUIObject(imsure, "imsure");

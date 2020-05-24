@@ -19,6 +19,8 @@ public:
 	DirectX::XMVECTOR GetSize() const;
 	DirectX::XMVECTOR GetCenter() const;
 
+	float GetRadius() const;
+
 	bool Overlaps(const AABB& other);
 	float SqrDistanceToPoint(DirectX::XMVECTOR point);
 

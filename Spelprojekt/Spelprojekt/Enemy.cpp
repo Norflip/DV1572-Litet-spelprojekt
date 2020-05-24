@@ -4,7 +4,7 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&
 	: terrain(terrain), Object(ObjectLayer::Enemy, modelData.mesh, modelData.material)
 {
 
-
+	this->pointGiven = 5;
 	//SetMesh(FBXModel->GetMesh());
 	//SetMaterial(FBXModel->GetMaterial());
 
@@ -18,11 +18,14 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&
 	//this->hitSound->LoadSound("Hit", "SoundEffects/Kick.wav");
 	this->hitSound->LoadSound("Hit", "SoundEffects/Punch.wav");
 	this->entities = entities;
+	this->gamemanager = gamemanager;
+	this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
 }
 
 
 Enemy::Enemy(const Enemy& other)
 {
+	this->pointGiven = other.pointGiven;
 	this->terrain = other.terrain;
 	this->FBXModel = other.FBXModel;
 	SetMesh(other.GetMesh());
@@ -35,6 +38,9 @@ Enemy::Enemy(const Enemy& other)
 	this->hitSound->LoadSound("Hit", "SoundEffects/Punch.wav");
 	this->entities = other.entities;
 	SetLayer(ObjectLayer::Enemy);
+
+	this->gamemanager = other.gamemanager;
+	this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
 }
 
 Enemy::~Enemy()
@@ -167,6 +173,9 @@ void Enemy::SetTarget(Player* player)
 DirectX::XMVECTOR Enemy::GetVelocity()
 {
 	return velocity;
+void Enemy::HitSound()
+{
+	gamemanager->GetSoundeffectHandler()->PlaySound("HitEnemy", gamemanager->GetCurrentSoundVolume());
 }
 
 Object* Enemy::GetFBXModel()
