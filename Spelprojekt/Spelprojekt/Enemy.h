@@ -19,10 +19,11 @@ class Enemy : public Object
 		void SetHeight(float height) { this->enemyHeight = height; };
 		void SetTarget(Player* player);
 		void HitSound() { this->hitSound->PlaySound("Hit", this->hitSound->GetGlobalVolume()); }
+		DirectX::XMVECTOR GetVelocity();
 
 		Object* GetFBXModel();
 	private:
-		float movementspeed;
+		DirectX::XMVECTOR velocity;
 		void UpdateHeight(float fixedDeltaTime);
 		void UpdateMovement(float fixedDeltaTime);
 		Terrain* terrain;
@@ -31,8 +32,9 @@ class Enemy : public Object
 		Player* player;
 		Object* FBXModel;
 		Entities* entities;
-		void BoidsAlgoritm(float fixedDeltaTime);
+		bool BoidsAlgoritm(float fixedDeltaTime);
 		DirectX::XMVECTOR RuleSeparation(ObjectLayer object);
+		DirectX::XMVECTOR RuleAlignment();
 		//std::vector<Grid*> open;
 		//std::vector<Grid*> closed;
 

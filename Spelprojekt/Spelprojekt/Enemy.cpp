@@ -10,7 +10,7 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&
 
 	// delete FBXModel? / F
 
-	this->movementspeed = 2.0f;
+	this->velocity = { 2,0,2 };
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 
@@ -27,7 +27,7 @@ Enemy::Enemy(const Enemy& other)
 	this->FBXModel = other.FBXModel;
 	SetMesh(other.GetMesh());
 	SetMaterial(other.GetMaterial());
-	this->movementspeed = other.movementspeed;
+	this->velocity = other.velocity;
 	this->currentPosition = other.currentPosition;
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 	this->hitSound = other.hitSound;
@@ -49,55 +49,66 @@ void Enemy::Update(const float& deltaTime)
 
 void Enemy::UpdateMovement(float fixedDeltaTime)
 {
-	if (!GetWorldBounds().Overlaps(player->GetWorldBounds()))
+	if (!BoidsAlgoritm(fixedDeltaTime))
 	{
-		/*DirectX::XMFLOAT3 nextPos;
-		DirectX::XMStoreFloat3(&nextPos, GetTransform().GetPosition());
-		currentPosition = nextPos;
+		if (!GetWorldBounds().Overlaps(player->GetWorldBounds()))
+		{
+			velocity = { 2,0,2 };
+			DirectX::XMFLOAT3 nextPos;
+			DirectX::XMStoreFloat3(&nextPos, GetTransform().GetPosition());
+			currentPosition = nextPos;
 
-		DirectX::XMFLOAT3 pPos;
-		DirectX::XMStoreFloat3(&pPos, player->GetTransform().GetPosition());
+			DirectX::XMFLOAT3 pPos;
+			DirectX::XMStoreFloat3(&pPos, player->GetTransform().GetPosition());
 
-		if (pPos.z >= nextPos.z)
-			nextPos.z += fixedDeltaTime * movementspeed;
-		if (pPos.x <= nextPos.x)
-			nextPos.x -= fixedDeltaTime * movementspeed;
-		if (pPos.z <= nextPos.z)
-			nextPos.z -= fixedDeltaTime * movementspeed;
-		if (pPos.x >= nextPos.x)
-			nextPos.x += fixedDeltaTime * movementspeed;
+			if (pPos.z >= nextPos.z)
+				nextPos.z += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 2);
+			if (pPos.x <= nextPos.x)
+				nextPos.x -= fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 0);
+			if (pPos.z <= nextPos.z)
+				nextPos.z -= fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 2);
+			if (pPos.x >= nextPos.x)
+				nextPos.x += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 0);
 
-		GetTransform().SmoothRotate(nextPos, fixedDeltaTime, true);
-		GetTransform().SetPosition({ nextPos.x, nextPos.y, nextPos.z });*/
-		BoidsAlgoritm(fixedDeltaTime);
+			Logger::Write(LOG_LEVEL::Info, "Chase player");
+
+			GetTransform().SmoothRotate(nextPos, fixedDeltaTime, true);
+			GetTransform().SetPosition({ nextPos.x, nextPos.y, nextPos.z });
+
+		}
 	}
 }
 
-void Enemy::BoidsAlgoritm(float fixedDeltaTime)
+bool Enemy::BoidsAlgoritm(float fixedDeltaTime)
 {
 	
-	DirectX::XMVECTOR velocity = DirectX::XMVectorAdd(RuleSeparation(ObjectLayer::Enemy), RuleSeparation(ObjectLayer::Enviroment));
+	velocity = DirectX::XMVectorAdd(RuleSeparation(ObjectLayer::Enemy), RuleSeparation(ObjectLayer::Enviroment));
+	//velocity = DirectX::XMVectorAdd(RuleAlignment(),velocity);
 
-	DirectX::XMFLOAT3 nextPos;
-	DirectX::XMStoreFloat3(&nextPos, DirectX::XMVectorAdd(GetTransform().GetPosition(), velocity));
-	currentPosition = nextPos;
-	DirectX::XMFLOAT3 v;
-	DirectX::XMStoreFloat3(&v, velocity);
-	Logger::Write(LOG_LEVEL::Info, "velocity x: " + std::to_string(v.x));
-	GetTransform().SmoothRotate(nextPos, fixedDeltaTime, true);
-	GetTransform().Translate(DirectX::XMVectorScale(velocity, fixedDeltaTime));
+	if (!DirectX::XMVector3Equal(velocity, { 0,0,0 }))
+	{
+		DirectX::XMFLOAT3 nextPos;
+		DirectX::XMStoreFloat3(&nextPos, DirectX::XMVectorAdd(GetTransform().GetPosition(), velocity));
+		currentPosition = nextPos;
+		DirectX::XMFLOAT3 v;
+		DirectX::XMStoreFloat3(&v, velocity);
+		Logger::Write(LOG_LEVEL::Info, "Separate from other enemy");
+		GetTransform().SmoothRotate(nextPos, fixedDeltaTime, true);
+		GetTransform().Translate(DirectX::XMVectorScale(velocity, fixedDeltaTime));
+		return true;
+	}
 	
 	//Alignment, move all enemies towards player
 
 	//Cohesion
-
+	return false;
 }
 
 DirectX::XMVECTOR Enemy::RuleSeparation(ObjectLayer object)
 {
 	
-	float range = 15.0f;
-	DirectX::XMVECTOR velocity = { 0,0,0 };
+	float radius = 3.0f;
+	velocity = { 0,0,0 };
 	//Separation, decide a distance between all enemies
 
 	//add environment to velocity
@@ -106,12 +117,10 @@ DirectX::XMVECTOR Enemy::RuleSeparation(ObjectLayer object)
 	{
 		if (GetID() == entity->GetID())
 			continue;
-		DirectX::XMFLOAT3 ePos;
-		DirectX::XMStoreFloat3(&ePos, entity->GetTransform().GetPosition());
 		DirectX::XMVECTOR offset = DirectX::XMVectorSubtract(GetTransform().GetPosition(), entity->GetTransform().GetPosition());
 		DirectX::XMVECTOR distance = DirectX::XMVector3Length(offset);
 		float distF = DirectX::XMVectorGetByIndex(distance, 0);
-		if (DirectX::XMVectorGetByIndex(distance, 0) < range)
+		if (distF < radius)
 		{
 			if (distF < 0.001f)
 			{
@@ -125,9 +134,39 @@ DirectX::XMVECTOR Enemy::RuleSeparation(ObjectLayer object)
 	return velocity;
 }
 
+DirectX::XMVECTOR Enemy::RuleAlignment()
+{
+	float radius = 15.0f;
+	velocity = { 0,0,0 };
+	//Alignment, align enemy with enemies within it's local range
+
+	//add environment to velocity
+	auto checkEntity = entities->GetObjectsInLayer(ObjectLayer::Enemy);
+	for (auto entity : checkEntity)
+	{
+		if (GetID() == entity->GetID())
+			continue;
+		DirectX::XMVECTOR offset = DirectX::XMVectorSubtract(GetTransform().GetPosition(), entity->GetTransform().GetPosition());
+		DirectX::XMVECTOR distance = DirectX::XMVector3Length(offset);
+		float distF = DirectX::XMVectorGetByIndex(distance, 0);
+		if (distF < radius)
+		{
+			velocity = DirectX::XMVectorAdd(velocity, static_cast<Enemy*>(entity)->GetVelocity());
+		}
+	}
+	DirectX::XMVECTOR divAvg = { checkEntity.size(), 1, checkEntity.size() };
+	velocity = DirectX::XMVectorDivide(velocity, divAvg);
+	return velocity;
+}
+
 void Enemy::SetTarget(Player* player)
 {
 		this->player = player;
+}
+
+DirectX::XMVECTOR Enemy::GetVelocity()
+{
+	return velocity;
 }
 
 Object* Enemy::GetFBXModel()
