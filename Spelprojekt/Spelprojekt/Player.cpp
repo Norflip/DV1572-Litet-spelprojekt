@@ -83,19 +83,25 @@ void Player::UpdateMovement(float fixedDeltaTime)
 		float length = sqrtf(dx * dx + dz * dz);
 		if (length != 0.0f)
 		{
-			GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[0]);
-
 			dx /= length;
 			dz /= length;
 
 			nextPosition.x += dx * fixedDeltaTime * movementspeed;
 			nextPosition.z += dz * fixedDeltaTime * movementspeed;
 			
+
+			// kolla höjd istället? 
 			DirectX::XMVECTOR dot = DirectX::XMVector3Dot(terrain->SampleNormal(nextPosition.x, nextPosition.z), { 0,1,0 });
 			if (DirectX::XMVectorGetByIndex(dot, 0) < 0.85f)
 			{
+				//idle
 				GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
 				return;
+			}
+			else
+			{
+				// run
+				GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[0]);
 			}
 		}
 		else
