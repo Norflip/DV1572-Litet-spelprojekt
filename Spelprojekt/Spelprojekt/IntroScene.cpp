@@ -22,16 +22,15 @@ IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, st
 
 IntroScene::~IntroScene()
 {
+	delete gui;
+	delete introGUI;
 	delete controller;
 }
 
 void IntroScene::Load()
 {	
 	// Set music volume from beginning		
-	gamemanager->GetMusicHandler()->PlaySound("Monster", gamemanager->GetCurrentMusicVolume());
-
-	GUI* gui = new GUI(dx11);
-	introGUI = new IntroGUI(gui, dx11, controller, this, gamemanager);
+	gamemanager->GetMusicHandler()->PlaySound("Monster", gamemanager->GetCurrentMusicVolume());	
 	renderer->SetGUI(gui);
 		
 	Object* glasse = new Object(ObjectLayer::Enviroment, resources.GetModel("playerModel"));
@@ -125,6 +124,14 @@ void IntroScene::LoadResources()
 	resources.AddModel("playerModel", AssimpHandler::loadFbxObject("Models/Glasse_intro_Pose.fbx", dx11, toonShader));
 	resources.AddModel("wagonModel", AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, toonShader));
 	resources.AddModel("backgroundPlane", AssimpHandler::loadFbxObject("Models/Background_Plane.fbx", dx11, toonShader));
+
+
+	/*
+		GUI
+	*/
+
+	gui = new GUI(dx11);
+	introGUI = new IntroGUI(gui, dx11, controller, this, gamemanager);
 }
 
 void IntroScene::Update(const float& deltaTime)

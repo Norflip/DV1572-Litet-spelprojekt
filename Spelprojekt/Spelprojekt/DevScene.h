@@ -50,6 +50,7 @@ private:
 	Gamemanager* gamemanager;
 	SpawnObjects* spawner;
 
+	GUI* gui;
 	GUIText* gametimerText;
 	GUIText* fpsText;
 	GUISprite* healthFrame;

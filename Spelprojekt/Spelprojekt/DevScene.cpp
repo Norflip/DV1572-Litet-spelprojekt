@@ -4,15 +4,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 {
 	//----- GUI SHIET |  Set gui last |
 
-	gametimerText = new GUIText(dx11, "Time until extraction", window.GetWidth() / 2.0f - 150.0f, 0);
-	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f - 100.0f, 30);
-	totalScore = new GUIText(dx11, "Score", 210.0f, 5.0f);
-	totalScore->SetFontSize({ 3.0f, 3.0f });
-	totalScore->SetFontColor({ 1,0,0,1 });
-
-	totalEnemies = new GUIText(dx11, "Enemiesleft", 250, 70);
-	totalEnemies->SetFontSize({ 2.0f, 2.0f });
-	totalEnemies->SetFontColor({ 0.5,1,0,1 });
 
 	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
 	window.GetInput()->LockCursor(false);
@@ -25,22 +16,19 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 
-	this->spawner = new SpawnObjects(entities, &ground, gamemanager, dx11);
-}
+	this->spawner = new SpawnObjects(entities, &terrain, gamemanager, dx11);
 
-DevScene::~DevScene()
-{
-	delete controller;
-}
 
-void DevScene::Load()
-{
-	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
-	this->timeUntilEnd = 10.0f; // gamemanager->GetTimer();		// get time from gamemanager
-	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
 
-	Timer testSpeed;
-	testSpeed.Start();
+	gametimerText = new GUIText(dx11, "Time until extraction", window.GetWidth() / 2.0f - 150.0f, 0);
+	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f - 100.0f, 30);
+	totalScore = new GUIText(dx11, "Score", 210.0f, 5.0f);
+	totalScore->SetFontSize({ 3.0f, 3.0f });
+	totalScore->SetFontColor({ 1,0,0,1 });
+
+	totalEnemies = new GUIText(dx11, "Enemiesleft", 250, 70);
+	totalEnemies->SetFontSize({ 2.0f, 2.0f });
+	totalEnemies->SetFontColor({ 0.5,1,0,1 });
 
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
@@ -50,8 +38,39 @@ void DevScene::Load()
 	enemies = new GUISprite(dx11, "Sprites/enemiesleft.png", 10, 80);
 
 	//--------------------------------
-	// Create GUI for Devscene
-	GUI* gui = new GUI(dx11);
+	gui = new GUI(dx11);
+
+	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
+	// Add objects
+	gui->AddGUIObject(gametimerText, "gametimerText");
+	gui->AddGUIObject(fpsText, "fpsText");
+	gui->AddGUIObject(healthFrame, "healthFrame");
+	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
+	gui->AddGUIObject(actionbarRight, "actionbarRight");
+	gui->AddGUIObject(score, "score");
+	gui->AddGUIObject(totalScore, "totalscore");
+	gui->AddGUIObject(enemies, "enemiesleft");
+	gui->AddGUIObject(totalEnemies, "totalenemiesleft");
+}
+
+DevScene::~DevScene()
+{
+	delete gui;
+	delete controller;
+}
+
+void DevScene::Load()
+{
+	renderer->SetGUI(gui); 	// Set GUI
+
+	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
+	this->timeUntilEnd = 10.0f; // gamemanager->GetTimer();		// get time from gamemanager
+	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
+
+	Timer testSpeed;
+	testSpeed.Start();
+
+
 
 	// Exit Wagon
 	Object* wagon = new Object(ObjectLayer::Enviroment, resources.GetModel("wagonModel"));
@@ -111,20 +130,6 @@ void DevScene::Load()
 	arrow->SetVisible(false);
 
 
-	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
-	// Add objects
-	gui->AddGUIObject(gametimerText, "gametimerText");
-	gui->AddGUIObject(fpsText, "fpsText");
-	gui->AddGUIObject(healthFrame, "healthFrame");
-	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
-	gui->AddGUIObject(actionbarRight, "actionbarRight");
-	gui->AddGUIObject(score, "score");
-	gui->AddGUIObject(totalScore, "totalscore");
-	gui->AddGUIObject(enemies, "enemiesleft");
-	gui->AddGUIObject(totalEnemies, "totalenemiesleft");
-
-	// Set GUI
-	renderer->SetGUI(gui);
 
 	gametimer.Start();
 
@@ -275,6 +280,12 @@ void DevScene::LoadResources()
 
 	Spoon* spoonPrefab = new Spoon(resources.GetModel("spoonModel"), gamemanager, &terrain, dx11);
 	resources.AddResource("spoonPrefab", spoonPrefab);
+
+	/*
+		GUI
+	*/
+
+
 }
 
 void DevScene::Update(const float& deltaTime)
