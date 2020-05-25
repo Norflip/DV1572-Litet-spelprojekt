@@ -62,11 +62,8 @@ void DevScene::Load()
 
 	// Exit Wagon
 	Object* wagon = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Wagon.fbx",dx11, defaultShader));
-	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
-	wagon->GetTransform().Translate(99, 9.5, 50);
-	wagon->GetTransform().Rotate(0.05f, -5, 0);
 	entities->InsertObject(wagon);
-
+	spawner->PlaceWagon(wagon);
 	
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 

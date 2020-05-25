@@ -69,6 +69,10 @@ void SpawnObjects::SpawnInitial()
 		clone->gamemanager = this->gamemanager;
 		entities->InsertObject(clone);
 	}
+
+	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
+	wagon->GetTransform().Translate(GetRandomSpawnPosition(1.0f));
+	wagon->GetTransform().Rotate(0.05f, -5, 0);
 }
 
 void SpawnObjects::SetMaxEnemies(int amount)
@@ -107,6 +111,11 @@ void SpawnObjects::SetPickupPrefab(Object* obj, WeaponType type)
 void SpawnObjects::SetEnemyPrefab(Enemy* enemy)
 {
 	this->enemyPrefab = enemy;
+}
+
+void SpawnObjects::PlaceWagon(Object* wagon)
+{
+	this->wagon = wagon;
 }
 
 void SpawnObjects::RemovePickup(Object* object)

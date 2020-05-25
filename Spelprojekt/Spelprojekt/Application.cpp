@@ -2,13 +2,14 @@
 
 Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(false)
 {
+	srand((int)time(0));
 	this->window.Initialize(); // initializes the win32 window
 	this->dx11.Initialize(this->window); // creates swapchain, device, deviceContext
 	this->deferredRenderer = new Renderer(this->window.GetWidth(), this->window.GetHeight(), timer, dx11);
 
 	// Opens the console
 	Logger::Open();
-	//Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
+	Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
 		
 	// Gamemanager for..... everything?
 	this->gamemanager = new Gamemanager(&dx11);

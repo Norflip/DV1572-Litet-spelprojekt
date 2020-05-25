@@ -47,8 +47,7 @@ public:
 
 	void SetPickupPrefab(Object* obj, WeaponType type);
 	void SetEnemyPrefab(Enemy*);
-
-
+	void PlaceWagon (Object*);
 
 	void Update(const float& deltaTime);
 	void RemovePickup(Object* object);
@@ -67,6 +66,7 @@ private:
 	Gamemanager* gamemanager;
 	Terrain* terrain;
 
+	Object* wagon;
 	Object* pickupsPrefabs[2];
 	Enemy* enemyPrefab;
 	int maxEnemies;
