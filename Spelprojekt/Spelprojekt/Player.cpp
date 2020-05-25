@@ -75,21 +75,21 @@ void Player::UpdateMovement(float fixedDeltaTime)
 
 		float dx = 0.0f;
 		float dz = 0.0f;
+
 		if (input->GetKey('w')) dz += 1.0f;
 		if (input->GetKey('a')) dx -= 1.0f;
 		if (input->GetKey('s')) dz -= 1.0f;
 		if (input->GetKey('d')) dx += 1.0f;
 
 		float length = sqrtf(dx * dx + dz * dz);
+
 		if (length != 0.0f)
 		{
 			dx /= length;
 			dz /= length;
-
 			nextPosition.x += dx * fixedDeltaTime * movementspeed;
 			nextPosition.z += dz * fixedDeltaTime * movementspeed;
 			
-
 			// kolla höjd istället? 
 			DirectX::XMVECTOR dot = DirectX::XMVector3Dot(terrain->SampleNormal(nextPosition.x, nextPosition.z), { 0,1,0 });
 			if (DirectX::XMVectorGetByIndex(dot, 0) < 0.85f)
@@ -275,6 +275,23 @@ void Player::UseWeapon()
 
 void Player::WeaponUsage(Weapon* weapon, bool& hand)
 {
+	std::string str = "";
+
+	switch (weapon->GetType())
+	{
+	case WeaponType::Coconut:
+		str = "coconut";
+		break;
+	case WeaponType::Spoon:
+		str = "spoon";
+		break;
+	default:
+		break;
+	}
+
+	Logger::Write(str);
+
+
 	if (weapon->GetType() == WeaponType::Coconut)
 	{
 		DirectX::XMVECTOR aimDirection = GetAimDirection();
@@ -282,8 +299,6 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		weapon->direction = aimDirection;
 		weapon->gamemanager = this->gamemanager;
 		weapon->PlaySoundEffect();
-
-
 
 		scene->GetEntities()->InsertObject(weapon);
 		SetActiveWeapon(static_cast<Weapon*>(weapon));
@@ -293,7 +308,10 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 
 	if (weapon->GetType() == WeaponType::Spoon)
 	{
-		if (weapon->CheckUsage() < 2) {
+		Logger::Write("USES: " + std::to_string(weapon->CheckUsage()));
+
+		if (weapon->CheckUsage() < 2) 
+		{
 			weapon->PlaySoundEffect();
 			//activeWeapon = static_cast<Weapon*>(weapon);
 			weapon->Use();
@@ -323,6 +341,7 @@ float Player::GetPlayerHealth()
 
 Weapon* Player::CopyWeapon(Weapon* weapon)
 {
+
 	Weapon* curr = nullptr;
 	if (weapon->GetType() == WeaponType::Coconut)
 	{

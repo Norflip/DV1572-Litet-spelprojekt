@@ -132,12 +132,11 @@ void SpawnObjects::UpdateSpawnEnemy()
 {
 	// skapar fler fiender om vi saknar
 
-	Logger::Write(std::to_string(enemyCount) + " : " + std::to_string(maxEnemies));
+	//Logger::Write(std::to_string(enemyCount) + " : " + std::to_string(maxEnemies));
 
 	if (enemyCount < maxEnemies)
 	{
 		Player* player = static_cast<Player*>(entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
-
 		Enemy* enemy = new Enemy(*enemyPrefab);
 
 		DirectX::XMFLOAT3 pos;
@@ -179,7 +178,7 @@ void SpawnObjects::UpdateRemoveEnemy()
 
 				player->GetActiveWeapon()->SetEnabled(false); // new
 				player->SetActiveWeapon(nullptr);
-				maxEnemies--;
+				enemyCount--;
 			}
 		}
 	}
