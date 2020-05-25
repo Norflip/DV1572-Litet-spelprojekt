@@ -28,8 +28,8 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 
 	this->points = 0;
 	this->isMoving = false;
-	this->attacking = false;
-
+	this->rangedAttacking = false;
+	this->meleeAttacking = false;
 }
 
 Player::~Player()
@@ -84,7 +84,7 @@ void Player::UpdateMovement(float fixedDeltaTime)
 
 		float length = sqrtf(dx * dx + dz * dz);
 
-		if (length != 0.0f && !attacking)
+		if (length != 0.0f && !meleeAttacking && !rangedAttacking)
 		{
 			dx /= length;
 			dz /= length;
@@ -214,9 +214,14 @@ void Player::UpdateAnimations()
 		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[0]);
 	}
 
-	else if (this->attacking)
+	else if (this->rangedAttacking)
 	{
 		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[2]);
+	}
+
+	else if (this->meleeAttacking)
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[3]);
 	}
 
 	else
@@ -252,7 +257,7 @@ void Player::UseWeapon()
 	if (input->GetMouseButtonDown(0) && lefthandFull) 
 	{
 		WeaponUsage(leftWeapon, lefthandFull);
-		attacking = true;
+		//attacking = true;
 
 		if (!lefthandFull)
 			gui->RemoveGUIObject("Left Actionbar");
@@ -262,7 +267,7 @@ void Player::UseWeapon()
 	if (input->GetMouseButtonDown(1) && righthandFull) 
 	{
 		WeaponUsage(rightWeapon, righthandFull);
-		attacking = true;
+		//attacking = true;
 
 		if (!righthandFull)
 			gui->RemoveGUIObject("Right Actionbar");
@@ -270,7 +275,8 @@ void Player::UseWeapon()
 
 	if (this->GetMesh()->skeleton->GetKeyframe() == this->GetMesh()->skeleton->GetCurrentAnimation()->GetLength() - 4)
 	{
-		this->attacking = false;
+		this->meleeAttacking = false;
+		this->rangedAttacking = false;
 	}
 }
 
@@ -304,6 +310,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		SetActiveWeapon(static_cast<Weapon*>(weapon));
 		hand = false;
 		GetTransform().SetRotation(aimDirection);
+		this->rangedAttacking = true;
 	}
 
 	if (weapon->GetType() == WeaponType::Spoon)
@@ -312,6 +319,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 
 		if (weapon->CheckUsage() < 2) 
 		{
+			this->meleeAttacking = true;
 			weapon->PlaySoundEffect();
 			//activeWeapon = static_cast<Weapon*>(weapon);
 			weapon->Use();
@@ -319,6 +327,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		}
 		else 
 		{
+			this->meleeAttacking = true;
 			weapon->PlaySoundEffect();
 			weapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			weapon->direction = GetTransform().GetRotation();

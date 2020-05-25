@@ -152,8 +152,11 @@ void DevScene::Load()
 	this->assimpScene = imp.ReadFile("Animations/Glasse_Attack_Right.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
 	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Attack");
 
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Melee_Attack.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Melee");
 
-	AssimpHandler::AssimpData enemyModel = AssimpHandler::loadFbxObject("Animations/animanim.fbx", dx11, toonShader);
+
+	AssimpHandler::AssimpData enemyModel = AssimpHandler::loadFbxObject("Animations/animanim.fbx", dx11, animationShader);
 	Enemy* testEnemy = new Enemy(enemyModel, &ground, dx11, gamemanager);
 
 	testEnemy->GetTransform().Translate(30, 7, 35);
@@ -161,9 +164,9 @@ void DevScene::Load()
 	testEnemy->SetTarget(player);
 	testEnemy->SetEnabled(false);
 
-	//this->assimpScene = imp.ReadFile("Animations/animanim.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
-	//AssimpHandler::saveAnimationData(assimpScene, testEnemy->GetMesh()->skeleton, "enemyMove");
-	//testEnemy->GetMesh()->skeleton->SetFirstAnimation(testEnemy->GetMesh()->skeleton->animations[0]);
+	this->assimpScene = imp.ReadFile("Animations/animanim.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, testEnemy->GetMesh()->skeleton, "enemyMove");
+	testEnemy->GetMesh()->skeleton->SetFirstAnimation(testEnemy->GetMesh()->skeleton->animations[0]);
 
 	this->spawner->SetEnemyPrefab(testEnemy);
 	this->assimpScene = nullptr;

@@ -89,6 +89,7 @@ private:
 	Object* winArea;
 	int points;
 	bool isMoving;
-	bool attacking;
+	bool rangedAttacking;
+	bool meleeAttacking;
 }; 
 
