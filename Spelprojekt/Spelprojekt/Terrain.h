@@ -25,6 +25,7 @@ public:
 
 	Mesh* GetMesh () { return this->mesh; };
 	float SampleHeight(float x, float z);
+	DirectX::XMVECTOR SampleNormal(float x, float z);
 
 private:
 	float verticalScaling = 11.f; // height of the vertecies

@@ -89,7 +89,6 @@ void SpawnObjects::SetPickupPrefab(Object* obj, WeaponType type)
 	this->pickupsPrefabs[(int)type] = obj;
 }
 
-
 void SpawnObjects::SetEnemyPrefab(Enemy* enemy)
 {
 	this->enemyPrefab = enemy;
@@ -119,7 +118,6 @@ DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition(float heightOffset)
 
 		if (y >= MinimumSpawnHeight)
 		{
-			Logger::Write("found pos");
 			position = { x, y + heightOffset, z };
 			found = true;
 		}
@@ -146,8 +144,8 @@ void SpawnObjects::UpdateSpawnEnemy()
 		DirectX::XMStoreFloat3(&pos, player->GetTransform().GetPosition());
 
 		float angle = (float)(rand() % 16) * (360.0f / CoconutsPerTree);
-		float x = pos.x + cosf(angle * MathHelper::ToRadians) * 10.0f;
-		float z = pos.z + sinf(angle * MathHelper::ToRadians) * 10.0f;
+		float x = pos.x + cosf(angle * MathHelper::ToRadians) * 20.0f;
+		float z = pos.z + sinf(angle * MathHelper::ToRadians) * 20.0f;
 		float y = terrain->SampleHeight(x, z) + 0.4f;
 
 		enemy->GetTransform().SetPosition({ x,y,z });
