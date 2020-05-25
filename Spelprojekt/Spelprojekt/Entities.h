@@ -14,6 +14,8 @@ public:
 	Entities(AABB worldBounds);
 	virtual ~Entities();
 
+	void UpdateTree();
+	
 	void SetBounds(AABB worldBounds);
 	void InsertObject(Object*);
 	void RemoveObject(Object*);

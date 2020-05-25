@@ -47,7 +47,7 @@ public:
 	virtual void Update(const float& deltaTime) {};
 	virtual void FixedUpdate(const float& fixedDeltaTime) {};
 
-	ObjectLayer GetLayer() { return this->layer; }
+	ObjectLayer GetLayer() const { return this->layer; }
 	void SetLayer(ObjectLayer layer) { this->layer = layer; }
 
 	void SetEnabled(bool enabled) { this->enabled = enabled; }

@@ -21,9 +21,14 @@ class SpawnObjects
 {
 	struct RespawnPickup
 	{
-		Transform spawnTransform;
+		DirectX::XMVECTOR position;
+		DirectX::XMVECTOR rotation;
+		WeaponType type;
 		float remaningTime;
+		int prefabIndex;
 	};
+
+	const float MaxTime = 30.0f;
 
 	const float CoconutRespawnTime = 30.0f;
 	const int CoconutsPerTree = 2;
@@ -42,6 +47,8 @@ public:
 
 	void SetPickupPrefab(Object* obj, WeaponType type);
 	void SetEnemyPrefab(Enemy*);
+
+
 
 	void Update(const float& deltaTime);
 	void RemovePickup(Object* object);
@@ -64,6 +71,8 @@ private:
 	Enemy* enemyPrefab;
 	int maxEnemies;
 	int enemyCount;
+
+	std::vector<RespawnPickup> respawnTimers;
 
 	//std::vector<Enemy*> enemies;
 };

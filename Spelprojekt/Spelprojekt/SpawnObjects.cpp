@@ -78,6 +78,23 @@ void SpawnObjects::SetMaxEnemies(int amount)
 
 void SpawnObjects::Update(const float& deltaTime)
 {
+	for (int i = respawnTimers.size() - 1; i >= 0; i--)
+	{
+		respawnTimers[i].remaningTime -= deltaTime;
+		if (respawnTimers[i].remaningTime <= 0.0f)
+		{
+			Projectile* source = static_cast<Projectile*>(pickupsPrefabs[respawnTimers[i].prefabIndex]);
+			Projectile* clone = new Projectile(*source);
+
+			clone->GetTransform().SetPosition(respawnTimers[i].position);
+			clone->GetTransform().SetRotation(respawnTimers[i].rotation);
+			clone->gamemanager = this->gamemanager;
+			entities->InsertObject(clone);
+
+			respawnTimers.erase(respawnTimers.begin() + i);
+		}
+	}
+
 	UpdateSpawnEnemy();
 	UpdateRemoveEnemy();
 }
@@ -94,7 +111,18 @@ void SpawnObjects::SetEnemyPrefab(Enemy* enemy)
 
 void SpawnObjects::RemovePickup(Object* object)
 {
+	Logger::Write("removed pickup");
+	entities->RemoveObject(object);
 
+	RespawnPickup respawn;
+	Weapon* w = static_cast<Weapon*>(object);
+	respawn.position = object->GetTransform().GetPosition();
+	respawn.rotation = object->GetTransform().GetRotation();
+	respawn.remaningTime = 10.0f;
+	respawn.prefabIndex = (int)w->GetType();
+	respawn.type = w->GetType();
+
+	respawnTimers.push_back(respawn);
 }
 
 void SpawnObjects::RemoveEnemy(Enemy* enemy)
@@ -157,8 +185,6 @@ void SpawnObjects::UpdateSpawnEnemy()
 void SpawnObjects::UpdateRemoveEnemy()
 {
 	auto enemies = entities->GetObjectsInLayer(ObjectLayer::Enemy);
-
-	Logger::Write(std::to_string(enemies.size()));
 
 	Enemy* e = nullptr;
 	Player* player = static_cast<Player*>(entities->GetObjectsInLayer(ObjectLayer::Player)[0]);

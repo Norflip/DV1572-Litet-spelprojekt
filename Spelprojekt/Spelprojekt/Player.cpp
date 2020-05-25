@@ -1,8 +1,9 @@
 #include "Player.h"
 #include "Scene.h"
+#include "SpawnObjects.h"
 
-Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler& dx11, Scene* scene)
-	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11), scene(scene), gamemanager(gamemanager)
+Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, SpawnObjects* spawner, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler& dx11, Scene* scene)
+	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11), scene(scene), gamemanager(gamemanager), spawner(spawner)
 {
 	this->input = controller->getInput();
 	this->currentPosition = { 0,0,0 };
@@ -169,9 +170,6 @@ void Player::CheckForPickups()
 					this->leftActionbar->SetPosition(325.0f, 650.0f);
 					this->gui->AddGUIObject(this->leftActionbar, "Left Actionbar");
 
-					scene->GetEntities()->RemoveObject(obj);
-
-					obj->SetEnabled(false);
 					lefthandFull = true;
 				}
 				else if (lefthandFull && !righthandFull) 
@@ -180,13 +178,13 @@ void Player::CheckForPickups()
 
 					this->rightActionbar = new GUIActionbar(*obj->GetWeaponSprite());
 					this->rightActionbar->SetPosition(400.0f, 650.0f);
-
 					this->gui->AddGUIObject(this->rightActionbar, "Right Actionbar");
 
-					scene->GetEntities()->RemoveObject(obj);
-					obj->SetEnabled(false);
 					righthandFull = true;
 				}
+
+				obj->SetEnabled(false);
+				spawner->RemovePickup(obj);
 
 				foundPickup = true;
 			}
@@ -340,18 +338,19 @@ float Player::GetPlayerHealth()
 
 Weapon* Player::CopyWeapon(Weapon* weapon)
 {
-
 	Weapon* curr = nullptr;
 	if (weapon->GetType() == WeaponType::Coconut)
 	{
 		Projectile* proj = static_cast<Projectile*>(weapon);
 		curr = new Projectile(*proj);
+		curr->SetType(weapon->GetType());
 		curr->gamemanager = this->gamemanager;
 	}
 	else if (weapon->GetType() == WeaponType::Spoon) 
 	{
 		Spoon* spoonweap = static_cast<Spoon*>(weapon);
 		curr = new Spoon(*spoonweap);
+		curr->SetType(weapon->GetType());
 		curr->gamemanager = this->gamemanager;
 		scene->GetEntities()->RemoveObject(curr);
 	}
@@ -386,7 +385,7 @@ void Player::UpdateLookAtPosition()
 
 		//arrow->GetTransform().SetRotation({ 0,angle,0 });
 		//arrow->GetTransform().Rotate(0, MathHelper::PI, 0);
-		;
+		
 		arrow->GetTransform().LookAt(winArea->GetWorldBounds().GetCenter());
 		//arrow->GetTransform().SetRotation({ 0,0,0});
 		//arrow->GetTransform().GetRotation().m128_f32[0]

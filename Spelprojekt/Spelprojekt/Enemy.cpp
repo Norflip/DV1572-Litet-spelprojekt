@@ -29,6 +29,7 @@ Enemy::Enemy(const Enemy& other)
 	this->movementspeed = other.movementspeed;
 	this->currentPosition = other.currentPosition;
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
+	this->SetLayer(other.GetLayer());
 
 	this->gamemanager = other.gamemanager;
 	this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");

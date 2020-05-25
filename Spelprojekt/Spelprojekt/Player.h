@@ -9,6 +9,7 @@
 #include "Spoon.h"
 #include <vector>
 
+class SpawnObjects;
 class Scene;
 
 class Player : public Object
@@ -17,7 +18,7 @@ class Player : public Object
 	const float playerHeight = 3;
 
 public:
-	Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler&, Scene* scene);
+	Player(AssimpHandler::AssimpData modelData, CameraController* controller, SpawnObjects* spawner, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler&, Scene* scene);
 	~Player();
 
 	void Update(const float& deltaTime) override;
@@ -59,6 +60,7 @@ private:
 	CameraController* controller;
 	Terrain* terrain;
 	Gamemanager* gamemanager;
+	SpawnObjects* spawner;
 
 	// Weapon stuff
 	Weapon* rightWeapon;

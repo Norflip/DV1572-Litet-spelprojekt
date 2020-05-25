@@ -4,6 +4,10 @@ Entities::Entities() : quadtree(AABB({ 0,0,0 }, { 0,0,0 })) {}
 Entities::Entities(AABB worldBounds) : quadtree(worldBounds) {}
 Entities::~Entities() {}
 
+void Entities::UpdateTree()
+{
+}
+
 void Entities::SetBounds(AABB worldBounds)
 {
 	this->quadtree.SetBounds(worldBounds);
