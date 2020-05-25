@@ -99,7 +99,7 @@ void Renderer::ShadowPass(DirectX::XMVECTOR focus, const AABB& bounds, Camera* c
 	shadowShader->Bind(dx11.GetContext());
 	Camera* sunCamera = lights.GetSunCamera();
 
-	std::vector<Object*> objects = entities->AllEntities();
+	std::vector<Object*> objects = entities->GetObjectsInView(sunCamera);
 
 	// check if insight
 	for (auto object : objects)

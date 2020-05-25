@@ -54,6 +54,7 @@ private:
 	GUIText* gametimerText;
 	GUIText* fpsText;
 	GUISprite* healthFrame;
+	GUISprite* healthbar;
 	GUISprite* score;
 	GUIText* totalScore;
 	GUISprite* enemies;

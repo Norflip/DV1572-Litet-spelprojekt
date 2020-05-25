@@ -40,6 +40,7 @@ public:
 	void IncreasePoints(int points) { this->points += points; }
 
 	Object* GetWinArea() { return this->winArea; };
+	float GetHealth() const { return this->playerHealth; }
 
 private:
 	void InitWeapons();
@@ -61,6 +62,7 @@ private:
 	Terrain* terrain;
 	Gamemanager* gamemanager;
 	SpawnObjects* spawner;
+	GUI* gui;
 
 	// Weapon stuff
 	Weapon* rightWeapon;
@@ -72,7 +74,6 @@ private:
 	//
 
 	float scaleXZ, scaleY;		
-	GUI* gui;
 
 	DirectX::XMFLOAT3 currentPosition;
 	float nextDir = 0;	
@@ -80,7 +81,6 @@ private:
 	std::vector<Weapon*> weapons;
 
 	// New
-	GUISprite* healthbar;
 	float playerHealth;
 	//
 

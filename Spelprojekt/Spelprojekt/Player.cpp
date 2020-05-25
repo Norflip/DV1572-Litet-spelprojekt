@@ -3,7 +3,7 @@
 #include "SpawnObjects.h"
 
 Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, SpawnObjects* spawner, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler& dx11, Scene* scene)
-	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11), scene(scene), gamemanager(gamemanager), spawner(spawner)
+	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11), scene(scene), gamemanager(gamemanager), spawner(spawner), gui(gui)
 {
 	this->input = controller->getInput();
 	this->currentPosition = { 0,0,0 };
@@ -12,7 +12,6 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	// weapon shit
 	this->leftActionbar = nullptr;
 	this->rightActionbar = nullptr;
-	this->gui = gui;
 
 	this->lefthandFull = false;
 	this->righthandFull = false;
@@ -20,9 +19,7 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->rightWeapon = nullptr;
 
 	this->playerHealth = 100.0f;
-	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 650.0f);
-	this->healthbar->HealthBar(100.0f, 100.0f);
-	this->gui->AddGUIObject(this->healthbar, "healthbar");
+
 	this->winArea = winArea;
 	this->arrow = nullptr;
 
@@ -56,7 +53,6 @@ void Player::TakeDamage()
 	if (input->GetMouseButtonDown(1) && playerHealth != 0.0f) 
 	{
 		playerHealth -= 10.0f;
-		healthbar->HealthBar(100.0f, playerHealth);
 	}
 }
 

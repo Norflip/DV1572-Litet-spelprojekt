@@ -64,7 +64,7 @@ void Scene::Render()
 	renderer->SetDeferredRenderTarget();
 	renderer->ClearRenderTarget();
 
-	std::vector<Object*> inView = entities->AllEntities();
+	std::vector<Object*> inView = entities->GetObjectsInView(camera);
 	std::sort(inView.begin(), inView.end(), m_CompareRenderList); // O(N�log(N))
 
 	DirectX::XMMATRIX view = camera->GetView();

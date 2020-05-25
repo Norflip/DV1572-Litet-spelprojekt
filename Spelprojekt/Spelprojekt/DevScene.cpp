@@ -18,10 +18,9 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 
 	this->spawner = new SpawnObjects(entities, &terrain, gamemanager, dx11);
 
-
-
 	gametimerText = new GUIText(dx11, "Time until extraction", window.GetWidth() / 2.0f - 150.0f, 0);
 	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f - 100.0f, 30);
+
 	totalScore = new GUIText(dx11, "Score", 210.0f, 5.0f);
 	totalScore->SetFontSize({ 3.0f, 3.0f });
 	totalScore->SetFontColor({ 1,0,0,1 });
@@ -37,6 +36,8 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	score = new GUISprite(dx11, "Sprites/score.png", 10.0f, 19.0f);
 	enemies = new GUISprite(dx11, "Sprites/enemiesleft.png", 10, 80);
 
+	healthbar = new GUISprite(dx11, "Sprites/Healthbar.png", 10.0f, 650.0f);
+
 	//--------------------------------
 	gui = new GUI(dx11);
 
@@ -44,13 +45,15 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	// Add objects
 	gui->AddGUIObject(gametimerText, "gametimerText");
 	gui->AddGUIObject(fpsText, "fpsText");
-	gui->AddGUIObject(healthFrame, "healthFrame");
 	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
 	gui->AddGUIObject(actionbarRight, "actionbarRight");
 	gui->AddGUIObject(score, "score");
 	gui->AddGUIObject(totalScore, "totalscore");
 	gui->AddGUIObject(enemies, "enemiesleft");
 	gui->AddGUIObject(totalEnemies, "totalenemiesleft");
+
+	gui->AddGUIObject(healthbar, "healthbar");
+	gui->AddGUIObject(healthFrame, "healthFrame");
 }
 
 DevScene::~DevScene()
@@ -61,6 +64,7 @@ DevScene::~DevScene()
 
 void DevScene::Load()
 {
+	healthbar->HealthBar(100.0f, 100.0f);
 	renderer->SetGUI(gui); 	// Set GUI
 
 	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
@@ -742,6 +746,8 @@ void DevScene::UpdateGUI(const float& deltaTime)
 {
 	//FPS STUFF
 	fpsTimer.Start();
+
+	healthbar->HealthBar(100.0f, player->GetHealth());
 
 	totalEnemies->SetString(std::to_string(this->spawner->CountEnemiesRemaining()));
 	totalScore->SetString(std::to_string(player->GetPoints()));
