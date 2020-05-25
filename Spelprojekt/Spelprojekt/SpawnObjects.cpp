@@ -118,7 +118,7 @@ void SpawnObjects::RemovePickup(Object* object)
 	Weapon* w = static_cast<Weapon*>(object);
 	respawn.position = object->GetTransform().GetPosition();
 	respawn.rotation = object->GetTransform().GetRotation();
-	respawn.remaningTime = 10.0f;
+	respawn.remaningTime = RespawnTimer;
 	respawn.prefabIndex = (int)w->GetType();
 	respawn.type = w->GetType();
 
