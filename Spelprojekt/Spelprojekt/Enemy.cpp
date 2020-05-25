@@ -33,6 +33,8 @@ Enemy::Enemy(const Enemy& other)
 
 	this->gamemanager = other.gamemanager;
 	this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
+	this->GetMesh()->skeleton = other.GetMesh()->skeleton;
+	float stop = 0;
 }
 
 Enemy::~Enemy()
@@ -43,6 +45,11 @@ void Enemy::Update(const float& deltaTime)
 {
 	UpdateHeight(deltaTime);
 	UpdateMovement(deltaTime);
+}
+
+void Enemy::FixedUpdate(const float& fixedDeltaTime)
+{
+	//this->GetMesh()->skeleton->AddKeyframe();
 }
 
 void Enemy::UpdateMovement(float fixedDeltaTime)

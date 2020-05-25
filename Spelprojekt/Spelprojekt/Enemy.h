@@ -15,6 +15,8 @@ class Enemy : public Object
 		~Enemy();
 
 		void Update(const float& deltaTime) override;
+		void FixedUpdate(const float& fixedDeltaTime) override;
+
 		void SetHeight(float height) { this->enemyHeight = height; };
 		void SetTarget(Player* player);
 		void HitSound();

@@ -25,11 +25,9 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 
-
-
 	this->spawner = new SpawnObjects(entities, &ground, gamemanager, dx11);
 	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
-	//this->spawner->SetMaxEnemies(10);
+	//this->spawner->SetMaxEnemies(1);
 
 }
 
@@ -158,17 +156,22 @@ void DevScene::Load()
 
 	this->assimpScene = imp.ReadFile("Animations/Glasse_Attack_Right.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
 	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Attack");
-	this->assimpScene = nullptr;
 
-	AssimpHandler::AssimpData enemyModel = AssimpHandler::loadFbxObject("Models/IcecreamEnemy.fbx", dx11, toonShader);
+
+	AssimpHandler::AssimpData enemyModel = AssimpHandler::loadFbxObject("Animations/animanim.fbx", dx11, toonShader);
 	Enemy* testEnemy = new Enemy(enemyModel, &ground, dx11, gamemanager);
 
 	testEnemy->GetTransform().Translate(30, 7, 35);
 	testEnemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	testEnemy->SetTarget(player);
 	testEnemy->SetEnabled(false);
-	this->spawner->SetEnemyPrefab(testEnemy);
 
+	//this->assimpScene = imp.ReadFile("Animations/animanim.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	//AssimpHandler::saveAnimationData(assimpScene, testEnemy->GetMesh()->skeleton, "enemyMove");
+	//testEnemy->GetMesh()->skeleton->SetFirstAnimation(testEnemy->GetMesh()->skeleton->animations[0]);
+
+	this->spawner->SetEnemyPrefab(testEnemy);
+	this->assimpScene = nullptr;
 
 
 	// ------ WEAPONS
@@ -179,9 +182,6 @@ void DevScene::Load()
 	AssimpHandler::AssimpData spoonModel = AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, defaultShader);
 	Spoon* spoon = new Spoon(spoonModel, gamemanager, &ground, dx11);
 	spawner->SetPickupPrefab(spoon, WeaponType::Spoon);
-
-
-
 
 
 	// Coconuts
@@ -217,10 +217,6 @@ void DevScene::Load()
 	//spoons[3]->GetTransform().Translate(115.0f, 8.5f, 138.0f);
 	//spoons[4]->GetTransform().Translate(195, 7.0f, 115);
 		
-	
-
-
-
 
 	// ------ Leveldesign
 	CreateSceneObjects();	
@@ -294,7 +290,7 @@ void DevScene::FixedUpdate(const float& fixedDeltaTime)
 	Scene::FixedUpdate(fixedDeltaTime);
 
 	this->player->GetMesh()->skeleton->AddKeyframe();
-
+	
 }
 
 Scene* DevScene::GetNextScene() const
@@ -738,7 +734,7 @@ void DevScene::UpdateGUI(const float& deltaTime)
 
 	gametimerText->SetString("Time until extraction: " + std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd))));
 
-	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f)
+	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f || this->spawner->CountEnemiesRemaining() == 0)
 	{
 		arrow->SetVisible(true);
 		gametimerText->SetString("Move to exit");
