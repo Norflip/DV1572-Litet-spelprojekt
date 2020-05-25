@@ -21,7 +21,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	lights.SetSunDirection({ 0, -1, 0 });
 	lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
 	lights.SetSunIntensity(0.6f);
-		
+
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 
@@ -34,7 +34,7 @@ DevScene::~DevScene()
 }
 
 void DevScene::Load()
-{		
+{
 	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
 	this->timeUntilEnd = 10.0f; // gamemanager->GetTimer();		// get time from gamemanager
 	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
@@ -46,183 +46,66 @@ void DevScene::Load()
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
 	actionbarRight = new GUIActionbar(dx11, "Sprites/Actionbar.png", 400.0f, 650.0f);
-	score = new GUISprite(dx11, "Sprites/score.png", 10.0f ,19.0f);
+	score = new GUISprite(dx11, "Sprites/score.png", 10.0f, 19.0f);
 	enemies = new GUISprite(dx11, "Sprites/enemiesleft.png", 10, 80);
-	
+
 	//--------------------------------
 	// Create GUI for Devscene
 	GUI* gui = new GUI(dx11);
-	
-	// save the shaders somewhere, remember to clean it up
-	Shader* defaultShader = new Shader();
-	defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
-	defaultShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 
 	// Exit Wagon
-	Object* wagon = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Wagon.fbx",dx11, defaultShader));
+	Object* wagon = new Object(ObjectLayer::Enviroment, resources.GetModel("wagonModel"));
 	entities->InsertObject(wagon);
 	spawner->PlaceWagon(wagon);
-	
-	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
 
-	Object* sphere = new Object(ObjectLayer::Enviroment, dev_monkey_mesh, new Material(defaultShader, dx11));
-	Texture* monkey_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11);
-	Texture* monkey_normal = Texture::CreateTexture("Textures/rocks_normal.png", dx11);
 
-	sphere->GetMaterial()->SetTexture(ALBEDO_MATERIAL_TYPE, monkey_texture, SHADER_BIND_TYPE::PIXEL);
-	sphere->GetMaterial()->SetTexture(NORMAL_MATERIAL_TYPE, monkey_normal, SHADER_BIND_TYPE::PIXEL);
-	sphere->GetMaterial()->SetSampler(0, dx11.GetDefaultSampler());
 
-	sphere->GetTransform().Translate(0, 3, 6);
-	entities->InsertObject(sphere);
 
-	// ------- TERRAIN
-	Shader* terrainShader = new Shader();
-	terrainShader->LoadPixelShader(L"Shaders/Terrain_ps.hlsl", "main", dx11.GetDevice());
-	terrainShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 
-	Texture* grass_texture = Texture::CreateTexture("Textures/Grass_ColorTest.png", dx11);
-	Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Normal.png", dx11);
-	Texture* sand_texture = Texture::CreateTexture("Textures/Sand_Color_Test.png", dx11);
-	Texture* sand_normal = Texture::CreateTexture("Textures/Sand_Normal_2.png", dx11);
 
-	Material* terrainMat = new Material(terrainShader, dx11);
-	terrainMat->SetTexture(0, grass_texture, SHADER_BIND_TYPE::PIXEL);
-	terrainMat->SetTexture(1, sand_texture, SHADER_BIND_TYPE::PIXEL);
-	terrainMat->SetTexture(2, grass_normal, SHADER_BIND_TYPE::PIXEL);
-	terrainMat->SetTexture(3, sand_normal, SHADER_BIND_TYPE::PIXEL);
-
-	terrainMat->SetSampler(0, dx11.GetDefaultSampler(), SHADER_BIND_TYPE::PIXEL);
-	terrainMat->GetMaterialData().hasNormalTexture = true;
 	// GROUNDH MESH
-	ground.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
-	Object* terrainObject = new Object(ObjectLayer::None, ground.GetMesh(), terrainMat);
+	terrain.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
+	Object* terrainObject = new Object(ObjectLayer::None, terrain.GetMesh(), resources.GetResource<Material>("terrainMaterial"));
 	entities->InsertObject(terrainObject);
-	
+
 
 	// ------- water shader
-	waterMesh.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), true);
+	waterTerrain.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), true);
 
-	Shader* waterShader = new Shader();
-	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
-	waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
-
-	Texture* heightMapTexture = Texture::CreateTexture("Textures/map_displacement_map_small.png", dx11);
-	
-	Material* waterMat = new Material(waterShader, dx11);
-	waterMat->SetTexture(0, heightMapTexture, SHADER_BIND_TYPE::PIXEL);
-	waterMat->SetSampler(0, dx11.GetDefaultSampler(), SHADER_BIND_TYPE::PIXEL);
-
-
-	Object* water = new Object(ObjectLayer::None, waterMesh.GetMesh(), waterMat);
-	water->SetMaterial(waterMat);
-	water->GetTransform().Translate({ 0,5,0,});
+	Object* water = new Object(ObjectLayer::None, waterTerrain.GetMesh(), resources.GetResource<Material>("waterMaterial"));
+	water->GetTransform().Translate({ 0,5,0, });
 	water->GetTransform().SetRotation({ 0,0,0 });
 	entities->InsertObject(water);
 
 	water->isWater = true;
 
-	// ------ TOONSHADER	
-	Shader* toonShader = new Shader();
-	toonShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
-	toonShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 
-	Shader* animationShader = new Shader();
-	animationShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
-	animationShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "animation", dx11.GetDevice());
+
 
 	// ------ PLAYER
-	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, animationShader);
-	this->player = new Player(playerModel, controller, spawner, &ground, gui, gamemanager, wagon, dx11,  this);
+	//AssimpHandler::AssimpData playerModel = *AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, resources.GetResource<Shader>("animationShader"));
+	this->player = new Player(resources.GetModel("playerModel"), controller, spawner, &terrain, gui, gamemanager, wagon, dx11, this);
 
 	this->player->GetTransform().SetPosition({ 55, 4, 55 });
 	this->player->GetTransform().Scale(2.0, 2.0, 2.0);
 	this->player->SetLayer(ObjectLayer::Player);
-	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });	
+	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
 	entities->InsertObject(this->player);
-			
-	// ANIMATION SCHEISSE ///////////////////////
-	this->assimpScene = imp.ReadFile("Animations/Glasse_Walk_Cycle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
-	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Walk");
 
-	this->assimpScene = imp.ReadFile("Animations/Glasse_Idle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
-	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Idle");
-	this->player->GetMesh()->skeleton->SetFirstAnimation(this->player->GetMesh()->skeleton->animations[1]);
-
-	this->assimpScene = imp.ReadFile("Animations/Glasse_Attack_Right.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
-	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Attack");
-
-	this->assimpScene = imp.ReadFile("Animations/Glasse_Melee_Attack.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
-	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Melee");
-
-
-	AssimpHandler::AssimpData enemyModel = AssimpHandler::loadFbxObject("Animations/animanim.fbx", dx11, animationShader);
-	Enemy* testEnemy = new Enemy(enemyModel, &ground, dx11, gamemanager);
-
-	testEnemy->GetTransform().Translate(30, 7, 35);
-	testEnemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
-	testEnemy->SetTarget(player);
-	testEnemy->SetEnabled(false);
-
-	this->assimpScene = imp.ReadFile("Animations/animanim.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
-	AssimpHandler::saveAnimationData(assimpScene, testEnemy->GetMesh()->skeleton, "enemyMove");
-	testEnemy->GetMesh()->skeleton->SetFirstAnimation(testEnemy->GetMesh()->skeleton->animations[0]);
-
-	this->spawner->SetEnemyPrefab(testEnemy);
+	delete this->assimpScene;
 	this->assimpScene = nullptr;
 
+	spawner->SetEnemyPrefab(resources.GetResource<Enemy>("enemyPrefab1"));
+	spawner->SetPickupPrefab(resources.GetResource<Spoon>("spoonPrefab"), WeaponType::Spoon);
+	spawner->SetPickupPrefab(resources.GetResource<Projectile>("coconutPrefab"), WeaponType::Coconut);
 
-	// ------ WEAPONS
-	AssimpHandler::AssimpData coconutModel = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
-	Projectile* coconutPrefab = new Projectile(coconutModel, gamemanager, &ground, dx11);
-	spawner->SetPickupPrefab(coconutPrefab, WeaponType::Coconut);
-
-	AssimpHandler::AssimpData spoonModel = AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, defaultShader);
-	Spoon* spoon = new Spoon(spoonModel, gamemanager, &ground, dx11);
-	spawner->SetPickupPrefab(spoon, WeaponType::Spoon);
-
-
-	// Coconuts
-/*	for (int i = 0; i < 11; i++) {
-		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, gamemanager); 
-		this->coconuts[i]->SetLayer(ObjectLayer::Projectile);
-		AddObject(coconuts[i]);
-	}	*/	
-
-	//coconuts[0]->GetTransform().Translate(177.0f, 8.5f, 75.0f);	
-	//coconuts[1]->GetTransform().Translate(164.0f, 8.5f, 60.0f);
-	//coconuts[2]->GetTransform().Translate(100.0f, 8.8f, 75.0f);
-	//coconuts[3]->GetTransform().Translate(78.0f, 9.0f, 82.0f);
-	//coconuts[4]->GetTransform().Translate(56.0f, 8.5f, 65.0f);
-	//coconuts[5]->GetTransform().Translate(34.0f, 8.5f, 95.0f);
-	//coconuts[6]->GetTransform().Translate(41.0f, 8.5f, 140.0f);
-	//coconuts[7]->GetTransform().Translate(109.0f, 8.5f, 165.0f);
-	//coconuts[8]->GetTransform().Translate(94.0f, 9.0f, 195.0f);
-	//coconuts[9]->GetTransform().Translate(175.0f, 8.5f, 160.0f);
-	//coconuts[10]->GetTransform().Translate(149.0f, 9.0f, 175.0f);
-			
-	/////////////////////////////////////////
-
-	
-	//for (int i = 0; i < 5; i++) {
-	//	this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, gamemanager);
-	//	this->spoons[i]->SetLayer(ObjectLayer::None);	// ÄNDAR SEN
-	//	AddObject(spoons[i]);
- //	}			
-	//spoons[0]->GetTransform().Translate(130, 8, 40);
-	//spoons[1]->GetTransform().Translate(28, 7, 47);
-	//spoons[2]->GetTransform().Translate(145.0f, 8.5f, 193.0f);
-	//spoons[3]->GetTransform().Translate(115.0f, 8.5f, 138.0f);
-	//spoons[4]->GetTransform().Translate(195, 7.0f, 115);
-		
 
 	// ------ Leveldesign
-	CreateSceneObjects();	
-
+	CreateSceneObjects();
 
 	// - - - - - Exit arrow
-	arrow = new Object(ObjectLayer::None, AssimpHandler::loadFbxObject("Models/Arrow.fbx", dx11, defaultShader));
-	arrow->GetTransform().Translate(35, 10, 30);	
+	arrow = new Object(ObjectLayer::None, resources.GetModel("arrowModel"));
+	arrow->GetTransform().Translate(35, 10, 30);
 	player->SetArrow(arrow);
 	entities->InsertObject(arrow);
 	arrow->SetVisible(false);
@@ -243,7 +126,7 @@ void DevScene::Load()
 	// Set GUI
 	renderer->SetGUI(gui);
 
-	gametimer.Start();	
+	gametimer.Start();
 
 	// Play scenemusic
 	gamemanager->GetMusicHandler()->StopSound();
@@ -256,16 +139,149 @@ void DevScene::Load()
 
 void DevScene::Unload()
 {
+	Scene::Unload();
+	Logger::Write("devscene unload");
+
 	// @TODO
 	gametimer.Restart();
 	gametimer.Stop();
+	spawner->Clear();
+}
+
+void DevScene::LoadResources()
+{
+
+	// save the shaders somewhere, remember to clean it up
+	Shader* toonShader = new Shader();
+	toonShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+	toonShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
+
+	Shader* terrainShader = new Shader();
+	terrainShader->LoadPixelShader(L"Shaders/Terrain_ps.hlsl", "main", dx11.GetDevice());
+	terrainShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
+
+	Shader* waterShader = new Shader();
+	waterShader->LoadPixelShader(L"Shaders/Water_ps.hlsl", "main", dx11.GetDevice());
+	waterShader->LoadVertexShader(L"Shaders/Water_vs.hlsl", "main", dx11.GetDevice());
+
+	Shader* animationShader = new Shader();
+	animationShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+	animationShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "animation", dx11.GetDevice());
+
+	Shader* billboardShader = new Shader();
+	billboardShader->LoadVertexShader(L"Shaders/Billboard_vs.hlsl", "main", dx11.GetDevice());
+	billboardShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+
+	resources.AddResource("toonShader", toonShader);
+	resources.AddResource("terrainShader", terrainShader);
+	resources.AddResource("waterShader", waterShader);
+	resources.AddResource("animationShader", animationShader);
+	resources.AddResource("billboardShader", billboardShader);
+
+
+	// ------- TERRAIN
+
+	Texture* grass_texture = Texture::CreateTexture("Textures/Grass_ColorTest.png", dx11);
+	Texture* grass_normal = Texture::CreateTexture("Textures/Grass_Normal.png", dx11);
+	Texture* sand_texture = Texture::CreateTexture("Textures/Sand_Color_Test.png", dx11);
+	Texture* sand_normal = Texture::CreateTexture("Textures/Sand_Normal_2.png", dx11);
+	Texture* heightMapTexture = Texture::CreateTexture("Textures/map_displacement_map_small.png", dx11);
+
+	resources.AddResource("grassTexture", grass_texture);
+	resources.AddResource("grassNormal", grass_normal);
+	resources.AddResource("sandTexture", sand_texture);
+	resources.AddResource("sandNormal", sand_normal);
+	resources.AddResource("heightMapTexture", heightMapTexture);
+
+	/*
+		MATERIALS
+	*/
+
+	Material* terrainMat = new Material(terrainShader, dx11);
+	terrainMat->SetTexture(0, grass_texture, SHADER_BIND_TYPE::PIXEL);
+	terrainMat->SetTexture(1, sand_texture, SHADER_BIND_TYPE::PIXEL);
+	terrainMat->SetTexture(2, grass_normal, SHADER_BIND_TYPE::PIXEL);
+	terrainMat->SetTexture(3, sand_normal, SHADER_BIND_TYPE::PIXEL);
+	terrainMat->SetSampler(0, dx11.GetDefaultSampler(), SHADER_BIND_TYPE::PIXEL);
+	terrainMat->GetMaterialData().hasNormalTexture = true;
+
+	Material* waterMat = new Material(waterShader, dx11);
+	waterMat->SetTexture(0, heightMapTexture, SHADER_BIND_TYPE::PIXEL);
+	waterMat->SetSampler(0, dx11.GetDefaultSampler(), SHADER_BIND_TYPE::PIXEL);
+
+	resources.AddResource("terrainMaterial", terrainMat);
+	resources.AddResource("waterMaterial", waterMat);
+
+	/*
+		MODELS
+	*/
+	resources.AddModel("coconutModel", AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, toonShader));
+	resources.AddModel("spoonModel", AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, toonShader));
+	resources.AddModel("wagonModel", AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, toonShader));
+	resources.AddModel("enemyModel", AssimpHandler::loadFbxObject("Animations/animanim.fbx", dx11, toonShader));
+	resources.AddModel("arrowModel", AssimpHandler::loadFbxObject("Models/Arrow.fbx", dx11, toonShader));
+
+	resources.AddModel("quadInv", AssimpHandler::loadFbxObject("Models/QuadInv.fbx", dx11, billboardShader));
+	resources.AddModel("mountainModel", AssimpHandler::loadFbxObject("Models/Mountain.fbx", dx11, toonShader));
+	resources.AddModel("rockModel", AssimpHandler::loadFbxObject("Models/Rocks.fbx", dx11, toonShader));
+	resources.AddModel("boatModel", AssimpHandler::loadFbxObject("Models/Boat.fbx", dx11, toonShader));
+	resources.AddModel("kioskModel", AssimpHandler::loadFbxObject("Models/Kiosk.fbx", dx11, toonShader));
+
+	resources.AddModel("sunchairModel", AssimpHandler::loadFbxObject("Models/Sunchair.fbx", dx11, toonShader));
+	resources.AddModel("parasollModel", AssimpHandler::loadFbxObject("Models/Umbrella_BlueRed.fbx", dx11, toonShader));
+	resources.AddModel("surfboardBlueModel", AssimpHandler::loadFbxObject("Models/SurfboardBlue.fbx", dx11, toonShader));
+	resources.AddModel("surfboardOrangeModel", AssimpHandler::loadFbxObject("Models/SurfboardOrange.fbx", dx11, toonShader));
+	resources.AddModel("surfboardTrippyModel", AssimpHandler::loadFbxObject("Models/SurfboardTrippy.fbx", dx11, toonShader));
+	resources.AddModel("beachballRedModel", AssimpHandler::loadFbxObject("Models/Beachball_Red.fbx", dx11, toonShader));
+	resources.AddModel("beachballBlueModel", AssimpHandler::loadFbxObject("Models/Beachball_Blue.fbx", dx11, toonShader));
+	resources.AddModel("bushModel", AssimpHandler::loadFbxObject("Models/Bush.fbx", dx11, toonShader));
+	resources.AddModel("bungalowModel", AssimpHandler::loadFbxObject("Models/Beachbungalow.fbx", dx11, toonShader));
+	resources.AddModel("gateModel", AssimpHandler::loadFbxObject("Models/Gate.fbx", dx11, toonShader));
+	resources.AddModel("restplaceModel", AssimpHandler::loadFbxObject("Models/Restplace.fbx", dx11, toonShader));
+	resources.AddModel("benchModel", AssimpHandler::loadFbxObject("Models/Bench.fbx", dx11, toonShader));
+	resources.AddModel("palmModel", AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, toonShader));
+
+	AssimpHandler::AssimpData* playerModel = AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, resources.GetResource<Shader>("animationShader"));
+	resources.AddModel("playerModel", playerModel);
+
+	/*
+		ANIMATIONS
+	*/
+
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Walk_Cycle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, playerModel->mesh->skeleton, "Walk");
+
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Idle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, playerModel->mesh->skeleton, "Idle");
+	playerModel->mesh->skeleton->SetFirstAnimation(playerModel->mesh->skeleton->animations[1]);
+
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Attack_Right.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, playerModel->mesh->skeleton, "Attack");
+
+
+	/*
+		PREFABS
+	*/
+
+	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), &terrain, dx11, gamemanager);
+	enemyPrefab1->GetTransform().Translate(30, 7, 35);
+	enemyPrefab1->GetTransform().Scale(0.275f, 0.275f, 0.275f);
+	enemyPrefab1->SetTarget(player);
+	enemyPrefab1->SetEnabled(false);
+	resources.AddResource("enemyPrefab1", enemyPrefab1);
+
+	Projectile* coconutPrefab = new Projectile(resources.GetModel("coconutModel"), gamemanager, &terrain, dx11);
+	resources.AddResource("coconutPrefab", coconutPrefab);
+
+	Spoon* spoonPrefab = new Spoon(resources.GetModel("spoonModel"), gamemanager, &terrain, dx11);
+	resources.AddResource("spoonPrefab", spoonPrefab);
 }
 
 void DevScene::Update(const float& deltaTime)
-{	
+{
 
 	this->cameraFocusPosition = player->GetTransform().GetPosition();
-	billBoard->GetTransform().SetPosition({ player->GetTransform().GetPosition().m128_f32[0],player->GetTransform().GetPosition().m128_f32[1]+6, player->GetTransform().GetPosition().m128_f32[2] });
+	billBoard->GetTransform().SetPosition({ player->GetTransform().GetPosition().m128_f32[0],player->GetTransform().GetPosition().m128_f32[1] + 6, player->GetTransform().GetPosition().m128_f32[2] });
 	this->spawner->Update(deltaTime);
 	Scene::Update(deltaTime);
 
@@ -288,7 +304,7 @@ void DevScene::FixedUpdate(const float& fixedDeltaTime)
 	Scene::FixedUpdate(fixedDeltaTime);
 
 	this->player->GetMesh()->skeleton->AddKeyframe();
-	
+
 }
 
 Scene* DevScene::GetNextScene() const
@@ -299,13 +315,7 @@ Scene* DevScene::GetNextScene() const
 void DevScene::CreateSceneObjects()
 {
 
-	Shader* billboardShader = new Shader();
-
-
-	billboardShader->LoadVertexShader(L"Shaders/Billboard_vs.hlsl", "main", dx11.GetDevice());
-	billboardShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
-
-	billBoard = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/QuadInv.fbx", dx11, billboardShader));
+	billBoard = new Object(ObjectLayer::Enviroment, resources.GetModel("quadInv"));
 	billBoard->GetTransform().Translate(55, 12, 55);
 	billBoard->GetTransform().Scale(1, 1, 1);
 	billBoard->GetTransform().SetRotation({ 0,0, 0 });
@@ -319,12 +329,11 @@ void DevScene::CreateSceneObjects()
 		defaultShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 
 		////////////////////////// MOUNTAINS /////////////////////////////
-		Object* mountain = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Mountain.fbx", dx11, defaultShader));
 		Object* mountains[2];
 		for (int i = 0; i < 2; i++) {
-			mountains[i] = new Object(*mountain);
+			mountains[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("mountainModel"));
 			entities->InsertObject(mountains[i]);
-		}			
+		}
 
 		// Middle mountain
 		mountains[0]->GetTransform().Translate(100.0f, 6.0f, 110.0f);
@@ -332,31 +341,30 @@ void DevScene::CreateSceneObjects()
 		// Top left mountain
 		mountains[1]->GetTransform().Translate(30.0f, 4.0f, 170.0f);
 		mountains[1]->GetTransform().Rotate(0.0f, 180.0f, 0.0f);
-			
+
 
 		////////////////////////// ROCKS /////////////////////////////
-		Object* rocks = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Rocks.fbx", dx11, defaultShader));
+		Object* rocks = new Object(ObjectLayer::Enviroment, resources.GetModel("rockModel"));
 		entities->InsertObject(rocks);
 		rocks->GetTransform().Rotate(0, 180, 0);
 		rocks->GetTransform().Translate(195, 5, 145);
-		
-		
+
+
 		////////////////////////// BOATS /////////////////////////////
-		Object* boat = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Boat.fbx", dx11, defaultShader));
+		Object* boat = new Object(ObjectLayer::Enviroment, resources.GetModel("boatModel"));
 		boat->GetTransform().Translate(205, 6.2f, 115);
-		boat->GetTransform().SetRotation({ 0.1, 1.7, -0.15});
+		boat->GetTransform().SetRotation({ 0.1, 1.7, -0.15 });
 		entities->InsertObject(boat);
 
 
 		////////////////////////// STANDS /////////////////////////////
 		// Left beach stand
-		Object* beachstand = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Kiosk.fbx", dx11, defaultShader));
-		Object* beachstands[3]; 
+		Object* beachstands[3];
 		for (int i = 0; i < 3; i++) {
-			beachstands[i] = new Object(*beachstand);
+			beachstands[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("kioskModel"));
 			entities->InsertObject(beachstands[i]);
 		}
-			
+
 		beachstands[0]->GetTransform().Translate(135, 7, 48);
 
 		beachstands[1]->GetTransform().Translate(125, 7, 48);
@@ -364,35 +372,35 @@ void DevScene::CreateSceneObjects()
 
 		beachstands[2]->GetTransform().Translate(60, 7, 55);
 		beachstands[2]->GetTransform().SetRotation({ -0.1, 0.8, 0 });
-					
+
 
 		////////////////////////// SUNCHAIR /////////////////////////////		
 		// Chairs Left beachside
-		Object* chair = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Sunchair.fbx", dx11, defaultShader));
+
 		Object* sunChairs[21];
 		for (int i = 0; i < 21; i++) {
-			sunChairs[i] = new Object(*chair);
+			sunChairs[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("sunchairModel"));
 			entities->InsertObject(sunChairs[i]);
 		}
-						
+
 		sunChairs[0]->GetTransform().Translate(200, 6.5, 40);
 		sunChairs[0]->GetTransform().Rotate(-0.1f, -6.3, 0);
-				
+
 		sunChairs[1]->GetTransform().Translate(195, 6.5, 39.8);
 		sunChairs[1]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		
+
 		sunChairs[2]->GetTransform().Translate(190, 6.5, 39.6);
 		sunChairs[2]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		
+
 		sunChairs[3]->GetTransform().Translate(175, 6.5, 39.6);
 		sunChairs[3]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		
+
 		sunChairs[4]->GetTransform().Translate(170, 6.5, 39.4);
 		sunChairs[4]->GetTransform().Rotate(-0.1f, -6.3, 0);
 
 		sunChairs[5]->GetTransform().Translate(165, 6.5, 39.2);
 		sunChairs[5]->GetTransform().Rotate(-0.1f, -6.3, 0);
-		
+
 		sunChairs[6]->GetTransform().Translate(150, 6.5, 39.2);
 		sunChairs[6]->GetTransform().Rotate(-0.1f, -6.3, 0);
 
@@ -437,17 +445,17 @@ void DevScene::CreateSceneObjects()
 
 		sunChairs[20]->GetTransform().Translate(66, 6.5, 35);
 		sunChairs[20]->GetTransform().Rotate(-0.1f, -5.7, 0);
-			
+
 
 		////////////////////////// PARASOLLS /////////////////////////////
 		// Parasoll left beachside
-		Object* parasoll = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Umbrella_BlueRed.fbx", dx11, defaultShader));
 		Object* parasolls[7];
 
-		for (int i = 0; i < 7; i++) {
-			parasolls[i] = new Object(*parasoll);
+		for (int i = 0; i < 7; i++) 
+		{
+			parasolls[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("parasollModel"));
 			entities->InsertObject(parasolls[i]);
-		}			
+		}
 
 		parasolls[0]->GetTransform().Translate(192.5, 5.3, 40);
 		parasolls[1]->GetTransform().Translate(172.5, 5.4, 40);
@@ -460,77 +468,85 @@ void DevScene::CreateSceneObjects()
 		parasolls[5]->GetTransform().Rotate(-0.05, 0, 0);
 		parasolls[6]->GetTransform().Translate(65, 6, 40);
 		parasolls[6]->GetTransform().Rotate(-0.05, 0, 0);
-					
+
 
 		////////////////////////// SURFBOARDS /////////////////////////////
-		Object* SurfboardBlue = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/SurfboardBlue.fbx", dx11, defaultShader));
-		Object* SurfboardsBlue[2];
-		for (int i = 0; i < 2; i++) {
-			SurfboardsBlue[i] = new Object(*SurfboardBlue);
-			entities->InsertObject(SurfboardsBlue[i]);
-		}
-		
-		SurfboardsBlue[0]->GetTransform().Translate(130, 7, 35);
-		SurfboardsBlue[1]->GetTransform().Translate(168, 7.3, 210);
-				
-		Object* SurfboardOrange = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/SurfboardOrange.fbx", dx11, defaultShader));
-		Object* SurfboardsOrange[2];
-		for (int i = 0; i < 2; i++) {
-			SurfboardsOrange[i] = new Object(*SurfboardOrange);
-			entities->InsertObject(SurfboardsOrange[i]);
-		}			
+		Object* surfboardsBlue[2];
+		surfboardsBlue[0] = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardBlueModel"));
+		surfboardsBlue[0]->GetTransform().Translate(130, 7, 35);
+		entities->InsertObject(surfboardsBlue[0]);
 
-		SurfboardsOrange[0]->GetTransform().Translate(128, 7, 33);
-		SurfboardsOrange[1]->GetTransform().Translate(168, 7.3, 205);
-		
-		Object* SurfboardTrippy = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/SurfboardTrippy.fbx", dx11, defaultShader));
-		entities->InsertObject(SurfboardTrippy);
+		surfboardsBlue[1] = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardBlueModel"));
+		surfboardsBlue[1]->GetTransform().Translate(168, 7.3, 210);
+		entities->InsertObject(surfboardsBlue[1]);
+
+
+		Object* surfboardOrange[2];
+		surfboardOrange[0] = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardOrangeModel"));
+		surfboardOrange[0]->GetTransform().Translate(128, 7, 33);
+		entities->InsertObject(surfboardOrange[0]);
+
+		surfboardOrange[1] = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardOrangeModel"));
+		surfboardOrange[1]->GetTransform().Translate(168, 7.3, 205);
+		entities->InsertObject(surfboardOrange[1]);
+
+
+		Object* SurfboardTrippy = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardTrippyModel"));
 		SurfboardTrippy->GetTransform().Translate(130, 7, 37);
-		
+		entities->InsertObject(SurfboardTrippy);
+
+
+
 
 		////////////////////////// BEACHBALLS /////////////////////////////
 		// Balls left beachside
-		Object* redball = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Beachball_Red.fbx", dx11, defaultShader));
+
 		Object* redballs[3];
-		for (int i = 0; i < 3; i++) {
-			redballs[i] = new Object(*redball);
-			entities->InsertObject(redballs[i]);
-		}
-							
+		redballs[0] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballRedModel"));
 		redballs[0]->GetTransform().Translate(100, 7, 38);
 		redballs[0]->GetTransform().Rotate(0.2f, -5, 0);
-				
+		entities->InsertObject(redballs[0]);
+
+		redballs[1] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballRedModel"));
 		redballs[1]->GetTransform().Translate(160, 7, 190);
 		redballs[1]->GetTransform().Rotate(0.2f, -5, 0);
+		entities->InsertObject(redballs[1]);
 
+		redballs[2] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballRedModel"));
 		redballs[2]->GetTransform().Translate(35, 6, 45);
 		redballs[2]->GetTransform().Rotate(0.2f, -5, 0);
-		
-		Object* blueball = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Beachball_Blue.fbx", dx11, defaultShader));
+		entities->InsertObject(redballs[2]);
+
+
+
 		Object* blueballs[3];
-		for (int i = 0; i < 3; i++) {
-			blueballs[i] = new Object(*blueball);
-			entities->InsertObject(blueballs[i]);
-		}
-							
-		blueballs[0]->GetTransform().Translate(105,6.5, 35);
+		
+		blueballs[0] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballBlueModel"));
+		blueballs[0]->GetTransform().Translate(105, 6.5, 35);
 		blueballs[0]->GetTransform().Rotate(0.2f, -5, 0);
-				
+		entities->InsertObject(blueballs[0]);
+
+		blueballs[1] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballBlueModel"));
 		blueballs[1]->GetTransform().Translate(155, 6.5, 195);
 		blueballs[1]->GetTransform().Rotate(0.2f, -5, 0);
+		entities->InsertObject(blueballs[1]);
 
+		blueballs[2] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballBlueModel"));
 		blueballs[2]->GetTransform().Translate(40, 6.2, 40);
 		blueballs[2]->GetTransform().Rotate(0.2f, -5, 0);
+		entities->InsertObject(blueballs[2]);
+
+
 
 
 		////////////////////////// BEACHBALLS /////////////////////////////
-		Object* bush = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Bush.fbx", dx11, defaultShader));
 		Object* bushes[13];
-		for (int i = 0; i < 13; i++) {
-			bushes[i] = new Object(*bush);
+		for (int i = 0; i < 13; i++) 
+		{
+			bushes[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("bushModel"));
 			entities->InsertObject(bushes[i]);
 		}
-			
+
 
 		// 2 Stands bottom beach //
 		bushes[0]->GetTransform().Translate(142, 7, 50);
@@ -583,36 +599,37 @@ void DevScene::CreateSceneObjects()
 
 		bushes[12]->GetTransform().Translate(163.0f, 7.5f, 185.0f);
 		bushes[12]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
-						
 
 
 		////////////////////////// Fireplace stuff /////////////////////////////
-		
-		Object* bungalow = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Beachbungalow.fbx", dx11, defaultShader));
+
+		Object* bungalow = new Object(ObjectLayer::Enviroment, resources.GetModel("bungalowModel"));
 		bungalow->GetTransform().Translate(30.0f, 7, 213.0f);
 		bungalow->GetTransform().SetRotation({ 0.0f, -0.9f, 0.0f });
 		entities->InsertObject(bungalow);
 
-		Object* gate = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Gate.fbx", dx11, defaultShader));
+		Object* gate = new Object(ObjectLayer::Enviroment, resources.GetModel("gateModel"));
 		gate->GetTransform().Translate(60.0f, 6.2, 198);
 		gate->GetTransform().SetRotation({ 0.0f, -2.2f, -0.1f });
 		entities->InsertObject(gate);
 
-		Object* restplace = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Restplace.fbx", dx11, defaultShader));
+		Object* restplace = new Object(ObjectLayer::Enviroment, resources.GetModel("restplaceModel"));
 		restplace->GetTransform().Translate(107.0f, 7.5f, 140.0f);
 		restplace->GetTransform().SetRotation({ 0.0f, -1.5f, 0.0f });
 		entities->InsertObject(restplace);
 
 
 		// Benches left beachside
-		Object* bench = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Bench.fbx", dx11, defaultShader));
 		Object* benches[4];
 		for (int i = 0; i < 4; i++)
-			benches[i] = new Object(*bench);
-				
+		{
+			benches[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("benchModel"));
+			entities->InsertObject(benches[i]);
+		}
+
 		benches[0]->GetTransform().Translate(170.0f, 7.0f, 118.0f);
 		benches[0]->GetTransform().SetRotation({ 0.0f, 0.4f, 0.0f });
-				
+
 		benches[1]->GetTransform().Translate(157.0f, 7.0f, 122.0f);
 		benches[1]->GetTransform().SetRotation({ 0.0f, 0.3f, 0.0f });
 
@@ -622,20 +639,18 @@ void DevScene::CreateSceneObjects()
 		benches[3]->GetTransform().Translate(170.0f, 7.0f, 190.0f);
 		benches[3]->GetTransform().SetRotation({ 0.0f, 2.5f, 0.0f });
 
-		for (int i = 0; i < 4; i++)
-			entities->InsertObject(benches[i]);
-
 		////////////////////////// PALMS /////////////////////////////
 
-		
+
+
+
 		// Palms left beach side 
-		Object* palm = new Object(ObjectLayer::Tree, AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader));
 		Object* palms[22];
 		for (int i = 0; i < 22; i++) {
-			palms[i] = new Object(*palm);
+			palms[i] = new Object(ObjectLayer::Tree, resources.GetModel("palmModel"));
 			entities->InsertObject(palms[i]);
 		}
-			
+
 		// Bottom beach //
 		palms[0]->GetTransform().Translate(200.0f, 7.8f, 60.0f);
 		palms[1]->GetTransform().Translate(180.0f, 7.8f, 75.0f);
@@ -671,12 +686,10 @@ void DevScene::CreateSceneObjects()
 		palms[19]->GetTransform().Translate(170.0f, 7.8f, 160.0f);
 		palms[20]->GetTransform().Translate(150.0f, 7.8f, 145.0f);
 		palms[21]->GetTransform().Translate(200.0f, 7.8f, 180.0f);
-				
+
 	}
 
-
 	spawner->SpawnInitial();
-
 }
 
 void DevScene::checkForNextScene()

@@ -15,11 +15,12 @@ class IntroScene : public Scene
 {
 
 public:
-	IntroScene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool &exitGame, Gamemanager* gamemanager);
+	IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool &exitGame, Gamemanager* gamemanager);
 	virtual ~IntroScene();
 
 	void Load() override;
 	void Unload() override;
+	void LoadResources() override;
 
 	void Update(const float& deltaTime) override;
 	Scene* GetNextScene() const override;

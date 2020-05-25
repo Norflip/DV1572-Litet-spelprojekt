@@ -15,6 +15,7 @@ public:
 
 	void Load() override;
 	void Unload() override;
+	void LoadResources() override;
 
 	void Update(const float& deltaTime) override;
 	Scene* GetNextScene() const override;

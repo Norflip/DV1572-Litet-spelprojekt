@@ -75,6 +75,11 @@ void SpawnObjects::SpawnInitial()
 	wagon->GetTransform().Rotate(0.05f, -5, 0);
 }
 
+void SpawnObjects::Clear()
+{
+	this->enemyCount = 0;
+}
+
 void SpawnObjects::SetMaxEnemies(int amount)
 {
 	this->maxEnemies = amount;

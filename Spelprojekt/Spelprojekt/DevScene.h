@@ -27,6 +27,7 @@ public:
 
 	void Load() override;
 	void Unload() override;
+	void LoadResources() override;
 
 	void Update(const float& deltaTime) override;
 	void FixedUpdate(const float& fixedDeltaTime) override;
@@ -60,15 +61,12 @@ private:
 	GUIActionbar* actionbarLeft;
 	GUIActionbar* actionbarRight;
 
-//	Projectile* coconuts[11];
-//	Spoon* spoons[5];
-
 	std::vector<Scene*>& scenes;
 	Player* player;
 	Enemy* enemy;
 	
-	Terrain ground;
-	Terrain waterMesh;
+	Terrain terrain;
+	Terrain waterTerrain;
 	Timer gametimer;
 	Timer fpsTimer;
 	float timeUntilEnd;

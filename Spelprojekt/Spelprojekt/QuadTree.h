@@ -4,8 +4,8 @@
 
 class QuadTree
 {
-	const int MAX_LEVELS = 8;
-	const int MAX_OBJECTS = 3;
+	const int MAX_LEVELS = 5;
+	const int MAX_OBJECTS = 10;
 
 public:
 	QuadTree(AABB bounds);
