@@ -41,7 +41,6 @@ DevScene::~DevScene()
 void DevScene::Load()
 {		
 	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
-	this->totalEnemiesLeft = gamemanager->GetTotalEnemies();
 	this->timeUntilEnd = 10.0f; // gamemanager->GetTimer();		// get time from gamemanager
 
 	Timer testSpeed;

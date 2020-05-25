@@ -85,7 +85,6 @@ private:
 	DirectX::XMVECTOR arrowRotation;
 	Object* arrow;
 	Object* winArea;
-
 	int points;
 	bool isMoving;
 	bool attacking;

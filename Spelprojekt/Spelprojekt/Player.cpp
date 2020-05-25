@@ -28,6 +28,7 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->points = 0;
 	this->isMoving = false;
 	this->attacking = false;
+
 }
 
 Player::~Player()
@@ -45,7 +46,7 @@ void Player::Update(const float& deltaTime)
 	TakeDamage();
 
 	UpdateLookAtPosition();
-	UpdateAnimations();
+	//UpdateAnimations();
 }
 
 
@@ -199,23 +200,23 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 	return returnValue;
 }
 
-void Player::UpdateAnimations()
-{
-	if (this->isMoving)
-	{
-		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[0]);
-	}
-
-	else if (this->attacking)
-	{
-		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[2]);
-	}
-
-	else
-	{
-		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[1]);
-	}
-}
+//void Player::UpdateAnimations()
+//{
+//	if (this->isMoving)
+//	{
+//		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[0]);
+//	}
+//
+//	else if (this->attacking)
+//	{
+//		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[2]);
+//	}
+//
+//	else
+//	{
+//		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[1]);
+//	}
+//}
 
 void Player::UpdateMeleeWeaponPosition()
 {
@@ -292,8 +293,9 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			weapon->Use();
 			//activeWeapon = nullptr;
 		}
-		else {
-			weapon->PlayBreaksound();
+		else 
+		{
+			weapon->PlaySoundEffect();
 			weapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			weapon->direction = GetTransform().GetRotation();
 			weapon->PlaySoundEffect();

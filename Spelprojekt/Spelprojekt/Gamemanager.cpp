@@ -1,9 +1,7 @@
 #include "Gamemanager.h"
 
-Gamemanager::Gamemanager(DX11Handler* dx11) : dx11(dx11)
+Gamemanager::Gamemanager(DX11Handler* dx11) : dxhandler(dx11)
 {
-	this->dxhandler = &dx11;
-
 	this->music = new SoundHandler();	
 	this->musicVol = 0.5f;
 	this->music->SetGlobalVolume(this->musicVol);
@@ -35,8 +33,8 @@ Gamemanager::Gamemanager(DX11Handler* dx11) : dx11(dx11)
 	
 	// Display current textfile
 	for (int i = 0; i < MAXSCORES; i++) {
-		displayPoints[i] = new GUIText(dx11, std::to_string(static_cast<int>(highscorePoints[i])), 0.0f, 0.0f);
-		displayNames[i] = new GUIText(dx11, highscorename[i], 0.0f, 0.0f);
+		displayPoints[i] = new GUIText(*dx11, std::to_string(static_cast<int>(highscorePoints[i])), 0.0f, 0.0f);
+		displayNames[i] = new GUIText(*dx11, highscorename[i], 0.0f, 0.0f);
 	}	
 	// Get latest highscore list ---
 }
