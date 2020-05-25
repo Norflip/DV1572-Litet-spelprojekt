@@ -16,7 +16,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 
-	this->spawner = new SpawnObjects(entities, &terrain, gamemanager, dx11);
+	this->spawner = new SpawnObjects(entities, &terrainMesh, gamemanager, dx11);
 
 	gametimerText = new GUIText(dx11, "Time until extraction", window.GetWidth() / 2.0f - 150.0f, 0);
 	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f - 100.0f, 30);
@@ -81,42 +81,28 @@ void DevScene::Load()
 	entities->InsertObject(wagon);
 	spawner->PlaceWagon(wagon);
 
-
-
-
-
-
 	// GROUNDH MESH
-	terrain.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
-	Object* terrainObject = new Object(ObjectLayer::None, terrain.GetMesh(), resources.GetResource<Material>("terrainMaterial"));
+	Object* terrainObject = new Object(ObjectLayer::None, terrainMesh.GetMesh(), resources.GetResource<Material>("terrainMaterial"));
 	entities->InsertObject(terrainObject);
 
-
 	// ------- water shader
-	waterTerrain.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), true);
-
-	Object* water = new Object(ObjectLayer::None, waterTerrain.GetMesh(), resources.GetResource<Material>("waterMaterial"));
+	
+	Object* water = new Object(ObjectLayer::None, waterMesh.GetMesh(), resources.GetResource<Material>("waterMaterial"));
 	water->GetTransform().Translate({ 0,5,0, });
 	water->GetTransform().SetRotation({ 0,0,0 });
 	entities->InsertObject(water);
 
 	water->isWater = true;
 
-
-
-
 	// ------ PLAYER
 	//AssimpHandler::AssimpData playerModel = *AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, resources.GetResource<Shader>("animationShader"));
-	this->player = new Player(resources.GetModel("playerModel"), controller, spawner, &terrain, gui, gamemanager, wagon, dx11, this);
+	this->player = new Player(resources.GetModel("playerModel"), controller, spawner, &terrainMesh, gui, gamemanager, wagon, dx11, this);
 
 	this->player->GetTransform().SetPosition({ 55, 4, 55 });
 	this->player->GetTransform().Scale(2.0, 2.0, 2.0);
 	this->player->SetLayer(ObjectLayer::Player);
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
 	entities->InsertObject(this->player);
-
-	delete this->assimpScene;
-	this->assimpScene = nullptr;
 
 	spawner->SetEnemyPrefab(resources.GetResource<Enemy>("enemyPrefab1"));
 	spawner->SetPickupPrefab(resources.GetResource<Spoon>("spoonPrefab"), WeaponType::Spoon);
@@ -272,54 +258,49 @@ void DevScene::LoadResources()
 		PREFABS
 	*/
 
-	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), &terrain, dx11, gamemanager);
+	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), &terrainMesh, dx11, gamemanager);
 	enemyPrefab1->GetTransform().Translate(30, 7, 35);
 	enemyPrefab1->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	enemyPrefab1->SetTarget(player);
 	enemyPrefab1->SetEnabled(false);
 	resources.AddResource("enemyPrefab1", enemyPrefab1);
 
-	Projectile* coconutPrefab = new Projectile(resources.GetModel("coconutModel"), gamemanager, &terrain, dx11);
+	Projectile* coconutPrefab = new Projectile(resources.GetModel("coconutModel"), gamemanager, &terrainMesh, dx11);
 	resources.AddResource("coconutPrefab", coconutPrefab);
 
-	Spoon* spoonPrefab = new Spoon(resources.GetModel("spoonModel"), gamemanager, &terrain, dx11);
+	Spoon* spoonPrefab = new Spoon(resources.GetModel("spoonModel"), gamemanager, &terrainMesh, dx11);
 	resources.AddResource("spoonPrefab", spoonPrefab);
 
 	/*
 		GUI
 	*/
 
+	terrainMesh.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
+	waterMesh.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), true);
+
+
+
+	delete this->assimpScene;
+	this->assimpScene = nullptr;
+
 
 }
 
 void DevScene::Update(const float& deltaTime)
 {
-
 	this->cameraFocusPosition = player->GetTransform().GetPosition();
 	billBoard->GetTransform().SetPosition({ player->GetTransform().GetPosition().m128_f32[0],player->GetTransform().GetPosition().m128_f32[1] + 6, player->GetTransform().GetPosition().m128_f32[2] });
+	
 	this->spawner->Update(deltaTime);
 	Scene::Update(deltaTime);
 
-
-	// fixa
-
-	// Change all weapons to vector
-	//for(auto i : coconuts)
-	//	player->UpdateHands(i);
-
-	//for (auto i : spoons)
-	//	player->UpdateHands(i);
-
-	//
 	UpdateGUI(deltaTime);
 }
 
 void DevScene::FixedUpdate(const float& fixedDeltaTime)
 {
 	Scene::FixedUpdate(fixedDeltaTime);
-
 	this->player->GetMesh()->skeleton->AddKeyframe();
-
 }
 
 Scene* DevScene::GetNextScene() const

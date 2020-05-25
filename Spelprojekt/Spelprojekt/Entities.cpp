@@ -52,7 +52,7 @@ std::vector<Object*> Entities::GetObjectsInLayer(ObjectLayer layer)
 	if (findLayerVector != objectsInLayerMap.end())
 		return objectsInLayerMap[layer];
 
-	return std::vector<Object*>();
+	return std::vector<Object*>(0);
 }
 
 std::vector<Object*> Entities::GetObjectsInRange(DirectX::XMVECTOR center, float radius, ObjectLayer layer)

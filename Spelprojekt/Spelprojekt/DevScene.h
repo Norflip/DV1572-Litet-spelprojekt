@@ -65,10 +65,9 @@ private:
 
 	std::vector<Scene*>& scenes;
 	Player* player;
-	Enemy* enemy;
-	
-	Terrain terrain;
-	Terrain waterTerrain;
+	Terrain terrainMesh;
+	Terrain waterMesh;
+
 	Timer gametimer;
 	Timer fpsTimer;
 	float timeUntilEnd;

@@ -33,4 +33,6 @@ private:
 
 	std::vector<Scene*>& scenes;
 	EndGUI* endGUI;
+	GUI* gui;
+
 };

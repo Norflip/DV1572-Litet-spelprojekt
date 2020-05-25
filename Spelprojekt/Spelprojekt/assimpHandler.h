@@ -142,7 +142,7 @@ namespace AssimpHandler
 		return texture;
 	}
 
-	inline MaterialData* getMaterialFromFbx(const aiScene* scene)
+	inline MaterialData getMaterialFromFbx(const aiScene* scene)
 	{
 		aiMaterial** materialArray = scene->mMaterials;
 		aiColor4D aiSpecular, aiDiffuse, aiAmbient;
@@ -160,11 +160,11 @@ namespace AssimpHandler
 		diffuse.x = aiDiffuse.r; diffuse.y = aiDiffuse.g; diffuse.z = aiDiffuse.b; diffuse.w = aiDiffuse.a;
 		ambient.x = aiAmbient.r; ambient.y = aiAmbient.g; ambient.z = aiAmbient.b; ambient.w = aiAmbient.a;
 
-		MaterialData* material = new MaterialData();
-		material->diffuse = diffuse;
-		material->ambient = ambient;
-		material->specular = specular;
-		material->shininess = aiShininess;
+		MaterialData material;
+		material.diffuse = diffuse;
+		material.ambient = ambient;
+		material.specular = specular;
+		material.shininess = aiShininess;
 		return material;
 	}
 
@@ -345,8 +345,8 @@ namespace AssimpHandler
 			object->material = new Material(shader, dx11);
 
 
-			MaterialData* temp = getMaterialFromFbx(scene);
-			object->material->SetMaterialData(*temp);
+			MaterialData temp = getMaterialFromFbx(scene);
+			object->material->SetMaterialData(temp);
 
 			// Check if the file contains a diffuseTexture
 			if (scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
