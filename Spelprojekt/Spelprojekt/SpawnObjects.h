@@ -28,7 +28,7 @@ class SpawnObjects
 		int prefabIndex;
 	};
 
-	const float MaxTime = 30.0f;
+	const float RespawnTimer = 30.0f;
 
 	const float CoconutRespawnTime = 30.0f;
 	const int CoconutsPerTree = 2;
