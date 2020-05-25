@@ -35,6 +35,9 @@ public:
 	void SetDifficultyState(int dif) { this->difficultystate = dif; }
 	int GetDifficultyState() { return this->difficultystate; }
 
+	void SetActiveEnemies(int activeenemies) { this->activeEnemies = activeenemies; }
+	int GetActiveEnemies() { return this->activeEnemies; }
+
 	void SetTotalEnemies(int enemies) { this->nrOfEnemies = enemies; }
 	int GetTotalEnemies() { return this->nrOfEnemies; }
 
@@ -46,9 +49,7 @@ public:
 	int GetCurrentScore() { return this->currentScore; }
 	void SortHighscore(std::string name[], int points[], int totalscores);
 	void UpdateHighscore(GUI* gui, int score);
-	void DisplayHighscore(GUI* gui);/*
-	GUIText** GetNames() { return displayNames; }
-	GUIText** GetPoints() { return displayPoints; }*/
+	void DisplayHighscore(GUI* gui);
 
 private:
 	DX11Handler* dxhandler;
@@ -67,6 +68,7 @@ private:
 	int difficultystate;
 	float timer;
 	int nrOfEnemies;
+	int activeEnemies;
 
 	// Highscore stuff...
 	std::ofstream writeToHighscore;

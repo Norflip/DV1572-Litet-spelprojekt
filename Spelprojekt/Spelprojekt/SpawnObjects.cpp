@@ -168,11 +168,11 @@ void SpawnObjects::UpdateSpawnEnemy()
 	// skapar fler fiender om vi saknar
 	//Logger::Write(std::to_string(enemyCount) + " : " + std::to_string(maxEnemies));
 
-	if (enemyCount < maxEnemies)
+	if (enemyCount < gamemanager->GetActiveEnemies() && maxEnemies != 0)
 	{
 		Player* player = static_cast<Player*>(entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
 		Enemy* enemy = new Enemy(*enemyPrefab);
-		enemy->SetLayer(ObjectLayer::Enemy);
+		//enemy->SetLayer(ObjectLayer::Enemy);
 
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMStoreFloat3(&pos, player->GetTransform().GetPosition());
@@ -187,7 +187,7 @@ void SpawnObjects::UpdateSpawnEnemy()
 		enemy->SetTarget(player);
 
 		entities->InsertObject(enemy);// ->AddObject(enemy);
-		enemyCount++;
+		enemyCount++;		
 	}
 }
 
@@ -202,19 +202,20 @@ void SpawnObjects::UpdateRemoveEnemy()
 	{
 		e = static_cast<Enemy*>(i);
 
-		if (i != nullptr && player->GetActiveWeapon() != nullptr)
+		if (e != nullptr && player->GetActiveWeapon() != nullptr)
 		{
-			if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(i->GetWorldBounds()))
+			if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(e->GetWorldBounds()))	// e ist för i?
 			{
 				e->HitSound();
 
 				player->IncreasePoints(e->GivePoints());
-				entities->RemoveObject(i);
+				entities->RemoveObject(e);	// e ist för i?
 				entities->RemoveObject(player->GetActiveWeapon());
 
 				player->GetActiveWeapon()->SetEnabled(false); // new
 				player->SetActiveWeapon(nullptr);
 				enemyCount--;
+				maxEnemies--;
 			}
 		}
 	}
