@@ -26,9 +26,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 
 	this->spawner = new SpawnObjects(entities, &ground, gamemanager, dx11);
-	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
-	//this->spawner->SetMaxEnemies(1);
-
 }
 
 DevScene::~DevScene()
@@ -40,6 +37,7 @@ void DevScene::Load()
 {		
 	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
 	this->timeUntilEnd = 10.0f; // gamemanager->GetTimer();		// get time from gamemanager
+	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
 
 	Timer testSpeed;
 	testSpeed.Start();
@@ -744,6 +742,9 @@ void DevScene::UpdateGUI(const float& deltaTime)
 
 	if (player->GetPlayerHealth() <= 0.0f)
 	{
+		// SET CURRENTSCORE TO GAMEMANAGER
+		gamemanager->SetCurrentScore(player->GetPoints() - 50);
+
 		gametimerText->SetString("You lost");
 		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(false);
@@ -751,6 +752,9 @@ void DevScene::UpdateGUI(const float& deltaTime)
 
 	if (canWin && player->GetWorldBounds().Overlaps(this->player->GetWinArea()->GetWorldBounds()))
 	{
+		// SET CURRENTSCORE TO GAMEMANAGER
+		gamemanager->SetCurrentScore(player->GetPoints() + 20);	// Different extra points for different difficulties maybe
+
 		gametimerText->SetString("You won");
 		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(true);

@@ -43,7 +43,7 @@ public:
 	void SpawnInitial();
 
 	void SetMaxEnemies(int amount);
-	int CountEnemiesRemaining() const { return this->enemyCount; }
+	int CountEnemiesRemaining() const { return this->maxEnemies; }
 
 	void SetPickupPrefab(Object* obj, WeaponType type);
 	void SetEnemyPrefab(Enemy*);

@@ -19,7 +19,7 @@ Gamemanager::Gamemanager(DX11Handler* dx11) : dxhandler(dx11)
 	this->difficultystate = 1;		// 1 = easy | 2 = medium | 3 = hard
 	this->timer = 120.0f;			// 120.0f	| 160.0f	 | 200.0f 
 	this->nrOfEnemies = 20;			// 20st		| 40st		 | 60st
-
+	this->activeEnemies = 5;		// 5st		| 7st		 | 9st
 
 	// Get latest highscore list ---
 	highscoreFiles.open("Datafiles/Highscore.txt");
