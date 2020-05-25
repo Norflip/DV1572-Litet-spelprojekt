@@ -11,6 +11,7 @@
 #include <vector>
 #include "EndScene.h"
 #include "Gamemanager.h"
+#include "Physics.h"
 
 class Application
 {
@@ -47,6 +48,11 @@ private:
 
 	std::vector<Scene*>scenes;
 	Renderer* deferredRenderer;
+
+	float timeLastFrame = static_cast<float>(timer.GetMilisecondsElapsed() / 1000.0f);
+	float fixedTimeAccumulation = 0.0f;
+	float currentTime;
+	float deltaTime;
 
 	bool pauseGame = true;
 	Timer timer;
