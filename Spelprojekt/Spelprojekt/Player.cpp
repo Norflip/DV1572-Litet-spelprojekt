@@ -86,6 +86,13 @@ void Player::UpdateMovement(float fixedDeltaTime)
 
 			nextPosition.x += dx * fixedDeltaTime * movementspeed;
 			nextPosition.z += dz * fixedDeltaTime * movementspeed;
+			
+			DirectX::XMVECTOR dot = DirectX::XMVector3Dot(terrain->SampleNormal(nextPosition.x, nextPosition.z), { 0,1,0 });
+			if (DirectX::XMVectorGetByIndex(dot, 0) < 0.85f)
+			{
+				GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
+				return;
+			}
 		}
 		else
 		{
