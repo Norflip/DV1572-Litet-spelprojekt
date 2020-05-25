@@ -20,13 +20,15 @@ Scene::~Scene()
 
 void Scene::Unload()
 {
+	Logger::Write("scene unload");
+
 	auto allEntities = entities->AllEntities();
 	for (auto i = allEntities.rbegin(); i < allEntities.rend(); i++)
 	{
 		delete *i;
 	}
 
-	allEntities.clear();
+	entities->Clear();
 }
 
 void Scene::Update(const float& deltaTime)

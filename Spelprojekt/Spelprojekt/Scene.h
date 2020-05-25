@@ -18,7 +18,7 @@ public:
 	virtual ~Scene();
 
 	virtual void Load() = 0;
-	virtual void Unload() = 0;
+	virtual void Unload();
 	virtual void LoadResources() = 0;
 
 	virtual void Update(const float& deltaTime);

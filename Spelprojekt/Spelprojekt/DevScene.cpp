@@ -83,9 +83,10 @@ void DevScene::Load()
 
 
 
+
 	// ------ PLAYER
-	AssimpHandler::AssimpData playerModel = *AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, resources.GetResource<Shader>("animationShader"));
-	this->player = new Player(playerModel, controller, spawner, &terrain, gui, gamemanager, wagon, dx11, this);
+	//AssimpHandler::AssimpData playerModel = *AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, resources.GetResource<Shader>("animationShader"));
+	this->player = new Player(resources.GetModel("playerModel"), controller, spawner, &terrain, gui, gamemanager, wagon, dx11, this);
 
 	this->player->GetTransform().SetPosition({ 55, 4, 55 });
 	this->player->GetTransform().Scale(2.0, 2.0, 2.0);
@@ -93,43 +94,16 @@ void DevScene::Load()
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
 	entities->InsertObject(this->player);
 
-	// ANIMATION SCHEISSE ///////////////////////
-	this->assimpScene = imp.ReadFile("Animations/Glasse_Walk_Cycle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
-	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Walk");
-
-	this->assimpScene = imp.ReadFile("Animations/Glasse_Idle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
-	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Idle");
-	this->player->GetMesh()->skeleton->SetFirstAnimation(this->player->GetMesh()->skeleton->animations[1]);
-
-	this->assimpScene = imp.ReadFile("Animations/Glasse_Attack_Right.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
-	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Attack");
-
-
-	Enemy* testEnemy = new Enemy(resources.GetModel("enemyModel"), &terrain, dx11, gamemanager);
-
-	testEnemy->GetTransform().Translate(30, 7, 35);
-	testEnemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
-	testEnemy->SetTarget(player);
-	testEnemy->SetEnabled(false);
-
-	//this->assimpScene = imp.ReadFile("Animations/animanim.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
-	//AssimpHandler::saveAnimationData(assimpScene, testEnemy->GetMesh()->skeleton, "enemyMove");
-	//testEnemy->GetMesh()->skeleton->SetFirstAnimation(testEnemy->GetMesh()->skeleton->animations[0]);
-
-	this->spawner->SetEnemyPrefab(testEnemy);
+	delete this->assimpScene;
 	this->assimpScene = nullptr;
 
+	spawner->SetEnemyPrefab(resources.GetResource<Enemy>("enemyPrefab1"));
+	spawner->SetPickupPrefab(resources.GetResource<Spoon>("spoonPrefab"), WeaponType::Spoon);
+	spawner->SetPickupPrefab(resources.GetResource<Projectile>("coconutPrefab"), WeaponType::Coconut);
 
-	// ------ WEAPONS
-	Projectile* coconutPrefab = new Projectile(resources.GetModel("coconutModel"), gamemanager, &terrain, dx11);
-	spawner->SetPickupPrefab(coconutPrefab, WeaponType::Coconut);
-
-	Spoon* spoon = new Spoon(resources.GetModel("spoonModel"), gamemanager, &terrain, dx11);
-	spawner->SetPickupPrefab(spoon, WeaponType::Spoon);
 
 	// ------ Leveldesign
 	CreateSceneObjects();
-
 
 	// - - - - - Exit arrow
 	arrow = new Object(ObjectLayer::None, resources.GetModel("arrowModel"));
@@ -167,17 +141,13 @@ void DevScene::Load()
 
 void DevScene::Unload()
 {
-	auto allEntities = entities->AllEntities();
-	for (auto i : allEntities)
-	{
-		delete i;
-	}
-
-	entities->Clear();
+	Scene::Unload();
+	Logger::Write("devscene unload");
 
 	// @TODO
 	gametimer.Restart();
 	gametimer.Stop();
+	spawner->Clear();
 }
 
 void DevScene::LoadResources()
@@ -272,6 +242,43 @@ void DevScene::LoadResources()
 	resources.AddModel("restplaceModel", AssimpHandler::loadFbxObject("Models/Restplace.fbx", dx11, toonShader));
 	resources.AddModel("benchModel", AssimpHandler::loadFbxObject("Models/Bench.fbx", dx11, toonShader));
 	resources.AddModel("palmModel", AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, toonShader));
+
+	AssimpHandler::AssimpData* playerModel = AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, resources.GetResource<Shader>("animationShader"));
+	resources.AddModel("playerModel", playerModel);
+
+	/*
+		ANIMATIONS
+	*/
+
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Walk_Cycle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, playerModel->mesh->skeleton, "Walk");
+
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Idle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, playerModel->mesh->skeleton, "Idle");
+	playerModel->mesh->skeleton->SetFirstAnimation(playerModel->mesh->skeleton->animations[1]);
+
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Attack_Right.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, playerModel->mesh->skeleton, "Attack");
+
+
+	/*
+		PREFABS
+	*/
+
+	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), &terrain, dx11, gamemanager);
+	enemyPrefab1->GetTransform().Translate(30, 7, 35);
+	enemyPrefab1->GetTransform().Scale(0.275f, 0.275f, 0.275f);
+	enemyPrefab1->SetTarget(player);
+	enemyPrefab1->SetEnabled(false);
+	resources.AddResource("enemyPrefab1", enemyPrefab1);
+
+
+	// ------ WEAPONS
+	Projectile* coconutPrefab = new Projectile(resources.GetModel("coconutModel"), gamemanager, &terrain, dx11);
+	resources.AddResource("coconutPrefab", coconutPrefab);
+
+	Spoon* spoonPrefab = new Spoon(resources.GetModel("spoonModel"), gamemanager, &terrain, dx11);
+	resources.AddResource("spoonPrefab", spoonPrefab);
 }
 
 void DevScene::Update(const float& deltaTime)
@@ -312,8 +319,6 @@ Scene* DevScene::GetNextScene() const
 void DevScene::CreateSceneObjects()
 {
 
-
-
 	billBoard = new Object(ObjectLayer::Enviroment, resources.GetModel("quadInv"));
 	billBoard->GetTransform().Translate(55, 12, 55);
 	billBoard->GetTransform().Scale(1, 1, 1);
@@ -328,10 +333,9 @@ void DevScene::CreateSceneObjects()
 		defaultShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 
 		////////////////////////// MOUNTAINS /////////////////////////////
-		Object* mountain = new Object(ObjectLayer::Enviroment, resources.GetModel("mountainModel"));
 		Object* mountains[2];
 		for (int i = 0; i < 2; i++) {
-			mountains[i] = new Object(*mountain);
+			mountains[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("mountainModel"));
 			entities->InsertObject(mountains[i]);
 		}
 
@@ -359,10 +363,9 @@ void DevScene::CreateSceneObjects()
 
 		////////////////////////// STANDS /////////////////////////////
 		// Left beach stand
-		Object* beachstand = new Object(ObjectLayer::Enviroment, resources.GetModel("kioskModel"));
 		Object* beachstands[3];
 		for (int i = 0; i < 3; i++) {
-			beachstands[i] = new Object(*beachstand);
+			beachstands[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("kioskModel"));
 			entities->InsertObject(beachstands[i]);
 		}
 
@@ -377,10 +380,10 @@ void DevScene::CreateSceneObjects()
 
 		////////////////////////// SUNCHAIR /////////////////////////////		
 		// Chairs Left beachside
-		Object* chair = new Object(ObjectLayer::Enviroment, resources.GetModel("sunchairModel"));
+
 		Object* sunChairs[21];
 		for (int i = 0; i < 21; i++) {
-			sunChairs[i] = new Object(*chair);
+			sunChairs[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("sunchairModel"));
 			entities->InsertObject(sunChairs[i]);
 		}
 
@@ -450,11 +453,11 @@ void DevScene::CreateSceneObjects()
 
 		////////////////////////// PARASOLLS /////////////////////////////
 		// Parasoll left beachside
-		Object* parasoll = new Object(ObjectLayer::Enviroment, resources.GetModel("parasollModel"));
 		Object* parasolls[7];
 
-		for (int i = 0; i < 7; i++) {
-			parasolls[i] = new Object(*parasoll);
+		for (int i = 0; i < 7; i++) 
+		{
+			parasolls[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("parasollModel"));
 			entities->InsertObject(parasolls[i]);
 		}
 
@@ -472,77 +475,79 @@ void DevScene::CreateSceneObjects()
 
 
 		////////////////////////// SURFBOARDS /////////////////////////////
-		Object* SurfboardBlue = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardBlueModel"));
-		Object* SurfboardsBlue[2];
-		for (int i = 0; i < 2; i++) {
-			SurfboardsBlue[i] = new Object(*SurfboardBlue);
-			entities->InsertObject(SurfboardsBlue[i]);
-		}
+		Object* surfboardsBlue[2];
+		surfboardsBlue[0] = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardBlueModel"));
+		surfboardsBlue[0]->GetTransform().Translate(130, 7, 35);
+		entities->InsertObject(surfboardsBlue[0]);
 
-		SurfboardsBlue[0]->GetTransform().Translate(130, 7, 35);
-		SurfboardsBlue[1]->GetTransform().Translate(168, 7.3, 210);
+		surfboardsBlue[1] = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardBlueModel"));
+		surfboardsBlue[1]->GetTransform().Translate(168, 7.3, 210);
+		entities->InsertObject(surfboardsBlue[1]);
 
 
-		Object* SurfboardOrange = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardOrangeModel"));
-		Object* SurfboardsOrange[2];
-		for (int i = 0; i < 2; i++) {
-			SurfboardsOrange[i] = new Object(*SurfboardOrange);
-			entities->InsertObject(SurfboardsOrange[i]);
-		}
+		Object* surfboardOrange[2];
+		surfboardOrange[0] = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardOrangeModel"));
+		surfboardOrange[0]->GetTransform().Translate(128, 7, 33);
+		entities->InsertObject(surfboardOrange[0]);
 
-		SurfboardsOrange[0]->GetTransform().Translate(128, 7, 33);
-		SurfboardsOrange[1]->GetTransform().Translate(168, 7.3, 205);
-
+		surfboardOrange[1] = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardOrangeModel"));
+		surfboardOrange[1]->GetTransform().Translate(168, 7.3, 205);
+		entities->InsertObject(surfboardOrange[1]);
 
 
 		Object* SurfboardTrippy = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardTrippyModel"));
-		entities->InsertObject(SurfboardTrippy);
 		SurfboardTrippy->GetTransform().Translate(130, 7, 37);
+		entities->InsertObject(SurfboardTrippy);
+
+
 
 
 		////////////////////////// BEACHBALLS /////////////////////////////
 		// Balls left beachside
-		Object* redball = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballRedModel"));
-		Object* redballs[3];
-		for (int i = 0; i < 3; i++) {
-			redballs[i] = new Object(*redball);
-			entities->InsertObject(redballs[i]);
-		}
 
+		Object* redballs[3];
+		redballs[0] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballRedModel"));
 		redballs[0]->GetTransform().Translate(100, 7, 38);
 		redballs[0]->GetTransform().Rotate(0.2f, -5, 0);
+		entities->InsertObject(redballs[0]);
 
+		redballs[1] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballRedModel"));
 		redballs[1]->GetTransform().Translate(160, 7, 190);
 		redballs[1]->GetTransform().Rotate(0.2f, -5, 0);
+		entities->InsertObject(redballs[1]);
 
+		redballs[2] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballRedModel"));
 		redballs[2]->GetTransform().Translate(35, 6, 45);
 		redballs[2]->GetTransform().Rotate(0.2f, -5, 0);
+		entities->InsertObject(redballs[2]);
 
 
-		Object* blueball = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballBlueModel"));
+
 		Object* blueballs[3];
-		for (int i = 0; i < 3; i++) {
-			blueballs[i] = new Object(*blueball);
-			entities->InsertObject(blueballs[i]);
-		}
-
+		
+		blueballs[0] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballBlueModel"));
 		blueballs[0]->GetTransform().Translate(105, 6.5, 35);
 		blueballs[0]->GetTransform().Rotate(0.2f, -5, 0);
+		entities->InsertObject(blueballs[0]);
 
+		blueballs[1] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballBlueModel"));
 		blueballs[1]->GetTransform().Translate(155, 6.5, 195);
 		blueballs[1]->GetTransform().Rotate(0.2f, -5, 0);
+		entities->InsertObject(blueballs[1]);
 
+		blueballs[2] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballBlueModel"));
 		blueballs[2]->GetTransform().Translate(40, 6.2, 40);
 		blueballs[2]->GetTransform().Rotate(0.2f, -5, 0);
+		entities->InsertObject(blueballs[2]);
 
 
 
 
 		////////////////////////// BEACHBALLS /////////////////////////////
-		Object* bush = new Object(ObjectLayer::Enviroment, resources.GetModel("bushModel"));
 		Object* bushes[13];
-		for (int i = 0; i < 13; i++) {
-			bushes[i] = new Object(*bush);
+		for (int i = 0; i < 13; i++) 
+		{
+			bushes[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("bushModel"));
 			entities->InsertObject(bushes[i]);
 		}
 
@@ -619,10 +624,12 @@ void DevScene::CreateSceneObjects()
 
 
 		// Benches left beachside
-		Object* bench = new Object(ObjectLayer::Enviroment, resources.GetModel("benchModel"));
 		Object* benches[4];
 		for (int i = 0; i < 4; i++)
-			benches[i] = new Object(*bench);
+		{
+			benches[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("benchModel"));
+			entities->InsertObject(benches[i]);
+		}
 
 		benches[0]->GetTransform().Translate(170.0f, 7.0f, 118.0f);
 		benches[0]->GetTransform().SetRotation({ 0.0f, 0.4f, 0.0f });
@@ -636,19 +643,15 @@ void DevScene::CreateSceneObjects()
 		benches[3]->GetTransform().Translate(170.0f, 7.0f, 190.0f);
 		benches[3]->GetTransform().SetRotation({ 0.0f, 2.5f, 0.0f });
 
-		for (int i = 0; i < 4; i++)
-			entities->InsertObject(benches[i]);
-
 		////////////////////////// PALMS /////////////////////////////
 
 
 
 
 		// Palms left beach side 
-		Object* palm = new Object(ObjectLayer::Tree, resources.GetModel("palmModel"));
 		Object* palms[22];
 		for (int i = 0; i < 22; i++) {
-			palms[i] = new Object(*palm);
+			palms[i] = new Object(ObjectLayer::Tree, resources.GetModel("palmModel"));
 			entities->InsertObject(palms[i]);
 		}
 
@@ -690,9 +693,7 @@ void DevScene::CreateSceneObjects()
 
 	}
 
-
 	spawner->SpawnInitial();
-
 }
 
 void DevScene::checkForNextScene()

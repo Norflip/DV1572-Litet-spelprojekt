@@ -41,6 +41,7 @@ public:
 	virtual ~SpawnObjects() {};
 
 	void SpawnInitial();
+	void Clear();
 
 	void SetMaxEnemies(int amount);
 	int CountEnemiesRemaining() const { return this->enemyCount; }

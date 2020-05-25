@@ -61,9 +61,6 @@ private:
 	GUIActionbar* actionbarLeft;
 	GUIActionbar* actionbarRight;
 
-//	Projectile* coconuts[11];
-//	Spoon* spoons[5];
-
 	std::vector<Scene*>& scenes;
 	Player* player;
 	Enemy* enemy;
