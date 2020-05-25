@@ -29,6 +29,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 
 	this->spawner = new SpawnObjects(entities, &ground, gamemanager, dx11);
 	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
+	//this->spawner->SetMaxEnemies(10);
 
 }
 

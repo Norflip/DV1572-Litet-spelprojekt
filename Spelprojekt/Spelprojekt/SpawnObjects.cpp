@@ -18,15 +18,13 @@
 //}
 
 
-SpawnObjects::SpawnObjects(Entities* entities, Terrain* terrain, Gamemanager* gamemanager, DX11Handler& dx11) : entities(entities), terrain(terrain), gamemanager(gamemanager), dx11(dx11), enemyPrefab(nullptr)
+SpawnObjects::SpawnObjects(Entities* entities, Terrain* terrain, Gamemanager* gamemanager, DX11Handler& dx11) : entities(entities), terrain(terrain), gamemanager(gamemanager), dx11(dx11), enemyPrefab(nullptr), maxEnemies(10), enemyCount(0)
 {
 
 }
 
 void SpawnObjects::SpawnInitial()
 {
-	CreateSpawnMap();
-
 	// find trees and place N around
 	Weapon* clone = nullptr;
 	Projectile* coconut = static_cast<Projectile*>(pickupsPrefabs[(int)WeaponType::Coconut]);
@@ -66,7 +64,7 @@ void SpawnObjects::SpawnInitial()
 	for (auto i : spoonPositions)
 	{
 		clone = new Spoon(*spoon);
-		clone->GetTransform().SetPosition(i);
+		clone->GetTransform().SetPosition(GetRandomSpawnPosition(1.0f));
 		clone->gamemanager = this->gamemanager;
 		entities->InsertObject(clone);
 	}
@@ -77,7 +75,7 @@ void SpawnObjects::SpawnInitial()
 
 void SpawnObjects::SetMaxEnemies(int amount)
 {
-	this->enemyCount = amount;
+	this->maxEnemies = amount;
 }
 
 void SpawnObjects::Update(const float& deltaTime)
@@ -107,85 +105,84 @@ void SpawnObjects::RemoveEnemy(Enemy* enemy)
 	entities->RemoveObject(enemy);
 }
 
-DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition()
+DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition(float heightOffset)
 {
-	return DirectX::XMVECTOR();
-}
+	bool found = false;
+	int maxIteraitor = 70;
+	DirectX::XMVECTOR position = { 0,0,0 };
 
-void SpawnObjects::CreateSpawnMap()
-{
-	Logger::Write("Creating spawnMap");
-	spawnmap = new bool[terrain->GetMapWidth(), terrain->GetMapHeight()];
-
-	std::vector<Object*> all = entities->GetObjectsInLayer(ObjectLayer::Tree);
-	Logger::Write("alla: " + std::to_string(all.size()));
-
-	int ti = 0;
-
-	for (size_t z = 0; z < terrain->GetMapHeight(); z++)
+	while (!found && maxIteraitor > 0)
 	{
-		for (size_t x = 0; x < terrain->GetMapWidth(); x++)
+		float x = static_cast<float>(rand() % terrain->GetMapWidth());
+		float z = static_cast<float>(rand() % terrain->GetMapHeight());
+		float y = terrain->SampleHeight(x,z);
+
+		if (y >= MinimumSpawnHeight)
 		{
-			int i = x + z * terrain->GetMapWidth();
-
-			if (i != ti)
-			{
-				Logger::Write("i: " + std::to_string(i) + " ti: " + std::to_string(ti));
-			}
-
-			/*spawnmap[i] = false;
-			float y = terrain->SampleHeight(x, z);
-
-			if (y >= MinimumSpawnHeight)
-			{
-				spawnmap[i] = true;
-			}*/
-
-			// check collision
-
-			ti++;
+			Logger::Write("found pos");
+			position = { x, y + heightOffset, z };
+			found = true;
 		}
+
+		maxIteraitor--;
 	}
 
-
+	return position;
 }
 
 void SpawnObjects::UpdateSpawnEnemy()
 {
 	// skapar fler fiender om vi saknar
 
-	/*if (nrOfEnemies < spawnedEnemies && randX != lastRandX)
+	Logger::Write(std::to_string(enemyCount) + " : " + std::to_string(maxEnemies));
+
+	if (enemyCount < maxEnemies)
 	{
-		enemy = new Enemy(*testEnemy);
-		enemy->GetTransform().Translate(randX, 7, randZ);
+		Player* player = static_cast<Player*>(entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
+
+		Enemy* enemy = new Enemy(*enemyPrefab);
+
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMStoreFloat3(&pos, player->GetTransform().GetPosition());
+
+		float angle = (float)(rand() % 16) * (360.0f / CoconutsPerTree);
+		float x = pos.x + cosf(angle * MathHelper::ToRadians) * 10.0f;
+		float z = pos.z + sinf(angle * MathHelper::ToRadians) * 10.0f;
+		float y = terrain->SampleHeight(x, z) + 0.4f;
+
+		enemy->GetTransform().SetPosition({ x,y,z });
 		enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 		enemy->SetTarget(player);
-		scene->AddObject(enemy);
-		AddEnemy(enemy);
-		nrOfEnemies++;
-		lastRandX = randX;
-	}*/
+
+		entities->InsertObject(enemy);// ->AddObject(enemy);
+		enemyCount++;
+	}
 }
 
 void SpawnObjects::UpdateRemoveEnemy()
 {
-	//for (auto i : enemies)
-	//{
-	//	if (i != nullptr && player->GetActiveWeapon() != nullptr)
-	//	{
-	//		if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(i->GetWorldBounds()))
-	//		{
-	//			i->HitSound();
-	//			enemiesToEliminate--;
-	//			player->IncreasePoints(i->GivePoints());
-	//			scene->RemoveObject(i);
+	auto enemies = entities->GetObjectsInLayer(ObjectLayer::Enemy);
+	Enemy* e = nullptr;
+	Player* player = static_cast<Player*>(entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
 
-	//			RemoveEnemy(i);
-	//			scene->RemoveObject(player->GetActiveWeapon());
-	//			player->GetActiveWeapon()->SetEnabled(false); // new
-	//			player->SetActiveWeapon(nullptr);
-	//			nrOfEnemies--;
-	//		}
-	//	}
-	//}
+	for (auto i : enemies)
+	{
+		e = static_cast<Enemy*>(i);
+
+		if (i != nullptr && player->GetActiveWeapon() != nullptr)
+		{
+			if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(i->GetWorldBounds()))
+			{
+				e->HitSound();
+
+				player->IncreasePoints(e->GivePoints());
+				entities->RemoveObject(i);
+				entities->RemoveObject(player->GetActiveWeapon());
+
+				player->GetActiveWeapon()->SetEnabled(false); // new
+				player->SetActiveWeapon(nullptr);
+				maxEnemies--;
+			}
+		}
+	}
 }

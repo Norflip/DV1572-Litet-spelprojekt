@@ -133,7 +133,7 @@ void Player::InitWeapons()
 
 void Player::CheckForPickups()
 {
-	if (input->GetKeyDown('e') && !lefthandFull && !righthandFull)
+	if (input->GetKeyDown('e') && (!lefthandFull || !righthandFull))
 	{
 		std::vector<Object*> pickups = scene->GetEntities()->GetObjectsInLayer(ObjectLayer::Pickup);
 		bool foundPickup = false;
@@ -187,36 +187,6 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 	else
 		returnValue = nextDir - currentDir + MathHelper::PI * 2.0f;
 	return returnValue;
-}
-
-void Player::UpdateHands(Weapon* obj)
-{
-	if (input->GetKeyDown('e') && obj->IsEnabled() && obj->GetWorldBounds().Overlaps(this->GetWorldBounds()))
-	{
-		if (!lefthandFull) {
-			leftWeapon = CopyWeapon(obj);	//check type
-
-			this->leftActionbar = new GUIActionbar(*obj->GetWeaponSprite());
-			this->leftActionbar->SetPosition(325.0f, 650.0f);
-			this->gui->AddGUIObject(this->leftActionbar, "Left Actionbar");
-
-			scene->GetEntities()->RemoveObject(obj);
-
-			obj->SetEnabled(false);
-			lefthandFull = true;
-		}
-		else if (lefthandFull && !righthandFull) {
-			rightWeapon = CopyWeapon(obj); //check type
-
-			this->rightActionbar = new GUIActionbar(*obj->GetWeaponSprite());
-			this->rightActionbar->SetPosition(400.0f, 650.0f);
-			this->gui->AddGUIObject(this->rightActionbar, "Right Actionbar");
-
-			scene->GetEntities()->RemoveObject(obj);
-			obj->SetEnabled(false);
-			righthandFull = true;
-		}
-	}
 }
 
 void Player::UpdateMeleeWeaponPosition()

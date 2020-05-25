@@ -23,7 +23,6 @@ public:
 	void Update(const float& deltaTime) override;
 	void TakeDamage();	
 	float GetPlayerHealth();
-	void UpdateHands(Weapon* obj);
 	void UpdateMeleeWeaponPosition();
 	void UseWeapon();
 	void WeaponUsage(Weapon*, bool& hand);

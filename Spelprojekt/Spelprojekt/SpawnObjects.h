@@ -38,7 +38,7 @@ public:
 	void SpawnInitial();
 
 	void SetMaxEnemies(int amount);
-	int CountEnemiesRemaining() const { return this->enemyCount; }
+	int CountEnemiesRemaining() const { return this->maxEnemies; }
 
 	void SetPickupPrefab(Object* obj, WeaponType type);
 	void SetEnemyPrefab(Enemy*);
@@ -48,15 +48,13 @@ public:
 	void RemoveEnemy(Enemy*);
 
 private:
-	DirectX::XMVECTOR GetRandomSpawnPosition();
+	DirectX::XMVECTOR GetRandomSpawnPosition(float heightOffset);
 
-	void CreateSpawnMap();
 	void UpdateSpawnEnemy();
 	void UpdateRemoveEnemy();
 
 private:
 	bool* spawnmap;
-
 	DX11Handler& dx11;
 	Entities* entities;
 	Gamemanager* gamemanager;
@@ -64,6 +62,7 @@ private:
 
 	Object* pickupsPrefabs[2];
 	Enemy* enemyPrefab;
+	int maxEnemies;
 	int enemyCount;
 
 	//std::vector<Enemy*> enemies;
