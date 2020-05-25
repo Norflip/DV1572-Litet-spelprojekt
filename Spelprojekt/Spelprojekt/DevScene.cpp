@@ -1,6 +1,6 @@
 #include "DevScene.h"
 
-DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, Gamemanager* gamemanager) : Scene("DevScene", renderer, dx11, window), scenes(scenes) // tabort soundeffect
+DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, Gamemanager* gamemanager) : Scene("DevScene", renderer, dx11, window), scenes(scenes), gamemanager(gamemanager) // tabort soundeffect
 {
 	//----- GUI SHIET |  Set gui last |
 
@@ -24,8 +24,13 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 		
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
-	
-	this->gamemanager = gamemanager;
+
+
+
+	this->spawner = new SpawnObjects(entities, &ground, gamemanager, dx11);
+	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
+	//this->spawner->SetMaxEnemies(10);
+
 }
 
 DevScene::~DevScene()
@@ -63,7 +68,7 @@ void DevScene::Load()
 	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
 	wagon->GetTransform().Translate(99, 9.5, 50);
 	wagon->GetTransform().Rotate(0.05f, -5, 0);
-	AddObject(wagon);
+	entities->InsertObject(wagon);
 
 	
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
@@ -77,7 +82,7 @@ void DevScene::Load()
 	sphere->GetMaterial()->SetSampler(0, dx11.GetDefaultSampler());
 
 	sphere->GetTransform().Translate(0, 3, 6);
-	AddObject(sphere);
+	entities->InsertObject(sphere);
 
 	// ------- TERRAIN
 	Shader* terrainShader = new Shader();
@@ -100,7 +105,7 @@ void DevScene::Load()
 	// GROUNDH MESH
 	ground.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
 	Object* terrainObject = new Object(ObjectLayer::None, ground.GetMesh(), terrainMat);
-	AddObject(terrainObject);
+	entities->InsertObject(terrainObject);
 	
 
 	// ------- water shader
@@ -121,7 +126,7 @@ void DevScene::Load()
 	water->SetMaterial(waterMat);
 	water->GetTransform().Translate({ 0,5,0,});
 	water->GetTransform().SetRotation({ 0,0,0 });
-	AddObject(water);
+	entities->InsertObject(water);
 
 	water->isWater = true;
 
@@ -136,13 +141,13 @@ void DevScene::Load()
 
 	// ------ PLAYER
 	AssimpHandler::AssimpData playerModel = AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, animationShader);
-	this->player = new Player(playerModel, controller, &ground, gui, wagon, dx11,  static_cast<Scene*>(this));
+	this->player = new Player(playerModel, controller, &ground, gui, gamemanager, wagon, dx11,  this);
 
 	this->player->GetTransform().SetPosition({ 55, 4, 55 });
 	this->player->GetTransform().Scale(2.0, 2.0, 2.0);
 	this->player->SetLayer(ObjectLayer::Player);
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });	
-	AddObject(this->player);
+	entities->InsertObject(this->player);
 			
 	// ANIMATION SCHEISSE ///////////////////////
 	this->assimpScene = imp.ReadFile("Animations/Glasse_Walk_Cycle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
@@ -154,54 +159,70 @@ void DevScene::Load()
 
 	this->assimpScene = imp.ReadFile("Animations/Glasse_Attack_Right.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
 	AssimpHandler::saveAnimationData(assimpScene, this->player->GetMesh()->skeleton, "Attack");
-
 	this->assimpScene = nullptr;
 
+	AssimpHandler::AssimpData enemyModel = AssimpHandler::loadFbxObject("Models/IcecreamEnemy.fbx", dx11, toonShader);
+	Enemy* testEnemy = new Enemy(enemyModel, &ground, dx11, gamemanager);
 
-	this->spawnObjects = new SpawnObjects(dx11, static_cast<Scene*>(this), &ground, dev_monkey_mesh, new Material(defaultShader, dx11), this->player, gamemanager);	
-	this->spawnObjects->SetEnemy();
-	this->spawnObjects->SetEnemiesToEliminate(totalEnemiesLeft);
-	AddObject(this->spawnObjects);	
-		
+	testEnemy->GetTransform().Translate(30, 7, 35);
+	testEnemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
+	testEnemy->SetTarget(player);
+	testEnemy->SetEnabled(false);
+	this->spawner->SetEnemyPrefab(testEnemy);
+
+
+
 	// ------ WEAPONS
-	AssimpHandler::AssimpData coconut = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
+	AssimpHandler::AssimpData coconutModel = AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, defaultShader);
+	Projectile* coconutPrefab = new Projectile(coconutModel, gamemanager, &ground, dx11);
+	spawner->SetPickupPrefab(coconutPrefab, WeaponType::Coconut);
 
-	
-	// ------ COCOSNUT
-	for (int i = 0; i < 11; i++) {
+	AssimpHandler::AssimpData spoonModel = AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, defaultShader);
+	Spoon* spoon = new Spoon(spoonModel, gamemanager, &ground, dx11);
+	spawner->SetPickupPrefab(spoon, WeaponType::Spoon);
+
+
+
+
+
+	// Coconuts
+/*	for (int i = 0; i < 11; i++) {
 		this->coconuts[i] = new Projectile("Models/Coconut.fbx", &ground, dx11, coconut, { 0, 0,0 }, { 0, 0,0 }, gamemanager); 
 		this->coconuts[i]->SetLayer(ObjectLayer::Projectile);
 		AddObject(coconuts[i]);
-	}		
+	}	*/	
 
-	coconuts[0]->GetTransform().Translate(177.0f, 8.5f, 75.0f);	
-	coconuts[1]->GetTransform().Translate(164.0f, 8.5f, 60.0f);
-	coconuts[2]->GetTransform().Translate(100.0f, 8.8f, 75.0f);
-	coconuts[3]->GetTransform().Translate(78.0f, 9.0f, 82.0f);
-	coconuts[4]->GetTransform().Translate(56.0f, 8.5f, 65.0f);
-	coconuts[5]->GetTransform().Translate(34.0f, 8.5f, 95.0f);
-	coconuts[6]->GetTransform().Translate(41.0f, 8.5f, 140.0f);
-	coconuts[7]->GetTransform().Translate(109.0f, 8.5f, 165.0f);
-	coconuts[8]->GetTransform().Translate(94.0f, 9.0f, 195.0f);
-	coconuts[9]->GetTransform().Translate(175.0f, 8.5f, 160.0f);
-	coconuts[10]->GetTransform().Translate(149.0f, 9.0f, 175.0f);
+	//coconuts[0]->GetTransform().Translate(177.0f, 8.5f, 75.0f);	
+	//coconuts[1]->GetTransform().Translate(164.0f, 8.5f, 60.0f);
+	//coconuts[2]->GetTransform().Translate(100.0f, 8.8f, 75.0f);
+	//coconuts[3]->GetTransform().Translate(78.0f, 9.0f, 82.0f);
+	//coconuts[4]->GetTransform().Translate(56.0f, 8.5f, 65.0f);
+	//coconuts[5]->GetTransform().Translate(34.0f, 8.5f, 95.0f);
+	//coconuts[6]->GetTransform().Translate(41.0f, 8.5f, 140.0f);
+	//coconuts[7]->GetTransform().Translate(109.0f, 8.5f, 165.0f);
+	//coconuts[8]->GetTransform().Translate(94.0f, 9.0f, 195.0f);
+	//coconuts[9]->GetTransform().Translate(175.0f, 8.5f, 160.0f);
+	//coconuts[10]->GetTransform().Translate(149.0f, 9.0f, 175.0f);
 			
 	/////////////////////////////////////////
 
-	AssimpHandler::AssimpData slev = AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, defaultShader);			
-	// Spoon
-	for (int i = 0; i < 5; i++) {
-		this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, { 0, 0,0 }, { 0, 0,0 }, gamemanager);
-		this->spoons[i]->SetLayer(ObjectLayer::None);	// ÄNDAR SEN
-		AddObject(spoons[i]);
- 	}			
-	spoons[0]->GetTransform().Translate(130, 8, 40);
-	spoons[1]->GetTransform().Translate(28, 7, 47);
-	spoons[2]->GetTransform().Translate(145.0f, 8.5f, 193.0f);
-	spoons[3]->GetTransform().Translate(115.0f, 8.5f, 138.0f);
-	spoons[4]->GetTransform().Translate(195, 7.0f, 115);
+	
+	//for (int i = 0; i < 5; i++) {
+	//	this->spoons[i] = new Spoon("Models/Spoon.fbx", &ground, dx11, slev, gamemanager);
+	//	this->spoons[i]->SetLayer(ObjectLayer::None);	// ÄNDAR SEN
+	//	AddObject(spoons[i]);
+ //	}			
+	//spoons[0]->GetTransform().Translate(130, 8, 40);
+	//spoons[1]->GetTransform().Translate(28, 7, 47);
+	//spoons[2]->GetTransform().Translate(145.0f, 8.5f, 193.0f);
+	//spoons[3]->GetTransform().Translate(115.0f, 8.5f, 138.0f);
+	//spoons[4]->GetTransform().Translate(195, 7.0f, 115);
 		
 	
+
+
+
+
 	// ------ Leveldesign
 	CreateSceneObjects();	
 
@@ -210,7 +231,7 @@ void DevScene::Load()
 	arrow = new Object(ObjectLayer::None, AssimpHandler::loadFbxObject("Models/Arrow.fbx", dx11, defaultShader));
 	arrow->GetTransform().Translate(35, 10, 30);	
 	player->SetArrow(arrow);
-	AddObject(arrow);
+	entities->InsertObject(arrow);
 	arrow->SetVisible(false);
 
 
@@ -251,62 +272,22 @@ void DevScene::Update(const float& deltaTime)
 {	
 
 	this->cameraFocusPosition = player->GetTransform().GetPosition();
-	Scene::Update(deltaTime);
 	billBoard->GetTransform().SetPosition({ player->GetTransform().GetPosition().m128_f32[0],player->GetTransform().GetPosition().m128_f32[1]+6, player->GetTransform().GetPosition().m128_f32[2] });
+	this->spawner->Update(deltaTime);
+	Scene::Update(deltaTime);
 
-	//FPS STUFF
-	fpsTimer.Start();			
-	
+
+	// fixa
+
 	// Change all weapons to vector
-	for(auto i : coconuts)
-		player->UpdateHands(i);
+	//for(auto i : coconuts)
+	//	player->UpdateHands(i);
 
-	for (auto i : spoons)
-		player->UpdateHands(i);
+	//for (auto i : spoons)
+	//	player->UpdateHands(i);
+
 	//
-
-	// Display enemies left and points
-	totalEnemies->SetString(std::to_string(this->spawnObjects->GetEnemiesLeftToEliminate()));
-	totalScore->SetString(std::to_string(player->GetPoints()));
-		
-	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
-	controller->Update(deltaTime);
-	
-	fpsTimer.Stop();
-	fpsText->SetString("FPS: " + std::to_string((int)(1 / ((fpsTimer.GetMicrosecondsElapsed() / 1000000)))));
-	fpsTimer.Restart();
-	checkForNextScene();
-
-	gametimerText->SetString("Time until extraction: " + std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd))));
-	
-	
-	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f || this->spawnObjects->GetEnemiesLeftToEliminate() == 0)
-	{
-		arrow->SetVisible(true);
-		gametimerText->SetString("Move to exit");
-		gametimerText->SetPosition(window.GetWidth() / 2.0f - 80.0f, 0.0f);
-		canWin = true;
-	}
-
-	if (player->GetPlayerHealth() <= 0.0f)
-	{
-		// SET CURRENTSCORE TO GAMEMANAGER
-		gamemanager->SetCurrentScore(player->GetPoints() - 50);
-
-		gametimerText->SetString("You lost");
-		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
-		SetNextScene(false);
-	}
-
-	if (canWin && player->GetWorldBounds().Overlaps(this->player->GetWinArea()->GetWorldBounds()))
-	{	
-		// SET CURRENTSCORE TO GAMEMANAGER
-		gamemanager->SetCurrentScore(player->GetPoints() + 30);	// Different extra points for different difficulties
-
-		gametimerText->SetString("You won");
-		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
-		SetNextScene(true);
-	}
+	UpdateGUI(deltaTime);
 }
 
 void DevScene::FixedUpdate(const float& fixedDeltaTime)
@@ -335,7 +316,7 @@ void DevScene::CreateSceneObjects()
 	billBoard->GetTransform().Translate(55, 12, 55);
 	billBoard->GetTransform().Scale(1, 1, 1);
 	billBoard->GetTransform().SetRotation({ 0,0, 0 });
-	AddObject(billBoard);
+	entities->InsertObject(billBoard);
 
 	if (true)
 	{
@@ -349,7 +330,7 @@ void DevScene::CreateSceneObjects()
 		Object* mountains[2];
 		for (int i = 0; i < 2; i++) {
 			mountains[i] = new Object(*mountain);
-			AddObject(mountains[i]);
+			entities->InsertObject(mountains[i]);
 		}			
 
 		// Middle mountain
@@ -362,7 +343,7 @@ void DevScene::CreateSceneObjects()
 
 		////////////////////////// ROCKS /////////////////////////////
 		Object* rocks = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Rocks.fbx", dx11, defaultShader));
-		AddObject(rocks);
+		entities->InsertObject(rocks);
 		rocks->GetTransform().Rotate(0, 180, 0);
 		rocks->GetTransform().Translate(195, 5, 145);
 		
@@ -371,7 +352,7 @@ void DevScene::CreateSceneObjects()
 		Object* boat = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Boat.fbx", dx11, defaultShader));
 		boat->GetTransform().Translate(205, 6.2f, 115);
 		boat->GetTransform().SetRotation({ 0.1, 1.7, -0.15});
-		AddObject(boat);
+		entities->InsertObject(boat);
 
 
 		////////////////////////// STANDS /////////////////////////////
@@ -380,7 +361,7 @@ void DevScene::CreateSceneObjects()
 		Object* beachstands[3]; 
 		for (int i = 0; i < 3; i++) {
 			beachstands[i] = new Object(*beachstand);
-			AddObject(beachstands[i]);
+			entities->InsertObject(beachstands[i]);
 		}
 			
 		beachstands[0]->GetTransform().Translate(135, 7, 48);
@@ -398,7 +379,7 @@ void DevScene::CreateSceneObjects()
 		Object* sunChairs[21];
 		for (int i = 0; i < 21; i++) {
 			sunChairs[i] = new Object(*chair);
-			AddObject(sunChairs[i]);
+			entities->InsertObject(sunChairs[i]);
 		}
 						
 		sunChairs[0]->GetTransform().Translate(200, 6.5, 40);
@@ -472,7 +453,7 @@ void DevScene::CreateSceneObjects()
 
 		for (int i = 0; i < 7; i++) {
 			parasolls[i] = new Object(*parasoll);
-			AddObject(parasolls[i]);
+			entities->InsertObject(parasolls[i]);
 		}			
 
 		parasolls[0]->GetTransform().Translate(192.5, 5.3, 40);
@@ -493,7 +474,7 @@ void DevScene::CreateSceneObjects()
 		Object* SurfboardsBlue[2];
 		for (int i = 0; i < 2; i++) {
 			SurfboardsBlue[i] = new Object(*SurfboardBlue);
-			AddObject(SurfboardsBlue[i]);
+			entities->InsertObject(SurfboardsBlue[i]);
 		}
 		
 		SurfboardsBlue[0]->GetTransform().Translate(130, 7, 35);
@@ -503,14 +484,14 @@ void DevScene::CreateSceneObjects()
 		Object* SurfboardsOrange[2];
 		for (int i = 0; i < 2; i++) {
 			SurfboardsOrange[i] = new Object(*SurfboardOrange);
-			AddObject(SurfboardsOrange[i]);
+			entities->InsertObject(SurfboardsOrange[i]);
 		}			
 
 		SurfboardsOrange[0]->GetTransform().Translate(128, 7, 33);
 		SurfboardsOrange[1]->GetTransform().Translate(168, 7.3, 205);
 		
 		Object* SurfboardTrippy = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/SurfboardTrippy.fbx", dx11, defaultShader));
-		AddObject(SurfboardTrippy);
+		entities->InsertObject(SurfboardTrippy);
 		SurfboardTrippy->GetTransform().Translate(130, 7, 37);
 		
 
@@ -520,7 +501,7 @@ void DevScene::CreateSceneObjects()
 		Object* redballs[3];
 		for (int i = 0; i < 3; i++) {
 			redballs[i] = new Object(*redball);
-			AddObject(redballs[i]);
+			entities->InsertObject(redballs[i]);
 		}
 							
 		redballs[0]->GetTransform().Translate(100, 7, 38);
@@ -536,7 +517,7 @@ void DevScene::CreateSceneObjects()
 		Object* blueballs[3];
 		for (int i = 0; i < 3; i++) {
 			blueballs[i] = new Object(*blueball);
-			AddObject(blueballs[i]);
+			entities->InsertObject(blueballs[i]);
 		}
 							
 		blueballs[0]->GetTransform().Translate(105,6.5, 35);
@@ -554,7 +535,7 @@ void DevScene::CreateSceneObjects()
 		Object* bushes[13];
 		for (int i = 0; i < 13; i++) {
 			bushes[i] = new Object(*bush);
-			AddObject(bushes[i]);
+			entities->InsertObject(bushes[i]);
 		}
 			
 
@@ -617,17 +598,17 @@ void DevScene::CreateSceneObjects()
 		Object* bungalow = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Beachbungalow.fbx", dx11, defaultShader));
 		bungalow->GetTransform().Translate(30.0f, 7, 213.0f);
 		bungalow->GetTransform().SetRotation({ 0.0f, -0.9f, 0.0f });
-		AddObject(bungalow);
+		entities->InsertObject(bungalow);
 
 		Object* gate = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Gate.fbx", dx11, defaultShader));
 		gate->GetTransform().Translate(60.0f, 6.2, 198);
 		gate->GetTransform().SetRotation({ 0.0f, -2.2f, -0.1f });
-		AddObject(gate);
+		entities->InsertObject(gate);
 
 		Object* restplace = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Restplace.fbx", dx11, defaultShader));
 		restplace->GetTransform().Translate(107.0f, 7.5f, 140.0f);
 		restplace->GetTransform().SetRotation({ 0.0f, -1.5f, 0.0f });
-		AddObject(restplace);
+		entities->InsertObject(restplace);
 
 
 		// Benches left beachside
@@ -649,17 +630,17 @@ void DevScene::CreateSceneObjects()
 		benches[3]->GetTransform().SetRotation({ 0.0f, 2.5f, 0.0f });
 
 		for (int i = 0; i < 4; i++)
-			AddObject(benches[i]);
+			entities->InsertObject(benches[i]);
 
 		////////////////////////// PALMS /////////////////////////////
 
 		
 		// Palms left beach side 
-		Object* palm = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader));
+		Object* palm = new Object(ObjectLayer::Tree, AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, defaultShader));
 		Object* palms[22];
 		for (int i = 0; i < 22; i++) {
 			palms[i] = new Object(*palm);
-			AddObject(palms[i]);
+			entities->InsertObject(palms[i]);
 		}
 			
 		// Bottom beach //
@@ -699,6 +680,10 @@ void DevScene::CreateSceneObjects()
 		palms[21]->GetTransform().Translate(200.0f, 7.8f, 180.0f);
 				
 	}
+
+
+	spawner->SpawnInitial();
+
 }
 
 void DevScene::checkForNextScene()
@@ -736,3 +721,43 @@ void DevScene::SetNextScene(bool winOrLose)
 	}
 }
 
+void DevScene::UpdateGUI(const float& deltaTime)
+{
+	//FPS STUFF
+	fpsTimer.Start();
+
+	totalEnemies->SetString(std::to_string(this->spawner->CountEnemiesRemaining()));
+	totalScore->SetString(std::to_string(player->GetPoints()));
+
+	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
+	controller->Update(deltaTime);
+
+	fpsTimer.Stop();
+	fpsText->SetString("FPS: " + std::to_string((int)(1 / ((fpsTimer.GetMicrosecondsElapsed() / 1000000)))));
+	fpsTimer.Restart();
+	checkForNextScene();
+
+	gametimerText->SetString("Time until extraction: " + std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd))));
+
+	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f)
+	{
+		arrow->SetVisible(true);
+		gametimerText->SetString("Move to exit");
+		gametimerText->SetPosition(window.GetWidth() / 2.0f - 80.0f, 0.0f);
+		canWin = true;
+	}
+
+	if (player->GetPlayerHealth() <= 0.0f)
+	{
+		gametimerText->SetString("You lost");
+		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
+		SetNextScene(false);
+	}
+
+	if (canWin && player->GetWorldBounds().Overlaps(this->player->GetWinArea()->GetWorldBounds()))
+	{
+		gametimerText->SetString("You won");
+		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
+		SetNextScene(true);
+	}
+}

@@ -1,6 +1,8 @@
 #pragma once
+#define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h> 
+
 #include <assert.h>
 #include "Input.h"
 
@@ -34,5 +36,4 @@ private:
 	Input* input;
 };
 
-// has to be outside for now... dunno why
 static Window* windowInstance;

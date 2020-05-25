@@ -9,9 +9,8 @@ const int MAXSCORES = 6;	// 6 is for new score + sortation
 
 class Gamemanager {
 public:
-		
-	Gamemanager(DX11Handler&);
-	~Gamemanager();
+	Gamemanager(DX11Handler* dx11);
+	virtual ~Gamemanager();
 
 	SoundHandler* GetMusicHandler() { return this->music; }
 	SoundHandler* GetSoundeffectHandler() { return this->soundeffect; }

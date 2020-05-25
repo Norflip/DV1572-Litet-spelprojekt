@@ -1,6 +1,6 @@
 #pragma once
 #include "Window.h"
-#include "Scenes/DevScene.h"
+#include "DevScene.h"
 #include "IntroScene.h"
 #include "Logger.h"
 #include "Renderer.h"

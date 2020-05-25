@@ -14,10 +14,10 @@ enum class ObjectLayer
 	None = 0,
 	Enviroment = 1 << 0,
 	Enemy = 1 << 1,
-	Projectile = 1 << 2,
 	Player = 1 << 3,
 	Pickup = 1 << 4,
-	Any = Enviroment | Enemy | Projectile | Player | Pickup
+	Tree = 1 << 5,
+	Any = Enviroment | Enemy | Player | Pickup | Tree
 };
 
 class Object

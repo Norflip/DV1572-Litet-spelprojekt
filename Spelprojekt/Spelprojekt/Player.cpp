@@ -1,14 +1,15 @@
 #include "Player.h"
-Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, Object* winArea, DX11Handler& dx11, Scene* scene)
-	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11)
+#include "Scene.h"
+
+Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler& dx11, Scene* scene)
+	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11), scene(scene), gamemanager(gamemanager)
 {
-	this->movementspeed = 7;
 	this->input = controller->getInput();
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 
 	// weapon shit
-	this->leftActionbar = nullptr; 
+	this->leftActionbar = nullptr;
 	this->rightActionbar = nullptr;
 	this->gui = gui;
 
@@ -17,7 +18,6 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->leftWeapon = nullptr;
 	this->rightWeapon = nullptr;
 
-	this->scene = scene;
 	this->playerHealth = 100.0f;
 	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 650.0f);
 	this->healthbar->HealthBar(100.0f, 100.0f);
@@ -38,8 +38,8 @@ void Player::Update(const float& deltaTime)
 {
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
+	CheckForPickups();
 
-	
 	UpdateMeleeWeaponPosition();	// If spoon is equiped
 	UseWeapon();
 	TakeDamage();
@@ -51,7 +51,8 @@ void Player::Update(const float& deltaTime)
 
 void Player::TakeDamage()
 {
-	if (input->GetMouseButtonDown(1) && playerHealth != 0.0f) {
+	if (input->GetMouseButtonDown(1) && playerHealth != 0.0f) 
+	{
 		playerHealth -= 10.0f;
 		healthbar->HealthBar(100.0f, playerHealth);
 	}
@@ -65,48 +66,37 @@ void Player::UpdateMovement(float fixedDeltaTime)
 
 	if (controller->GetState() == CameraController::State::Follow)
 	{
+		if (controller->getInput()->GetKey('p'))
+		{
+			GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[2]);
+			return;
+		}
+
 		float dx = 0.0f;
 		float dz = 0.0f;
-
-		if (input->GetKey('w') && !this->attacking)
-		{
-			dz += 1.0f;
-			this->isMoving = true;
-		}
-		else if (input->GetKey('a') && !this->attacking)
-		{
-			dx -= 1.0f;
-			this->isMoving = true;
-		}
-		else if (input->GetKey('s') && !this->attacking)
-		{
-			dz -= 1.0f;
-			this->isMoving = true;
-		}
-		else if (input->GetKey('d') && !this->attacking)
-		{
-			dx += 1.0f;
-			this->isMoving = true;
-		}
-		else
-		{
-			this->isMoving = false;
-		}
-
-		bool changedir = false;
-		if(dx != 0.0f || dz != 0.0f)
-			changedir = true;
+		if (input->GetKey('w')) dz += 1.0f;
+		if (input->GetKey('a')) dx -= 1.0f;
+		if (input->GetKey('s')) dz -= 1.0f;
+		if (input->GetKey('d')) dx += 1.0f;
 
 		float length = sqrtf(dx * dx + dz * dz);
 		if (length != 0.0f)
 		{
+			GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[0]);
+
 			dx /= length;
 			dz /= length;
 
 			nextPosition.x += dx * fixedDeltaTime * movementspeed;
 			nextPosition.z += dz * fixedDeltaTime * movementspeed;
 		}
-			
+		else
+		{
+			// IDLE
+			GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
+		}
+
+		bool changedir = (dx != 0.0f || dz != 0.0f);
 		GetTransform().SmoothRotate(nextPosition, fixedDeltaTime, changedir);
 		GetTransform().SetPosition({ nextPosition.x, nextPosition.y, nextPosition.z });
 	}
@@ -138,11 +128,56 @@ void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) + MathHelper::PI * 2, 0 });
 	if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) > MathHelper::PI * 2)
 		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) - MathHelper::PI * 2, 0 });
-
 }
 
 void Player::InitWeapons()
 {
+}
+
+void Player::CheckForPickups()
+{
+	if (input->GetKeyDown('e') && (!lefthandFull || !righthandFull))
+	{
+		std::vector<Object*> pickups = scene->GetEntities()->GetObjectsInLayer(ObjectLayer::Pickup);
+		bool foundPickup = false;
+
+		for (auto i = pickups.begin(); i < pickups.end() && !foundPickup; i++)
+		{
+			Weapon* obj = static_cast<Weapon*>(*i);
+
+			if (obj != nullptr && obj->IsEnabled() && obj->GetWorldBounds().Overlaps(this->GetWorldBounds()))
+			{
+				if (!lefthandFull) 
+				{
+					leftWeapon = CopyWeapon(obj);	//check type
+
+					this->leftActionbar = new GUIActionbar(*obj->GetWeaponSprite());
+					this->leftActionbar->SetPosition(325.0f, 650.0f);
+					this->gui->AddGUIObject(this->leftActionbar, "Left Actionbar");
+
+					scene->GetEntities()->RemoveObject(obj);
+
+					obj->SetEnabled(false);
+					lefthandFull = true;
+				}
+				else if (lefthandFull && !righthandFull) 
+				{
+					rightWeapon = CopyWeapon(obj); //check type
+
+					this->rightActionbar = new GUIActionbar(*obj->GetWeaponSprite());
+					this->rightActionbar->SetPosition(400.0f, 650.0f);
+
+					this->gui->AddGUIObject(this->rightActionbar, "Right Actionbar");
+
+					scene->GetEntities()->RemoveObject(obj);
+					obj->SetEnabled(false);
+					righthandFull = true;
+				}
+
+				foundPickup = true;
+			}
+		}
+	}
 }
 
 float Player::ShortestRotation(float currentDir, float nextDir)
@@ -175,47 +210,20 @@ void Player::UpdateAnimations()
 	}
 }
 
-void Player::UpdateHands(Weapon* obj)
-{
-	if (input->GetKeyDown('e') && obj->IsEnabled() && obj->GetWorldBounds().Overlaps(this->GetWorldBounds()))
-	{
-		if (!lefthandFull) {
-			leftWeapon = CheckWeaponType(obj);	//check type
-
-			this->leftActionbar = new GUIActionbar(*obj->GetWeaponSprite());
-			this->leftActionbar->SetPosition(325.0f, 650.0f);
-			this->gui->AddGUIObject(this->leftActionbar, "Left Actionbar");
-
-			scene->RemoveObject(obj);
-			obj->SetEnabled(false);
-			lefthandFull = true;
-		}
-		else if (lefthandFull && !righthandFull) {
-			rightWeapon = CheckWeaponType(obj); //check type
-
-			this->rightActionbar = new GUIActionbar(*obj->GetWeaponSprite());
-			this->rightActionbar->SetPosition(400.0f, 650.0f);
-			this->gui->AddGUIObject(this->rightActionbar, "Right Actionbar");
-
-			scene->RemoveObject(obj);
-			obj->SetEnabled(false);
-			righthandFull = true;
-		}
-	}
-}
-
 void Player::UpdateMeleeWeaponPosition()
 {
-	if (lefthandFull) {
-		if (leftWeapon->GetWeaponTypename() == "Slev") {
+	if (lefthandFull) 
+	{
+		if (leftWeapon->GetType() == WeaponType::Spoon) {
 			leftWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
 			leftWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
 			leftWeapon->direction = GetTransform().GetRotation();
 		}
 	}
 
-	if (righthandFull) {
-		if (rightWeapon->GetWeaponTypename() == "Slev") {
+	if (righthandFull) 
+	{
+		if (rightWeapon->GetType() == WeaponType::Spoon) {
 			rightWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
 			rightWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
 			rightWeapon->direction = GetTransform().GetRotation();
@@ -226,8 +234,8 @@ void Player::UpdateMeleeWeaponPosition()
 void Player::UseWeapon()
 {
 	// Left hand
-	if (input->GetMouseButtonDown(0) && lefthandFull) {
-		this->attacking = true;
+	if (input->GetMouseButtonDown(0) && lefthandFull) 
+	{
 		WeaponUsage(leftWeapon, lefthandFull);
 		
 
@@ -236,8 +244,8 @@ void Player::UseWeapon()
 	}
 
 	// Right hand
-	if (input->GetMouseButtonDown(1) && righthandFull) {
-		this->attacking = true;
+	if (input->GetMouseButtonDown(1) && righthandFull) 
+	{
 		WeaponUsage(rightWeapon, righthandFull);
 		
 
@@ -253,30 +261,39 @@ void Player::UseWeapon()
 
 void Player::WeaponUsage(Weapon* weapon, bool& hand)
 {
-	if (weapon->GetWeaponTypename() == "Coconut") {
+	if (weapon->GetType() == WeaponType::Coconut)
+	{
 		DirectX::XMVECTOR aimDirection = GetAimDirection();
-		weapon->HasAttacked(GetTransform().GetPosition(), aimDirection);
+		weapon->TriggerAttack(GetTransform().GetPosition(), aimDirection);
 		weapon->direction = aimDirection;
+		weapon->gamemanager = this->gamemanager;
 		weapon->PlaySoundEffect();
-		scene->AddObject(weapon);
+
+
+
+		scene->GetEntities()->InsertObject(weapon);
 		SetActiveWeapon(static_cast<Weapon*>(weapon));
 		hand = false;
 		GetTransform().SetRotation(aimDirection);
 	}
 
-	if (weapon->GetWeaponTypename() == "Slev") {
+	if (weapon->GetType() == WeaponType::Spoon)
+	{
 		if (weapon->CheckUsage() < 2) {
 			weapon->PlaySoundEffect();
 			//activeWeapon = static_cast<Weapon*>(weapon);
 			weapon->Use();
 			//activeWeapon = nullptr;
 		}
-		else {			
+		else {
 			weapon->PlayBreaksound();
-			weapon->HasAttacked(GetTransform().GetPosition(), GetTransform().GetRotation());
+			weapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			weapon->direction = GetTransform().GetRotation();
 			weapon->PlaySoundEffect();
-			scene->RemoveObject(weapon);
+
+			scene->GetEntities()->RemoveObject(weapon);
+
+
 			weapon->SetEnabled(false);
 			weapon = nullptr;
 			hand = false;
@@ -289,18 +306,23 @@ float Player::GetPlayerHealth()
 	return playerHealth;
 }
 
-Weapon* Player::CheckWeaponType(Weapon* obj)
+Weapon* Player::CopyWeapon(Weapon* weapon)
 {
 	Weapon* curr = nullptr;
-	if (obj->GetWeaponTypename() == "Coconut") {
-		Projectile* proj = static_cast<Projectile*>(obj);
+	if (weapon->GetType() == WeaponType::Coconut)
+	{
+		Projectile* proj = static_cast<Projectile*>(weapon);
 		curr = new Projectile(*proj);
+		curr->gamemanager = this->gamemanager;
 	}
-	if (obj->GetWeaponTypename() == "Slev") {
-		Spoon* spoonweap = static_cast<Spoon*>(obj);
+	else if (weapon->GetType() == WeaponType::Spoon) 
+	{
+		Spoon* spoonweap = static_cast<Spoon*>(weapon);
 		curr = new Spoon(*spoonweap);
-		scene->AddObject(curr);
+		curr->gamemanager = this->gamemanager;
+		scene->GetEntities()->RemoveObject(curr);
 	}
+	
 	return curr;
 }
 
@@ -320,7 +342,7 @@ void Player::SetArrow(Object* obj)
 }
 
 void Player::UpdateLookAtPosition()
-{	
+{
 	if (arrow != nullptr)
 	{
 		arrow->GetTransform().SetPosition({ GetTransform().GetPosition().m128_f32[0],GetTransform().GetPosition().m128_f32[1],GetTransform().GetPosition().m128_f32[2] });
@@ -339,9 +361,9 @@ void Player::UpdateLookAtPosition()
 		//nextPosition = { (GetTransform().GetPosition().m128_f32[0] + (-std::sinf(arrowDirection.m128_f32[1]) * 30)) ,GetTransform().GetPosition().m128_f32[1], (GetTransform().GetPosition().m128_f32[2] + (-std::cosf(arrowDirection.m128_f32[1]) * 30)) };	// 30 = speed
 		//GetTransform().SetPosition(nextPos);
 		//GetTransform().SetRotation({ (GetTransform().GetRotation().m128_f32[0] + (-8.f * deltaTime)) ,GetTransform().GetRotation().m128_f32[1]  ,GetTransform().GetRotation().m128_f32[2] });
-				
+
 		//arrow->GetTransform().LookAt(this->exitPosition);		
-	}	
+	}
 }
 
 
@@ -349,14 +371,15 @@ DirectX::XMVECTOR Player::GetAimDirection() const
 {
 	//h�mta ray
 	float t = -1.0f;
-	DirectX::XMVECTOR playerToMouseDirection = {0,0,0};
+	DirectX::XMVECTOR playerToMouseDirection = { 0,0,0 };
+
 	MathHelper::Ray ray = scene->GetSceneCamera()->ScreenPositionToWorldRay(input->GetMousePosition());
-	float denom = DirectX::XMVectorGetByIndex(DirectX::XMVector3Dot({ 0,-1,0 }, ray.direction),0);
+	float denom = DirectX::XMVectorGetByIndex(DirectX::XMVector3Dot({ 0,-1,0 }, ray.direction), 0);
 	//ray casta mot plane
 	if (denom > 0.000001f)
 	{
 		DirectX::XMVECTOR originToPlane = DirectX::XMVectorSubtract(GetTransform().GetPosition(), ray.origin);
-		t = DirectX::XMVectorGetByIndex(DirectX::XMVector3Dot(originToPlane, { 0,-1,0 }),0) / denom;
+		t = DirectX::XMVectorGetByIndex(DirectX::XMVector3Dot(originToPlane, { 0,-1,0 }), 0) / denom;
 	}
 	//h�mta riktning mellan spelar och punkt p� planet
 	if (t >= 0.0f)

@@ -1,6 +1,6 @@
 #include "Gamemanager.h"
 
-Gamemanager::Gamemanager(DX11Handler& dx11)
+Gamemanager::Gamemanager(DX11Handler* dx11) : dx11(dx11)
 {
 	this->dxhandler = &dx11;
 

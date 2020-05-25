@@ -20,36 +20,28 @@ public:
 	virtual void Load() = 0;
 	virtual void Unload();
 
+
 	virtual void Update(const float& deltaTime);
 	virtual void FixedUpdate(const float& fixedDeltaTime);
 	virtual void Render();
-	virtual Renderer* getRenderer() { return this->renderer; };
+
+	virtual Renderer* GetRenderer() { return this->renderer; };
 	virtual Scene* GetNextScene() const = 0;
 
 	Camera* GetSceneCamera() const { return this->camera; }
 
 	//--FPS STUFF
 
-
-
 	std::string GetName() { return this->sceneName; };
-
-	void AddObject(Object*);
-	void RemoveObject(Object*);
-
 	AABB GetSceneBounds() { return sceneBounds; }
 
 	Window& GetWindow() { return this->window; };
-	Scene* nextScene;
 	void setWinOrLose(bool didWin);
 
-protected:
-	/*void m_AddObjectToScene(Object*);
-	void m_RemoveObjectFromScene(Object*);
+	Entities* GetEntities() const { return this->entities; }
+	Scene* nextScene;
 
-	void SortObject(Object*);
-	void UpdateAddRemoveSceneQueues();*/
-
+private:
 	static bool m_CompareRenderList(Object* a, Object* b);
 
 protected:
@@ -62,18 +54,8 @@ protected:
 	DirectX::XMVECTOR cameraFocusPosition;
 
 	Resources resources;
-	Entities entities;
-
-	
-
-	//std::vector<Object*> objectsToAdd;
-	//std::vector<Object*> objectsToRemove;
-	//// shader holds a map with diffrent material and a list of objects
-	//std::unordered_map <size_t, std::unordered_map<size_t, std::vector<Object*>>> sortedObjects;
-	//std::vector<Object*> allObjects;
-
+	Entities* entities;
 
 	std::string sceneName;
 	bool didWin;
-		
 };

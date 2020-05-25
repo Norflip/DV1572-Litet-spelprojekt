@@ -61,27 +61,27 @@ void IntroScene::Load()
 	glasse->GetTransform().Translate(0, 0.65+9, -3);
 	glasse->GetTransform().Rotate(0, -0.6, 0);
 	//glasse->GetMaterial()->GetTexture(1)->SetSampler(dx11.GetDevice());
-	AddObject(glasse);
+	entities->InsertObject(glasse);
 	
 	Object* wagon = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, toonshader));
 	wagon->GetTransform().Translate(7, -1.75+10, 1);
 	wagon->GetTransform().Rotate(0, 0.1, 0);
 	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
 	//wagon->GetMaterial()->GetTexture(0)->SetSampler(dx11.GetDevice());
-	AddObject(wagon);
+	entities->InsertObject(wagon);
 	controller->SetFollow(&sphere->GetTransform(), { 0, 1, 0 });
 	
-	AddObject(sphere);
+	entities->InsertObject(sphere);
 	sphere->SetVisible(false);
 
 	//// ------- BACKGROUND
 
-	Object* backGround = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Background_Plane.fbx", dx11, toonshader));
-	backGround->GetTransform().Translate(5, 19, 15);
-	backGround->GetTransform().Rotate(-1.5, 0, 0);
-	backGround->GetTransform().Scale(100, 1, 24);
+	Object* background = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Background_Plane.fbx", dx11, toonshader));
+	background->GetTransform().Translate(5, 19, 15);
+	background->GetTransform().Rotate(-1.5, 0, 0);
+	background->GetTransform().Scale(100, 1, 24);
 	//backGround->GetMaterial()->GetTexture(0)->SetSampler(dx11.GetDevice());
-	AddObject(backGround);
+	entities->InsertObject(background);
 
 	// ------- TERRAIN
 	Shader* terrainShader = new Shader();
@@ -107,7 +107,7 @@ void IntroScene::Load()
 	
 	Object* terrainObject = new Object(ObjectLayer::None, ground.GetMesh(), terrainMat);
 	terrainObject->GetTransform().SetPosition({ -100, -2+8.5f, -10 });
-	AddObject(terrainObject);
+	entities->InsertObject(terrainObject);
 	
 		
 }
