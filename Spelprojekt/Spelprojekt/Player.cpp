@@ -47,7 +47,7 @@ void Player::Update(const float& deltaTime)
 	TakeDamage();
 
 	UpdateLookAtPosition();
-	//UpdateAnimations();
+	UpdateAnimations();
 }
 
 
@@ -84,7 +84,7 @@ void Player::UpdateMovement(float fixedDeltaTime)
 
 		float length = sqrtf(dx * dx + dz * dz);
 
-		if (length != 0.0f)
+		if (length != 0.0f && !attacking)
 		{
 			dx /= length;
 			dz /= length;
@@ -96,19 +96,22 @@ void Player::UpdateMovement(float fixedDeltaTime)
 			if (DirectX::XMVectorGetByIndex(dot, 0) < 0.85f)
 			{
 				//idle
-				GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
+				//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
+				isMoving = false;
 				return;
 			}
 			else
 			{
 				// run
-				GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[0]);
+				isMoving = true;
+				//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[0]);
 			}
 		}
 		else
 		{
 			// IDLE
-			GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
+			isMoving = false;
+			//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
 		}
 
 		bool changedir = (dx != 0.0f || dz != 0.0f);
@@ -204,23 +207,23 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 	return returnValue;
 }
 
-//void Player::UpdateAnimations()
-//{
-//	if (this->isMoving)
-//	{
-//		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[0]);
-//	}
-//
-//	else if (this->attacking)
-//	{
-//		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[2]);
-//	}
-//
-//	else
-//	{
-//		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[1]);
-//	}
-//}
+void Player::UpdateAnimations()
+{
+	if (this->isMoving)
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[0]);
+	}
+
+	else if (this->attacking)
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[2]);
+	}
+
+	else
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[1]);
+	}
+}
 
 void Player::UpdateMeleeWeaponPosition()
 {
@@ -249,7 +252,7 @@ void Player::UseWeapon()
 	if (input->GetMouseButtonDown(0) && lefthandFull) 
 	{
 		WeaponUsage(leftWeapon, lefthandFull);
-		
+		attacking = true;
 
 		if (!lefthandFull)
 			gui->RemoveGUIObject("Left Actionbar");
@@ -259,7 +262,7 @@ void Player::UseWeapon()
 	if (input->GetMouseButtonDown(1) && righthandFull) 
 	{
 		WeaponUsage(rightWeapon, righthandFull);
-		
+		attacking = true;
 
 		if (!righthandFull)
 			gui->RemoveGUIObject("Right Actionbar");
