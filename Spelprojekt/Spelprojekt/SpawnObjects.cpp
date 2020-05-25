@@ -14,7 +14,6 @@
 //	this->material = modelData.material;
 //	this->player = player;
 //	this->dx11 = dx11;
-//
 //}
 
 
@@ -64,13 +63,12 @@ void SpawnObjects::SpawnInitial()
 	for (auto i : spoonPositions)
 	{
 		clone = new Spoon(*spoon);
+
+		clone->SetType(WeaponType::Spoon);
 		clone->GetTransform().SetPosition(GetRandomSpawnPosition(1.0f));
 		clone->gamemanager = this->gamemanager;
 		entities->InsertObject(clone);
 	}
-
-
-
 }
 
 void SpawnObjects::SetMaxEnemies(int amount)
@@ -131,13 +129,13 @@ DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition(float heightOffset)
 void SpawnObjects::UpdateSpawnEnemy()
 {
 	// skapar fler fiender om vi saknar
-
 	//Logger::Write(std::to_string(enemyCount) + " : " + std::to_string(maxEnemies));
 
 	if (enemyCount < maxEnemies)
 	{
 		Player* player = static_cast<Player*>(entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
 		Enemy* enemy = new Enemy(*enemyPrefab);
+		enemy->SetLayer(ObjectLayer::Enemy);
 
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMStoreFloat3(&pos, player->GetTransform().GetPosition());
@@ -159,6 +157,9 @@ void SpawnObjects::UpdateSpawnEnemy()
 void SpawnObjects::UpdateRemoveEnemy()
 {
 	auto enemies = entities->GetObjectsInLayer(ObjectLayer::Enemy);
+
+	Logger::Write(std::to_string(enemies.size()));
+
 	Enemy* e = nullptr;
 	Player* player = static_cast<Player*>(entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
 

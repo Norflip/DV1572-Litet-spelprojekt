@@ -29,7 +29,8 @@ public:
 	virtual float GetWeaponDamage() { return this->weaponDamage; }	
 	virtual GUIActionbar* GetWeaponSprite() { return this->weaponSprite; }		
 	WeaponType GetType() const { return this->type; }
-	
+	void SetType(WeaponType type) { this->type = type; }
+
 	virtual void PlaySoundEffect() {}
 	virtual void PlayBreaksound()  {}
 	virtual int CheckUsage() { return this->used; }

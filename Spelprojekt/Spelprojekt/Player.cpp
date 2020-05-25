@@ -291,7 +291,6 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 
 	Logger::Write(str);
 
-
 	if (weapon->GetType() == WeaponType::Coconut)
 	{
 		DirectX::XMVECTOR aimDirection = GetAimDirection();
