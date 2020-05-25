@@ -27,6 +27,7 @@ public:
 
 	void Load() override;
 	void Unload() override;
+	void LoadResources() override;
 
 	void Update(const float& deltaTime) override;
 	void FixedUpdate(const float& fixedDeltaTime) override;
@@ -67,8 +68,8 @@ private:
 	Player* player;
 	Enemy* enemy;
 	
-	Terrain ground;
-	Terrain waterMesh;
+	Terrain terrain;
+	Terrain waterTerrain;
 	Timer gametimer;
 	Timer fpsTimer;
 	float timeUntilEnd;

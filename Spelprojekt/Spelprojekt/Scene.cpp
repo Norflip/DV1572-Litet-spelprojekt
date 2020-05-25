@@ -32,7 +32,8 @@ void Scene::Unload()
 void Scene::Update(const float& deltaTime)
 {
 	//UpdateAddRemoveSceneQueues();
-	
+	entities->UpdateTree();
+
 	for (auto i : entities->AllEntities())
 	{
 		if (i->IsEnabled())

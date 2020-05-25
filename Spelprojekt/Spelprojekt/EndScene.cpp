@@ -35,6 +35,10 @@ void EndScene::Unload()
 	this->gamemanager->GetSoundeffectHandler()->StopSound();
 }
 
+void EndScene::LoadResources()
+{
+}
+
 void EndScene::Update(const float& deltaTime)
 {
 	Scene::Update(deltaTime);

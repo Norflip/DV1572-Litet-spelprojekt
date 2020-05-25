@@ -318,7 +318,7 @@ namespace AssimpHandler
 		
 	}
 
-	inline AssimpData loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader, ID3D11SamplerState* sampler = nullptr)
+	inline AssimpData* loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader, ID3D11SamplerState* sampler = nullptr)
 	{
 		if (sampler == nullptr)
 			sampler = dx11.GetDefaultSampler();
@@ -326,7 +326,7 @@ namespace AssimpHandler
 		// Open the scene from the file
 		Assimp::Importer imp;
 		const aiScene* scene = imp.ReadFile(filepath, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
-		AssimpData object;
+		AssimpData* object = new AssimpData();
 
 		if (scene == nullptr)
 		{
@@ -341,19 +341,19 @@ namespace AssimpHandler
 
 			// Create a new object with the new mesh
 			// Get the mesh from the file
-			object.mesh = loadMesh(scene, dx11.GetDevice());
-			object.material = new Material(shader, dx11);
+			object->mesh = loadMesh(scene, dx11.GetDevice());
+			object->material = new Material(shader, dx11);
 
 
 			MaterialData* temp = getMaterialFromFbx(scene);
-			object.material->SetMaterialData(*temp);
+			object->material->SetMaterialData(*temp);
 
 			// Check if the file contains a diffuseTexture
 			if (scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
 			{
 				// Load the diffuseTexture and apply it to the object
 				texture = loadTextureFromFbx(dx11, path);
-				object.material->GetMaterialData().hasAlbedoTexture = true;
+				object->material->GetMaterialData().hasAlbedoTexture = true;
 			}
 
 			// The app assumes there is a texture to every object, so if there is no texture in the file,
@@ -368,12 +368,12 @@ namespace AssimpHandler
 			{
 				// Load the normalMap and apply it to the object
 				normalMap = loadTextureFromFbx(dx11, path);
-				object.material->SetTexture(NORMAL_MATERIAL_TYPE, normalMap, SHADER_BIND_TYPE::PIXEL);
-				object.material->SetSampler(NORMAL_MATERIAL_TYPE, sampler, SHADER_BIND_TYPE::PIXEL);
-				object.material->GetMaterialData().hasNormalTexture = true;
+				object->material->SetTexture(NORMAL_MATERIAL_TYPE, normalMap, SHADER_BIND_TYPE::PIXEL);
+				object->material->SetSampler(NORMAL_MATERIAL_TYPE, sampler, SHADER_BIND_TYPE::PIXEL);
+				object->material->GetMaterialData().hasNormalTexture = true;
 				
 			}
-			object.material->SetTexture(ALBEDO_MATERIAL_TYPE, texture, SHADER_BIND_TYPE::PIXEL);
+			object->material->SetTexture(ALBEDO_MATERIAL_TYPE, texture, SHADER_BIND_TYPE::PIXEL);
 		}
 		return object;
 	}

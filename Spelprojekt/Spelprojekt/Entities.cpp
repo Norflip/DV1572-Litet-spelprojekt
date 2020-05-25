@@ -6,6 +6,9 @@ Entities::~Entities() {}
 
 void Entities::UpdateTree()
 {
+	quadtree.Clear();
+	for (auto i : allEntities)
+		quadtree.Insert(i);
 }
 
 void Entities::SetBounds(AABB worldBounds)
@@ -120,10 +123,6 @@ std::vector<Object*> Entities::GetObjectsInAABB(const AABB& aabb, ObjectLayer la
 
 std::vector<Object*> Entities::GetObjectsInView(Camera* camera)
 {
-	quadtree.Clear();
-	for (auto i : allEntities)
-		quadtree.Insert(i);
-
 	std::vector<Object*> inView;
 	std::unordered_set<int> visited;
 	std::queue<QuadTree*> treeQueue;
@@ -160,4 +159,11 @@ std::vector<Object*> Entities::GetObjectsInView(Camera* camera)
 
 	//Logger::Write("in view: " + std::to_string(inView.size()) + " nr inserted: " + std::to_string(insertCount) + " quadsChecked: " + std::to_string(treeC));
 	return inView;
+}
+
+void Entities::Clear()
+{
+	allEntities.clear();
+	objectsInLayerMap.clear();
+	objectToLayerMap.clear();
 }

@@ -27,6 +27,8 @@ public:
 	
 	std::vector<Object*>& AllEntities() { return this->allEntities; }
 
+	void Clear();
+
 private:
 	QuadTree quadtree;
 	std::vector<Object*> allEntities;

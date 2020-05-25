@@ -18,8 +18,8 @@ public:
 	virtual ~Scene();
 
 	virtual void Load() = 0;
-	virtual void Unload();
-
+	virtual void Unload() = 0;
+	virtual void LoadResources() = 0;
 
 	virtual void Update(const float& deltaTime);
 	virtual void FixedUpdate(const float& fixedDeltaTime);
@@ -45,6 +45,8 @@ private:
 	static bool m_CompareRenderList(Object* a, Object* b);
 
 protected:
+
+
 	AABB sceneBounds;
 	Camera* camera;
 	Renderer* renderer;
@@ -53,7 +55,9 @@ protected:
 
 	DirectX::XMVECTOR cameraFocusPosition;
 
+	bool resourcesIsLoaded;
 	Resources resources;
+
 	Entities* entities;
 
 	std::string sceneName;
