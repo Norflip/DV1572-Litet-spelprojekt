@@ -7,11 +7,12 @@
 #include "DX11Handler.h"
 #include "Input.h"
 #include <stack>
+#include "Physics.h"
+
 #include "Timer.h"
 #include <vector>
 #include "EndScene.h"
 #include "Gamemanager.h"
-#include "Physics.h"
 
 class Application
 {

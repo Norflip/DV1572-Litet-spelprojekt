@@ -26,6 +26,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 
 
+	Physics phys(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
 	this->spawner = new SpawnObjects(entities, &ground, gamemanager, dx11);
 	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());

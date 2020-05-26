@@ -1,4 +1,6 @@
 #pragma once
+#include "Physics.h"
+
 #include "Scene.h"
 #include "Logger.h"
 #include "Camera.h"

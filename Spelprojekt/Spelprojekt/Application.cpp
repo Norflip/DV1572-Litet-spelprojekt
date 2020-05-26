@@ -19,7 +19,6 @@ Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(fal
 	this->introScene = new IntroScene("IntroScene", this->deferredRenderer, this->dx11, this->window, scenes, exitGame, gamemanager);
 
 	// y värdet = -9.81, är 0 nu för testing
-	Physics phys(0.0, 0.0, 0.0, currentTime, timeLastFrame, deltaTime);
 
 	
 	scenes.push_back(endScene);
