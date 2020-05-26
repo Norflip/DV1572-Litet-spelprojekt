@@ -137,15 +137,12 @@ namespace AssimpHandler
 		std::size_t pos = nameString.find_last_of("/\\");
 		fileName += nameString.substr(pos + 1);
 
-		// Can be used for debug, print the name of the texture
-		Logger::Write(fileName);
-
 		// Create a new texture and then return it
 		texture = Texture::CreateTexture(fileName, dx11);
 		return texture;
 	}
 
-	inline MaterialData* getMaterialFromFbx(const aiScene* scene)
+	inline MaterialData getMaterialFromFbx(const aiScene* scene)
 	{
 		aiMaterial** materialArray = scene->mMaterials;
 		aiColor4D aiSpecular, aiDiffuse, aiAmbient;
@@ -163,11 +160,11 @@ namespace AssimpHandler
 		diffuse.x = aiDiffuse.r; diffuse.y = aiDiffuse.g; diffuse.z = aiDiffuse.b; diffuse.w = aiDiffuse.a;
 		ambient.x = aiAmbient.r; ambient.y = aiAmbient.g; ambient.z = aiAmbient.b; ambient.w = aiAmbient.a;
 
-		MaterialData* material = new MaterialData();
-		material->diffuse = diffuse;
-		material->ambient = ambient;
-		material->specular = specular;
-		material->shininess = aiShininess;
+		MaterialData material;
+		material.diffuse = diffuse;
+		material.ambient = ambient;
+		material.specular = specular;
+		material.shininess = aiShininess;
 		return material;
 	}
 
@@ -275,38 +272,67 @@ namespace AssimpHandler
 	inline void saveAnimationData(const aiScene* scene, Skeleton* skeleton, std::string animName)
 	{
 		DirectX::XMMATRIX identity = DirectX::XMMatrixIdentity();
-		float animationLength = (float)scene->mAnimations[0]->mDuration;
-		Animation* newAnimation =  new Animation();
-
-		newAnimation->SetLength(animationLength);
-		newAnimation->SetBoneAmount(skeleton->GetNumberOfBones());
-		newAnimation->GetBoneVector().resize(newAnimation->GetNumberOfBones());
-		newAnimation->SetName(animName);
-
-		for (unsigned int i = 0; i < animationLength; i++)
+		if (!scene->mAnimations[0])
 		{
-			ReadSceneHierarchy(i, scene, scene->mRootNode, identity, newAnimation, skeleton);
+			Logger::Write("There was no animations in: " + animName);
+		}
+		else
+		{
+			float animationLength = (float)scene->mAnimations[0]->mDuration;
+			Animation* newAnimation = new Animation();
+
+			newAnimation->SetLength(animationLength);
+			newAnimation->SetBoneAmount(skeleton->GetNumberOfBones());
+			newAnimation->GetBoneVector().resize(newAnimation->GetNumberOfBones());
+			newAnimation->SetName(animName);
+
+			for (unsigned int i = 0; i < animationLength; i++)
+			{
+				ReadSceneHierarchy(i, scene, scene->mRootNode, identity, newAnimation, skeleton);
+			}
+
+			Animation* test = new Animation;
+			test->SetLength(animationLength * 2 - 2);
+			test->SetBoneAmount(skeleton->GetNumberOfBones());
+			test->GetBoneVector().resize(newAnimation->GetNumberOfBones());
+			test->SetName(animName);
+
+			for (int i = 0; i < newAnimation->GetNumberOfBones(); i++)
+			{
+				for (int j = 0; j < newAnimation->GetLength(); j++)
+				{
+					if (j == 0 || j == newAnimation->GetLength() - 1)
+					{
+						test->GetBone(i).SetFinalTransformation(newAnimation->GetBone(i).GetFinalTransformation(j));
+					}
+					else
+					{
+						test->GetBone(i).SetFinalTransformation(newAnimation->GetBone(i).GetFinalTransformation(j));
+						test->GetBone(i).SetFinalTransformation(newAnimation->GetBone(i).GetFinalTransformation(j));
+					}
+				}
+			}
+
+			skeleton->animations.push_back(test);
 		}
 		
-		skeleton->animations.push_back(newAnimation);
 	}
 
-	inline AssimpData loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader, ID3D11SamplerState* sampler = nullptr)
+	inline AssimpData* loadFbxObject(const char* filepath, DX11Handler& dx11, Shader* shader, ID3D11SamplerState* sampler = nullptr)
 	{
 		if (sampler == nullptr)
 			sampler = dx11.GetDefaultSampler();
 
-		Logger::Write("CHECKING IF LOADING EVERY FRAME");
-
 		// Open the scene from the file
 		Assimp::Importer imp;
 		const aiScene* scene = imp.ReadFile(filepath, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
-		AssimpData object;
+		AssimpData* object = new AssimpData();
 
 		if (scene == nullptr)
 		{
 			Logger::Write("Couldnt open file with Assimp");
 		}
+
 		else
 		{
 			Texture* normalMap = nullptr;
@@ -315,19 +341,19 @@ namespace AssimpHandler
 
 			// Create a new object with the new mesh
 			// Get the mesh from the file
-			object.mesh = loadMesh(scene, dx11.GetDevice());
-			object.material = new Material(shader, dx11);
+			object->mesh = loadMesh(scene, dx11.GetDevice());
+			object->material = new Material(shader, dx11);
 
 
-			MaterialData* temp = getMaterialFromFbx(scene);
-			object.material->SetMaterialData(*temp);
+			MaterialData temp = getMaterialFromFbx(scene);
+			object->material->SetMaterialData(temp);
 
 			// Check if the file contains a diffuseTexture
 			if (scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
 			{
 				// Load the diffuseTexture and apply it to the object
 				texture = loadTextureFromFbx(dx11, path);
-				object.material->GetMaterialData().hasAlbedoTexture = true;
+				object->material->GetMaterialData().hasAlbedoTexture = true;
 			}
 
 			// The app assumes there is a texture to every object, so if there is no texture in the file,
@@ -342,13 +368,12 @@ namespace AssimpHandler
 			{
 				// Load the normalMap and apply it to the object
 				normalMap = loadTextureFromFbx(dx11, path);
-				object.material->SetTexture(NORMAL_MATERIAL_TYPE, normalMap, SHADER_BIND_TYPE::PIXEL);
-				object.material->SetSampler(NORMAL_MATERIAL_TYPE, sampler, SHADER_BIND_TYPE::PIXEL);
-				object.material->GetMaterialData().hasNormalTexture = true;
+				object->material->SetTexture(NORMAL_MATERIAL_TYPE, normalMap, SHADER_BIND_TYPE::PIXEL);
+				object->material->SetSampler(NORMAL_MATERIAL_TYPE, sampler, SHADER_BIND_TYPE::PIXEL);
+				object->material->GetMaterialData().hasNormalTexture = true;
 				
 			}
-			object.material->SetTexture(ALBEDO_MATERIAL_TYPE, texture, SHADER_BIND_TYPE::PIXEL);
-			//object.material->SetSampler(ALBEDO_MATERIAL_TYPE, sampler, SHADER_BIND_TYPE::PIXEL);
+			object->material->SetTexture(ALBEDO_MATERIAL_TYPE, texture, SHADER_BIND_TYPE::PIXEL);
 		}
 		return object;
 	}

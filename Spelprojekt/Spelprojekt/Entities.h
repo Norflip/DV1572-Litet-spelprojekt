@@ -14,6 +14,8 @@ public:
 	Entities(AABB worldBounds);
 	virtual ~Entities();
 
+	void UpdateTree();
+	
 	void SetBounds(AABB worldBounds);
 	void InsertObject(Object*);
 	void RemoveObject(Object*);
@@ -24,6 +26,8 @@ public:
 	std::vector<Object*> GetObjectsInView(Camera* camera);
 	
 	std::vector<Object*>& AllEntities() { return this->allEntities; }
+
+	void Clear();
 
 private:
 	QuadTree quadtree;

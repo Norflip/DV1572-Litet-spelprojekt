@@ -1,8 +1,9 @@
 #include "Player.h"
 #include "Scene.h"
+#include "SpawnObjects.h"
 
-Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler& dx11, Scene* scene)
-	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11), scene(scene), gamemanager(gamemanager)
+Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, SpawnObjects* spawner, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler& dx11, Scene* scene)
+	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11), scene(scene), gamemanager(gamemanager), spawner(spawner), gui(gui)
 {
 	this->input = controller->getInput();
 	this->currentPosition = { 0,0,0 };
@@ -11,7 +12,6 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	// weapon shit
 	this->leftActionbar = nullptr;
 	this->rightActionbar = nullptr;
-	this->gui = gui;
 
 	this->lefthandFull = false;
 	this->righthandFull = false;
@@ -19,13 +19,14 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->rightWeapon = nullptr;
 
 	this->playerHealth = 100.0f;
-	this->healthbar = new GUISprite(gui->GetDXHandler(), "Sprites/Healthbar.png", 10.0f, 650.0f);
-	this->healthbar->HealthBar(100.0f, 100.0f);
-	this->gui->AddGUIObject(this->healthbar, "healthbar");
+
 	this->winArea = winArea;
 	this->arrow = nullptr;
 
 	this->points = 0;
+	this->isMoving = false;
+	this->rangedAttacking = false;
+	this->meleeAttacking = false;
 }
 
 Player::~Player()
@@ -40,18 +41,20 @@ void Player::Update(const float& deltaTime)
 
 	UpdateMeleeWeaponPosition();	// If spoon is equiped
 	UseWeapon();
-	TakeDamage();
+
+	//TakeDamage();
 
 	UpdateLookAtPosition();
+	UpdateAnimations();
 }
 
 
 void Player::TakeDamage()
 {
-	if (input->GetMouseButtonDown(1) && playerHealth != 0.0f) 
+	if (playerHealth != 0.0f)
 	{
-		playerHealth -= 10.0f;
-		healthbar->HealthBar(100.0f, playerHealth);
+		//playerHealth -= 10.0f;
+		// INSERT SOUND WHEN IT WORKS...........................
 	}
 }
 
@@ -71,33 +74,42 @@ void Player::UpdateMovement(float fixedDeltaTime)
 
 		float dx = 0.0f;
 		float dz = 0.0f;
+
 		if (input->GetKey('w')) dz += 1.0f;
 		if (input->GetKey('a')) dx -= 1.0f;
 		if (input->GetKey('s')) dz -= 1.0f;
 		if (input->GetKey('d')) dx += 1.0f;
 
 		float length = sqrtf(dx * dx + dz * dz);
-		if (length != 0.0f)
-		{
-			GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[0]);
 
+		if (length != 0.0f && !meleeAttacking && !rangedAttacking)
+		{
 			dx /= length;
 			dz /= length;
-
 			nextPosition.x += dx * fixedDeltaTime * movementspeed;
 			nextPosition.z += dz * fixedDeltaTime * movementspeed;
-			
+
+			// kolla höjd istället? 
 			DirectX::XMVECTOR dot = DirectX::XMVector3Dot(terrain->SampleNormal(nextPosition.x, nextPosition.z), { 0,1,0 });
 			if (DirectX::XMVectorGetByIndex(dot, 0) < 0.85f)
 			{
-				GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
+				//idle
+				//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
+				isMoving = false;
 				return;
+			}
+			else
+			{
+				// run
+				isMoving = true;
+				//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[0]);
 			}
 		}
 		else
 		{
 			// IDLE
-			GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
+			isMoving = false;
+			//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
 		}
 
 		bool changedir = (dx != 0.0f || dz != 0.0f);
@@ -151,7 +163,7 @@ void Player::CheckForPickups()
 
 			if (obj != nullptr && obj->IsEnabled() && obj->GetWorldBounds().Overlaps(this->GetWorldBounds()))
 			{
-				if (!lefthandFull) 
+				if (!lefthandFull)
 				{
 					leftWeapon = CopyWeapon(obj);	//check type
 
@@ -159,24 +171,21 @@ void Player::CheckForPickups()
 					this->leftActionbar->SetPosition(325.0f, 650.0f);
 					this->gui->AddGUIObject(this->leftActionbar, "Left Actionbar");
 
-					scene->GetEntities()->RemoveObject(obj);
-
-					obj->SetEnabled(false);
 					lefthandFull = true;
 				}
-				else if (lefthandFull && !righthandFull) 
+				else if (lefthandFull && !righthandFull)
 				{
 					rightWeapon = CopyWeapon(obj); //check type
 
 					this->rightActionbar = new GUIActionbar(*obj->GetWeaponSprite());
 					this->rightActionbar->SetPosition(400.0f, 650.0f);
-
 					this->gui->AddGUIObject(this->rightActionbar, "Right Actionbar");
 
-					scene->GetEntities()->RemoveObject(obj);
-					obj->SetEnabled(false);
 					righthandFull = true;
 				}
+
+				obj->SetEnabled(false);
+				spawner->RemovePickup(obj);
 
 				foundPickup = true;
 			}
@@ -196,9 +205,32 @@ float Player::ShortestRotation(float currentDir, float nextDir)
 	return returnValue;
 }
 
+void Player::UpdateAnimations()
+{
+	if (this->isMoving)
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[0]);
+	}
+
+	else if (this->rangedAttacking)
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[2]);
+	}
+
+	else if (this->meleeAttacking)
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[3]);
+	}
+
+	else
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[1]);
+	}
+}
+
 void Player::UpdateMeleeWeaponPosition()
 {
-	if (lefthandFull) 
+	if (lefthandFull)
 	{
 		if (leftWeapon->GetType() == WeaponType::Spoon) {
 			leftWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
@@ -207,7 +239,7 @@ void Player::UpdateMeleeWeaponPosition()
 		}
 	}
 
-	if (righthandFull) 
+	if (righthandFull)
 	{
 		if (rightWeapon->GetType() == WeaponType::Spoon) {
 			rightWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
@@ -220,7 +252,7 @@ void Player::UpdateMeleeWeaponPosition()
 void Player::UseWeapon()
 {
 	// Left hand
-	if (input->GetMouseButtonDown(0) && lefthandFull) 
+	if (input->GetMouseButtonDown(0) && lefthandFull)
 	{
 		WeaponUsage(leftWeapon, lefthandFull);
 
@@ -229,45 +261,93 @@ void Player::UseWeapon()
 	}
 
 	// Right hand
-	if (input->GetMouseButtonDown(1) && righthandFull) 
+	if (input->GetMouseButtonDown(1) && righthandFull)
 	{
 		WeaponUsage(rightWeapon, righthandFull);
 
 		if (!righthandFull)
 			gui->RemoveGUIObject("Right Actionbar");
 	}
+
+	if (this->GetMesh()->skeleton->GetKeyframe() == this->GetMesh()->skeleton->GetCurrentAnimation()->GetLength() - 4)
+	{
+		this->meleeAttacking = false;
+		this->rangedAttacking = false;
+	}
 }
 
 void Player::WeaponUsage(Weapon* weapon, bool& hand)
 {
+	std::string str = "";
+
+	switch (weapon->GetType())
+	{
+	case WeaponType::Coconut:
+		str = "coconut";
+		break;
+	case WeaponType::Spoon:
+		str = "spoon";
+		break;
+	default:
+		break;
+	}
+
+	Logger::Write(str);
+
 	if (weapon->GetType() == WeaponType::Coconut)
 	{
 		DirectX::XMVECTOR aimDirection = GetAimDirection();
 		weapon->TriggerAttack(GetTransform().GetPosition(), aimDirection);
 		weapon->direction = aimDirection;
-		weapon->gamemanager = this->gamemanager;
+		//weapon->gamemanager = this->gamemanager;
 		weapon->PlaySoundEffect();
-
-
-
-		scene->GetEntities()->InsertObject(weapon);
 		SetActiveWeapon(static_cast<Weapon*>(weapon));
+		scene->GetEntities()->InsertObject(weapon);
+		
 		hand = false;
 		GetTransform().SetRotation(aimDirection);
+		this->rangedAttacking = true;
 	}
 
 	if (weapon->GetType() == WeaponType::Spoon)
 	{
-		if (weapon->CheckUsage() < 2) {
+		Logger::Write("USES: " + std::to_string(weapon->CheckUsage()));
+
+		if (weapon->CheckUsage() < 2)
+		{
+			this->meleeAttacking = true;
 			weapon->PlaySoundEffect();
 			//activeWeapon = static_cast<Weapon*>(weapon);
 			weapon->Use();
 			//activeWeapon = nullptr;
+
+
+
+
+			const float attackRange = 4.0f;
+			auto enemies = scene->GetEntities()->GetObjectsInLayer(ObjectLayer::Enemy);
+			int counter = 0;
+
+			for (auto i = enemies.begin(); i < enemies.end(); i++)
+			{
+				DirectX::XMVECTOR a = (*i)->GetTransform().GetPosition();
+				DirectX::XMVECTOR b = GetTransform().GetPosition();
+
+				float sqrDistance = DirectX::XMVectorGetByIndex(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(a, b)), 0);
+
+				if (sqrDistance < attackRange * attackRange)
+					counter++;
+			}
+
+			Logger::Write("INRANGE " + std::to_string(counter) + " / " + std::to_string(enemies.size()));
 		}
-		else {
+		else
+		{
+			this->meleeAttacking = true;
+			weapon->PlaySoundEffect();
 			weapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			weapon->direction = GetTransform().GetRotation();
-			weapon->PlaySoundEffect();
+			weapon->PlayBreaksound();
 
 			scene->GetEntities()->RemoveObject(weapon);
 
@@ -291,16 +371,21 @@ Weapon* Player::CopyWeapon(Weapon* weapon)
 	{
 		Projectile* proj = static_cast<Projectile*>(weapon);
 		curr = new Projectile(*proj);
+		curr->SetType(weapon->GetType());
+		curr->SetLayer(ObjectLayer::None);
 		curr->gamemanager = this->gamemanager;
 	}
-	else if (weapon->GetType() == WeaponType::Spoon) 
+	else if (weapon->GetType() == WeaponType::Spoon)
 	{
 		Spoon* spoonweap = static_cast<Spoon*>(weapon);
 		curr = new Spoon(*spoonweap);
+		curr->SetType(weapon->GetType());
+
+		curr->SetLayer(ObjectLayer::None);
 		curr->gamemanager = this->gamemanager;
-		scene->GetEntities()->RemoveObject(curr);
+		//scene->GetEntities()->RemoveObject(curr);
 	}
-	
+
 	return curr;
 }
 
@@ -331,7 +416,7 @@ void Player::UpdateLookAtPosition()
 
 		//arrow->GetTransform().SetRotation({ 0,angle,0 });
 		//arrow->GetTransform().Rotate(0, MathHelper::PI, 0);
-		;
+
 		arrow->GetTransform().LookAt(winArea->GetWorldBounds().GetCenter());
 		//arrow->GetTransform().SetRotation({ 0,0,0});
 		//arrow->GetTransform().GetRotation().m128_f32[0]

@@ -66,6 +66,7 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 	cb_world.cameraRight = right;
 	cb_world.cameraUp = up;
 	cb_world.centre = centre;
+	cb_world.vp = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(view, projection));
 	cb_world.invView = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, view));
 	cb_world.invWorld = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, world));
 	//cb_world.shadowTransform = DirectX::XMMatrixTranspose(world);// *lights.tShadowTransform);
@@ -98,7 +99,7 @@ void Renderer::ShadowPass(DirectX::XMVECTOR focus, const AABB& bounds, Camera* c
 	shadowShader->Bind(dx11.GetContext());
 	Camera* sunCamera = lights.GetSunCamera();
 
-	std::vector<Object*> objects = entities->AllEntities();
+	std::vector<Object*> objects = entities->GetObjectsInView(sunCamera);
 
 	// check if insight
 	for (auto object : objects)

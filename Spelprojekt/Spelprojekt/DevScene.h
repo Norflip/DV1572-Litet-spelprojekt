@@ -12,6 +12,7 @@
 #include "Terrain.h"
 #include "assimpHandler.h"
 
+#include "Icecream.h"
 #include "Projectile.h"
 #include "Spoon.h"
 #include "Timer.h"
@@ -19,6 +20,7 @@
 #include "AABB.h"
 #include "SpawnObjects.h"
 #include "Enemy.h"
+#include "WorldContext.h"
 
 class DevScene : public Scene
 {
@@ -30,6 +32,7 @@ public:
 
 	void Load() override;
 	void Unload() override;
+	void LoadResources() override;
 
 	void Update(const float& deltaTime) override;
 	void FixedUpdate(const float& fixedDeltaTime) override;
@@ -54,9 +57,13 @@ private:
 	SpawnObjects* spawner;
 	Physics physics;
 
+	WorldContext context;
+
+	GUI* gui;
 	GUIText* gametimerText;
 	GUIText* fpsText;
 	GUISprite* healthFrame;
+	GUISprite* healthbar;
 	GUISprite* score;
 	GUIText* totalScore;
 	GUISprite* enemies;
@@ -65,22 +72,18 @@ private:
 	GUIActionbar* actionbarLeft;
 	GUIActionbar* actionbarRight;
 
-//	Projectile* coconuts[11];
-//	Spoon* spoons[5];
-
 	std::vector<Scene*>& scenes;
 	Player* player;
-	Enemy* enemy;
-	
-	Terrain ground;
+	Terrain terrainMesh;
 	Terrain waterMesh;
+
 	Timer gametimer;
 	Timer fpsTimer;
 	float timeUntilEnd;
 	bool canWin;
 
 	Object* arrow;
-
+	Object* billBoard;
 	const aiScene* assimpScene;
 	Assimp::Importer imp;
 };

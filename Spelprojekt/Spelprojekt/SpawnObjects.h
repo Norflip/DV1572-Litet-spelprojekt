@@ -21,12 +21,17 @@ class SpawnObjects
 {
 	struct RespawnPickup
 	{
-		Transform spawnTransform;
+		DirectX::XMVECTOR position;
+		DirectX::XMVECTOR rotation;
+		WeaponType type;
 		float remaningTime;
+		int prefabIndex;
 	};
 
+	const float RespawnTimer = 30.0f;
+
 	const float CoconutRespawnTime = 30.0f;
-	const int CoconutsPerTree = 3;
+	const int CoconutsPerTree = 2;
 	const float CoconutOffset = 3.0f;
 
 	const float MinimumSpawnHeight = 4.0f;
@@ -36,12 +41,14 @@ public:
 	virtual ~SpawnObjects() {};
 
 	void SpawnInitial();
+	void Clear();
 
 	void SetMaxEnemies(int amount);
 	int CountEnemiesRemaining() const { return this->maxEnemies; }
 
 	void SetPickupPrefab(Object* obj, WeaponType type);
 	void SetEnemyPrefab(Enemy*);
+	void PlaceWagon (Object*);
 
 	void Update(const float& deltaTime);
 	void RemovePickup(Object* object);
@@ -60,10 +67,13 @@ private:
 	Gamemanager* gamemanager;
 	Terrain* terrain;
 
+	Object* wagon;
 	Object* pickupsPrefabs[2];
 	Enemy* enemyPrefab;
 	int maxEnemies;
 	int enemyCount;
+
+	std::vector<RespawnPickup> respawnTimers;
 
 	//std::vector<Enemy*> enemies;
 };

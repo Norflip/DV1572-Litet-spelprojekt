@@ -18,6 +18,7 @@ public:
 		start,
 		options,
 		soundtracks,
+		highscore,
 		quit
 	};
 			
@@ -31,6 +32,9 @@ public:
 
 	void Soundtracks();
 	void LoadSoundtracks();
+
+	void Highscore();
+	void LoadHighscore();
 
 	void Quit(); // Sure to Quit
 	void LoadQuit();

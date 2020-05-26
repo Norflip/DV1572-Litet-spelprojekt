@@ -66,6 +66,9 @@ void QuadTree::Clear()
 			delete children[i];
 			children[i] = nullptr;
 		}
+
+		delete[]children;
+		children = nullptr;
 	}
 }
 

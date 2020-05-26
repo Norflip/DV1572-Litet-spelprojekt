@@ -9,6 +9,7 @@
 #include "Spoon.h"
 #include <vector>
 
+class SpawnObjects;
 class Scene;
 
 class Player : public Object
@@ -17,7 +18,7 @@ class Player : public Object
 	const float playerHeight = 3;
 
 public:
-	Player(AssimpHandler::AssimpData modelData, CameraController* controller, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler&, Scene* scene);
+	Player(AssimpHandler::AssimpData modelData, CameraController* controller, SpawnObjects* spawner, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler&, Scene* scene);
 	~Player();
 
 	void Update(const float& deltaTime) override;
@@ -39,6 +40,7 @@ public:
 	void IncreasePoints(int points) { this->points += points; }
 
 	Object* GetWinArea() { return this->winArea; };
+	float GetHealth() const { return this->playerHealth; }
 
 private:
 	void InitWeapons();
@@ -50,7 +52,8 @@ private:
 	void TriggerAttack();
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 	float ShortestRotation(float currentDir, float nextDir);
-	
+	void UpdateAnimations();
+
 private:
 	Scene* scene;
 	Input* input;
@@ -58,6 +61,8 @@ private:
 	CameraController* controller;
 	Terrain* terrain;
 	Gamemanager* gamemanager;
+	SpawnObjects* spawner;
+	GUI* gui;
 
 	// Weapon stuff
 	Weapon* rightWeapon;
@@ -69,7 +74,6 @@ private:
 	//
 
 	float scaleXZ, scaleY;		
-	GUI* gui;
 
 	DirectX::XMFLOAT3 currentPosition;
 	float nextDir = 0;	
@@ -77,14 +81,15 @@ private:
 	std::vector<Weapon*> weapons;
 
 	// New
-	GUISprite* healthbar;
 	float playerHealth;
 	//
 
 	DirectX::XMVECTOR arrowRotation;
 	Object* arrow;
 	Object* winArea;
-
 	int points;
+	bool isMoving;
+	bool rangedAttacking;
+	bool meleeAttacking;
 }; 
 

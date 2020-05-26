@@ -4,6 +4,13 @@ Entities::Entities() : quadtree(AABB({ 0,0,0 }, { 0,0,0 })) {}
 Entities::Entities(AABB worldBounds) : quadtree(worldBounds) {}
 Entities::~Entities() {}
 
+void Entities::UpdateTree()
+{
+	quadtree.Clear();
+	for (auto i : allEntities)
+		quadtree.Insert(i);
+}
+
 void Entities::SetBounds(AABB worldBounds)
 {
 	this->quadtree.SetBounds(worldBounds);
@@ -29,7 +36,8 @@ void Entities::RemoveObject(Object* object)
 	{
 		std::vector<Object*> v = objectsInLayerMap[layer];
 		auto g = std::find(v.begin(), v.end(), object);
-		v.erase(g);
+		if (g != v.end())
+			v.erase(g);
 	}
 
 	// all
@@ -43,7 +51,8 @@ std::vector<Object*> Entities::GetObjectsInLayer(ObjectLayer layer)
 	auto findLayerVector = objectsInLayerMap.find(layer);
 	if (findLayerVector != objectsInLayerMap.end())
 		return objectsInLayerMap[layer];
-	return std::vector<Object*>();
+
+	return std::vector<Object*>(0);
 }
 
 std::vector<Object*> Entities::GetObjectsInRange(DirectX::XMVECTOR center, float radius, ObjectLayer layer)
@@ -60,7 +69,12 @@ std::vector<Object*> Entities::GetObjectsInRange(DirectX::XMVECTOR center, float
 	{
 		if (j->IsEnabled() && (((int)j->GetLayer() & (int)layer) == (int)j->GetLayer()))		// j->GetLayer() == layer || layer == ObjectLayer::Any))
 		{
-			float sqrDistance = j->GetWorldBounds().SqrDistanceToPoint(center);
+			DirectX::XMVECTOR a = j->GetTransform().GetPosition();
+			DirectX::XMVECTOR b = center;
+
+			float sqrDistance = DirectX::XMVectorGetByIndex(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(a, b)), 0);
+
+			//float sqrDistance = j->GetWorldBounds().SqrDistanceToPoint(center);
 			if (sqrDistance < radius * radius)
 				inRange.push_back(j);
 		}
@@ -114,10 +128,6 @@ std::vector<Object*> Entities::GetObjectsInAABB(const AABB& aabb, ObjectLayer la
 
 std::vector<Object*> Entities::GetObjectsInView(Camera* camera)
 {
-	quadtree.Clear();
-	for (auto i : allEntities)
-		quadtree.Insert(i);
-
 	std::vector<Object*> inView;
 	std::unordered_set<int> visited;
 	std::queue<QuadTree*> treeQueue;
@@ -154,4 +164,11 @@ std::vector<Object*> Entities::GetObjectsInView(Camera* camera)
 
 	//Logger::Write("in view: " + std::to_string(inView.size()) + " nr inserted: " + std::to_string(insertCount) + " quadsChecked: " + std::to_string(treeC));
 	return inView;
+}
+
+void Entities::Clear()
+{
+	allEntities.clear();
+	objectsInLayerMap.clear();
+	objectToLayerMap.clear();
 }

@@ -13,7 +13,7 @@
 #include "GUI.h"
 #include "Entities.h"
 
-constexpr float CLEAR_COLOR[3] = { 0.4f,0.4f,0.4f };
+constexpr float CLEAR_COLOR[3] = { 0.592f, 0.824f, 0.949f };
 
 class Renderer
 {

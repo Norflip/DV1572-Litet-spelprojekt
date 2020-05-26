@@ -14,7 +14,6 @@
 //	this->material = modelData.material;
 //	this->player = player;
 //	this->dx11 = dx11;
-//
 //}
 
 
@@ -64,13 +63,21 @@ void SpawnObjects::SpawnInitial()
 	for (auto i : spoonPositions)
 	{
 		clone = new Spoon(*spoon);
+
+		clone->SetType(WeaponType::Spoon);
 		clone->GetTransform().SetPosition(GetRandomSpawnPosition(1.0f));
 		clone->gamemanager = this->gamemanager;
 		entities->InsertObject(clone);
 	}
 
+	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
+	wagon->GetTransform().Translate(GetRandomSpawnPosition(1.0f));
+	wagon->GetTransform().Rotate(0.05f, -5, 0);
+}
 
-
+void SpawnObjects::Clear()
+{
+	this->enemyCount = 0;
 }
 
 void SpawnObjects::SetMaxEnemies(int amount)
@@ -80,6 +87,23 @@ void SpawnObjects::SetMaxEnemies(int amount)
 
 void SpawnObjects::Update(const float& deltaTime)
 {
+	for (int i = respawnTimers.size() - 1; i >= 0; i--)
+	{
+		respawnTimers[i].remaningTime -= deltaTime;
+		if (respawnTimers[i].remaningTime <= 0.0f)
+		{
+			Projectile* source = static_cast<Projectile*>(pickupsPrefabs[respawnTimers[i].prefabIndex]);
+			Projectile* clone = new Projectile(*source);
+
+			clone->GetTransform().SetPosition(respawnTimers[i].position);
+			clone->GetTransform().SetRotation(respawnTimers[i].rotation);
+			clone->gamemanager = this->gamemanager;
+			entities->InsertObject(clone);
+
+			respawnTimers.erase(respawnTimers.begin() + i);
+		}
+	}
+
 	UpdateSpawnEnemy();
 	UpdateRemoveEnemy();
 }
@@ -94,9 +118,25 @@ void SpawnObjects::SetEnemyPrefab(Enemy* enemy)
 	this->enemyPrefab = enemy;
 }
 
+void SpawnObjects::PlaceWagon(Object* wagon)
+{
+	this->wagon = wagon;
+}
+
 void SpawnObjects::RemovePickup(Object* object)
 {
+	Logger::Write("removed pickup");
+	entities->RemoveObject(object);
 
+	RespawnPickup respawn;
+	Weapon* w = static_cast<Weapon*>(object);
+	respawn.position = object->GetTransform().GetPosition();
+	respawn.rotation = object->GetTransform().GetRotation();
+	respawn.remaningTime = RespawnTimer;
+	respawn.prefabIndex = (int)w->GetType();
+	respawn.type = w->GetType();
+
+	respawnTimers.push_back(respawn);
 }
 
 void SpawnObjects::RemoveEnemy(Enemy* enemy)
@@ -131,14 +171,13 @@ DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition(float heightOffset)
 void SpawnObjects::UpdateSpawnEnemy()
 {
 	// skapar fler fiender om vi saknar
+	//Logger::Write(std::to_string(enemyCount) + " : " + std::to_string(maxEnemies));
 
-	Logger::Write(std::to_string(enemyCount) + " : " + std::to_string(maxEnemies));
-
-	if (enemyCount < maxEnemies)
+	if (enemyCount < gamemanager->GetActiveEnemies() && maxEnemies != 0)
 	{
 		Player* player = static_cast<Player*>(entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
-
 		Enemy* enemy = new Enemy(*enemyPrefab);
+		//enemy->SetLayer(ObjectLayer::Enemy);
 
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMStoreFloat3(&pos, player->GetTransform().GetPosition());
@@ -153,13 +192,14 @@ void SpawnObjects::UpdateSpawnEnemy()
 		enemy->SetTarget(player);
 
 		entities->InsertObject(enemy);// ->AddObject(enemy);
-		enemyCount++;
+		enemyCount++;		
 	}
 }
 
 void SpawnObjects::UpdateRemoveEnemy()
 {
 	auto enemies = entities->GetObjectsInLayer(ObjectLayer::Enemy);
+
 	Enemy* e = nullptr;
 	Player* player = static_cast<Player*>(entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
 
@@ -167,18 +207,19 @@ void SpawnObjects::UpdateRemoveEnemy()
 	{
 		e = static_cast<Enemy*>(i);
 
-		if (i != nullptr && player->GetActiveWeapon() != nullptr)
+		if (e != nullptr && player->GetActiveWeapon() != nullptr)
 		{
-			if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(i->GetWorldBounds()))
+			if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(e->GetWorldBounds()))	// e ist för i?
 			{
 				e->HitSound();
 
 				player->IncreasePoints(e->GivePoints());
-				entities->RemoveObject(i);
+				entities->RemoveObject(e);	// e ist för i?
 				entities->RemoveObject(player->GetActiveWeapon());
 
 				player->GetActiveWeapon()->SetEnabled(false); // new
 				player->SetActiveWeapon(nullptr);
+				enemyCount--;
 				maxEnemies--;
 			}
 		}

@@ -5,7 +5,7 @@ EndGUI::EndGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, 
     this->currentScene = scenes;
     this->gui = gui;
     this->input = cameraController->getInput();
-
+    this->playedOnce = false;
     this->gamemanager = gamemanager;
 }
 
@@ -35,11 +35,15 @@ void EndGUI::Restart()
     GUISprite* restart = static_cast<GUISprite*>(gui->GetGUIList()->at("restart"));
     if (restart->Clicked(input))
     {
+        playedOnce = false;
         currentScene->SetNextScene("game");
+        
     }
     GUISprite* quit = static_cast<GUISprite*>(gui->GetGUIList()->at("quit"));
     if (quit->Clicked(input))
     {
+
+        playedOnce = false;
         menu = Menu::quit;
         first = true;
     }
@@ -47,7 +51,9 @@ void EndGUI::Restart()
     GUISprite* intro = static_cast<GUISprite*>(gui->GetGUIList()->at("menu"));
     if (intro->Clicked(input))
     {
+        playedOnce = false;
         currentScene->SetNextScene("intro");
+        
     }
 
 
@@ -82,20 +88,27 @@ void EndGUI::LoadStart()
     ClearGUI();
     GUISprite* winLose;
     
-    if (currentScene->getWinOrLose() == true)
-    {
+    if (currentScene->getWinOrLose() == true) {
        winLose = new GUISprite(dx11, "Sprites/Glassbokal_Win.png", 0.0f, 0.0f);
-    }
-    else
-    {
-        winLose = new GUISprite(dx11, "Sprites/Glassbokal_lose.png", 0.0f, 0.0f);
+       this->gamemanager->GetMusicHandler()->StopSound();
+       this->gamemanager->GetMusicHandler()->DeleteTrack("Levelsound");
 
+       if (!playedOnce) {
+          // this->gamemanager->GetSoundeffectHandler()->LoadSound("Win", "SoundEffects/tadaWin.wav");
+           this->gamemanager->GetSoundeffectHandler()->PlaySound("WinSound", gamemanager->GetCurrentSoundVolume());
+           playedOnce = true;
+       }
+
+    }
+    else {
+        winLose = new GUISprite(dx11, "Sprites/Glassbokal_lose.png", 0.0f, 0.0f);
+        
         // Lose sound
         this->gamemanager->GetMusicHandler()->StopSound();
         this->gamemanager->GetMusicHandler()->DeleteTrack("Levelsound");
         if (!playedOnce) {
-            this->gamemanager->GetSoundeffectHandler()->LoadSound("Lose", "SoundEffects/Fail.wav");
-            this->gamemanager->GetSoundeffectHandler()->PlaySound("Lose", gamemanager->GetCurrentSoundVolume());
+          //  this->gamemanager->GetSoundeffectHandler()->LoadSound("Lose", "SoundEffects/Fail.wav");
+            this->gamemanager->GetSoundeffectHandler()->PlaySound("FailSound", gamemanager->GetCurrentSoundVolume());
             playedOnce = true;
         }        
     }
@@ -104,6 +117,7 @@ void EndGUI::LoadStart()
     GUISprite* quit = new GUISprite(dx11, "Sprites/quit.png", 0.0f, 0.0f);          
     GUISprite* menu = new GUISprite(dx11, "Sprites/backtointro.png", 0.0f, 0.0f);   
 
+    
     winLose->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (winLose->GetTextureWidth() / 2.0f), 0);
     restart->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (restart->GetTextureWidth() / 2.0f) + 400.0f, 300.0f);
     menu->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (menu->GetTextureWidth() / 2.0f) + 400.0f, 400.0f);
@@ -113,6 +127,8 @@ void EndGUI::LoadStart()
     gui->AddGUIObject(restart, "restart");
     gui->AddGUIObject(quit, "quit");
     gui->AddGUIObject(menu, "menu");
+    gamemanager->UpdateHighscore(gui, gamemanager->GetCurrentScore());
+   
 
     first = false;
 }
@@ -145,8 +161,6 @@ void EndGUI::Quit()
         backtoscreen->SetWICSprite(dx11, "Sprites/backtointro.png");
     }
 
-
-
 }
 
 void EndGUI::LoadQuit()
@@ -155,7 +169,6 @@ void EndGUI::LoadQuit()
 
     GUISprite* imsure = new GUISprite(dx11, "Sprites/imsure.png", 0.0f, 0.0f);
     GUISprite* backtoendscreen = new GUISprite(dx11, "Sprites/backtointro.png", 0.0f, 0.0f);
-
     imsure->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (imsure->GetTextureWidth() / 2.0f), 300.0f);
     backtoendscreen->SetPosition((currentScene->GetWindow().GetWidth() / 2.0f) - (backtoendscreen->GetTextureWidth() / 2.0f), 400.0f);
 

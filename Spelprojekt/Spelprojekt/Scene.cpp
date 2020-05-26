@@ -20,19 +20,22 @@ Scene::~Scene()
 
 void Scene::Unload()
 {
+	Logger::Write("scene unload");
+
 	auto allEntities = entities->AllEntities();
 	for (auto i = allEntities.rbegin(); i < allEntities.rend(); i++)
 	{
 		delete *i;
 	}
 
-	allEntities.clear();
+	entities->Clear();
 }
 
 void Scene::Update(const float& deltaTime)
 {
 	//UpdateAddRemoveSceneQueues();
-	
+	entities->UpdateTree();
+
 	for (auto i : entities->AllEntities())
 	{
 		if (i->IsEnabled())
@@ -61,7 +64,7 @@ void Scene::Render()
 	renderer->SetDeferredRenderTarget();
 	renderer->ClearRenderTarget();
 
-	std::vector<Object*> inView = entities->AllEntities();
+	std::vector<Object*> inView = entities->GetObjectsInView(camera);
 	std::sort(inView.begin(), inView.end(), m_CompareRenderList); // O(N�log(N))
 
 	DirectX::XMMATRIX view = camera->GetView();
