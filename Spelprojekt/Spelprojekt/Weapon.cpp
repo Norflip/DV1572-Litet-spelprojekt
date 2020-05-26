@@ -1,7 +1,7 @@
 #include "Weapon.h"
 
 
-Weapon::Weapon(WeaponType type, ObjectLayer layer, Gamemanager* gamemanager, Mesh* mesh, Material* material, Entities* entities) : Object(layer, mesh, material), gamemanager(gamemanager), entities(entities)
+Weapon::Weapon(WeaponType type, ObjectLayer layer, Mesh* mesh, Material* material, WorldContext context) : Object(layer, mesh, material), context(context)
 {
 	this->direction = { 0,0,0 };
 	this->nextPos = { 0,0,0 };
@@ -14,9 +14,7 @@ Weapon::Weapon(WeaponType type, ObjectLayer layer, Gamemanager* gamemanager, Mes
 	this->movementspeed = 0;
 }
 
-Weapon::Weapon(WeaponType type, ObjectLayer layer, Gamemanager* gamemanager, AssimpHandler::AssimpData model, Entities* entities)
-	: Weapon(type, layer, gamemanager, model.mesh, model.material, entities) {}
-
+Weapon::Weapon(WeaponType type, ObjectLayer layer, AssimpHandler::AssimpData model, WorldContext context) : Weapon(type, layer, model.mesh, model.material, context) {}
 Weapon::~Weapon() {}
 
 void Weapon::Update(const float& deltaTime)

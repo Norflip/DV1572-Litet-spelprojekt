@@ -10,7 +10,7 @@ class Player;
 class Enemy : public Object
 {
 	public: 
-		Enemy(AssimpHandler::AssimpData modelData, Weapon* enemyweapon, Terrain* terrain, DX11Handler&, Scene* scene, Gamemanager* gamemanager);
+		Enemy(AssimpHandler::AssimpData modelData, WorldContext context);
 		Enemy(const Enemy& other);
 		~Enemy();
 
@@ -30,10 +30,11 @@ class Enemy : public Object
 		Weapon* GetActiveWeapon() const { return this->activeweapon; };
 	
 	private:
+		WorldContext context;
+
 		float movementspeed;
 		void UpdateHeight(float fixedDeltaTime);
 		void UpdateMovement(float fixedDeltaTime);
-		Terrain* terrain;
 		float scaleY;
 		float scaleXZ;
 		Player* player;
@@ -45,14 +46,12 @@ class Enemy : public Object
 				
 		// ENEMY SHOT
 		float cooldownTimer;
-		Scene* scene;
 		float timeuntilReload;
+
 		Timer* waitTime;
 		bool hasShot;
-		Weapon* enemyweapon;
+
 		Weapon* activeweapon;
 
-
-		Gamemanager* gamemanager;
 		int pointGiven;
 };

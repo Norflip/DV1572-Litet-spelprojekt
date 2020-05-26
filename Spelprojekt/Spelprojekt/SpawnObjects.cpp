@@ -45,7 +45,7 @@ void SpawnObjects::SpawnInitial()
 
 			clone = new Projectile(*coconut);
 			clone->GetTransform().SetPosition({ x,y,z });
-			clone->gamemanager = this->gamemanager;
+			//clone->context = ;
 			entities->InsertObject(clone);
 		}
 	}
@@ -66,7 +66,7 @@ void SpawnObjects::SpawnInitial()
 
 		clone->SetType(WeaponType::Spoon);
 		clone->GetTransform().SetPosition(GetRandomSpawnPosition(1.0f));
-		clone->gamemanager = this->gamemanager;
+		//clone->gamemanager = this->gamemanager;
 		entities->InsertObject(clone);
 	}
 
@@ -97,7 +97,7 @@ void SpawnObjects::Update(const float& deltaTime)
 
 			clone->GetTransform().SetPosition(respawnTimers[i].position);
 			clone->GetTransform().SetRotation(respawnTimers[i].rotation);
-			clone->gamemanager = this->gamemanager;
+			//clone->gamemanager = this->gamemanager;
 			entities->InsertObject(clone);
 
 			respawnTimers.erase(respawnTimers.begin() + i);
@@ -152,8 +152,8 @@ DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition(float heightOffset)
 
 	while (!found && maxIteraitor > 0)
 	{
-		float x = static_cast<float>(rand() % (terrain->GetMapWidth() - 20)) + 10.0f;
-		float z = static_cast<float>(rand() % (terrain->GetMapHeight() - 20)) + 10.0f;
+		float x = static_cast<float>(rand() % terrain->GetMapWidth());
+		float z = static_cast<float>(rand() % terrain->GetMapHeight());
 		float y = terrain->SampleHeight(x,z);
 
 		if (y >= MinimumSpawnHeight)

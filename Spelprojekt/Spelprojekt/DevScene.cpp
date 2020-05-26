@@ -62,6 +62,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	context.terrain = &terrainMesh;
 	context.dx11 = &dx11;
 	context.physics = &physics;
+	context.scene = this;
 }
 
 DevScene::~DevScene()
@@ -103,7 +104,7 @@ void DevScene::Load()
 
 
 	// ------ PLAYER
-	this->player = new Player(resources.GetModel("playerModel"), controller, spawner, &terrainMesh, gui, gamemanager, wagon, dx11, this, context);
+	this->player = new Player(resources.GetModel("playerModel"), controller, gui, context);
 	this->player->GetTransform().SetPosition({ 55, 4, 55 });
 	this->player->GetTransform().Scale(2.0, 2.0, 2.0);
 	this->player->SetLayer(ObjectLayer::Player);
@@ -125,7 +126,7 @@ void DevScene::Load()
 	// - - - - - Exit arrow
 	arrow = new Object(ObjectLayer::None, resources.GetModel("arrowModel"));
 	arrow->GetTransform().Translate(35, 10, 30);
-	player->SetArrow(arrow);
+	player->SetTargetAndArrow(arrow, wagon);
 	entities->InsertObject(arrow);
 	arrow->SetVisible(false);
 
@@ -272,17 +273,17 @@ void DevScene::LoadResources()
 		PREFABS
 	*/
 
-	Icecream* icecreamPrefab = new Icecream(resources.GetModel("icecreamModel"), gamemanager, &terrainMesh, dx11, entities);
+	Icecream* icecreamPrefab = new Icecream(resources.GetModel("icecreamModel"), context);
 	resources.AddResource("icecreamPrefab", icecreamPrefab);
 
-	Projectile* coconutPrefab = new Projectile(resources.GetModel("coconutModel"), gamemanager, &terrainMesh, dx11, entities);
+	Projectile* coconutPrefab = new Projectile(resources.GetModel("coconutModel"), context);
 	resources.AddResource("coconutPrefab", coconutPrefab);
 
-	Spoon* spoonPrefab = new Spoon(resources.GetModel("spoonModel"), gamemanager, &terrainMesh, dx11, entities);
+	Spoon* spoonPrefab = new Spoon(resources.GetModel("spoonModel"), context);
 	resources.AddResource("spoonPrefab", spoonPrefab);
 
 
-	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), icecreamPrefab, &terrainMesh, dx11, this, gamemanager);
+	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), context);
 	enemyPrefab1->GetTransform().Translate(30, 7, 35);
 	enemyPrefab1->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	enemyPrefab1->SetTarget(player);

@@ -1,5 +1,6 @@
 #pragma once
 
+class Scene;
 class Player;
 class Physics;
 class Terrain;
@@ -11,6 +12,7 @@ class SpawnObjects;
 
 struct WorldContext
 {
+	Scene* scene;
 	Player* player;
 	Physics* physics;
 	Terrain* terrain;
@@ -20,5 +22,3 @@ struct WorldContext
 	Gamemanager* gamemanager;
 	SpawnObjects* spawner;
 };
-
-

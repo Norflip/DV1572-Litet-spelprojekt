@@ -9,7 +9,7 @@ class Icecream
 	: public Weapon
 {
 public:
-	Icecream(AssimpHandler::AssimpData modelData, Gamemanager* gamemanager, Terrain* terrain, DX11Handler& dx11, Entities* entities);
+	Icecream(AssimpHandler::AssimpData modelData, WorldContext context);
 	Icecream(const Icecream& other);
 	virtual ~Icecream();
 
@@ -18,7 +18,7 @@ public:
 	GUIActionbar* GetWeaponSprite() override { return this->weaponSprite; }
 	void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;
 	void rangedAttack(float deltaTime);
-	void PlaySoundEffect() override { this->gamemanager->GetSoundeffectHandler()->PlaySound("Swoosh", gamemanager->GetCurrentSoundVolume()); }
+	void PlaySoundEffect() override;
 	void SetReferenceToPlayer(Player* player) override { this->player = player; }
 	void SetWeaponSpeed(int value) override { this->movementspeed = value; };
 	void UpdateHitPlayer();
