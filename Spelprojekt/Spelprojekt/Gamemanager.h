@@ -9,13 +9,14 @@ const int MAXSCORES = 6;	// 6 is for new score + sortation
 
 class Gamemanager {
 public:
-		
-	Gamemanager(DX11Handler&);
-	~Gamemanager();
+	Gamemanager(DX11Handler* dx11);
+	virtual ~Gamemanager();
 
 	SoundHandler* GetMusicHandler() { return this->music; }
 	SoundHandler* GetSoundeffectHandler() { return this->soundeffect; }
-	
+	void LoadSoundEffects();
+	void LoadMusicTracks();
+
 	// Musictrack settings
 	void SetCurrentTrack(int i) { this->currentTrack = i; }
 	int GetCurrentTrack() { return this->currentTrack; }
@@ -36,6 +37,9 @@ public:
 	void SetDifficultyState(int dif) { this->difficultystate = dif; }
 	int GetDifficultyState() { return this->difficultystate; }
 
+	void SetActiveEnemies(int activeenemies) { this->activeEnemies = activeenemies; }
+	int GetActiveEnemies() { return this->activeEnemies; }
+
 	void SetTotalEnemies(int enemies) { this->nrOfEnemies = enemies; }
 	int GetTotalEnemies() { return this->nrOfEnemies; }
 
@@ -47,9 +51,7 @@ public:
 	int GetCurrentScore() { return this->currentScore; }
 	void SortHighscore(std::string name[], int points[], int totalscores);
 	void UpdateHighscore(GUI* gui, int score);
-	void DisplayHighscore(GUI* gui);/*
-	GUIText** GetNames() { return displayNames; }
-	GUIText** GetPoints() { return displayPoints; }*/
+	void DisplayHighscore(GUI* gui);
 
 private:
 	DX11Handler* dxhandler;
@@ -68,6 +70,7 @@ private:
 	int difficultystate;
 	float timer;
 	int nrOfEnemies;
+	int activeEnemies;
 
 	// Highscore stuff...
 	std::ofstream writeToHighscore;

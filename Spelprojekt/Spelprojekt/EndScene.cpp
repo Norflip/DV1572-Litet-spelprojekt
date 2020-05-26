@@ -8,8 +8,10 @@ EndScene::EndScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	window.GetInput()->LockCursor(false);
 
 	this->didWin = false;
-
 	this->gamemanager = gamemanager;
+
+	this->gui = new GUI(dx11);
+	this->endGUI = new EndGUI(gui, dx11, controller, this, gamemanager);
 }
 
 EndScene::~EndScene()
@@ -19,20 +21,17 @@ EndScene::~EndScene()
 
 void EndScene::Load()
 {
-	GUI* gui = new GUI(dx11);
-	
-	endGUI = new EndGUI(gui, dx11, controller, this, gamemanager);
 	renderer->SetGUI(gui);
-
-	Shader* defaultShader = new Shader();
-	defaultShader->LoadPixelShader(L"Shaders/Default_ps.hlsl", "main", dx11.GetDevice());
-	defaultShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
 }
 
 void EndScene::Unload()
 {
 	this->gamemanager->GetMusicHandler()->StopSound();
 	this->gamemanager->GetSoundeffectHandler()->StopSound();
+}
+
+void EndScene::LoadResources()
+{
 }
 
 void EndScene::Update(const float& deltaTime)

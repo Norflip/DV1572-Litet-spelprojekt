@@ -92,6 +92,7 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy_active.png";
         lastMedium = "Sprites/medium.png";
         lastHard = "Sprites/hard.png";
+        gamemanager->SetActiveEnemies(5);
         gamemanager->SetTotalEnemies(20);
         gamemanager->SetTimer(120.0f);
         break;
@@ -99,6 +100,7 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy.png";
         lastMedium = "Sprites/medium_active.png";
         lastHard = "Sprites/hard.png";
+        gamemanager->SetActiveEnemies(7);
         gamemanager->SetTotalEnemies(40);
         gamemanager->SetTimer(160.0f);
         break;
@@ -106,6 +108,7 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy.png";
         lastMedium = "Sprites/medium.png";
         lastHard = "Sprites/hard_active.png";
+        gamemanager->SetActiveEnemies(9);
         gamemanager->SetTotalEnemies(60);
         gamemanager->SetTimer(200.0f);
         break;
@@ -322,7 +325,7 @@ void IntroGUI::Options()
             vsyncON->SetWICSprite(dx11, lastOn);
             vsyncOFF->SetWICSprite(dx11, lastOff);
 
-            currentScene->getRenderer()->setVsync(true);
+            currentScene->GetRenderer()->setVsync(true);
         }    
 
        /*
@@ -415,7 +418,7 @@ void IntroGUI::Options()
             vsyncON->SetWICSprite(dx11, lastOn);
             vsyncOFF->SetWICSprite(dx11, lastOff);
 
-            currentScene->getRenderer()->setVsync(false);
+            currentScene->GetRenderer()->setVsync(false);
         }
     }
 

@@ -2,10 +2,12 @@
 #include "DX11Handler.h"
 #include "ShittyOBJLoader.h"
 #include "assimpHandler.h"
-#include "Scene.h"
 #include "Player.h"
-#include "Enemy.h"
+#include "Entities.h"
 #include <ctime>
+#include "MathHelper.h"
+
+class Enemy;
 
 // insert entities reference
 // remove scene
@@ -15,50 +17,63 @@
 //SpawnObjects::SpawnObjects(Entities* entities, Terrain* terrain, AssimpHandler::AssimpData modelData, Player* player, DX11Handler& dx11)
 // registerEnemy (key, object)
 
-
-class SpawnObjects : public Object
+class SpawnObjects
 {
-	public:
-		SpawnObjects(Entities* entities, Terrain* terrain, AssimpHandler::AssimpData modelData, Player* player, DX11Handler& dx11);
-		SpawnObjects(DX11Handler&, Scene* scene, Terrain* terrain, Mesh* mesh, Material* material, Player* player, Gamemanager* gamemanager,  Entities* entities);
-		~SpawnObjects() {};
-		void Update(const float& deltaTime) override;
-		void SetPlayer(Player*);
-		void SetEnemy();
-		void SetObject(Object*);
-		void AddEnemy(Enemy*);
-		void RemoveEnemy(Enemy*);
-		Enemy* GetEnemy();
-		void SetSpawnedEnemies(int spawnedEnemies);
+	struct RespawnPickup
+	{
+		DirectX::XMVECTOR position;
+		DirectX::XMVECTOR rotation;
+		WeaponType type;
+		float remaningTime;
+		int prefabIndex;
+	};
 
-		void SetEnemiesToEliminate(int nrOfenemies);
-		int GetEnemiesLeftToEliminate() { return this->enemiesToEliminate; }
+	const float RespawnTimer = 30.0f;
 
-	private:
-		void UpdateSpawnEnemy();
-		void UpdateRemoveEnemy();
-		void UpdateRandomNumber();
+	const float CoconutRespawnTime = 30.0f;
+	const int CoconutsPerTree = 2;
+	const float CoconutOffset = 3.0f;
 
-		DX11Handler& dx11;
-		Terrain* terrain;
-		Scene* scene;
-		
-		Mesh* mesh;
-		Material* material;
-		
-		Player* player;
-		Enemy* testEnemy;
-		Enemy* enemy;
-		Object* object;
-		SoundHandler* soundeffects;
-		Entities* entities;
+	const float MinimumSpawnHeight = 4.0f;
 
-		Gamemanager* gamemanager;
+public:
+	SpawnObjects(Entities* entities, Terrain* terrain, Gamemanager* gamemanager, DX11Handler& dx11);
+	virtual ~SpawnObjects() {};
 
-		int enemiesToEliminate;
-		int nrOfEnemies = 0;
-		int spawnedEnemies = 5;
-		float randX, randZ, lastRandX, lastRandZ;
+	void SpawnInitial();
+	void Clear();
 
-		std::vector<Enemy*> enemies;
+	void SetMaxEnemies(int amount);
+	int CountEnemiesRemaining() const { return this->maxEnemies; }
+
+	void SetPickupPrefab(Object* obj, WeaponType type);
+	void SetEnemyPrefab(Enemy*);
+	void PlaceWagon (Object*);
+
+	void Update(const float& deltaTime);
+	void RemovePickup(Object* object);
+	void RemoveEnemy(Enemy*);
+
+private:
+	DirectX::XMVECTOR GetRandomSpawnPosition(float heightOffset);
+
+	void UpdateSpawnEnemy();
+	void UpdateRemoveEnemy();
+
+private:
+	bool* spawnmap;
+	DX11Handler& dx11;
+	Entities* entities;
+	Gamemanager* gamemanager;
+	Terrain* terrain;
+
+	Object* wagon;
+	Object* pickupsPrefabs[2];
+	Enemy* enemyPrefab;
+	int maxEnemies;
+	int enemyCount;
+
+	std::vector<RespawnPickup> respawnTimers;
+
+	//std::vector<Enemy*> enemies;
 };

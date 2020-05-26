@@ -1,25 +1,23 @@
 #include "Weapon.h"
 
 
-Weapon::Weapon()
+Weapon::Weapon(WeaponType type, ObjectLayer layer, Gamemanager* gamemanager, Mesh* mesh, Material* material, Entities* entities) : Object(layer, mesh, material), gamemanager(gamemanager), entities(entities)
 {
 	this->direction = { 0,0,0 };
 	this->nextPos = { 0,0,0 };
 
-	this->attack = false;		
-	this->WeaponTypeName = "None";
-	this->damage = 0;
+	this->attack = false;
+	this->weaponDamage = 0;
 	this->weaponSprite = nullptr;
 	this->used = 0;
+	//this->player = nullptr;
+	this->movementspeed = 0;
 }
 
-Weapon::~Weapon()
-{
-}
+Weapon::Weapon(WeaponType type, ObjectLayer layer, Gamemanager* gamemanager, AssimpHandler::AssimpData model, Entities* entities)
+	: Weapon(type, layer, gamemanager, model.mesh, model.material, entities) {}
 
-//void Weapon::meleeAttack(float deltaTime)
-//{
-//}
+Weapon::~Weapon() {}
 
 void Weapon::Update(const float& deltaTime)
 {	

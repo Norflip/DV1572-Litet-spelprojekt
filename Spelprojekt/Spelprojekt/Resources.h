@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_map>
+#include "assimpHandler.h"
 
 class Resources
 {
@@ -9,12 +10,14 @@ public:
 
 	template <typename T> void AddResource(std::string key, T* resource);	
 	template <typename T> T* GetResource(std::string key);
+	AssimpHandler::AssimpData GetModel(std::string key);
+	void AddModel(std::string key, AssimpHandler::AssimpData* data);
+
 	void RemoveResource(std::string key);
 
 private:
 	std::unordered_map<std::string, void*> resourceMap;
 };
-
 
 
 template<typename T>

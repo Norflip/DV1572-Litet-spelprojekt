@@ -4,37 +4,57 @@
 #include "Terrain.h"
 #include "Object.h"
 #include "GUIActionbar.h"
-//#include "SoundHandler.h"
 #include "Gamemanager.h"
+#include "Entities.h"
+//#include "Player.h"
 
-class Weapon 
-	: public Object
+class Player;
+
+enum class WeaponType
+{
+	Coconut = 0,
+	Spoon = 1,
+	Icecream = 2,
+};
+
+class Weapon : public Object
 {
 public:
-	Weapon();
+
+	Weapon(WeaponType type, ObjectLayer layer, Gamemanager*, Mesh* mesh, Material* material, Entities* entities);
+	Weapon(WeaponType type, ObjectLayer layer, Gamemanager*, AssimpHandler::AssimpData model, Entities* entities);
 	~Weapon();
 		
 	//void meleeAttack(float deltaTime);	//Ska sitta inne i slev // ska tas bort
 
 	void Update(const float& deltaTime) override;
-	virtual void HasAttacked(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) { this->attack = true; GetTransform().SetPosition(pos); GetTransform().SetRotation(rot); };
-	virtual float DamageGiven() { return this->damage; }	
-	virtual GUIActionbar* GetWeaponSprite() { return this->weaponSprite; }	
-	virtual std::string GetWeaponTypename() { return this->WeaponTypeName; } 		
+
+	virtual void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) { this->attack = true; GetTransform().SetPosition(pos); GetTransform().SetRotation(rot); };
+	
+	virtual float GetWeaponDamage() { return this->weaponDamage; }	
+	virtual GUIActionbar* GetWeaponSprite() { return this->weaponSprite; }		
+	WeaponType GetType() const { return this->type; }
+	void SetType(WeaponType type) { this->type = type; }
+
 	virtual void PlaySoundEffect() {}
 	virtual void PlayBreaksound()  {}
 	virtual int CheckUsage() { return this->used; }
-	virtual void Use() {};
-
+	virtual void Use() {}; 
+	virtual void SetReferenceToPlayer(Player* player) {};
+	virtual void SetWeaponSpeed(int value) {};
 	DirectX::XMVECTOR direction;
 	DirectX::XMVECTOR nextPos;
-private:	
+	Gamemanager* gamemanager;
+	Entities* entities;	
 	
 protected:	
+	int movementspeed;	
+
+	//Player* player;
+	WeaponType type;
 	GUIActionbar* weaponSprite;	
-	std::string WeaponTypeName;
 	bool attack;
-	float damage;
+	float weaponDamage;
 	int used;
 };
 

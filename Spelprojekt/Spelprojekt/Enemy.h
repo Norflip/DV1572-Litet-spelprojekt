@@ -2,8 +2,7 @@
 #include "Scene.h"
 #include "Terrain.h"
 #include "assimpHandler.h"
-//#include "SoundHandler.h"
-
+#include "Icecream.h"
 class Player;
 
 #include "Player.h"
@@ -11,11 +10,13 @@ class Player;
 class Enemy : public Object
 {
 	public: 
-		Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&, Gamemanager* gamemanager, Entities* entities);
+		Enemy(AssimpHandler::AssimpData modelData, Weapon* enemyweapon, Terrain* terrain, DX11Handler&, Scene* scene, Gamemanager* gamemanager);
 		Enemy(const Enemy& other);
 		~Enemy();
 
 		void Update(const float& deltaTime) override;
+		void FixedUpdate(const float& fixedDeltaTime) override;
+
 		void SetHeight(float height) { this->enemyHeight = height; };
 		void SetTarget(Player* player);
 		DirectX::XMVECTOR GetVelocity();
@@ -25,6 +26,10 @@ class Enemy : public Object
 		Object* GetFBXModel();
 
 		int GivePoints() { return this->pointGiven; }
+
+		void UpdateAttackPlayer();
+		void SetActiveWeapon(Weapon* enemyweapon) { this->activeweapon = enemyweapon; }
+		Weapon* GetActiveWeapon() const { return this->activeweapon; };
 	
 	private:
 		DirectX::XMVECTOR velocity;
@@ -51,6 +56,16 @@ class Enemy : public Object
 		float nextDir = 0.0f;
 		float enemyHeight = 4.65f;	
 				
+		// ENEMY SHOT
+		float cooldownTimer;
+		Scene* scene;
+		float timeuntilReload;
+		Timer* waitTime;
+		bool hasShot;
+		Weapon* enemyweapon;
+		Weapon* activeweapon;
+
+
 		Gamemanager* gamemanager;
 		int pointGiven;
 };

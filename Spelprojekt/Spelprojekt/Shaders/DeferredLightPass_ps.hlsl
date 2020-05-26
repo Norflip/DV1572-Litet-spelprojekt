@@ -82,11 +82,9 @@ float4 main(PixelInputType input) : SV_TARGET
 	float shininess = position.a;
 
 	//return position;
-
-	/*
+	
 	if (position.w == 0.0f)
 		discard;
-	*/
 
 	//float4 albedo = albedoTexture.Sample(ssaoSamplerState, input.uv);
 	float4 albedo = albedoTexture.Sample(ssaoSamplerState, input.uv);
@@ -154,6 +152,9 @@ float4 main(PixelInputType input) : SV_TARGET
 	//finalColor *= d;
 	//finalColor.w = 1.0f;
 
+
+
+
 	/*
 	
 		SHADOWS
@@ -192,9 +193,12 @@ float4 main(PixelInputType input) : SV_TARGET
 		}
 
 		visibility = saturate(0.3f + visibility);
-
-		//visibility = clamp(visibility, 0.1f, 1.0f);
 	}
 
-	return finalColor * ssaoResult *visibility;;
+
+	//return  max(1.055 * pow(C_lin, 0.416666667) - 0.055, 0);
+
+	float gamma = 2.2f;
+	float t = 1.0f - (ssaoResult * visibility);
+	return saturate(pow(lerp(finalColor, float4(0,0,0,1), t), 1.0f / gamma));
 }

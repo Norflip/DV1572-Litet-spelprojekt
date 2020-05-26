@@ -6,6 +6,10 @@ Transform::Transform() : position(DirectX::XMVectorZero()), rotation(DirectX::XM
 
 }
 
+Transform::Transform(DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, DirectX::XMVECTOR scale) : position(position), rotation(rotation), scale(scale)
+{
+}
+
 Transform::~Transform()
 {
 
@@ -108,7 +112,17 @@ void Transform::Scale(DirectX::XMVECTOR scale)
 {
 	this->scale = DirectX::XMVectorMultiply(this->scale, scale);
 }
-//
+Transform Transform::Clone()
+{
+	return Transform(position, rotation, scale);
+}
+
+void Transform::ApplyToTransform(Transform& transform)
+{
+	this->position = transform.position;
+	this->rotation = transform.rotation;
+	this->scale = transform.scale;
+}
 
 
 void Transform::SmoothRotate(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime, bool changeDir)

@@ -14,8 +14,8 @@ public:
 	static constexpr DirectX::XMVECTOR default_forward = { 0,0,1 };
 
 public:
-
 	Transform();
+	Transform(DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, DirectX::XMVECTOR scale);
 	virtual ~Transform();
 
 	void SetPosition(DirectX::XMVECTOR position) { this->position = position; }
@@ -41,6 +41,8 @@ public:
 	void Scale(float x, float y, float z);
 	void Scale(DirectX::XMVECTOR scale);
 
+	Transform Clone();
+	void ApplyToTransform(Transform& transform);
 
 	void SmoothRotate(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime, bool changeDir);
 private:

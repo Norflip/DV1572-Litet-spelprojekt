@@ -113,7 +113,7 @@ float Terrain::SampleHeight(float x, float z)
 	int col = (int)floorf(position.x);
 	int row = (int)floorf(position.z);
 
-	//quick exit if we are out of the heightmap		//
+	//quick exit if we are out of the heightmap	//
 	if (row < 0 || col < 0)
 	{
 		return 0;
@@ -140,4 +140,32 @@ float Terrain::SampleHeight(float x, float z)
 	}
 
 	return resultHeight;
+}
+
+DirectX::XMVECTOR Terrain::SampleNormal(float x, float z)
+{
+	DirectX::XMFLOAT3 position = { x,0,z };
+	//DirectX::XMStoreFloat3(&position, GetTransform().GetPosition());
+
+	float howFarX = position.x - (int)(position.x / XZScale);
+	float howFarZ = position.z - (int)(position.z / XZScale);
+
+	int col = (int)floorf(position.x);
+	int row = (int)floorf(position.z);
+
+	//quick exit if we are out of the heightmap		//
+	if (row < 0 || col < 0 || row > 250 ||col > 250)
+		return { 0,0,0 };
+
+	//bool bottomTriangle = (howFarX + howFarZ) <= 1.f;
+
+	DirectX::XMVECTOR bottomLeft = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at(row * GetMapWidth() + col).normal);
+	DirectX::XMVECTOR bottomRight = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at(row * GetMapWidth() + col + 1).normal);
+	DirectX::XMVECTOR topLeft = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at((row + 1) * GetMapWidth() + col).normal);
+	DirectX::XMVECTOR topRight = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at((row + 1) * GetMapWidth() + col + 1).normal);
+
+	DirectX::XMVECTOR top = DirectX::XMVectorLerp(topLeft, topRight, howFarX);
+	DirectX::XMVECTOR bottom = DirectX::XMVectorLerp(bottomLeft, bottomRight, howFarX);
+
+	return DirectX::XMVectorLerp(bottom, top, howFarZ);
 }

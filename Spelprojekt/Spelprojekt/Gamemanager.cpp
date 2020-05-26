@@ -1,9 +1,7 @@
 #include "Gamemanager.h"
 
-Gamemanager::Gamemanager(DX11Handler& dx11)
+Gamemanager::Gamemanager(DX11Handler* dx11) : dxhandler(dx11)
 {
-	this->dxhandler = &dx11;
-
 	this->music = new SoundHandler();	
 	this->musicVol = 0.5f;
 	this->music->SetGlobalVolume(this->musicVol);
@@ -11,6 +9,10 @@ Gamemanager::Gamemanager(DX11Handler& dx11)
 	this->soundeffect = new SoundHandler();
 	this->soundVol = 1.0f;
 	this->soundeffect->SetGlobalVolume(this->soundVol);
+
+	// Load sounds
+	LoadSoundEffects();
+	LoadMusicTracks();
 
 	// Level soundtrack from start
 	this->currentTrack = 1;			// 1 | 2 | 3 - Track1 | Track2 | Track3
@@ -21,7 +23,7 @@ Gamemanager::Gamemanager(DX11Handler& dx11)
 	this->difficultystate = 1;		// 1 = easy | 2 = medium | 3 = hard
 	this->timer = 120.0f;			// 120.0f	| 160.0f	 | 200.0f 
 	this->nrOfEnemies = 20;			// 20st		| 40st		 | 60st
-
+	this->activeEnemies = 5;		// 5st		| 7st		 | 9st
 
 	// Get latest highscore list ---
 	highscoreFiles.open("Datafiles/Highscore.txt");
@@ -35,8 +37,8 @@ Gamemanager::Gamemanager(DX11Handler& dx11)
 	
 	// Display current textfile
 	for (int i = 0; i < MAXSCORES; i++) {
-		displayPoints[i] = new GUIText(dx11, std::to_string(static_cast<int>(highscorePoints[i])), 0.0f, 0.0f);
-		displayNames[i] = new GUIText(dx11, highscorename[i], 0.0f, 0.0f);
+		displayPoints[i] = new GUIText(*dx11, std::to_string(static_cast<int>(highscorePoints[i])), 0.0f, 0.0f);
+		displayNames[i] = new GUIText(*dx11, highscorename[i], 0.0f, 0.0f);
 	}	
 	// Get latest highscore list ---
 }
@@ -48,6 +50,23 @@ Gamemanager::~Gamemanager()
 
 	this->soundeffect = nullptr;
 	this->soundeffect = 0;	
+}
+
+void Gamemanager::LoadSoundEffects()
+{
+	this->soundeffect->LoadSound("WinSound", "SoundEffects/tadaWin.wav");		// done
+	this->soundeffect->LoadSound("FailSound", "SoundEffects/Fail.wav");		// done
+
+	this->soundeffect->LoadSound("CoconutThrow", "SoundEffects/Explo1.wav");	// done
+	this->soundeffect->LoadSound("Swoosh", "SoundEffects/Swoosh.wav");		// done
+	this->soundeffect->LoadSound("Splash", "SoundEffects/Splash.wav");	// done
+	this->soundeffect->LoadSound("EnemyHit", "SoundEffects/Punch.wav");		// done
+	this->soundeffect->LoadSound("PlayerHit", "SoundEffects/playerHit.wav");	
+}
+
+void Gamemanager::LoadMusicTracks()
+{
+	
 }
 
 void Gamemanager::UpdateHighscore(GUI* gui, int score)

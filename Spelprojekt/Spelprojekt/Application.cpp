@@ -2,22 +2,27 @@
 
 Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(false)
 {
+	srand((int)time(0));
 	this->window.Initialize(); // initializes the win32 window
 	this->dx11.Initialize(this->window); // creates swapchain, device, deviceContext
 	this->deferredRenderer = new Renderer(this->window.GetWidth(), this->window.GetHeight(), timer, dx11);
 
 	// Opens the console
 	Logger::Open();
-	//Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
+	Logger::Write(LOG_LEVEL::Info, "Testing text output to console");
 		
 	// Gamemanager for..... everything?
-	this->gamemanager = new Gamemanager(dx11);
+	this->gamemanager = new Gamemanager(&dx11);
 
 	// default scene.. devScene at the moment. Different sceness for the actual game, main menu, game over(?) etc 
 	this->gameScene = new DevScene(this->deferredRenderer, this->dx11, this->window, scenes, gamemanager);
 	this->endScene = new EndScene(this->deferredRenderer, this->dx11, this->window, scenes, "EndScene", exitGame, gamemanager);
-	this->introScene = new IntroScene("IntroScene", this->deferredRenderer, this->dx11, this->window, scenes, exitGame, gamemanager);
+	this->introScene = new IntroScene(this->deferredRenderer, this->dx11, this->window, scenes, exitGame, gamemanager);
 	
+	gameScene->LoadResources();
+	endScene->LoadResources();
+	introScene->LoadResources();
+
 	scenes.push_back(endScene);
 	scenes.push_back(gameScene);
 	scenes.push_back(introScene);
