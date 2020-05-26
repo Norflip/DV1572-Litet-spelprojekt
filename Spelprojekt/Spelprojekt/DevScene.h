@@ -1,5 +1,6 @@
 #pragma once
 #include "Physics.h"
+#include "RaycastCallback.h"
 
 #include "Scene.h"
 #include "Logger.h"
@@ -51,6 +52,7 @@ private:
 	CameraController* controller;
 	Gamemanager* gamemanager;
 	SpawnObjects* spawner;
+	Physics physics;
 
 	GUIText* gametimerText;
 	GUIText* fpsText;
@@ -77,7 +79,6 @@ private:
 	float timeUntilEnd;
 	bool canWin;
 
-	Physics* phys;
 	Object* arrow;
 
 	const aiScene* assimpScene;

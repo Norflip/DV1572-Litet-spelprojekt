@@ -31,7 +31,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	this->spawner = new SpawnObjects(entities, &ground, gamemanager, dx11);
 	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
 	//this->spawner->SetMaxEnemies(10);
-
 }
 
 DevScene::~DevScene()
@@ -76,7 +75,7 @@ void DevScene::Load()
 
 
 	//// Testing physics FUNKAR EJ
-	phys->AddCollision(phys->ConvertMeshToConvexShape(dev_monkey_mesh), phys->CreateRigidBody(0.5f, 0.5f, 5.0f, 5.0f, 5.0f), 4.0f);
+	//physics->AddCollision(physics->ConvertMeshToConvexShape(dev_monkey_mesh), physics->CreateRigidBody(0.5f, 0.5f, 5.0f, 5.0f, 5.0f), 4.0f);
 
 
 
@@ -284,8 +283,6 @@ void DevScene::Update(const float& deltaTime)
 	this->cameraFocusPosition = player->GetTransform().GetPosition();
 	Scene::Update(deltaTime);
 
-	phys = new Physics(0.0f, 0.0f, 0.0f, deltaTime);
-
 	// fixa
 
 	// Change all weapons to vector
@@ -295,6 +292,17 @@ void DevScene::Update(const float& deltaTime)
 	//for (auto i : spoons)
 	//	player->UpdateHands(i);
 
+	// Create the ray 
+
+	rp3d::Vector3 start = physics.Convert(DirectX::XMVectorAdd(player->GetTransform().GetPosition(), { 0, -100, 0 }));
+	rp3d::Vector3 end = physics.Convert(DirectX::XMVectorAdd(player->GetTransform().GetPosition(), { 0, 100, 0 }));
+	rp3d::Ray ray(start, end);
+
+	// Create an instance of your callback class 
+	RaycastCallback callbackObject;
+	physics.GetWorld()->raycast(ray, &callbackObject);
+
+
 	//
 	UpdateGUI(deltaTime);
 }
@@ -302,6 +310,7 @@ void DevScene::Update(const float& deltaTime)
 void DevScene::FixedUpdate(const float& fixedDeltaTime)
 {
 	Scene::FixedUpdate(fixedDeltaTime);
+	//physics->Update(fixedDeltaTime);
 
 	this->player->GetMesh()->skeleton->AddKeyframe();
 
@@ -314,10 +323,7 @@ Scene* DevScene::GetNextScene() const
 
 void DevScene::CreateSceneObjects()
 {
-
 	Shader* billboard = new Shader();
-
-
 	billboard->LoadVertexShader(L"Shaders/Billboard_vs.hlsl", "main", dx11.GetDevice());
 	billboard->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
 	Object* plane = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/QuadInv.fbx", dx11, billboard));
@@ -336,7 +342,8 @@ void DevScene::CreateSceneObjects()
 		////////////////////////// MOUNTAINS /////////////////////////////
 		Object* mountain = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Mountain.fbx", dx11, defaultShader));
 		Object* mountains[2];
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 2; i++) 
+		{
 			mountains[i] = new Object(*mountain);
 			entities->InsertObject(mountains[i]);
 		}			
@@ -348,7 +355,9 @@ void DevScene::CreateSceneObjects()
 		mountains[1]->GetTransform().Translate(30.0f, 4.0f, 170.0f);
 		mountains[1]->GetTransform().Rotate(0.0f, 180.0f, 0.0f);
 			
-
+		//physics.CreateCollisionBodyConvex(mountains[0]);
+		//physics.CreateCollisionBodyConvex(mountains[1]);
+		
 		////////////////////////// ROCKS /////////////////////////////
 		Object* rocks = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Rocks.fbx", dx11, defaultShader));
 		entities->InsertObject(rocks);
@@ -379,6 +388,10 @@ void DevScene::CreateSceneObjects()
 
 		beachstands[2]->GetTransform().Translate(60, 7, 55);
 		beachstands[2]->GetTransform().SetRotation({ -0.1, 0.8, 0 });
+
+		physics.CreateCollisionBodyBox(beachstands[0]);
+		physics.CreateCollisionBodyBox(beachstands[1]);
+		physics.CreateCollisionBodyBox(beachstands[2]);
 					
 
 		////////////////////////// SUNCHAIR /////////////////////////////		
@@ -453,6 +466,10 @@ void DevScene::CreateSceneObjects()
 		sunChairs[20]->GetTransform().Translate(66, 6.5, 35);
 		sunChairs[20]->GetTransform().Rotate(-0.1f, -5.7, 0);
 			
+		for (int i = 0; i < 21; i++) 
+		{
+			physics.CreateCollisionBodyBox(sunChairs[i]);
+		}
 
 		////////////////////////// PARASOLLS /////////////////////////////
 		// Parasoll left beachside
@@ -607,6 +624,7 @@ void DevScene::CreateSceneObjects()
 		bungalow->GetTransform().Translate(30.0f, 7, 213.0f);
 		bungalow->GetTransform().SetRotation({ 0.0f, -0.9f, 0.0f });
 		entities->InsertObject(bungalow);
+
 
 		Object* gate = new Object(ObjectLayer::Enviroment, AssimpHandler::loadFbxObject("Models/Gate.fbx", dx11, defaultShader));
 		gate->GetTransform().Translate(60.0f, 6.2, 198);
