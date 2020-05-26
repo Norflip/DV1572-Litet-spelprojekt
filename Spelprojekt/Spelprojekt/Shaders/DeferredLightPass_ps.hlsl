@@ -82,9 +82,9 @@ float4 main(PixelInputType input) : SV_TARGET
 	float shininess = position.a;
 
 	//return position;
-
-	//if (position.w == 0.0f)
-	//	discard;
+	
+	if (position.w == 0.0f)
+		discard;
 
 	//float4 albedo = albedoTexture.Sample(ssaoSamplerState, input.uv);
 	float4 albedo = albedoTexture.Sample(ssaoSamplerState, input.uv);
@@ -192,7 +192,7 @@ float4 main(PixelInputType input) : SV_TARGET
 			}
 		}
 
-		visibility = saturate(0.1f + visibility);
+		visibility = saturate(0.3f + visibility);
 	}
 
 
@@ -200,5 +200,5 @@ float4 main(PixelInputType input) : SV_TARGET
 
 	float gamma = 2.2f;
 	float t = 1.0f - (ssaoResult * visibility);
-	return saturate(lerp(pow(finalColor, 1.0f / gamma), float4(0,0,0,1), t));
+	return saturate(pow(lerp(finalColor, float4(0,0,0,1), t), 1.0f / gamma));
 }

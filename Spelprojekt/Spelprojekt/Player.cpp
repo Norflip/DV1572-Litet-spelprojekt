@@ -372,6 +372,7 @@ Weapon* Player::CopyWeapon(Weapon* weapon)
 		Projectile* proj = static_cast<Projectile*>(weapon);
 		curr = new Projectile(*proj);
 		curr->SetType(weapon->GetType());
+		curr->SetLayer(ObjectLayer::None);
 		curr->gamemanager = this->gamemanager;
 	}
 	else if (weapon->GetType() == WeaponType::Spoon)
@@ -379,8 +380,10 @@ Weapon* Player::CopyWeapon(Weapon* weapon)
 		Spoon* spoonweap = static_cast<Spoon*>(weapon);
 		curr = new Spoon(*spoonweap);
 		curr->SetType(weapon->GetType());
+
+		curr->SetLayer(ObjectLayer::None);
 		curr->gamemanager = this->gamemanager;
-		scene->GetEntities()->RemoveObject(curr);
+		//scene->GetEntities()->RemoveObject(curr);
 	}
 
 	return curr;
