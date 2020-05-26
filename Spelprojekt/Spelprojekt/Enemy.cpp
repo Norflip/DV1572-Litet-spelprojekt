@@ -15,7 +15,7 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 
 	this->gamemanager = gamemanager;
-	this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
+	//this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
 }
 
 
@@ -32,7 +32,7 @@ Enemy::Enemy(const Enemy& other)
 	this->SetLayer(other.GetLayer());
 
 	this->gamemanager = other.gamemanager;
-	this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
+	//this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
 	this->GetMesh()->skeleton = other.GetMesh()->skeleton;
 	float stop = 0;
 }
@@ -84,7 +84,7 @@ void Enemy::SetTarget(Player* player)
 
 void Enemy::HitSound()
 {
-	gamemanager->GetSoundeffectHandler()->PlaySound("HitEnemy", gamemanager->GetCurrentSoundVolume());
+	gamemanager->GetSoundeffectHandler()->PlaySound("EnemyHit", gamemanager->GetCurrentSoundVolume());
 }
 
 Object* Enemy::GetFBXModel()

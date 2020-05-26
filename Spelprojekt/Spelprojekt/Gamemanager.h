@@ -14,7 +14,9 @@ public:
 
 	SoundHandler* GetMusicHandler() { return this->music; }
 	SoundHandler* GetSoundeffectHandler() { return this->soundeffect; }
-	
+	void LoadSoundEffects();
+	void LoadMusicTracks();
+
 	// Musictrack settings
 	void SetCurrentTrack(int i) { this->currentTrack = i; }
 	int GetCurrentTrack() { return this->currentTrack; }

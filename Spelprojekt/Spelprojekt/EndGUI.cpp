@@ -5,7 +5,7 @@ EndGUI::EndGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, 
     this->currentScene = scenes;
     this->gui = gui;
     this->input = cameraController->getInput();
-
+    this->playedOnce = false;
     this->gamemanager = gamemanager;
 }
 
@@ -35,11 +35,15 @@ void EndGUI::Restart()
     GUISprite* restart = static_cast<GUISprite*>(gui->GetGUIList()->at("restart"));
     if (restart->Clicked(input))
     {
+        playedOnce = false;
         currentScene->SetNextScene("game");
+        
     }
     GUISprite* quit = static_cast<GUISprite*>(gui->GetGUIList()->at("quit"));
     if (quit->Clicked(input))
     {
+
+        playedOnce = false;
         menu = Menu::quit;
         first = true;
     }
@@ -47,7 +51,9 @@ void EndGUI::Restart()
     GUISprite* intro = static_cast<GUISprite*>(gui->GetGUIList()->at("menu"));
     if (intro->Clicked(input))
     {
+        playedOnce = false;
         currentScene->SetNextScene("intro");
+        
     }
 
 
@@ -88,8 +94,8 @@ void EndGUI::LoadStart()
        this->gamemanager->GetMusicHandler()->DeleteTrack("Levelsound");
 
        if (!playedOnce) {
-           this->gamemanager->GetSoundeffectHandler()->LoadSound("Win", "SoundEffects/tadaWin.wav");
-           this->gamemanager->GetSoundeffectHandler()->PlaySound("Win", gamemanager->GetCurrentSoundVolume());
+          // this->gamemanager->GetSoundeffectHandler()->LoadSound("Win", "SoundEffects/tadaWin.wav");
+           this->gamemanager->GetSoundeffectHandler()->PlaySound("WinSound", gamemanager->GetCurrentSoundVolume());
            playedOnce = true;
        }
 
@@ -101,8 +107,8 @@ void EndGUI::LoadStart()
         this->gamemanager->GetMusicHandler()->StopSound();
         this->gamemanager->GetMusicHandler()->DeleteTrack("Levelsound");
         if (!playedOnce) {
-            this->gamemanager->GetSoundeffectHandler()->LoadSound("Lose", "SoundEffects/Fail.wav");
-            this->gamemanager->GetSoundeffectHandler()->PlaySound("Lose", gamemanager->GetCurrentSoundVolume());
+          //  this->gamemanager->GetSoundeffectHandler()->LoadSound("Lose", "SoundEffects/Fail.wav");
+            this->gamemanager->GetSoundeffectHandler()->PlaySound("FailSound", gamemanager->GetCurrentSoundVolume());
             playedOnce = true;
         }        
     }

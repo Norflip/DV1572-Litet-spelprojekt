@@ -10,7 +10,7 @@ Spoon::Spoon(AssimpHandler::AssimpData model, Gamemanager* gamemanager, Terrain*
 	this->weaponDamage = 5.0f;
 
 //	this->gamemanager->GetSoundeffectHandler()->LoadSound("Break", "SoundEffects/spoonbreak.wav");
-
+	this->gamemanager = gamemanager;
 	this->used = 0;
 }
 
@@ -22,7 +22,7 @@ Spoon::Spoon(const Spoon& other) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup
 
 	this->weaponSprite = other.weaponSprite;
 	this->weaponDamage = other.weaponDamage;
-
+	this->gamemanager = other.gamemanager;
 	this->attack = false;
 	this->used = 0;
 }

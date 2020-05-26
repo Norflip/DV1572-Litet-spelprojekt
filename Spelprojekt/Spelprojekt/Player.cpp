@@ -54,6 +54,10 @@ void Player::TakeDamage()
 	{
 		//playerHealth -= 10.0f;
 
+
+
+		
+
 	}
 }
 
@@ -351,7 +355,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			weapon->PlaySoundEffect();
 			weapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			weapon->direction = GetTransform().GetRotation();
-			weapon->PlaySoundEffect();
+			weapon->PlayBreaksound();
 
 			scene->GetEntities()->RemoveObject(weapon);
 

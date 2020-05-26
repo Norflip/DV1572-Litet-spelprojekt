@@ -16,8 +16,8 @@ public:
 	void MeleeAttack(float deltaTime);
 	
 	void FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);	
-	void PlaySoundEffect() override { gamemanager->GetSoundeffectHandler()->PlaySound("Swooshsound", gamemanager->GetCurrentSoundVolume()); }
-	void PlayBreaksound() override { gamemanager->GetSoundeffectHandler()->PlaySound("Break", gamemanager->GetCurrentSoundVolume()); }
+	void PlaySoundEffect() override { gamemanager->GetSoundeffectHandler()->PlaySound("Spoonhit", gamemanager->GetCurrentSoundVolume()); }
+	void PlayBreaksound() override { gamemanager->GetSoundeffectHandler()->PlaySound("Spoonbreak", gamemanager->GetCurrentSoundVolume()); }
 	void Use() override { this->used++; };
 	int CheckUsage() override { return this->used; }
 
