@@ -9,10 +9,13 @@ IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraControll
     this->gamemanager = gamemanager;
     this->currentMusicVolume = gamemanager->GetCurrentMusicVolume();
     this->currentSoundVolume = gamemanager->GetCurrentSoundVolume();
+    nr = 0;
 }
 
 IntroGUI::~IntroGUI()
 {    
+    delete gamemanager;
+
 }
 
 void IntroGUI::Update()
@@ -92,6 +95,8 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy_active.png";
         lastMedium = "Sprites/medium.png";
         lastHard = "Sprites/hard.png";
+        gamemanager->SetEnemyHealth(10);
+        gamemanager->SetEnemyDamage(5);
         gamemanager->SetActiveEnemies(5);
         gamemanager->SetTotalEnemies(20);
         gamemanager->SetTimer(120.0f);
@@ -100,6 +105,8 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy.png";
         lastMedium = "Sprites/medium_active.png";
         lastHard = "Sprites/hard.png";
+        gamemanager->SetEnemyHealth(20);
+        gamemanager->SetEnemyDamage(10);
         gamemanager->SetActiveEnemies(7);
         gamemanager->SetTotalEnemies(40);
         gamemanager->SetTimer(160.0f);
@@ -108,6 +115,8 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy.png";
         lastMedium = "Sprites/medium.png";
         lastHard = "Sprites/hard_active.png";
+        gamemanager->SetEnemyHealth(30);
+        gamemanager->SetEnemyDamage(15);
         gamemanager->SetActiveEnemies(9);
         gamemanager->SetTotalEnemies(60);
         gamemanager->SetTimer(200.0f);
@@ -749,6 +758,7 @@ void IntroGUI::ClearGUI()
         // Do stuff
         GUIObject* test = it.second;
         delete test;
+
     }
     gui->GetGUIList()->clear();
 }

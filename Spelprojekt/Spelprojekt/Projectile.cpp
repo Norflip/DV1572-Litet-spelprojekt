@@ -13,6 +13,8 @@ Projectile::Projectile(AssimpHandler::AssimpData modelData, Gamemanager* gameman
 	this->entities = entities;
 	this->player = nullptr;
 	this->movementspeed = 30;
+
+	this->damage = 10.0f;
 }
 
 Projectile::Projectile(const Projectile& other) : Weapon(WeaponType::Coconut, ObjectLayer::Pickup, other.gamemanager, other.GetMesh(), other.GetMaterial(), other.entities)
@@ -29,6 +31,8 @@ Projectile::Projectile(const Projectile& other) : Weapon(WeaponType::Coconut, Ob
 	this->entities = other.entities;
 	this->player = nullptr;
 	this->movementspeed = other.movementspeed;
+
+	this->damage = other.damage;
 }
 
 Projectile::~Projectile()
@@ -51,23 +55,8 @@ void Projectile::rangedAttack(float deltaTime)
 	GetTransform().SetRotation({ (GetTransform().GetRotation().m128_f32[0] + (-8.f * deltaTime)) ,GetTransform().GetRotation().m128_f32[1]  ,GetTransform().GetRotation().m128_f32[2] });		
 }
 
-void Projectile::UpdateHitPlayer()
-{
-	if (this->player != nullptr && this != nullptr)
-	{
-		if (this->GetWorldBounds().Overlaps(this->player->GetWorldBounds()))
-		{
-			std::cout << "HIT PLAYER" << std::endl;
-			this->player->TakeDamage();
-			entities->RemoveObject(this);
-		}
-	}
-}
-
 void Projectile::Update(const float& deltaTime)
 {
 	if(attack)
 		rangedAttack(deltaTime);
-
-	UpdateHitPlayer();
 }

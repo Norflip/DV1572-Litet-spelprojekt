@@ -65,6 +65,6 @@ private:
 	bool tracktwoChecked;
 	bool trackthreeChecked;		
 	//	-	-	//	-	-	//	
-
+	int nr;
 	std::string lastEasy, lastMedium, lastHard;
 };

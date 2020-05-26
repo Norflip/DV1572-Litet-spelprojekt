@@ -8,19 +8,21 @@ EndScene::EndScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	window.GetInput()->LockCursor(false);
 
 	this->didWin = false;
-	this->gamemanager = gamemanager;
 
+	this->gamemanager = gamemanager;	
 	this->gui = new GUI(dx11);
-	this->endGUI = new EndGUI(gui, dx11, controller, this, gamemanager);
 }
 
 EndScene::~EndScene()
 {
+	delete gui;
+	delete endGUI;
 	delete controller;
 }
 
 void EndScene::Load()
-{
+{		
+	this->endGUI = new EndGUI(gui, dx11, controller, this, gamemanager);
 	renderer->SetGUI(gui);
 }
 

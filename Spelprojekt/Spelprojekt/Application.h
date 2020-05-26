@@ -18,7 +18,7 @@ class Application
 
 public:
 
-	//constructor & destructor
+	//Constructor & destructor
 	Application(HINSTANCE);
 	virtual ~Application();
 
@@ -31,6 +31,7 @@ public:
 	void SetPaused(bool pause) { this->pauseGame = pause; }
 
 	bool exitGame = false;
+
 private:
 	// Variables
 	Window window;

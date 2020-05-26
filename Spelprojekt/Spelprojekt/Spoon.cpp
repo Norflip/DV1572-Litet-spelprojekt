@@ -14,6 +14,7 @@ Spoon::Spoon(AssimpHandler::AssimpData model, Gamemanager* gamemanager, Terrain*
 	this->used = 0;
 	this->player = nullptr;
 	this->entities = entities;
+	this->damage = 15.0f;
 }
 
 Spoon::Spoon(const Spoon& other) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup, other.gamemanager, other.GetMesh(), other.GetMaterial(), other.entities)
@@ -30,6 +31,7 @@ Spoon::Spoon(const Spoon& other) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup
 	this->player = nullptr;
 	this->entities = other.entities;
 	this->movementspeed = 0;
+	this->damage = other.damage;
 }
 
 Spoon::~Spoon()

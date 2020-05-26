@@ -18,12 +18,13 @@ IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, st
 	gamemanager->GetSoundeffectHandler()->SetGlobalVolume(gamemanager->GetCurrentSoundVolume());
 	gamemanager->GetMusicHandler()->LoadSound("Monster", "SoundEffects/MonstersInc.wav");
 	gamemanager->GetMusicHandler()->SetGlobalVolume(gamemanager->GetCurrentMusicVolume());	
+
+	// Gui
+	gui = new GUI(dx11);
 }
 
 IntroScene::~IntroScene()
-{
-	delete gui;
-	delete introGUI;
+{	
 	delete controller;
 }
 
@@ -31,21 +32,23 @@ void IntroScene::Load()
 {	
 	// Set music volume from beginning		
 	gamemanager->GetMusicHandler()->PlaySound("Monster", gamemanager->GetCurrentMusicVolume());	
+
+	// Gui
+	introGUI = new IntroGUI(gui, dx11, controller, this, gamemanager);
 	renderer->SetGUI(gui);
 		
+
 	Object* glasse = new Object(ObjectLayer::Enviroment, resources.GetModel("playerModel"));
 	glasse->GetTransform().Translate(0, 0.65+9, -3);
 	glasse->GetTransform().Rotate(0, -0.6, 0);
-	entities->InsertObject(glasse);
-	
+	entities->InsertObject(glasse);	
 
 	Object* wagon = new Object(ObjectLayer::Enviroment, resources.GetModel("wagonModel"));
 	wagon->GetTransform().Translate(7, -1.75+10, 1);
 	wagon->GetTransform().Rotate(0, 0.1, 0);
 	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
 	entities->InsertObject(wagon);
-	controller->SetFollow(&glasse->GetTransform(), { 0, 1, 0 });
-	
+	controller->SetFollow(&glasse->GetTransform(), { 0, 1, 0 });	
 
 	//// ------- BACKGROUND
 
@@ -130,8 +133,7 @@ void IntroScene::LoadResources()
 		GUI
 	*/
 
-	gui = new GUI(dx11);
-	introGUI = new IntroGUI(gui, dx11, controller, this, gamemanager);
+	
 }
 
 void IntroScene::Update(const float& deltaTime)
@@ -147,7 +149,6 @@ Scene* IntroScene::GetNextScene() const
 {
 	return nextScene;
 }
-
 
 void IntroScene::setNextScene()
 {

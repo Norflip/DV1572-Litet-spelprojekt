@@ -21,6 +21,8 @@ public:
 	void PlaySoundEffect() override { this->gamemanager->GetSoundeffectHandler()->PlaySound("Swoosh", gamemanager->GetCurrentSoundVolume()); }
 	void SetReferenceToPlayer(Player* player) override { this->player = player; }
 	void SetWeaponSpeed(int value) override { this->movementspeed = value; };
+	float AttackDamage() override { return this->damage; }
+
 	void UpdateHitPlayer();
 
 private:

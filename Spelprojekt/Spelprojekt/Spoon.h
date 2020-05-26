@@ -23,6 +23,7 @@ public:
 	void PlayBreaksound() override { gamemanager->GetSoundeffectHandler()->PlaySound("Splash", gamemanager->GetCurrentSoundVolume()); }
 	void Use() override { this->used++; };
 	int CheckUsage() override { return this->used; }
+	float AttackDamage() override { return this->damage; }
 
 	void SetReferenceToPlayer(Player* player) override { this->player = player; }
 

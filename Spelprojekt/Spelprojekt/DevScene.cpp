@@ -4,10 +4,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 {
 	//----- GUI SHIET |  Set gui last |
 
-
-	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
-	window.GetInput()->LockCursor(false);
-
 	Lights& lights = renderer->GetLights();
 	lights.SetSunDirection({ 0, -1, 0 });
 	lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
@@ -20,7 +16,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 
 	gametimerText = new GUIText(dx11, "Time until extraction", window.GetWidth() / 2.0f - 150.0f, 0);
 	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f - 100.0f, 30);
-
 	totalScore = new GUIText(dx11, "Score", 210.0f, 5.0f);
 	totalScore->SetFontSize({ 3.0f, 3.0f });
 	totalScore->SetFontColor({ 1,0,0,1 });
@@ -29,43 +24,29 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	totalEnemies->SetFontSize({ 2.0f, 2.0f });
 	totalEnemies->SetFontColor({ 0.5,1,0,1 });
 
+	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
+	window.GetInput()->LockCursor(false);
+
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
 	actionbarRight = new GUIActionbar(dx11, "Sprites/Actionbar.png", 400.0f, 650.0f);
 	score = new GUISprite(dx11, "Sprites/score.png", 10.0f, 19.0f);
 	enemies = new GUISprite(dx11, "Sprites/enemiesleft.png", 10, 80);
-
 	healthbar = new GUISprite(dx11, "Sprites/Healthbar.png", 10.0f, 650.0f);
-
+	healthbar->HealthBar(100.0f, 100.0f);
 	//--------------------------------
-	gui = new GUI(dx11);
-
-	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
-	// Add objects
-	gui->AddGUIObject(gametimerText, "gametimerText");
-	gui->AddGUIObject(fpsText, "fpsText");
-	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
-	gui->AddGUIObject(actionbarRight, "actionbarRight");
-	gui->AddGUIObject(score, "score");
-	gui->AddGUIObject(totalScore, "totalscore");
-	gui->AddGUIObject(enemies, "enemiesleft");
-	gui->AddGUIObject(totalEnemies, "totalenemiesleft");
-
-	gui->AddGUIObject(healthbar, "healthbar");
-	gui->AddGUIObject(healthFrame, "healthFrame");
+	
+	gui = new GUI(dx11);	
 }
 
 DevScene::~DevScene()
-{
-	delete gui;
+{		
 	delete controller;
 }
 
 void DevScene::Load()
 {
-	healthbar->HealthBar(100.0f, 100.0f);
-	renderer->SetGUI(gui); 	// Set GUI
 
 	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
 	this->timeUntilEnd = 10.0f; // gamemanager->GetTimer();		// get time from gamemanager
@@ -73,8 +54,6 @@ void DevScene::Load()
 
 	Timer testSpeed;
 	testSpeed.Start();
-
-
 
 	// Exit Wagon
 	Object* wagon = new Object(ObjectLayer::Enviroment, resources.GetModel("wagonModel"));
@@ -120,6 +99,21 @@ void DevScene::Load()
 	arrow->SetVisible(false);
 
 
+	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
+	// Add objects
+	gui->AddGUIObject(gametimerText, "gametimerText");
+	gui->AddGUIObject(fpsText, "fpsText");
+	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
+	gui->AddGUIObject(actionbarRight, "actionbarRight");
+	gui->AddGUIObject(score, "score");
+	gui->AddGUIObject(totalScore, "totalscore");
+	gui->AddGUIObject(enemies, "enemiesleft");
+	gui->AddGUIObject(totalEnemies, "totalenemiesleft");
+	gui->AddGUIObject(healthbar, "healthbar");
+	gui->AddGUIObject(healthFrame, "healthFrame");
+
+	// Set GUI
+	renderer->SetGUI(gui); 	// Set GUI
 
 	gametimer.Start();
 

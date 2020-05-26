@@ -22,7 +22,7 @@ public:
 	void PlaySoundEffect() override { this->gamemanager->GetSoundeffectHandler()->PlaySound("CoconutThrow", gamemanager->GetCurrentSoundVolume()); }
 	void SetReferenceToPlayer(Player* player) override { this->player = player; }
 	void SetWeaponSpeed(int value) override { this->movementspeed = value; };
-	void UpdateHitPlayer();
+	float AttackDamage() override { return this->damage; }
 	
 private:	
 	Player* player;
