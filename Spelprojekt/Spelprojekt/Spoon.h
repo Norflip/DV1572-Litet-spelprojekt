@@ -19,13 +19,12 @@ public:
 	void MeleeAttack(float deltaTime);
 	
 	void FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);	
-	void PlaySoundEffect() override { gamemanager->GetSoundeffectHandler()->PlaySound("Spoonhit", gamemanager->GetCurrentSoundVolume()); }
-	void PlayBreaksound() override { gamemanager->GetSoundeffectHandler()->PlaySound("Spoonbreak", gamemanager->GetCurrentSoundVolume()); }
+	void PlaySoundEffect() override { gamemanager->GetSoundeffectHandler()->PlaySound("Swoosh", gamemanager->GetCurrentSoundVolume()); }
+	void PlayBreaksound() override { gamemanager->GetSoundeffectHandler()->PlaySound("Splash", gamemanager->GetCurrentSoundVolume()); }
 	void Use() override { this->used++; };
 	int CheckUsage() override { return this->used; }
 
 	void SetReferenceToPlayer(Player* player) override { this->player = player; }
-
 
 private:	
 	Player* player;

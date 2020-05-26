@@ -53,7 +53,7 @@ void Player::TakeDamage()
 {
 	if (playerHealth != 0.0f)
 	{
-		playerHealth -= 10.0f;
+		//playerHealth -= 10.0f;
 		// INSERT SOUND WHEN IT WORKS...........................
 	}
 }
@@ -299,11 +299,11 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		DirectX::XMVECTOR aimDirection = GetAimDirection();
 		weapon->TriggerAttack(GetTransform().GetPosition(), aimDirection);
 		weapon->direction = aimDirection;
-		weapon->gamemanager = this->gamemanager;
+		//weapon->gamemanager = this->gamemanager;
 		weapon->PlaySoundEffect();
-
-		scene->GetEntities()->InsertObject(weapon);
 		SetActiveWeapon(static_cast<Weapon*>(weapon));
+		scene->GetEntities()->InsertObject(weapon);
+		
 		hand = false;
 		GetTransform().SetRotation(aimDirection);
 		this->rangedAttacking = true;

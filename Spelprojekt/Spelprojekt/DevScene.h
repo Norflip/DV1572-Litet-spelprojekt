@@ -9,6 +9,7 @@
 #include "Terrain.h"
 #include "assimpHandler.h"
 
+#include "Icecream.h"
 #include "Projectile.h"
 #include "Spoon.h"
 #include "Timer.h"

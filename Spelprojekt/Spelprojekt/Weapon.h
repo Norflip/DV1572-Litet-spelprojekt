@@ -6,6 +6,7 @@
 #include "GUIActionbar.h"
 #include "Gamemanager.h"
 #include "Entities.h"
+//#include "Player.h"
 
 class Player;
 
@@ -13,6 +14,7 @@ enum class WeaponType
 {
 	Coconut = 0,
 	Spoon = 1,
+	Icecream = 2,
 };
 
 class Weapon : public Object
@@ -43,11 +45,12 @@ public:
 	DirectX::XMVECTOR direction;
 	DirectX::XMVECTOR nextPos;
 	Gamemanager* gamemanager;
-	Entities* entities;
-
+	Entities* entities;	
 	
 protected:	
-	//Player* player
+	int movementspeed;	
+
+	//Player* player;
 	WeaponType type;
 	GUIActionbar* weaponSprite;	
 	bool attack;

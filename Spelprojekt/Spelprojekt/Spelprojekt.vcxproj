@@ -184,6 +184,7 @@
     <ClCompile Include="Gamemanager.cpp" />
     <ClCompile Include="GUIActionbar.cpp" />
     <ClCompile Include="GUISprite.cpp" />
+    <ClCompile Include="Icecream.cpp" />
     <ClCompile Include="IntroGUI.cpp" />
     <ClCompile Include="IntroScene.cpp" />
     <ClCompile Include="Joint.cpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Entities.h" />
     <ClInclude Include="Gamemanager.h" />
+    <ClInclude Include="Icecream.h" />
     <ClInclude Include="IntroGUI.h" />
     <ClInclude Include="IntroScene.h" />
     <ClInclude Include="Joint.h" />
