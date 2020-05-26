@@ -259,19 +259,21 @@ void DevScene::LoadResources()
 	/*
 		PREFABS
 	*/
+	
 
-	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), &terrainMesh, dx11, gamemanager);
+	Projectile* coconutPrefab = new Projectile(resources.GetModel("coconutModel"), gamemanager, &terrainMesh, dx11, entities);
+	resources.AddResource("coconutPrefab", coconutPrefab);
+
+	Spoon* spoonPrefab = new Spoon(resources.GetModel("spoonModel"), gamemanager, &terrainMesh, dx11, entities);
+	resources.AddResource("spoonPrefab", spoonPrefab);
+
+
+	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), coconutPrefab, &terrainMesh, dx11, this, gamemanager);
 	enemyPrefab1->GetTransform().Translate(30, 7, 35);
 	enemyPrefab1->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	enemyPrefab1->SetTarget(player);
 	enemyPrefab1->SetEnabled(false);
 	resources.AddResource("enemyPrefab1", enemyPrefab1);
-
-	Projectile* coconutPrefab = new Projectile(resources.GetModel("coconutModel"), gamemanager, &terrainMesh, dx11);
-	resources.AddResource("coconutPrefab", coconutPrefab);
-
-	Spoon* spoonPrefab = new Spoon(resources.GetModel("spoonModel"), gamemanager, &terrainMesh, dx11);
-	resources.AddResource("spoonPrefab", spoonPrefab);
 
 	/*
 		GUI

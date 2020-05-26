@@ -1,6 +1,6 @@
 #include "Spoon.h"
 
-Spoon::Spoon(AssimpHandler::AssimpData model, Gamemanager* gamemanager, Terrain* terrain, DX11Handler& dx11) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup, gamemanager, model)
+Spoon::Spoon(AssimpHandler::AssimpData model, Gamemanager* gamemanager, Terrain* terrain, DX11Handler& dx11, Entities* entities) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup, gamemanager, model, entities)
 {
 	//this->movementspeeds = 3;
 	this->direction = { 0,0,0 }; // makes us shoot in the direction of the object initial rotation
@@ -12,9 +12,11 @@ Spoon::Spoon(AssimpHandler::AssimpData model, Gamemanager* gamemanager, Terrain*
 //	this->gamemanager->GetSoundeffectHandler()->LoadSound("Break", "SoundEffects/spoonbreak.wav");
 	this->gamemanager = gamemanager;
 	this->used = 0;
+	this->player = nullptr;
+	this->entities = entities;
 }
 
-Spoon::Spoon(const Spoon& other) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup, other.gamemanager, other.GetMesh(), other.GetMaterial())
+Spoon::Spoon(const Spoon& other) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup, other.gamemanager, other.GetMesh(), other.GetMaterial(), other.entities)
 {
 	GetTransform().SetPosition(other.GetTransform().GetPosition());
 	GetTransform().SetRotation(other.GetTransform().GetRotation());
@@ -25,6 +27,8 @@ Spoon::Spoon(const Spoon& other) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup
 	this->gamemanager = other.gamemanager;
 	this->attack = false;
 	this->used = 0;
+	this->player = nullptr;
+	this->entities = other.entities;
 }
 
 Spoon::~Spoon()
