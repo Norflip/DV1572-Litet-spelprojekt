@@ -43,10 +43,6 @@ void Application::Run()
 	ZeroMemory(&msg, sizeof(MSG));
 	timer.Start();
 
-	float timeLastFrame = static_cast<float>(timer.GetMilisecondsElapsed() / 1000.0f);
-	float fixedTimeAccumulation = 0.0f;
-	float currentTime, deltaTime;
-
 	while (TRUE)
 	{
 		// Redirects the messages to the static WindowProc in Window.cpp
@@ -96,3 +92,4 @@ void Application::Run()
 		}
 	}	
 }
+

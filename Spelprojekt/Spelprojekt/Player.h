@@ -1,4 +1,5 @@
 #pragma once
+#include "WorldContext.h"
 #include "Input.h"
 #include "Terrain.h"
 #include "CameraController.h"
@@ -18,7 +19,7 @@ class Player : public Object
 	const float playerHeight = 3;
 
 public:
-	Player(AssimpHandler::AssimpData modelData, CameraController* controller, SpawnObjects* spawner, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler&, Scene* scene);
+	Player(AssimpHandler::AssimpData modelData, CameraController* controller, GUI* gui, WorldContext context);
 	~Player();
 
 	void Update(const float& deltaTime) override;	
@@ -34,7 +35,7 @@ public:
 	void SetActiveWeapon(Weapon*);
 	DirectX::XMVECTOR GetAimDirection() const;	
 
-	void SetArrow(Object*);
+	void SetTargetAndArrow(Object* arrow, Object* winObject);
 	void UpdateLookAtPosition();
 
 	int GetPoints() { return this->points; }
@@ -56,14 +57,10 @@ private:
 	void UpdateAnimations();
 
 private:
-	Scene* scene;
 	Input* input;
-	DX11Handler& dx11;
 	CameraController* controller;
-	Terrain* terrain;
-	Gamemanager* gamemanager;
-	SpawnObjects* spawner;
 	GUI* gui;
+	WorldContext context;
 
 	// Weapon stuff
 	Weapon* rightWeapon;

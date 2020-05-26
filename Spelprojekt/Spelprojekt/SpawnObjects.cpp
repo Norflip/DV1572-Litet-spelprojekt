@@ -45,7 +45,7 @@ void SpawnObjects::SpawnInitial()
 
 			clone = new Projectile(*coconut);
 			clone->GetTransform().SetPosition({ x,y,z });
-			clone->gamemanager = this->gamemanager;
+			//clone->context = ;
 			entities->InsertObject(clone);
 		}
 	}
@@ -66,7 +66,7 @@ void SpawnObjects::SpawnInitial()
 
 		clone->SetType(WeaponType::Spoon);
 		clone->GetTransform().SetPosition(GetRandomSpawnPosition(1.0f));
-		clone->gamemanager = this->gamemanager;
+		//clone->gamemanager = this->gamemanager;
 		entities->InsertObject(clone);
 	}
 
@@ -97,7 +97,7 @@ void SpawnObjects::Update(const float& deltaTime)
 
 			clone->GetTransform().SetPosition(respawnTimers[i].position);
 			clone->GetTransform().SetRotation(respawnTimers[i].rotation);
-			clone->gamemanager = this->gamemanager;
+			//clone->gamemanager = this->gamemanager;
 			entities->InsertObject(clone);
 
 			respawnTimers.erase(respawnTimers.begin() + i);

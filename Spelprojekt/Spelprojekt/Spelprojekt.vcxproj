@@ -188,6 +188,7 @@
     <ClCompile Include="IntroGUI.cpp" />
     <ClCompile Include="IntroScene.cpp" />
     <ClCompile Include="Joint.cpp" />
+    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="Skeleton.cpp" />
@@ -237,7 +238,9 @@
     <ClInclude Include="IntroGUI.h" />
     <ClInclude Include="IntroScene.h" />
     <ClInclude Include="Joint.h" />
+    <ClInclude Include="Physics.h" />
     <ClInclude Include="QuadTree.h" />
+    <ClInclude Include="RaycastCallback.h" />
     <ClInclude Include="Resources.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="Spoon.h" />
@@ -282,6 +285,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Window.h" />
+    <ClInclude Include="WorldContext.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Lightning.hlsl">

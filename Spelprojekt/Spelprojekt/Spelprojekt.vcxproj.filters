@@ -150,6 +150,9 @@
     <ClCompile Include="DevScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Icecream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -305,7 +308,16 @@
     <ClInclude Include="DevScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RaycastCallback.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="Icecream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

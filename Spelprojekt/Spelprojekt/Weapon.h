@@ -6,6 +6,7 @@
 #include "GUIActionbar.h"
 #include "Gamemanager.h"
 #include "Entities.h"
+#include "WorldContext.h"
 //#include "Player.h"
 
 class Player;
@@ -21,8 +22,8 @@ class Weapon : public Object
 {
 public:
 
-	Weapon(WeaponType type, ObjectLayer layer, Gamemanager*, Mesh* mesh, Material* material, Entities* entities);
-	Weapon(WeaponType type, ObjectLayer layer, Gamemanager*, AssimpHandler::AssimpData model, Entities* entities);
+	Weapon(WeaponType type, ObjectLayer layer, Mesh* mesh, Material* material, WorldContext context);
+	Weapon(WeaponType type, ObjectLayer layer, AssimpHandler::AssimpData model, WorldContext context);
 	~Weapon();
 		
 	//void meleeAttack(float deltaTime);	//Ska sitta inne i slev // ska tas bort
@@ -46,8 +47,8 @@ public:
 
 	DirectX::XMVECTOR direction;
 	DirectX::XMVECTOR nextPos;
-	Gamemanager* gamemanager;
-	Entities* entities;	
+
+	WorldContext context;
 	
 protected:	
 	int movementspeed;	

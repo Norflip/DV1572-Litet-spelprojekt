@@ -7,6 +7,8 @@
 #include "DX11Handler.h"
 #include "Input.h"
 #include <stack>
+#include "Physics.h"
+
 #include "Timer.h"
 #include <vector>
 #include "EndScene.h"
@@ -48,6 +50,11 @@ private:
 
 	std::vector<Scene*>scenes;
 	Renderer* deferredRenderer;
+
+	float timeLastFrame = static_cast<float>(timer.GetMilisecondsElapsed() / 1000.0f);
+	float fixedTimeAccumulation = 0.0f;
+	float currentTime;
+	float deltaTime;
 
 	bool pauseGame = true;
 	Timer timer;
