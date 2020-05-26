@@ -5,6 +5,9 @@
 #include "Object.h"
 #include "GUIActionbar.h"
 #include "Gamemanager.h"
+#include "Entities.h"
+
+class Player;
 
 enum class WeaponType
 {
@@ -16,8 +19,8 @@ class Weapon : public Object
 {
 public:
 
-	Weapon(WeaponType type, ObjectLayer layer, Gamemanager*, Mesh* mesh, Material* material);
-	Weapon(WeaponType type, ObjectLayer layer, Gamemanager*, AssimpHandler::AssimpData model);
+	Weapon(WeaponType type, ObjectLayer layer, Gamemanager*, Mesh* mesh, Material* material, Entities* entities);
+	Weapon(WeaponType type, ObjectLayer layer, Gamemanager*, AssimpHandler::AssimpData model, Entities* entities);
 	~Weapon();
 		
 	//void meleeAttack(float deltaTime);	//Ska sitta inne i slev // ska tas bort
@@ -34,14 +37,17 @@ public:
 	virtual void PlaySoundEffect() {}
 	virtual void PlayBreaksound()  {}
 	virtual int CheckUsage() { return this->used; }
-	virtual void Use() {};
-
+	virtual void Use() {}; 
+	virtual void SetReferenceToPlayer(Player* player) {};
+	virtual void SetWeaponSpeed(int value) {};
 	DirectX::XMVECTOR direction;
 	DirectX::XMVECTOR nextPos;
 	Gamemanager* gamemanager;
+	Entities* entities;
 
+	
 protected:	
-
+	//Player* player
 	WeaponType type;
 	GUIActionbar* weaponSprite;	
 	bool attack;

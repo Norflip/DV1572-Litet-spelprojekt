@@ -41,7 +41,8 @@ void Player::Update(const float& deltaTime)
 
 	UpdateMeleeWeaponPosition();	// If spoon is equiped
 	UseWeapon();
-	TakeDamage();
+
+	//TakeDamage();
 
 	UpdateLookAtPosition();
 	UpdateAnimations();
@@ -50,14 +51,10 @@ void Player::Update(const float& deltaTime)
 
 void Player::TakeDamage()
 {
-	if (input->GetMouseButtonDown(1) && playerHealth != 0.0f)
+	if (playerHealth != 0.0f)
 	{
-		//playerHealth -= 10.0f;
-
-
-
-		
-
+		playerHealth -= 10.0f;
+		// INSERT SOUND WHEN IT WORKS...........................
 	}
 }
 

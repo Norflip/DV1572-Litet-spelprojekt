@@ -1,10 +1,13 @@
 #pragma once
 #include "Weapon.h"
+#include "Player.h"
+
+class Player;
 class Spoon 
 	: public Weapon
 {
 public:
-	Spoon(AssimpHandler::AssimpData model, Gamemanager* gamemanager, Terrain* terrain, DX11Handler& dx11);
+	Spoon(AssimpHandler::AssimpData model, Gamemanager* gamemanager, Terrain* terrain, DX11Handler& dx11, Entities* entities);
 	Spoon(const Spoon& other);
 
 	~Spoon();
@@ -21,5 +24,9 @@ public:
 	void Use() override { this->used++; };
 	int CheckUsage() override { return this->used; }
 
+	void SetReferenceToPlayer(Player* player) override { this->player = player; }
+
+
 private:	
+	Player* player;
 };
