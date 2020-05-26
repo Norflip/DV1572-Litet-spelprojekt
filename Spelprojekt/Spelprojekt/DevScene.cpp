@@ -272,7 +272,7 @@ void DevScene::LoadResources()
 	resources.AddResource("spoonPrefab", spoonPrefab);
 
 
-	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), icecreamPrefab, &terrainMesh, dx11, this, gamemanager);
+	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), icecreamPrefab, &terrainMesh, dx11, this, gamemanager, entities);
 	enemyPrefab1->GetTransform().Translate(30, 7, 35);
 	enemyPrefab1->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	enemyPrefab1->SetTarget(player);

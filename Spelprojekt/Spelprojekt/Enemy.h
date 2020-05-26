@@ -10,7 +10,7 @@ class Player;
 class Enemy : public Object
 {
 	public: 
-		Enemy(AssimpHandler::AssimpData modelData, Weapon* enemyweapon, Terrain* terrain, DX11Handler&, Scene* scene, Gamemanager* gamemanager);
+		Enemy(AssimpHandler::AssimpData modelData, Weapon* enemyweapon, Terrain* terrain, DX11Handler&, Scene* scene, Gamemanager* gamemanager, Entities* entity);
 		Enemy(const Enemy& other);
 		~Enemy();
 
@@ -35,13 +35,8 @@ class Enemy : public Object
 		DirectX::XMVECTOR velocity;
 		void UpdateHeight(float fixedDeltaTime);
 		void UpdateMovement(float fixedDeltaTime);
-
 		void UpdateTestBoids(float fixedDeltaTime);
-		float rX = (static_cast <float>(rand() % 200) - 100.0f) / 100.0f;
-		float rZ = (static_cast <float>(rand() % 200) - 100.0f) / 100.0f;
 		DirectX::XMVECTOR tVelocity;
-		DirectX::XMVECTOR acceleration;
-		DirectX::XMVECTOR maxForce;
 
 		Terrain* terrain;
 		float scaleY;

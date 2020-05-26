@@ -1,6 +1,6 @@
 #include "Enemy.h"
 
-Enemy::Enemy(AssimpHandler::AssimpData modelData, Weapon* enemyweapon, Terrain* terrain, DX11Handler& dx11, Scene* scene, Gamemanager* gamemanager)
+Enemy::Enemy(AssimpHandler::AssimpData modelData, Weapon* enemyweapon, Terrain* terrain, DX11Handler& dx11, Scene* scene, Gamemanager* gamemanager, Entities* entities)
 	: terrain(terrain), Object(ObjectLayer::Enemy, modelData.mesh, modelData.material)
 {
 	this->enemyweapon = new Weapon(*enemyweapon);
@@ -14,13 +14,8 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Weapon* enemyweapon, Terrain* 
 	// delete FBXModel? / F
 
 	this->velocity = { 2,0,2 };
-	//this->tVelocity = { 0,0,0 };
-	this->tVelocity = { rX, 0, rZ };
-	this->acceleration = { 0, 0, 0 };
-	this->maxForce = { 3,0,3 };
+	this->tVelocity = { 0,0,0 };
 
-	
-	this->movementspeed = 2.0f;
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 	this->entities = entities;
