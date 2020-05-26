@@ -340,9 +340,6 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			}
 
 			Logger::Write("INRANGE " + std::to_string(counter) + " / " + std::to_string(enemies.size()));
-
-
-
 		}
 		else
 		{

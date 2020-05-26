@@ -16,6 +16,7 @@
 #include "AABB.h"
 #include "SpawnObjects.h"
 #include "Enemy.h"
+#include "WorldContext.h"
 
 class DevScene : public Scene
 {
@@ -49,6 +50,8 @@ private:
 	CameraController* controller;
 	Gamemanager* gamemanager;
 	SpawnObjects* spawner;
+
+	WorldContext context;
 
 	GUI* gui;
 	GUIText* gametimerText;
