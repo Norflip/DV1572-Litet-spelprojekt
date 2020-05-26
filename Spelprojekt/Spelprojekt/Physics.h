@@ -1,5 +1,6 @@
 #pragma once
 #include "reactphysics3d.h"
+#include "Mesh.h"
 
 class Physics
 {
@@ -10,6 +11,7 @@ public:
 
 	rp3d::RigidBody* CreateRigidBody(float linearDamping, float angularDamping, float x, float y, float z);
 	rp3d::BoxShape* CreateBoxShape();
+	rp3d::ConvexMeshShape* ConvertMeshToConvexShape(Mesh*);
 
 private:
 

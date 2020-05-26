@@ -89,3 +89,55 @@ rp3d::BoxShape* Physics::CreateBoxShape()
 
     return boxShape;
 }
+
+rp3d::ConvexMeshShape* Physics::ConvertMeshToConvexShape(Mesh* mesh)
+{
+    float* vertices = new float[mesh->vertexes.size() * 3];
+    int* indices = new int[mesh->indices.size()];
+    int index = 0;
+
+    for (auto i = mesh->vertexes.begin(); i < mesh->vertexes.end(); i++)
+    {
+        DirectX::XMFLOAT3 v = (*i).position;
+        vertices[index + 0] = v.x;
+        vertices[index + 1] = v.y;
+        vertices[index + 2] = v.z;
+        index += 3;
+    }
+
+    index = 0;
+    for (auto i = mesh->indices.begin(); i < mesh->indices.end(); i++)
+    {
+        indices[index] = static_cast<int>(*i);
+        index++;
+    }
+    
+    int faces = mesh->indices.size() / 3;
+    rp3d::PolygonVertexArray::PolygonFace* face = new rp3d::PolygonVertexArray::PolygonFace[faces];
+
+    for (size_t i = 0; i < faces; i++)
+    {
+        face->indexBase = i * 3;
+        face->nbVertices = 3;
+        face++;
+    }
+
+    rp3d::PolygonVertexArray* vertexArray = new rp3d::PolygonVertexArray(
+        mesh->vertexes.size(),      // nr of vertices
+        vertices,                   // vertices start ? 
+        3 * sizeof(float),          // vertices stride? 
+        indices,                    // indexes start?       
+        sizeof(int),                // index stride
+        faces,                      // nr o faces
+        face,                       // polygon faces
+        rp3d::PolygonVertexArray::VertexDataType::VERTEX_FLOAT_TYPE, 
+        rp3d::PolygonVertexArray::IndexDataType::INDEX_INTEGER_TYPE
+    );
+
+    delete[] vertices;
+    delete[] indices;
+
+    rp3d::PolyhedronMesh* polyhedron = new rp3d::PolyhedronMesh(vertexArray);
+    rp3d::ConvexMeshShape* convexMesh = new rp3d::ConvexMeshShape(polyhedron);
+    return convexMesh;
+}
