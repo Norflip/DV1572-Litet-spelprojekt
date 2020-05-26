@@ -113,7 +113,7 @@ float Terrain::SampleHeight(float x, float z)
 	int col = (int)floorf(position.x);
 	int row = (int)floorf(position.z);
 
-	//quick exit if we are out of the heightmap		//
+	//quick exit if we are out of the heightmap	//
 	if (row < 0 || col < 0)
 	{
 		return 0;
@@ -154,7 +154,7 @@ DirectX::XMVECTOR Terrain::SampleNormal(float x, float z)
 	int row = (int)floorf(position.z);
 
 	//quick exit if we are out of the heightmap		//
-	if (row < 0 || col < 0)
+	if (row < 0 || col < 0 || row > 250 ||col > 250)
 		return { 0,0,0 };
 
 	//bool bottomTriangle = (howFarX + howFarZ) <= 1.f;

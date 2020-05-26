@@ -83,10 +83,8 @@ float4 main(PixelInputType input) : SV_TARGET
 
 	//return position;
 
-	/*
-	if (position.w == 0.0f)
-		discard;
-	*/
+	//if (position.w == 0.0f)
+	//	discard;
 
 	//float4 albedo = albedoTexture.Sample(ssaoSamplerState, input.uv);
 	float4 albedo = albedoTexture.Sample(ssaoSamplerState, input.uv);
@@ -154,6 +152,9 @@ float4 main(PixelInputType input) : SV_TARGET
 	//finalColor *= d;
 	//finalColor.w = 1.0f;
 
+
+
+
 	/*
 	
 		SHADOWS
@@ -191,12 +192,13 @@ float4 main(PixelInputType input) : SV_TARGET
 			}
 		}
 
-		visibility = saturate(0.2f + visibility);
+		visibility = saturate(0.1f + visibility);
 	}
 
 
 	//return  max(1.055 * pow(C_lin, 0.416666667) - 0.055, 0);
 
 	float gamma = 2.2f;
-	return saturate(pow(finalColor, 1.0f / gamma) * ssaoResult * visibility);
+	float t = 1.0f - (ssaoResult * visibility);
+	return saturate(lerp(pow(finalColor, 1.0f / gamma), float4(0,0,0,1), t));
 }

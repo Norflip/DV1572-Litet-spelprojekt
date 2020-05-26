@@ -54,25 +54,6 @@ void Player::TakeDamage()
 	{
 		//playerHealth -= 10.0f;
 
-
-		const float attackRange = 4.0f;
-		auto enemies = scene->GetEntities()->GetObjectsInLayer(ObjectLayer::Enemy);
-		int counter = 0;
-
-		for (auto i = enemies.begin(); i < enemies.end(); i++)
-		{
-			DirectX::XMVECTOR a = (*i)->GetTransform().GetPosition();
-			DirectX::XMVECTOR b = GetTransform().GetPosition();
-
-			float sqrDistance = DirectX::XMVectorGetByIndex(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(a, b)), 0);
-
-			if (sqrDistance < attackRange * attackRange)
-				counter++;
-		}
-
-		Logger::Write("INRANGE " + std::to_string(counter) + " / " + std::to_string(enemies.size()));
-
-
 	}
 }
 
@@ -340,6 +321,28 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			//activeWeapon = static_cast<Weapon*>(weapon);
 			weapon->Use();
 			//activeWeapon = nullptr;
+
+
+
+
+			const float attackRange = 4.0f;
+			auto enemies = scene->GetEntities()->GetObjectsInLayer(ObjectLayer::Enemy);
+			int counter = 0;
+
+			for (auto i = enemies.begin(); i < enemies.end(); i++)
+			{
+				DirectX::XMVECTOR a = (*i)->GetTransform().GetPosition();
+				DirectX::XMVECTOR b = GetTransform().GetPosition();
+
+				float sqrDistance = DirectX::XMVectorGetByIndex(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(a, b)), 0);
+
+				if (sqrDistance < attackRange * attackRange)
+					counter++;
+			}
+
+			Logger::Write("INRANGE " + std::to_string(counter) + " / " + std::to_string(enemies.size()));
+
+
 
 		}
 		else
