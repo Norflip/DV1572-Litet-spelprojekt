@@ -53,7 +53,7 @@ void Player::TakeDamage()
 	if (input->GetMouseButtonDown(1) && playerHealth != 0.0f)
 	{
 		//playerHealth -= 10.0f;
-
+		//gamemanager->GetSoundeffectHandler()->PlaySound("PlayerHit", gamemanager->GetCurrentSoundVolume())
 
 		const float attackRange = 4.0f;
 		auto enemies = scene->GetEntities()->GetObjectsInLayer(ObjectLayer::Enemy);
@@ -348,7 +348,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			weapon->PlaySoundEffect();
 			weapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			weapon->direction = GetTransform().GetRotation();
-			weapon->PlaySoundEffect();
+			weapon->PlayBreaksound();
 
 			scene->GetEntities()->RemoveObject(weapon);
 

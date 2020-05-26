@@ -9,6 +9,7 @@ Projectile::Projectile(AssimpHandler::AssimpData modelData, Gamemanager* gameman
 
 	this->attack = false;
 	this->weaponDamage = 10.0f;
+	this->gamemanager = gamemanager;
 	//this->gamemanager->GetSoundeffectHandler()->LoadSound("Explosion", "SoundEffects/Explo1.wav");
 }
 
@@ -21,6 +22,7 @@ Projectile::Projectile(const Projectile& other) : Weapon(WeaponType::Coconut, Ob
 	this->weaponSprite = other.weaponSprite;
 	this->attack = false;
 	this->weaponDamage = other.weaponDamage;
+	this->gamemanager = other.gamemanager;
 	//this->gamemanager->GetSoundeffectHandler()->LoadSound("Explosion", "SoundEffects/Explo1.wav");	// kanske tabort
 }
 

@@ -10,6 +10,10 @@ Gamemanager::Gamemanager(DX11Handler* dx11) : dxhandler(dx11)
 	this->soundVol = 1.0f;
 	this->soundeffect->SetGlobalVolume(this->soundVol);
 
+	// Load sounds
+	LoadSoundEffects();
+	LoadMusicTracks();
+
 	// Level soundtrack from start
 	this->currentTrack = 1;			// 1 | 2 | 3 - Track1 | Track2 | Track3
 	this->currentMusictrack = "SoundEffects/Ben.wav";
@@ -46,6 +50,23 @@ Gamemanager::~Gamemanager()
 
 	this->soundeffect = nullptr;
 	this->soundeffect = 0;	
+}
+
+void Gamemanager::LoadSoundEffects()
+{
+	this->soundeffect->LoadSound("WinSound", "SoundEffects/tadaWin.wav");		// done
+	this->soundeffect->LoadSound("FailSound", "SoundEffects/Fail.wav");		// done
+
+	this->soundeffect->LoadSound("CoconutThrow", "SoundEffects/Explo1.wav");	// done
+	this->soundeffect->LoadSound("Spoonhit", "SoundEffects/Swoosh.wav");
+	this->soundeffect->LoadSound("Spoonbreak", "SoundEffects/spoonbreak.wav");
+	this->soundeffect->LoadSound("EnemyHit", "SoundEffects/Punch.wav");		// done
+	this->soundeffect->LoadSound("PlayerHit", "SoundEffects/playerHit.wav");	// done
+}
+
+void Gamemanager::LoadMusicTracks()
+{
+	
 }
 
 void Gamemanager::UpdateHighscore(GUI* gui, int score)

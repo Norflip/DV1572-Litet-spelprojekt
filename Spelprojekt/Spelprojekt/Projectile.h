@@ -16,7 +16,7 @@ public:
 	GUIActionbar* GetWeaponSprite() override { return this->weaponSprite; } 	
 	void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;
 	void rangedAttack(float deltaTime);	
-	void PlaySoundEffect() override { gamemanager->GetSoundeffectHandler()->PlaySound("Explosion", gamemanager->GetCurrentSoundVolume()); }
+	void PlaySoundEffect() override { gamemanager->GetSoundeffectHandler()->PlaySound("CoconutThrow", gamemanager->GetCurrentSoundVolume()); }
 	
 private:		
 	int movementspeed = 3;
