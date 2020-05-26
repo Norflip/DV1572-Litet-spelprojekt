@@ -8,11 +8,7 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Weapon* enemyweapon, Terrain* 
 	this->activeweapon = nullptr;
 
 	this->pointGiven = 5;
-	//SetMesh(FBXModel->GetMesh());
-	//SetMaterial(FBXModel->GetMaterial());
-
-	// delete FBXModel? / F
-
+	
 	this->movementspeed = 2.0f;
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
@@ -22,7 +18,7 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Weapon* enemyweapon, Terrain* 
 
 	this->scene = scene;
 	this->hasShot = false;
-	this->cooldownTimer = 4.0f;
+	this->cooldownTimer = 5.0f;
 }
 
 
@@ -119,17 +115,16 @@ void Enemy::UpdateAttackPlayer()
 
 	DirectX::XMVECTOR dist = DirectX::XMVector3Length(riktVec);
 	float distance = DirectX::XMVectorGetByIndex(dist, 0);
-
-	if (distance < 12.0f) {
+	if (distance < 13.0f) {
 		if (cooldownTimer <= 0.0f) {
-			activeweapon = new Projectile(*static_cast<Projectile*>(enemyweapon));				
+			activeweapon = new Icecream(*static_cast<Icecream*>(enemyweapon));
 			activeweapon->SetReferenceToPlayer(player);
-			activeweapon->SetWeaponSpeed(3);
+			//activeweapon->SetWeaponSpeed(3);
 			activeweapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			activeweapon->direction = GetTransform().GetRotation();
-			scene->GetEntities()->InsertObject(activeweapon);
-			SetActiveWeapon(activeweapon);
 			activeweapon->PlaySoundEffect();
+			SetActiveWeapon(activeweapon);
+			scene->GetEntities()->InsertObject(activeweapon);			
 					
 			cooldownTimer = 5.0f;
 		}

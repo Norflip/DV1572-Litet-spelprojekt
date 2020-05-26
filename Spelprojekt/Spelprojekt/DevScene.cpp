@@ -210,6 +210,8 @@ void DevScene::LoadResources()
 	/*
 		MODELS
 	*/
+
+	resources.AddModel("icecreamModel", AssimpHandler::loadFbxObject("Models/Icecream.fbx", dx11, toonShader));
 	resources.AddModel("coconutModel", AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, toonShader));
 	resources.AddModel("spoonModel", AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, toonShader));
 	resources.AddModel("wagonModel", AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, toonShader));
@@ -258,6 +260,8 @@ void DevScene::LoadResources()
 		PREFABS
 	*/
 	
+	Icecream* icecreamPrefab = new Icecream(resources.GetModel("icecreamModel"), gamemanager, &terrainMesh, dx11, entities);
+	resources.AddResource("icecreamPrefab", icecreamPrefab);
 
 	Projectile* coconutPrefab = new Projectile(resources.GetModel("coconutModel"), gamemanager, &terrainMesh, dx11, entities);
 	resources.AddResource("coconutPrefab", coconutPrefab);
@@ -266,7 +270,7 @@ void DevScene::LoadResources()
 	resources.AddResource("spoonPrefab", spoonPrefab);
 
 
-	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), coconutPrefab, &terrainMesh, dx11, this, gamemanager);
+	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), icecreamPrefab, &terrainMesh, dx11, this, gamemanager);
 	enemyPrefab1->GetTransform().Translate(30, 7, 35);
 	enemyPrefab1->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	enemyPrefab1->SetTarget(player);
@@ -284,7 +288,6 @@ void DevScene::LoadResources()
 
 	delete this->assimpScene;
 	this->assimpScene = nullptr;
-
 
 }
 
@@ -321,6 +324,7 @@ void DevScene::CreateSceneObjects()
 
 	if (true)
 	{
+		
 		// save the shaders somewhere, remember to clean it up
 		Shader* defaultShader = new Shader();
 		defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());

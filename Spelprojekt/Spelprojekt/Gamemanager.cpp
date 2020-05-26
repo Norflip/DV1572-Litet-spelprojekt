@@ -58,10 +58,10 @@ void Gamemanager::LoadSoundEffects()
 	this->soundeffect->LoadSound("FailSound", "SoundEffects/Fail.wav");		// done
 
 	this->soundeffect->LoadSound("CoconutThrow", "SoundEffects/Explo1.wav");	// done
-	this->soundeffect->LoadSound("Spoonhit", "SoundEffects/Swoosh.wav");
-	this->soundeffect->LoadSound("Spoonbreak", "SoundEffects/spoonbreak.wav");
+	this->soundeffect->LoadSound("Swoosh", "SoundEffects/Swoosh.wav");		// done
+	this->soundeffect->LoadSound("Splash", "SoundEffects/Splash.wav");	// done
 	this->soundeffect->LoadSound("EnemyHit", "SoundEffects/Punch.wav");		// done
-	this->soundeffect->LoadSound("PlayerHit", "SoundEffects/playerHit.wav");	// done
+	this->soundeffect->LoadSound("PlayerHit", "SoundEffects/playerHit.wav");	
 }
 
 void Gamemanager::LoadMusicTracks()
