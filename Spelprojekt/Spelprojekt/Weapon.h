@@ -42,6 +42,8 @@ public:
 	virtual void Use() {}; 
 	virtual void SetReferenceToPlayer(Player* player) {};
 	virtual void SetWeaponSpeed(int value) {};
+	virtual float AttackDamage() { return this->damage; }
+
 	DirectX::XMVECTOR direction;
 	DirectX::XMVECTOR nextPos;
 	Gamemanager* gamemanager;
@@ -49,7 +51,7 @@ public:
 	
 protected:	
 	int movementspeed;	
-
+	float damage;
 	//Player* player;
 	WeaponType type;
 	GUIActionbar* weaponSprite;	

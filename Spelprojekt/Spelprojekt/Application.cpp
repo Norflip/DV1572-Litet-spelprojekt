@@ -32,8 +32,7 @@ Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(fal
 }
 
 Application::~Application()
-{
-	this->gamemanager = nullptr;
+{		
 	Logger::Close();
 }
 
@@ -95,5 +94,5 @@ void Application::Run()
 
 			timeLastFrame = currentTime;
 		}
-	}
+	}	
 }

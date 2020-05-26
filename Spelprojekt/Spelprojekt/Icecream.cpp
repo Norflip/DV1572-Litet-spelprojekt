@@ -11,6 +11,9 @@ Icecream::Icecream(AssimpHandler::AssimpData modelData, Gamemanager* gamemanager
 	this->entities = entities;
 	this->player = nullptr;
 	this->movementspeed = 10;
+
+	// attackdamage
+	this->damage = gamemanager->GetEnemyDamage();
 }
 
 Icecream::Icecream(const Icecream& other) : Weapon(WeaponType::Icecream, ObjectLayer::Pickup, other.gamemanager, other.GetMesh(), other.GetMaterial(), other.entities)
@@ -26,6 +29,7 @@ Icecream::Icecream(const Icecream& other) : Weapon(WeaponType::Icecream, ObjectL
 	this->entities = other.entities;
 	this->player = nullptr;
 	this->movementspeed = other.movementspeed;
+	this->damage = other.damage;
 }
 
 Icecream::~Icecream()
@@ -53,7 +57,6 @@ void Icecream::rangedAttack(float deltaTime)
 	nextPos = { (GetTransform().GetPosition().m128_f32[0] + (-std::sinf(direction.m128_f32[1]) * movementspeed) * deltaTime) ,GetTransform().GetPosition().m128_f32[1], (GetTransform().GetPosition().m128_f32[2] + (-std::cosf(direction.m128_f32[1]) * movementspeed) * deltaTime) };	// 30 = speed
 	GetTransform().SetPosition(nextPos);
 	GetTransform().SetRotation({ (GetTransform().GetRotation().m128_f32[0] + (-8.f * deltaTime)) ,GetTransform().GetRotation().m128_f32[1]  ,GetTransform().GetRotation().m128_f32[2] });
-
 }
 
 void Icecream::UpdateHitPlayer()
@@ -63,8 +66,9 @@ void Icecream::UpdateHitPlayer()
 		if (this->GetWorldBounds().Overlaps(this->player->GetWorldBounds()))
 		{
 			std::cout << "HIT PLAYER" << std::endl;
-			this->player->TakeDamage();
+			this->player->TakeDamage(AttackDamage());
 			entities->RemoveObject(this);
+
 		}
 	}
 }

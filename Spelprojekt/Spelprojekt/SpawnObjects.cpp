@@ -212,15 +212,17 @@ void SpawnObjects::UpdateRemoveEnemy()
 			if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(e->GetWorldBounds()))	// e ist för i?
 			{
 				e->HitSound();
+				e->TakeDamage(player->GetActiveWeapon()->AttackDamage());
+				if (e->GetHealthLeft() <= 0.0f) {
+					player->IncreasePoints(e->GivePoints());
+					entities->RemoveObject(e);	
+					enemyCount--;
+					maxEnemies--;
+				}
 
-				player->IncreasePoints(e->GivePoints());
-				entities->RemoveObject(e);	// e ist för i?
 				entities->RemoveObject(player->GetActiveWeapon());
-
 				player->GetActiveWeapon()->SetEnabled(false); // new
-				player->SetActiveWeapon(nullptr);
-				enemyCount--;
-				maxEnemies--;
+				player->SetActiveWeapon(nullptr);				
 			}
 		}
 	}

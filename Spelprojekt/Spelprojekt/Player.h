@@ -21,9 +21,10 @@ public:
 	Player(AssimpHandler::AssimpData modelData, CameraController* controller, SpawnObjects* spawner, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler&, Scene* scene);
 	~Player();
 
-	void Update(const float& deltaTime) override;
-	void TakeDamage();	
+	void Update(const float& deltaTime) override;	
+	void TakeDamage(float damage);	
 	float GetPlayerHealth();
+
 	void UpdateMeleeWeaponPosition();
 	void UseWeapon();
 	void WeaponUsage(Weapon*, bool& hand);

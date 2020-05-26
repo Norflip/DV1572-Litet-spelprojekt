@@ -43,6 +43,13 @@ public:
 	void SetTotalEnemies(int enemies) { this->nrOfEnemies = enemies; }
 	int GetTotalEnemies() { return this->nrOfEnemies; }
 
+	// Enemy takedamage
+	void SetEnemyDamage(float damage) { this->enemyDamage = damage; }
+	float GetEnemyDamage() { return this->enemyDamage; }
+
+	void SetEnemyHealth(float health) { this->enemyHealth = health; }
+	float GetEnemyHealth() { return this->enemyHealth; }
+
 	void SetTimer(float time) { this->timer = time; }
 	float GetTimer() { return this->timer; }		
 
@@ -71,6 +78,8 @@ private:
 	float timer;
 	int nrOfEnemies;
 	int activeEnemies;
+	float enemyDamage;
+	float enemyHealth;
 
 	// Highscore stuff...
 	std::ofstream writeToHighscore;

@@ -28,6 +28,11 @@ class Enemy : public Object
 		void UpdateAttackPlayer();
 		void SetActiveWeapon(Weapon* enemyweapon) { this->activeweapon = enemyweapon; }
 		Weapon* GetActiveWeapon() const { return this->activeweapon; };
+
+		// health enemy
+		void TakeDamage(float damage);
+
+		float GetHealthLeft() { return this->health; }
 	
 	private:
 		float movementspeed;
@@ -52,6 +57,8 @@ class Enemy : public Object
 		Weapon* enemyweapon;
 		Weapon* activeweapon;
 
+		// ENEMYHP
+		float health;
 
 		Gamemanager* gamemanager;
 		int pointGiven;

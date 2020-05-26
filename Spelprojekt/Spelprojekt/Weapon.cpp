@@ -12,6 +12,7 @@ Weapon::Weapon(WeaponType type, ObjectLayer layer, Gamemanager* gamemanager, Mes
 	this->used = 0;
 	//this->player = nullptr;
 	this->movementspeed = 0;
+	this->damage = 0;
 }
 
 Weapon::Weapon(WeaponType type, ObjectLayer layer, Gamemanager* gamemanager, AssimpHandler::AssimpData model, Entities* entities)

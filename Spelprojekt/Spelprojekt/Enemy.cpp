@@ -19,6 +19,9 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Weapon* enemyweapon, Terrain* 
 	this->scene = scene;
 	this->hasShot = false;
 	this->cooldownTimer = 5.0f;
+
+	// Health for enemy
+	this->health = gamemanager->GetEnemyHealth();	// different
 }
 
 
@@ -45,6 +48,9 @@ Enemy::Enemy(const Enemy& other)
 	this->scene = other.scene;
 	this->hasShot = false;
 	this->cooldownTimer = other.cooldownTimer;
+
+	// Health for enemy
+	this->health = other.health;
 }
 
 Enemy::~Enemy()
@@ -117,9 +123,8 @@ void Enemy::UpdateAttackPlayer()
 	float distance = DirectX::XMVectorGetByIndex(dist, 0);
 	if (distance < 13.0f) {
 		if (cooldownTimer <= 0.0f) {
-			activeweapon = new Icecream(*static_cast<Icecream*>(enemyweapon));
+			activeweapon = new Icecream(*static_cast<Icecream*>(enemyweapon));			
 			activeweapon->SetReferenceToPlayer(player);
-			//activeweapon->SetWeaponSpeed(3);
 			activeweapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			activeweapon->direction = GetTransform().GetRotation();
 			activeweapon->PlaySoundEffect();
@@ -128,6 +133,13 @@ void Enemy::UpdateAttackPlayer()
 					
 			cooldownTimer = 5.0f;
 		}
+	}
+}
+
+void Enemy::TakeDamage(float damage)
+{
+	if (this->health > 0.0f) {
+		this->health -= damage;
 	}
 }
 
