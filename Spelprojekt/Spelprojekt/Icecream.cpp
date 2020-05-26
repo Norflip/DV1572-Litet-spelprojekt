@@ -11,7 +11,7 @@ Icecream::Icecream(AssimpHandler::AssimpData modelData, WorldContext context) : 
 	this->movementspeed = 10;
 
 	// attackdamage
-	this->damage = gamemanager->GetEnemyDamage();
+	this->damage = context.gamemanager->GetEnemyDamage();
 }
 
 Icecream::Icecream(const Icecream& other) : Weapon(WeaponType::Icecream, ObjectLayer::Pickup, other.GetMesh(), other.GetMaterial(), other.context)

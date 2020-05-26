@@ -56,18 +56,18 @@ void Projectile::PlaySoundEffect()
 	context.gamemanager->GetSoundeffectHandler()->PlaySound("CoconutThrow", context.gamemanager->GetCurrentSoundVolume());
 }
 
-void Projectile::UpdateHitPlayer()
-{
-	if (this->player != nullptr && this != nullptr)
-	{
-		if (this->GetWorldBounds().Overlaps(this->player->GetWorldBounds()))
-		{
-			std::cout << "HIT PLAYER" << std::endl;
-			this->player->TakeDamage();
-			context.entities->RemoveObject(this);
-		}
-	}
-}
+//void Projectile::UpdateHitPlayer()
+//{
+//	if (this->player != nullptr && this != nullptr)
+//	{
+//		if (this->GetWorldBounds().Overlaps(this->player->GetWorldBounds()))
+//		{
+//			std::cout << "HIT PLAYER" << std::endl;
+//			this->player->TakeDamage();
+//			context.entities->RemoveObject(this);
+//		}
+//	}
+//}
 
 void Projectile::Update(const float& deltaTime)
 {

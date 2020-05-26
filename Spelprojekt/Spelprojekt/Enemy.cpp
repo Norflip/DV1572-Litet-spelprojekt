@@ -13,7 +13,7 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext context)
 	this->cooldownTimer = 5.0f;
 
 	// Health for enemy
-	this->health = gamemanager->GetEnemyHealth();	// different
+	this->health = context.gamemanager->GetEnemyHealth();	// different
 }
 
 
