@@ -18,7 +18,6 @@ class Enemy : public Object
 		void Update(const float& deltaTime) override;
 		void SetHeight(float height) { this->enemyHeight = height; };
 		void SetTarget(Player* player);
-		void HitSound() { this->hitSound->PlaySound("Hit", this->hitSound->GetGlobalVolume()); }
 		DirectX::XMVECTOR GetVelocity();
 
 		void HitSound();
@@ -31,17 +30,22 @@ class Enemy : public Object
 		DirectX::XMVECTOR velocity;
 		void UpdateHeight(float fixedDeltaTime);
 		void UpdateMovement(float fixedDeltaTime);
+
+		void UpdateTestBoids(float fixedDeltaTime);
+		float rX = (static_cast <float>(rand() % 200) - 100.0f) / 100.0f;
+		float rZ = (static_cast <float>(rand() % 200) - 100.0f) / 100.0f;
+		DirectX::XMVECTOR tVelocity;
+		DirectX::XMVECTOR acceleration;
+		DirectX::XMVECTOR maxForce;
+
 		Terrain* terrain;
 		float scaleY;
 		float scaleXZ;
 		Player* player;
 		Object* FBXModel;
 		Entities* entities;
-		bool BoidsAlgoritm(float fixedDeltaTime);
-		DirectX::XMVECTOR RuleSeparation(ObjectLayer object);
-		DirectX::XMVECTOR RuleAlignment();
-		//std::vector<Grid*> open;
-		//std::vector<Grid*> closed;
+		DirectX::XMVECTOR BoidsAlgorithm(ObjectLayer object);
+		DirectX::XMVECTOR Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR distance, float distF);
 
 		DirectX::XMFLOAT3 currentPosition;
 		float nextDir = 0.0f;

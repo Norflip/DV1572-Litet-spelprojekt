@@ -1,6 +1,6 @@
 #include "Enemy.h"
 
-Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler& dx11, SoundHandler* soundeffect, Entities* entities)
+Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler& dx11, Gamemanager* gamemanager, Entities* entities)
 	: terrain(terrain), Object(ObjectLayer::Enemy, modelData.mesh, modelData.material)
 {
 
@@ -11,12 +11,13 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Terrain* terrain, DX11Handler&
 	// delete FBXModel? / F
 
 	this->velocity = { 2,0,2 };
+	//this->tVelocity = { 0,0,0 };
+	this->tVelocity = { rX, 0, rZ };
+	this->acceleration = { 0, 0, 0 };
+	this->maxForce = { 3,0,3 };
+
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
-
-	this->hitSound = soundeffect;
-	//this->hitSound->LoadSound("Hit", "SoundEffects/Kick.wav");
-	this->hitSound->LoadSound("Hit", "SoundEffects/Punch.wav");
 	this->entities = entities;
 	this->gamemanager = gamemanager;
 	this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
@@ -31,11 +32,9 @@ Enemy::Enemy(const Enemy& other)
 	SetMesh(other.GetMesh());
 	SetMaterial(other.GetMaterial());
 	this->velocity = other.velocity;
+	this->tVelocity = other.tVelocity;
 	this->currentPosition = other.currentPosition;
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
-	this->hitSound = other.hitSound;
-	//this->hitSound->LoadSound("Hit", "SoundEffects/Kick.wav");
-	this->hitSound->LoadSound("Hit", "SoundEffects/Punch.wav");
 	this->entities = other.entities;
 	SetLayer(ObjectLayer::Enemy);
 
@@ -55,69 +54,52 @@ void Enemy::Update(const float& deltaTime)
 
 void Enemy::UpdateMovement(float fixedDeltaTime)
 {
-	if (!BoidsAlgoritm(fixedDeltaTime))
+
+	if (!GetWorldBounds().Overlaps(player->GetWorldBounds()))
 	{
-		if (!GetWorldBounds().Overlaps(player->GetWorldBounds()))
-		{
-			velocity = { 2,0,2 };
-			DirectX::XMFLOAT3 nextPos;
-			DirectX::XMStoreFloat3(&nextPos, GetTransform().GetPosition());
-			currentPosition = nextPos;
+		tVelocity = DirectX::XMVectorAdd(tVelocity, BoidsAlgorithm(ObjectLayer::Enemy));
+		tVelocity = DirectX::XMVectorScale(tVelocity, fixedDeltaTime);
+		//Logger::Write(LOG_LEVEL::Info, "T vel " + std::to_string(tVelocity.m128_f32[0]));
+		GetTransform().Translate(tVelocity);
 
-			DirectX::XMFLOAT3 pPos;
-			DirectX::XMStoreFloat3(&pPos, player->GetTransform().GetPosition());
-
-			if (pPos.z >= nextPos.z)
-				nextPos.z += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 2);
-			if (pPos.x <= nextPos.x)
-				nextPos.x -= fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 0);
-			if (pPos.z <= nextPos.z)
-				nextPos.z -= fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 2);
-			if (pPos.x >= nextPos.x)
-				nextPos.x += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 0);
-
-			Logger::Write(LOG_LEVEL::Info, "Chase player");
-
-			GetTransform().SmoothRotate(nextPos, fixedDeltaTime, true);
-			GetTransform().SetPosition({ nextPos.x, nextPos.y, nextPos.z });
-
-		}
-	}
-}
-
-bool Enemy::BoidsAlgoritm(float fixedDeltaTime)
-{
-	
-	velocity = DirectX::XMVectorAdd(RuleSeparation(ObjectLayer::Enemy), RuleSeparation(ObjectLayer::Enviroment));
-	//velocity = DirectX::XMVectorAdd(RuleAlignment(),velocity);
-
-	if (!DirectX::XMVector3Equal(velocity, { 0,0,0 }))
-	{
 		DirectX::XMFLOAT3 nextPos;
-		DirectX::XMStoreFloat3(&nextPos, DirectX::XMVectorAdd(GetTransform().GetPosition(), velocity));
+		DirectX::XMStoreFloat3(&nextPos, GetTransform().GetPosition());
 		currentPosition = nextPos;
-		DirectX::XMFLOAT3 v;
-		DirectX::XMStoreFloat3(&v, velocity);
-		Logger::Write(LOG_LEVEL::Info, "Separate from other enemy");
-		GetTransform().SmoothRotate(nextPos, fixedDeltaTime, true);
-		GetTransform().Translate(DirectX::XMVectorScale(velocity, fixedDeltaTime));
-		return true;
-	}
-	
-	//Alignment, move all enemies towards player
+		DirectX::XMFLOAT3 pPos;
+		DirectX::XMStoreFloat3(&pPos, player->GetTransform().GetPosition());
 
-	//Cohesion
-	return false;
+		if (pPos.z >= nextPos.z)
+			nextPos.z += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 2);
+		if (pPos.x <= nextPos.x)
+			nextPos.x -= fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 0);
+		if (pPos.z <= nextPos.z)
+			nextPos.z -= fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 2);
+		if (pPos.x >= nextPos.x)
+			nextPos.x += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 0);
+
+		//Logger::Write(LOG_LEVEL::Info, "Chase player " + std::to_string(nextPos.x));
+
+		GetTransform().SmoothRotate(nextPos, fixedDeltaTime, true);
+		GetTransform().SetPosition({ nextPos.x, nextPos.y, nextPos.z });
+	}
 }
 
-DirectX::XMVECTOR Enemy::RuleSeparation(ObjectLayer object)
+void Enemy::UpdateTestBoids(float fixedDeltaTime)
 {
-	
-	float radius = 3.0f;
-	velocity = { 0,0,0 };
-	//Separation, decide a distance between all enemies
+	tVelocity = DirectX::XMVectorClamp(DirectX::XMVectorAdd(tVelocity, BoidsAlgorithm(ObjectLayer::Enemy)), { 0,0,0 }, { 2,0,2 });
+	tVelocity = DirectX::XMVectorScale(tVelocity, fixedDeltaTime);
+	//Logger::Write(LOG_LEVEL::Info, "T vel " + std::to_string(tVelocity.m128_f32[0]));
+	GetTransform().Translate(tVelocity);
+}
 
-	//add environment to velocity
+DirectX::XMVECTOR Enemy::BoidsAlgorithm(ObjectLayer object)
+{
+	float separationRadius = 3.0f;
+	float alignRadius = 45.0f;
+	DirectX::XMVECTOR velocity = { 0,0,0 };
+	DirectX::XMVECTOR avgDir = DirectX::XMVector3Normalize(GetVelocity());
+	DirectX::XMVECTOR avgPosition = GetTransform().GetPosition();
+	int objInRadius = 0;
 	auto checkEntity = entities->GetObjectsInLayer(object);
 	for (auto entity : checkEntity)
 	{
@@ -125,44 +107,52 @@ DirectX::XMVECTOR Enemy::RuleSeparation(ObjectLayer object)
 			continue;
 		DirectX::XMVECTOR offset = DirectX::XMVectorSubtract(GetTransform().GetPosition(), entity->GetTransform().GetPosition());
 		DirectX::XMVECTOR distance = DirectX::XMVector3Length(offset);
+		
 		float distF = DirectX::XMVectorGetByIndex(distance, 0);
-		if (distF < radius)
+		
+		if (distF < separationRadius)
 		{
-			if (distF < 0.001f)
-			{
-				float randX = (static_cast <float>(rand() % 200) - 100.0f) / 100.0f;
-				float randZ = (static_cast <float>(rand() % 200) - 100.0f) / 100.0f;
-				offset = { randX, 0, randZ };
-			}
-			velocity = DirectX::XMVectorAdd(velocity, DirectX::XMVectorScale(DirectX::XMVector3Normalize(offset), 2.0f));
+			velocity = DirectX::XMVectorAdd(velocity, Separation(offset, distance, distF));
+		}
+		if (distF < alignRadius)
+		{
+			avgDir =  DirectX::XMVectorAdd(avgDir, static_cast<Enemy*>(entity)->GetVelocity());
+			avgPosition = DirectX::XMVectorAdd(avgPosition, entity->GetTransform().GetPosition());
+
+			objInRadius++;
 		}
 	}
+	avgDir = DirectX::XMVector3Normalize(DirectX::XMVectorScale(avgDir, 1.0f / (objInRadius + 1)));
+	avgDir = DirectX::XMVectorScale(avgDir, 2.0f);
+	DirectX::XMVECTOR align = DirectX::XMVectorSubtract(avgDir, GetVelocity());
+
+	avgPosition = DirectX::XMVectorScale(avgPosition, 1.0f / (objInRadius + 1));
+	DirectX::XMVECTOR cohesion = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(avgPosition, GetTransform().GetPosition()));
+	cohesion = DirectX::XMVectorScale(cohesion, 2.0f);
+	
+	velocity = DirectX::XMVectorAdd(velocity, align);
+	velocity = DirectX::XMVectorAdd(velocity, cohesion);
+	
 	return velocity;
 }
 
-DirectX::XMVECTOR Enemy::RuleAlignment()
+DirectX::XMVECTOR Enemy::Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR distance, float distF)
 {
-	float radius = 15.0f;
-	velocity = { 0,0,0 };
-	//Alignment, align enemy with enemies within it's local range
-
-	//add environment to velocity
-	auto checkEntity = entities->GetObjectsInLayer(ObjectLayer::Enemy);
-	for (auto entity : checkEntity)
+	DirectX::XMVECTOR steering = { 0,0,0 };
+	if (distF < 0.001f)
 	{
-		if (GetID() == entity->GetID())
-			continue;
-		DirectX::XMVECTOR offset = DirectX::XMVectorSubtract(GetTransform().GetPosition(), entity->GetTransform().GetPosition());
-		DirectX::XMVECTOR distance = DirectX::XMVector3Length(offset);
-		float distF = DirectX::XMVectorGetByIndex(distance, 0);
-		if (distF < radius)
-		{
-			velocity = DirectX::XMVectorAdd(velocity, static_cast<Enemy*>(entity)->GetVelocity());
-		}
+		
+		float randX = (static_cast <float>(rand() % 200) - 100.0f) / 100.0f;
+		float randZ = (static_cast <float>(rand() % 200) - 100.0f) / 100.0f;
+		steering = { randX, 0, randZ};
 	}
-	DirectX::XMVECTOR divAvg = { checkEntity.size(), 1, checkEntity.size() };
-	velocity = DirectX::XMVectorDivide(velocity, divAvg);
-	return velocity;
+	else
+	{
+		//Logger::Write(LOG_LEVEL::Info, "Separate from other enemy ");
+		//add steering velocity based of length of distance vector
+		steering = DirectX::XMVectorScale(DirectX::XMVector3Normalize(offset), 2.0f);
+	}
+	return steering;
 }
 
 void Enemy::SetTarget(Player* player)
@@ -172,7 +162,8 @@ void Enemy::SetTarget(Player* player)
 
 DirectX::XMVECTOR Enemy::GetVelocity()
 {
-	return velocity;
+	return tVelocity;
+}
 void Enemy::HitSound()
 {
 	gamemanager->GetSoundeffectHandler()->PlaySound("HitEnemy", gamemanager->GetCurrentSoundVolume());
