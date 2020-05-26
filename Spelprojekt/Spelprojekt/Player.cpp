@@ -222,7 +222,7 @@ void Player::UpdateAnimations()
 
 	else if (this->meleeAttacking)
 	{
-		//this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[3]);
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[3]);
 	}
 
 	else
@@ -258,7 +258,6 @@ void Player::UseWeapon()
 	if (input->GetMouseButtonDown(0) && lefthandFull)
 	{
 		WeaponUsage(leftWeapon, lefthandFull);
-		//attacking = true;
 
 		if (!lefthandFull)
 			gui->RemoveGUIObject("Left Actionbar");
@@ -268,7 +267,6 @@ void Player::UseWeapon()
 	if (input->GetMouseButtonDown(1) && righthandFull)
 	{
 		WeaponUsage(rightWeapon, righthandFull);
-		//attacking = true;
 
 		if (!righthandFull)
 			gui->RemoveGUIObject("Right Actionbar");

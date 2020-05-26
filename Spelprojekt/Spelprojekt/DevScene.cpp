@@ -253,6 +253,8 @@ void DevScene::LoadResources()
 	this->assimpScene = imp.ReadFile("Animations/Glasse_Attack_Right.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
 	AssimpHandler::saveAnimationData(assimpScene, playerModel->mesh->skeleton, "Attack");
 
+	this->assimpScene = imp.ReadFile("Animations/Glasse_Melee_Attack.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, playerModel->mesh->skeleton, "Melee");
 
 	/*
 		PREFABS
