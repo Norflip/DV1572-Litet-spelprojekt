@@ -69,7 +69,12 @@ std::vector<Object*> Entities::GetObjectsInRange(DirectX::XMVECTOR center, float
 	{
 		if (j->IsEnabled() && (((int)j->GetLayer() & (int)layer) == (int)j->GetLayer()))		// j->GetLayer() == layer || layer == ObjectLayer::Any))
 		{
-			float sqrDistance = j->GetWorldBounds().SqrDistanceToPoint(center);
+			DirectX::XMVECTOR a = j->GetTransform().GetPosition();
+			DirectX::XMVECTOR b = center;
+
+			float sqrDistance = DirectX::XMVectorGetByIndex(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(a, b)), 0);
+
+			//float sqrDistance = j->GetWorldBounds().SqrDistanceToPoint(center);
 			if (sqrDistance < radius * radius)
 				inRange.push_back(j);
 		}

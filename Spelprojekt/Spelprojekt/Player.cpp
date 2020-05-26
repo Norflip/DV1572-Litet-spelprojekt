@@ -50,9 +50,29 @@ void Player::Update(const float& deltaTime)
 
 void Player::TakeDamage()
 {
-	if (input->GetMouseButtonDown(1) && playerHealth != 0.0f) 
+	if (input->GetMouseButtonDown(1) && playerHealth != 0.0f)
 	{
-		playerHealth -= 10.0f;
+		//playerHealth -= 10.0f;
+
+
+		const float attackRange = 4.0f;
+		auto enemies = scene->GetEntities()->GetObjectsInLayer(ObjectLayer::Enemy);
+		int counter = 0;
+
+		for (auto i = enemies.begin(); i < enemies.end(); i++)
+		{
+			DirectX::XMVECTOR a = (*i)->GetTransform().GetPosition();
+			DirectX::XMVECTOR b = GetTransform().GetPosition();
+
+			float sqrDistance = DirectX::XMVectorGetByIndex(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(a, b)), 0);
+
+			if (sqrDistance < attackRange * attackRange)
+				counter++;
+		}
+
+		Logger::Write("INRANGE " + std::to_string(counter) + " / " + std::to_string(enemies.size()));
+
+
 	}
 }
 
@@ -86,7 +106,7 @@ void Player::UpdateMovement(float fixedDeltaTime)
 			dz /= length;
 			nextPosition.x += dx * fixedDeltaTime * movementspeed;
 			nextPosition.z += dz * fixedDeltaTime * movementspeed;
-			
+
 			// kolla höjd istället? 
 			DirectX::XMVECTOR dot = DirectX::XMVector3Dot(terrain->SampleNormal(nextPosition.x, nextPosition.z), { 0,1,0 });
 			if (DirectX::XMVectorGetByIndex(dot, 0) < 0.85f)
@@ -161,7 +181,7 @@ void Player::CheckForPickups()
 
 			if (obj != nullptr && obj->IsEnabled() && obj->GetWorldBounds().Overlaps(this->GetWorldBounds()))
 			{
-				if (!lefthandFull) 
+				if (!lefthandFull)
 				{
 					leftWeapon = CopyWeapon(obj);	//check type
 
@@ -171,7 +191,7 @@ void Player::CheckForPickups()
 
 					lefthandFull = true;
 				}
-				else if (lefthandFull && !righthandFull) 
+				else if (lefthandFull && !righthandFull)
 				{
 					rightWeapon = CopyWeapon(obj); //check type
 
@@ -217,7 +237,7 @@ void Player::UpdateAnimations()
 
 	else if (this->meleeAttacking)
 	{
-		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[3]);
+		//this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[3]);
 	}
 
 	else
@@ -228,7 +248,7 @@ void Player::UpdateAnimations()
 
 void Player::UpdateMeleeWeaponPosition()
 {
-	if (lefthandFull) 
+	if (lefthandFull)
 	{
 		if (leftWeapon->GetType() == WeaponType::Spoon) {
 			leftWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
@@ -237,7 +257,7 @@ void Player::UpdateMeleeWeaponPosition()
 		}
 	}
 
-	if (righthandFull) 
+	if (righthandFull)
 	{
 		if (rightWeapon->GetType() == WeaponType::Spoon) {
 			rightWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
@@ -250,7 +270,7 @@ void Player::UpdateMeleeWeaponPosition()
 void Player::UseWeapon()
 {
 	// Left hand
-	if (input->GetMouseButtonDown(0) && lefthandFull) 
+	if (input->GetMouseButtonDown(0) && lefthandFull)
 	{
 		WeaponUsage(leftWeapon, lefthandFull);
 		//attacking = true;
@@ -260,7 +280,7 @@ void Player::UseWeapon()
 	}
 
 	// Right hand
-	if (input->GetMouseButtonDown(1) && righthandFull) 
+	if (input->GetMouseButtonDown(1) && righthandFull)
 	{
 		WeaponUsage(rightWeapon, righthandFull);
 		//attacking = true;
@@ -313,15 +333,16 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 	{
 		Logger::Write("USES: " + std::to_string(weapon->CheckUsage()));
 
-		if (weapon->CheckUsage() < 2) 
+		if (weapon->CheckUsage() < 2)
 		{
 			this->meleeAttacking = true;
 			weapon->PlaySoundEffect();
 			//activeWeapon = static_cast<Weapon*>(weapon);
 			weapon->Use();
 			//activeWeapon = nullptr;
+
 		}
-		else 
+		else
 		{
 			this->meleeAttacking = true;
 			weapon->PlaySoundEffect();
@@ -354,7 +375,7 @@ Weapon* Player::CopyWeapon(Weapon* weapon)
 		curr->SetType(weapon->GetType());
 		curr->gamemanager = this->gamemanager;
 	}
-	else if (weapon->GetType() == WeaponType::Spoon) 
+	else if (weapon->GetType() == WeaponType::Spoon)
 	{
 		Spoon* spoonweap = static_cast<Spoon*>(weapon);
 		curr = new Spoon(*spoonweap);
@@ -362,7 +383,7 @@ Weapon* Player::CopyWeapon(Weapon* weapon)
 		curr->gamemanager = this->gamemanager;
 		scene->GetEntities()->RemoveObject(curr);
 	}
-	
+
 	return curr;
 }
 
@@ -393,7 +414,7 @@ void Player::UpdateLookAtPosition()
 
 		//arrow->GetTransform().SetRotation({ 0,angle,0 });
 		//arrow->GetTransform().Rotate(0, MathHelper::PI, 0);
-		
+
 		arrow->GetTransform().LookAt(winArea->GetWorldBounds().GetCenter());
 		//arrow->GetTransform().SetRotation({ 0,0,0});
 		//arrow->GetTransform().GetRotation().m128_f32[0]
