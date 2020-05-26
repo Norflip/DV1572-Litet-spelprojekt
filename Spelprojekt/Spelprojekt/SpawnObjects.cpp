@@ -152,8 +152,8 @@ DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition(float heightOffset)
 
 	while (!found && maxIteraitor > 0)
 	{
-		float x = static_cast<float>(rand() % terrain->GetMapWidth());
-		float z = static_cast<float>(rand() % terrain->GetMapHeight());
+		float x = static_cast<float>(rand() % (terrain->GetMapWidth() - 20)) + 10.0f;
+		float z = static_cast<float>(rand() % (terrain->GetMapHeight() - 20)) + 10.0f;
 		float y = terrain->SampleHeight(x,z);
 
 		if (y >= MinimumSpawnHeight)

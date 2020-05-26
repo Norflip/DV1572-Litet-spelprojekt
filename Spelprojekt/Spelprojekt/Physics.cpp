@@ -230,12 +230,14 @@ rp3d::CollisionBody* Physics::CreateCollisionBodyCapsule(Object* object, float r
 {
     rp3d::Transform rpTransform = ConvertTransform(object->GetTransform());
     rp3d::Vector3 pos = rpTransform.getPosition();
-    pos.x = xOffset;
-    pos.z = zOffset;
+    pos.x += xOffset;
+    pos.z += zOffset;
     rpTransform.setPosition(pos);
     
     rp3d::CollisionBody* body = world->createCollisionBody(rpTransform);
     rp3d::CapsuleShape* capsule = new rp3d::CapsuleShape(radius, height);
+
+    Logger::Write("PALM: " + std::to_string(pos.x) + " -> " + std::to_string(pos.z));
 
     body->addCollisionShape(capsule, rp3d::Transform::identity());
     return body;

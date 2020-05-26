@@ -285,6 +285,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Window.h" />
+    <ClInclude Include="WorldContext.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Lightning.hlsl">

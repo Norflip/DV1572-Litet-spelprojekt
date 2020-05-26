@@ -52,12 +52,12 @@ private:
 	void UpdateGUI(const float& deltaTime);
 
 private:
+	WorldContext context;
+
 	CameraController* controller;
 	Gamemanager* gamemanager;
 	SpawnObjects* spawner;
 	Physics physics;
-
-	WorldContext context;
 
 	GUI* gui;
 	GUIText* gametimerText;

@@ -14,7 +14,6 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, Weapon* enemyweapon, Terrain* 
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 
 	this->gamemanager = gamemanager;
-	//this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
 
 	this->scene = scene;
 	this->hasShot = false;

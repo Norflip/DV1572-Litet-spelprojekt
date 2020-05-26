@@ -1,18 +1,24 @@
 #pragma once
 
-#include "DX11Handler.h"
-#include "Entities.h"
-#include "Resources.h"
-#include "SpawnObjects.h"
-#include "Terrain.h"
-#include "Gamemanager.h"
+class Player;
+class Physics;
+class Terrain;
+class Entities;
+class Resources;
+class DX11Handler;
+class Gamemanager;
+class SpawnObjects;
 
 struct WorldContext
 {
+	Player* player;
+	Physics* physics;
+	Terrain* terrain;
 	Entities* entities;
 	Resources* resources;
-	SpawnObjects* spawner;
-	Terrain* terrain;
-	Gamemanager* gamemanager;
 	DX11Handler* dx11;
+	Gamemanager* gamemanager;
+	SpawnObjects* spawner;
 };
+
+

@@ -1,4 +1,5 @@
 #pragma once
+#include "WorldContext.h"
 #include "Input.h"
 #include "Terrain.h"
 #include "CameraController.h"
@@ -18,7 +19,7 @@ class Player : public Object
 	const float playerHeight = 3;
 
 public:
-	Player(AssimpHandler::AssimpData modelData, CameraController* controller, SpawnObjects* spawner, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler&, Scene* scene);
+	Player(AssimpHandler::AssimpData modelData, CameraController* controller, SpawnObjects* spawner, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler&, Scene* scene, WorldContext context);
 	~Player();
 
 	void Update(const float& deltaTime) override;
