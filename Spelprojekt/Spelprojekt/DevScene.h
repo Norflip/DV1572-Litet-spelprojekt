@@ -42,6 +42,7 @@ public:
 	std::string getName() { return this->sceneName; };
 	void checkForNextScene();
 	void SetNextScene(bool winOrLose);
+	
 
 private:
 	void UpdateGUI(const float& deltaTime);
@@ -76,6 +77,7 @@ private:
 	float timeUntilEnd;
 	bool canWin;
 
+	Physics* phys;
 	Object* arrow;
 
 	const aiScene* assimpScene;

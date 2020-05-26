@@ -1,6 +1,6 @@
 #include "Physics.h"
 
-Physics::Physics(float gX, float gY, float gZ, float currentTime, float lastFrame, float deltaTime)
+Physics::Physics(float gX, float gY, float gZ, float deltaTime)
 {
     float accumulator = 0;
 
@@ -13,16 +13,6 @@ Physics::Physics(float gX, float gY, float gZ, float currentTime, float lastFram
     // Constant physics time step 
     const float timeStep = 1.0 / 60.0;
 
-    // Get the current system time 
-    long double currentFrameTime = currentTime;
-
-    // Compute the time difference between the two frames 
-    //Jag tycker att denna borde vara samma deltatime som application har, men den var definerad som "long double deltaTime" från början
-    deltaTime = currentFrameTime - lastFrame;
-
-    // Update the previous time 
-    lastFrame = currentTime;
-
     // Add the time difference in the accumulator 
     accumulator += deltaTime;
     /* NÄMNS I 9.3 AV DOKUMENTATIONEN
@@ -34,14 +24,14 @@ rp3d::Transform interpolatedTransform = Transform::interpolateTransforms(prevTra
     */
 
     // Create the box shape 
-    rp3d::BoxShape* box = CreateBoxShape();
+    //rp3d::BoxShape* box = CreateBoxShape();
 
-    // Mass of the collision shape (in kilograms) 
-    rp3d::decimal mass = rp3d::decimal(4.0);
-    rp3d::RigidBody* rb = CreateRigidBody(0.5f, 0.5f, 2.0f, 2.0f, 2.0f);
-    // Add the collision shape to the rigid body
-    rp3d::ProxyShape* proxyShape;
-    proxyShape = rb->addCollisionShape(box, rb->getTransform(), mass);
+    //// Mass of the collision shape (in kilograms) 
+    //rp3d::decimal mass = rp3d::decimal(4.0);
+    //rp3d::RigidBody* rb = CreateRigidBody(0.5f, 0.5f, 2.0f, 2.0f, 2.0f);
+    //// Add the collision shape to the rigid body
+    //rp3d::ProxyShape* proxyShape;
+    //proxyShape = rb->addCollisionShape(box, rb->getTransform(), mass);
 
     // While there is enough accumulated time to take 
     // one or several physics steps 
@@ -140,4 +130,13 @@ rp3d::ConvexMeshShape* Physics::ConvertMeshToConvexShape(Mesh* mesh)
     rp3d::PolyhedronMesh* polyhedron = new rp3d::PolyhedronMesh(vertexArray);
     rp3d::ConvexMeshShape* convexMesh = new rp3d::ConvexMeshShape(polyhedron);
     return convexMesh;
+}
+
+rp3d::ProxyShape* Physics::AddCollision(rp3d::ConvexMeshShape* shape, rp3d::RigidBody* body, float massValue)
+{
+    // Add the collision shape to the rigid body
+    rp3d::decimal mass = rp3d::decimal(massValue);
+    rp3d::ProxyShape* proxyShape;
+    proxyShape = body->addCollisionShape(shape, body->getTransform(), mass);
+    return proxyShape;
 }

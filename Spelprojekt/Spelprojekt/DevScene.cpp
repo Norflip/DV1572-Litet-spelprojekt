@@ -25,8 +25,8 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 
-
-	Physics phys(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	//de tre sista ska vara currentTime, lastFrame och deltaTime
+	//phys = new Physics(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 
 	this->spawner = new SpawnObjects(entities, &ground, gamemanager, dx11);
 	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
@@ -70,8 +70,17 @@ void DevScene::Load()
 	wagon->GetTransform().Rotate(0.05f, -5, 0);
 	entities->InsertObject(wagon);
 
-	
 	Mesh* dev_monkey_mesh = ShittyOBJLoader::Load("Models/monkey.obj", dx11.GetDevice());
+
+
+
+
+	//// Testing physics FUNKAR EJ
+	phys->AddCollision(phys->ConvertMeshToConvexShape(dev_monkey_mesh), phys->CreateRigidBody(0.5f, 0.5f, 5.0f, 5.0f, 5.0f), 4.0f);
+
+
+
+
 
 	Object* sphere = new Object(ObjectLayer::Enviroment, dev_monkey_mesh, new Material(defaultShader, dx11));
 	Texture* monkey_texture = Texture::CreateTexture("Textures/rocks.jpg", dx11);
@@ -275,6 +284,7 @@ void DevScene::Update(const float& deltaTime)
 	this->cameraFocusPosition = player->GetTransform().GetPosition();
 	Scene::Update(deltaTime);
 
+	phys = new Physics(0.0f, 0.0f, 0.0f, deltaTime);
 
 	// fixa
 
