@@ -141,9 +141,9 @@ void DevScene::Load()
 	gametimer.Start();
 
 	// Play scenemusic
-	gamemanager->GetMusicHandler()->StopSound();
+	/*gamemanager->GetMusicHandler()->StopSound();
 	gamemanager->GetMusicHandler()->LoadSound("Levelsound", gamemanager->GetMusicTrack());
-	gamemanager->GetMusicHandler()->PlaySound("Levelsound", gamemanager->GetCurrentMusicVolume());
+	gamemanager->GetMusicHandler()->PlaySound("Levelsound", gamemanager->GetCurrentMusicVolume());*/
 
 	testSpeed.Stop();
 	std::cout << std::endl << "loadTime:  " << testSpeed.GetMilisecondsElapsed() << std::endl;

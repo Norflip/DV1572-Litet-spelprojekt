@@ -19,6 +19,8 @@ class Enemy : public Object
 
 		void SetHeight(float height) { this->enemyHeight = height; };
 		void SetTarget(Player* player);
+		DirectX::XMVECTOR GetVelocity();
+
 		void HitSound();
 		
 		Object* GetFBXModel();
@@ -36,7 +38,9 @@ class Enemy : public Object
 	
 	private:
 		WorldContext* context;
-
+		void UpdateTestBoids(float fixedDeltaTime);
+		DirectX::XMVECTOR velocity;
+		DirectX::XMVECTOR tVelocity;
 		float movementspeed;
 		void UpdateHeight(float fixedDeltaTime);
 		void UpdateMovement(float fixedDeltaTime);
@@ -44,6 +48,8 @@ class Enemy : public Object
 		float scaleXZ;
 		Player* player;
 		Object* FBXModel;
+		DirectX::XMVECTOR BoidsAlgorithm(ObjectLayer object);
+		DirectX::XMVECTOR Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR distance, float distF);
 
 		DirectX::XMFLOAT3 currentPosition;
 		float nextDir = 0.0f;
