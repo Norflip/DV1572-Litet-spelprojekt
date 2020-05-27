@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "SpawnObjects.h"
 
-Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, GUI* gui, WorldContext context)
+Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, GUI* gui, WorldContext* context)
 	: Object(ObjectLayer::Player, modelData.mesh, modelData.material), gui(gui), controller(controller), context(context)
 {
 
@@ -89,7 +89,7 @@ void Player::UpdateMovement(float fixedDeltaTime)
 			nextPosition.z += dz * fixedDeltaTime * movementspeed;
 
 			// kolla höjd istället? 
-			DirectX::XMVECTOR dot = DirectX::XMVector3Dot(context.terrain->SampleNormal(nextPosition.x, nextPosition.z), { 0,1,0 });
+			DirectX::XMVECTOR dot = DirectX::XMVector3Dot(context->terrain->SampleNormal(nextPosition.x, nextPosition.z), { 0,1,0 });
 			if (DirectX::XMVectorGetByIndex(dot, 0) < 0.85f)
 			{
 				//idle
@@ -122,7 +122,7 @@ void Player::UpdateHeight(float FixedDeltaTime)
 	float xFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 0);
 	float zFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 2);
 
-	GetTransform().SetPosition({ xFloat,(context.terrain->SampleHeight(xFloat, zFloat) + playerHeight), zFloat });
+	GetTransform().SetPosition({ xFloat,(context->terrain->SampleHeight(xFloat, zFloat) + playerHeight), zFloat });
 }
 
 void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime)
@@ -153,7 +153,7 @@ void Player::CheckForPickups()
 {
 	if (input->GetKeyDown('e') && (!lefthandFull || !righthandFull))
 	{
-		std::vector<Object*> pickups = context.entities->GetObjectsInLayer(ObjectLayer::Pickup);
+		std::vector<Object*> pickups = context->entities->GetObjectsInLayer(ObjectLayer::Pickup);
 		bool foundPickup = false;
 
 		for (auto i = pickups.begin(); i < pickups.end() && !foundPickup; i++)
@@ -184,7 +184,7 @@ void Player::CheckForPickups()
 				}
 
 				obj->SetEnabled(false);
-				context.spawner->RemovePickup(obj);
+				context->spawner->RemovePickup(obj);
 
 				foundPickup = true;
 			}
@@ -301,7 +301,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		//weapon->gamemanager = this->gamemanager;
 		weapon->PlaySoundEffect();
 		SetActiveWeapon(static_cast<Weapon*>(weapon));
-		context.entities->InsertObject(weapon);
+		context->entities->InsertObject(weapon);
 		
 		hand = false;
 		GetTransform().SetRotation(aimDirection);
@@ -324,7 +324,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 
 
 			const float attackRange = 4.0f;
-			auto enemies = context.entities->GetObjectsInLayer(ObjectLayer::Enemy);
+			auto enemies = context->entities->GetObjectsInLayer(ObjectLayer::Enemy);
 			int counter = 0;
 
 			for (auto i = enemies.begin(); i < enemies.end(); i++)
@@ -348,7 +348,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			weapon->direction = GetTransform().GetRotation();
 			weapon->PlayBreaksound();
 
-			context.entities->RemoveObject(weapon);
+			context->entities->RemoveObject(weapon);
 
 
 			weapon->SetEnabled(false);
@@ -436,7 +436,7 @@ DirectX::XMVECTOR Player::GetAimDirection() const
 	float t = -1.0f;
 	DirectX::XMVECTOR playerToMouseDirection = { 0,0,0 };
 
-	MathHelper::Ray ray = context.scene->GetSceneCamera()->ScreenPositionToWorldRay(input->GetMousePosition());
+	MathHelper::Ray ray = context->scene->GetSceneCamera()->ScreenPositionToWorldRay(input->GetMousePosition());
 	float denom = DirectX::XMVectorGetByIndex(DirectX::XMVector3Dot({ 0,-1,0 }, ray.direction), 0);
 	//ray casta mot plane
 	if (denom > 0.000001f)

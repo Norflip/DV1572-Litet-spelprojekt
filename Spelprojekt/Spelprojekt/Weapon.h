@@ -22,8 +22,8 @@ class Weapon : public Object
 {
 public:
 
-	Weapon(WeaponType type, ObjectLayer layer, Mesh* mesh, Material* material, WorldContext context);
-	Weapon(WeaponType type, ObjectLayer layer, AssimpHandler::AssimpData model, WorldContext context);
+	Weapon(WeaponType type, ObjectLayer layer, Mesh* mesh, Material* material, WorldContext* context);
+	Weapon(WeaponType type, ObjectLayer layer, AssimpHandler::AssimpData model, WorldContext* context);
 	~Weapon();
 		
 	//void meleeAttack(float deltaTime);	//Ska sitta inne i slev // ska tas bort
@@ -48,7 +48,7 @@ public:
 	DirectX::XMVECTOR direction;
 	DirectX::XMVECTOR nextPos;
 
-	WorldContext context;
+	WorldContext* context;
 	
 protected:	
 	int movementspeed;	

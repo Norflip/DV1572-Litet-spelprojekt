@@ -10,7 +10,7 @@ class Projectile :
 	public Weapon 
 {
 public:
-	Projectile(AssimpHandler::AssimpData modelData, WorldContext context);
+	Projectile(AssimpHandler::AssimpData modelData, WorldContext* context);
 	Projectile(const Projectile& other);
 	virtual ~Projectile();
 

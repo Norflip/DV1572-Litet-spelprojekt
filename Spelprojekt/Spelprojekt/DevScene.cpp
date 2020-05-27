@@ -12,7 +12,8 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 
-	this->spawner = new SpawnObjects(entities, &terrainMesh, gamemanager, dx11);
+	this->context = new WorldContext();
+	this->spawner = new SpawnObjects(context);
 
 	gametimerText = new GUIText(dx11, "Time until extraction", window.GetWidth() / 2.0f - 150.0f, 0);
 	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f - 100.0f, 30);
@@ -51,19 +52,19 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//gui->AddGUIObject(healthbar, "healthbar");
 	//gui->AddGUIObject(healthFrame, "healthFrame");
 
-
-	context.entities = entities;
-	context.gamemanager = gamemanager;
-	context.resources = &resources;
-	context.spawner = spawner;
-	context.terrain = &terrainMesh;
-	context.dx11 = &dx11;
-	context.physics = &physics;
-	context.scene = this;
+	context->entities = entities;
+	context->gamemanager = gamemanager;
+	context->resources = &resources;
+	context->spawner = spawner;
+	context->terrain = &terrainMesh;
+	context->dx11 = &dx11;
+	context->physics = &physics;
+	context->scene = this;
 }
 
 DevScene::~DevScene()
 {		
+	delete context;
 	delete controller;
 }
 
@@ -103,7 +104,7 @@ void DevScene::Load()
 	this->player->SetLayer(ObjectLayer::Player);
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
 	entities->InsertObject(this->player);
-	context.player = player;
+	context->player = player;
 
 
 	// PREFABS

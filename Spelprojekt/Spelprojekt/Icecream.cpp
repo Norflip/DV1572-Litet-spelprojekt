@@ -1,9 +1,9 @@
 #include "Icecream.h"
 
-Icecream::Icecream(AssimpHandler::AssimpData modelData, WorldContext context) : Weapon(WeaponType::Icecream, ObjectLayer::Pickup, modelData, context)
+Icecream::Icecream(AssimpHandler::AssimpData modelData, WorldContext* context) : Weapon(WeaponType::Icecream, ObjectLayer::Pickup, modelData, context)
 {
 	this->direction = { 0,0,0 }; // makes us shoot in the direction of the object initial rotation
-	this->weaponSprite = new GUIActionbar(*context.dx11, "Sprites/CoconutNew.png", 0.0f, 0.0f);
+	this->weaponSprite = new GUIActionbar(*context->dx11, "Sprites/CoconutNew.png", 0.0f, 0.0f);
 
 	this->attack = false;
 	this->weaponDamage = 10.0f;
@@ -11,7 +11,7 @@ Icecream::Icecream(AssimpHandler::AssimpData modelData, WorldContext context) : 
 	this->movementspeed = 10;
 
 	// attackdamage
-	this->damage = context.gamemanager->GetEnemyDamage();
+	this->damage = context->gamemanager->GetEnemyDamage();
 }
 
 Icecream::Icecream(const Icecream& other) : Weapon(WeaponType::Icecream, ObjectLayer::Pickup, other.GetMesh(), other.GetMaterial(), other.context)
@@ -58,7 +58,7 @@ void Icecream::rangedAttack(float deltaTime)
 
 void Icecream::PlaySoundEffect()
 {
-	context.gamemanager->GetSoundeffectHandler()->PlaySound("Swoosh", context.gamemanager->GetCurrentSoundVolume());
+	context->gamemanager->GetSoundeffectHandler()->PlaySound("Swoosh", context->gamemanager->GetCurrentSoundVolume());
 }
 
 void Icecream::UpdateHitPlayer()
@@ -69,7 +69,7 @@ void Icecream::UpdateHitPlayer()
 		{
 			std::cout << "HIT PLAYER" << std::endl;
 			this->player->TakeDamage(AttackDamage());
-			context.entities->RemoveObject(this);
+			context->entities->RemoveObject(this);
 
 		}
 	}

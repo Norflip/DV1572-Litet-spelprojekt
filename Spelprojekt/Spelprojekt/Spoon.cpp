@@ -1,11 +1,11 @@
 #include "Spoon.h"
 
-Spoon::Spoon(AssimpHandler::AssimpData model, WorldContext context) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup, model, context)
+Spoon::Spoon(AssimpHandler::AssimpData model, WorldContext* context) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup, model, context)
 {
 	//this->movementspeeds = 3;
 	this->direction = { 0,0,0 }; // makes us shoot in the direction of the object initial rotation
 
-	this->weaponSprite = new GUIActionbar(*context.dx11, "Sprites/Slev.png", 0.0f, 0.0f);
+	this->weaponSprite = new GUIActionbar(*context->dx11, "Sprites/Slev.png", 0.0f, 0.0f);
 	this->attack = false;
 	this->weaponDamage = 5.0f;
 
@@ -58,12 +58,12 @@ void Spoon::FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 
 void Spoon::PlaySoundEffect()
 {
-	context.gamemanager->GetSoundeffectHandler()->PlaySound("Swoosh", context.gamemanager->GetCurrentSoundVolume());
+	context->gamemanager->GetSoundeffectHandler()->PlaySound("Swoosh", context->gamemanager->GetCurrentSoundVolume());
 }
 
 void Spoon::PlayBreaksound()
 {
-	context.gamemanager->GetSoundeffectHandler()->PlaySound("Splash", context.gamemanager->GetCurrentSoundVolume());
+	context->gamemanager->GetSoundeffectHandler()->PlaySound("Splash", context->gamemanager->GetCurrentSoundVolume());
 }
 
 void Spoon::Update(const float& deltaTime)

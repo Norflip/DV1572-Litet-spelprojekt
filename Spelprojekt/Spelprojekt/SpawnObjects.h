@@ -37,7 +37,7 @@ class SpawnObjects
 	const float MinimumSpawnHeight = 4.0f;
 
 public:
-	SpawnObjects(Entities* entities, Terrain* terrain, Gamemanager* gamemanager, DX11Handler& dx11);
+	SpawnObjects(WorldContext* context);
 	virtual ~SpawnObjects() {};
 
 	void SpawnInitial();
@@ -62,10 +62,7 @@ private:
 
 private:
 	bool* spawnmap;
-	DX11Handler& dx11;
-	Entities* entities;
-	Gamemanager* gamemanager;
-	Terrain* terrain;
+	WorldContext* context;
 
 	Object* wagon;
 	Object* pickupsPrefabs[2];

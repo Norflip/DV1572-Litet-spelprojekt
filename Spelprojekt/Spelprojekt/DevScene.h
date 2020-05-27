@@ -52,7 +52,7 @@ private:
 	void UpdateGUI(const float& deltaTime);
 
 private:
-	WorldContext context;
+	WorldContext* context;
 
 	CameraController* controller;
 	Gamemanager* gamemanager;

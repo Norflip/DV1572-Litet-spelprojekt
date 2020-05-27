@@ -19,7 +19,7 @@ class Player : public Object
 	const float playerHeight = 3;
 
 public:
-	Player(AssimpHandler::AssimpData modelData, CameraController* controller, GUI* gui, WorldContext context);
+	Player(AssimpHandler::AssimpData modelData, CameraController* controller, GUI* gui, WorldContext* context);
 	~Player();
 
 	void Update(const float& deltaTime) override;	
@@ -60,7 +60,7 @@ private:
 	Input* input;
 	CameraController* controller;
 	GUI* gui;
-	WorldContext context;
+	WorldContext* context;
 
 	// Weapon stuff
 	Weapon* rightWeapon;

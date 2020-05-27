@@ -1,6 +1,6 @@
 #include "Enemy.h"
 
-Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext context)
+Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext* context)
 	: Object(ObjectLayer::Enemy, modelData.mesh, modelData.material), context(context), activeweapon(nullptr)
 {
 	this->pointGiven = 5;
@@ -13,7 +13,7 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext context)
 	this->cooldownTimer = 5.0f;
 
 	// Health for enemy
-	this->health = context.gamemanager->GetEnemyHealth();	// different
+	this->health = context->gamemanager->GetEnemyHealth();	// different
 }
 
 
@@ -95,7 +95,7 @@ void Enemy::SetTarget(Player* player)
 
 void Enemy::HitSound()
 {
-	context.gamemanager->GetSoundeffectHandler()->PlaySound("EnemyHit", context.gamemanager->GetCurrentSoundVolume());
+	context->gamemanager->GetSoundeffectHandler()->PlaySound("EnemyHit", context->gamemanager->GetCurrentSoundVolume());
 }
 
 Object* Enemy::GetFBXModel()
@@ -116,7 +116,7 @@ void Enemy::UpdateAttackPlayer()
 	{
 		if (cooldownTimer <= 0.0f) 
 		{
-			Icecream* prefab = context.resources->GetResource<Icecream>("icecreamPrefab");
+			Icecream* prefab = context->resources->GetResource<Icecream>("icecreamPrefab");
 
 			// PLEASE KILL 
 			activeweapon = new Icecream(*prefab);
@@ -125,7 +125,7 @@ void Enemy::UpdateAttackPlayer()
 			activeweapon->direction = GetTransform().GetRotation();
 			activeweapon->PlaySoundEffect();
 			SetActiveWeapon(activeweapon);
-			context.entities->InsertObject(activeweapon);			
+			context->entities->InsertObject(activeweapon);
 					
 			cooldownTimer = 5.0f;
 		}
@@ -144,5 +144,5 @@ void Enemy::UpdateHeight(float fixedDeltaTime)
 	float xFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 0);
 	float zFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 2);
 
-	GetTransform().SetPosition({ xFloat,(context.terrain->SampleHeight(xFloat, zFloat) + enemyHeight), zFloat });
+	GetTransform().SetPosition({ xFloat,(context->terrain->SampleHeight(xFloat, zFloat) + enemyHeight), zFloat });
 }

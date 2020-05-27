@@ -9,7 +9,7 @@ class Icecream
 	: public Weapon
 {
 public:
-	Icecream(AssimpHandler::AssimpData modelData, WorldContext context);
+	Icecream(AssimpHandler::AssimpData modelData, WorldContext* context);
 	Icecream(const Icecream& other);
 	virtual ~Icecream();
 

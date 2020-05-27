@@ -10,7 +10,7 @@ class Player;
 class Enemy : public Object
 {
 	public: 
-		Enemy(AssimpHandler::AssimpData modelData, WorldContext context);
+		Enemy(AssimpHandler::AssimpData modelData, WorldContext* context);
 		Enemy(const Enemy& other);
 		~Enemy();
 
@@ -35,7 +35,7 @@ class Enemy : public Object
 		float GetHealthLeft() { return this->health; }
 	
 	private:
-		WorldContext context;
+		WorldContext* context;
 
 		float movementspeed;
 		void UpdateHeight(float fixedDeltaTime);

@@ -1,10 +1,10 @@
 #include "Projectile.h"
 
 // �ndra weaponType om vi l�gger till flera olika
-Projectile::Projectile(AssimpHandler::AssimpData modelData, WorldContext context) : Weapon(WeaponType::Coconut, ObjectLayer::Pickup, modelData, context)
+Projectile::Projectile(AssimpHandler::AssimpData modelData, WorldContext* context) : Weapon(WeaponType::Coconut, ObjectLayer::Pickup, modelData, context)
 {		
 	this->direction = { 0,0,0 }; // makes us shoot in the direction of the object initial rotation
-	this->weaponSprite = new GUIActionbar(*context.dx11, "Sprites/CoconutNew.png", 0.0f, 0.0f);
+	this->weaponSprite = new GUIActionbar(*context->dx11, "Sprites/CoconutNew.png", 0.0f, 0.0f);
 
 	this->attack = false;
 	this->weaponDamage = 10.0f;
@@ -53,7 +53,7 @@ void Projectile::rangedAttack(float deltaTime)
 
 void Projectile::PlaySoundEffect()
 {
-	context.gamemanager->GetSoundeffectHandler()->PlaySound("CoconutThrow", context.gamemanager->GetCurrentSoundVolume());
+	context->gamemanager->GetSoundeffectHandler()->PlaySound("CoconutThrow", context->gamemanager->GetCurrentSoundVolume());
 }
 
 //void Projectile::UpdateHitPlayer()

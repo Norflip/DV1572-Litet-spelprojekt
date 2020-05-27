@@ -7,7 +7,7 @@ class Spoon
 	: public Weapon
 {
 public:
-	Spoon(AssimpHandler::AssimpData model, WorldContext context);
+	Spoon(AssimpHandler::AssimpData model, WorldContext* context);
 	Spoon(const Spoon& other);
 
 	virtual ~Spoon();
