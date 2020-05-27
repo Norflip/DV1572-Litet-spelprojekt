@@ -39,18 +39,13 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//--------------------------------
 	gui = new GUI(dx11);
 
-	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
-	// Add objects
-	//gui->AddGUIObject(gametimerText, "gametimerText");
-	//gui->AddGUIObject(fpsText, "fpsText");
-	//gui->AddGUIObject(actionbarLeft, "actionbarLeft");
-	//gui->AddGUIObject(actionbarRight, "actionbarRight");
-	//gui->AddGUIObject(score, "score");
-	//gui->AddGUIObject(totalScore, "totalscore");
-	//gui->AddGUIObject(enemies, "enemiesleft");
-	//gui->AddGUIObject(totalEnemies, "totalenemiesleft");
-	//gui->AddGUIObject(healthbar, "healthbar");
-	//gui->AddGUIObject(healthFrame, "healthFrame");
+	
+	this->arrow = nullptr;
+	this->assimpScene = nullptr;
+	this->billBoard = nullptr;
+	this->canWin = false;
+	this->player = nullptr;
+	this->timeUntilEnd = 0.0f;
 
 	context->entities = entities;
 	context->gamemanager = gamemanager;
@@ -106,6 +101,7 @@ void DevScene::Load()
 	entities->InsertObject(this->player);
 	context->player = player;
 
+	
 
 	// PREFABS
 	spawner->SetEnemyPrefab(resources.GetResource<Enemy>("enemyPrefab1"));
@@ -150,6 +146,7 @@ void DevScene::Load()
 
 	testSpeed.Stop();
 	std::cout << std::endl << "loadTime:  " << testSpeed.GetMilisecondsElapsed() << std::endl;
+
 }
 
 void DevScene::Unload()
@@ -292,12 +289,15 @@ void DevScene::LoadResources()
 	resources.AddResource("spoonPrefab", spoonPrefab);
 
 
+	//-------- ENEMY prefab
 	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), context);
 	enemyPrefab1->GetTransform().Translate(30, 7, 35);
 	enemyPrefab1->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	enemyPrefab1->SetTarget(player);
 	enemyPrefab1->SetEnabled(false);
 	resources.AddResource("enemyPrefab1", enemyPrefab1);
+
+	
 
 	/*
 		GUI

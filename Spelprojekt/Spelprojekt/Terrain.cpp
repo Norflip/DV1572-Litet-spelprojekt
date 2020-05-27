@@ -114,7 +114,7 @@ float Terrain::SampleHeight(float x, float z)
 	int row = (int)floorf(position.z);
 
 	//quick exit if we are out of the heightmap	//
-	if (row < 0 || col < 0 || row > GetMapWidth() || col > GetMapHeight())
+	if (row < 0 || col < 0 || row >= GetMapWidth() || col >= GetMapHeight())
 	{
 		return 0;
 	}
