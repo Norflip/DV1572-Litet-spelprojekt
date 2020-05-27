@@ -74,6 +74,7 @@ private:
 
 	std::vector<Scene*>& scenes;
 	Player* player;
+	//Enemy* enemyPrefab1;
 	Terrain terrainMesh;
 	Terrain waterMesh;
 
