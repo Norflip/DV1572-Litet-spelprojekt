@@ -54,6 +54,8 @@ public:
 	void RemovePickup(Object* object);
 	void RemoveEnemy(Enemy*);
 
+	bool PointIsWalkable(float x, float z);
+
 private:
 	DirectX::XMVECTOR GetRandomSpawnPosition(float heightOffset);
 

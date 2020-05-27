@@ -143,6 +143,14 @@ void SpawnObjects::RemoveEnemy(Enemy* enemy)
 	context->entities->RemoveObject(enemy);
 }
 
+bool SpawnObjects::PointIsWalkable(float x, float z)
+{
+	DirectX::XMVECTOR dot = DirectX::XMVector3Dot(context->terrain->SampleNormal(x, z), { 0,1,0 });
+	float height = context->terrain->SampleHeight(x, z);
+
+	return !(height < 0.8f || DirectX::XMVectorGetByIndex(dot, 0) < 0.85f);
+}
+
 DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition(float heightOffset)
 {
 	bool found = false;

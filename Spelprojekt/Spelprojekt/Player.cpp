@@ -94,29 +94,19 @@ void Player::UpdateMovement(float fixedDeltaTime)
 			noff.x = dx * fixedDeltaTime * movementspeed;
 			noff.z = dz * fixedDeltaTime * movementspeed;
 
+			bool walkable = context->spawner->PointIsWalkable(nextPosition.x + noff.x, nextPosition.z + noff.z);
+			isMoving = walkable;
 
-			float height = context->terrain->SampleHeight(nextPosition.x, nextPosition.z);
-
-
-			// kolla höjd istället? 
-			DirectX::XMVECTOR dot = DirectX::XMVector3Dot(context->terrain->SampleNormal(nextPosition.x, nextPosition.z), { 0,1,0 });
-
-
-			if (height < 1.0f)
-			{
-				noff.x = 0.0f;
-				noff.z = 0.0f;
-
-				isMoving = false;
-				//return;
-			}
-			else
+			if (walkable)
 			{
 				DirectX::XMFLOAT3 result = CheckCollisions(fixedDeltaTime, length);
 				noff.x += result.x;
 				noff.z += result.z;
-
-				isMoving = true;
+			}
+			else
+			{
+				noff.x = 0.0f;
+				noff.z = 0.0f;
 			}
 		}
 		else
