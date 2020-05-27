@@ -155,13 +155,11 @@ void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 DirectX::XMFLOAT3 Player::CheckCollisions(const float& deltaTime, const float& length)
 {
 	DirectX::XMFLOAT3 result = { 0,0,0 };
-
 	DirectX::XMVECTOR start = GetTransform().GetPosition();
 	float y = DirectX::XMVectorGetByIndex(start, 1);
 	y -= (playerHeight / 2.0f);
 
 	DirectX::XMVectorSetByIndex(start, y, 1);
-
 	DirectX::XMVECTOR direction, offset;
 
 	const int rayCount = 64;
@@ -172,20 +170,14 @@ DirectX::XMFLOAT3 Player::CheckCollisions(const float& deltaTime, const float& l
 		float angle = startAngle + (float)i * (360.0f / rayCount);
 		float rad = angle * MathHelper::ToRadians;
 
-		float x = cosf(rad);
-		float z = sinf(rad);
-
-		direction = DirectX::XMVector3Normalize({ x,0,z });
+		direction = DirectX::XMVector3Normalize({ cosf(rad),0,sinf(rad) });
 		offset = DirectX::XMVectorAdd(start, DirectX::XMVectorScale(direction, length));
 
 		RaycastHit hit = context->physics->Raycast(start, offset);
 		if (hit.hit)
 		{
-			DirectX::XMVECTOR aa = DirectX::XMVectorSubtract(GetTransform().GetPosition(), hit.position);
 			DirectX::XMFLOAT3 pos;
-			DirectX::XMStoreFloat3(&pos, aa);
-
-			Logger::Write(std::to_string(pos.x));
+			DirectX::XMStoreFloat3(&pos, DirectX::XMVectorSubtract(GetTransform().GetPosition(), hit.position));
 
 			result.x += pos.x * deltaTime;// *length2;// // 
 			result.z += pos.z * deltaTime;// * length2;//* fixedDeltaTime;// * 0.05f;
