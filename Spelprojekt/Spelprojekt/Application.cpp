@@ -3,6 +3,9 @@
 Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(false)
 {
 	srand((int)time(0));
+	this->deltaTime = 0.0f;
+	this->currentTime = 0.0f;
+
 	this->window.Initialize(); // initializes the win32 window
 	this->dx11.Initialize(this->window); // creates swapchain, device, deviceContext
 	this->deferredRenderer = new Renderer(this->window.GetWidth(), this->window.GetHeight(), timer, dx11);
@@ -32,8 +35,15 @@ Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(fal
 }
 
 Application::~Application()
-{
-	this->gamemanager = nullptr;
+{	
+	/*delete gamemanager;
+
+	scenes.clear();
+	delete introScene;
+	delete endScene;
+	delete gameScene;
+	delete currentScene;*/
+
 	Logger::Close();
 }
 
@@ -43,10 +53,6 @@ void Application::Run()
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
 	timer.Start();
-
-	float timeLastFrame = static_cast<float>(timer.GetMilisecondsElapsed() / 1000.0f);
-	float fixedTimeAccumulation = 0.0f;
-	float currentTime, deltaTime;
 
 	while (TRUE)
 	{
@@ -95,5 +101,6 @@ void Application::Run()
 
 			timeLastFrame = currentTime;
 		}
-	}
+	}	
 }
+

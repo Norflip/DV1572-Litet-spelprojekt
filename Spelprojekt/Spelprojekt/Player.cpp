@@ -1,10 +1,13 @@
+#include "Physics.h"
+
 #include "Player.h"
 #include "Scene.h"
 #include "SpawnObjects.h"
 
-Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, SpawnObjects* spawner, Terrain* terrain, GUI* gui, Gamemanager* gamemanager, Object* winArea, DX11Handler& dx11, Scene* scene)
-	:controller(controller), terrain(terrain), Object(ObjectLayer::Player, modelData.mesh, modelData.material), dx11(dx11), scene(scene), gamemanager(gamemanager), spawner(spawner), gui(gui)
+Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller, GUI* gui, WorldContext* context)
+	: Object(ObjectLayer::Player, modelData.mesh, modelData.material), gui(gui), controller(controller), context(context)
 {
+
 	this->input = controller->getInput();
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
@@ -35,6 +38,8 @@ Player::~Player()
 
 void Player::Update(const float& deltaTime)
 {
+
+
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
 	CheckForPickups();
@@ -42,18 +47,16 @@ void Player::Update(const float& deltaTime)
 	UpdateMeleeWeaponPosition();	// If spoon is equiped
 	UseWeapon();
 
-	//TakeDamage();
-
 	UpdateLookAtPosition();
 	UpdateAnimations();
 }
 
 
-void Player::TakeDamage()
+void Player::TakeDamage(float damage)
 {
-	if (playerHealth != 0.0f)
+	if (playerHealth > 0.0f)
 	{
-		//playerHealth -= 10.0f;
+		playerHealth -= damage;
 		// INSERT SOUND WHEN IT WORKS...........................
 	}
 }
@@ -63,6 +66,8 @@ void Player::UpdateMovement(float fixedDeltaTime)
 	DirectX::XMFLOAT3 nextPosition;
 	DirectX::XMStoreFloat3(&nextPosition, GetTransform().GetPosition());
 	currentPosition = nextPosition;
+
+	DirectX::XMFLOAT3 noff = { 0,0,0 };
 
 	if (controller->GetState() == CameraController::State::Follow)
 	{
@@ -86,33 +91,34 @@ void Player::UpdateMovement(float fixedDeltaTime)
 		{
 			dx /= length;
 			dz /= length;
-			nextPosition.x += dx * fixedDeltaTime * movementspeed;
-			nextPosition.z += dz * fixedDeltaTime * movementspeed;
+			noff.x = dx * fixedDeltaTime * movementspeed;
+			noff.z = dz * fixedDeltaTime * movementspeed;
 
-			// kolla höjd istället? 
-			DirectX::XMVECTOR dot = DirectX::XMVector3Dot(terrain->SampleNormal(nextPosition.x, nextPosition.z), { 0,1,0 });
-			if (DirectX::XMVectorGetByIndex(dot, 0) < 0.85f)
+			bool walkable = context->spawner->PointIsWalkable(nextPosition.x + noff.x, nextPosition.z + noff.z);
+			isMoving = walkable;
+
+			if (walkable)
 			{
-				//idle
-				//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
-				isMoving = false;
-				return;
+				DirectX::XMFLOAT3 result = CheckCollisions(fixedDeltaTime, length);
+				noff.x += result.x;
+				noff.z += result.z;
 			}
 			else
 			{
-				// run
-				isMoving = true;
-				//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[0]);
+				noff.x = 0.0f;
+				noff.z = 0.0f;
 			}
 		}
 		else
 		{
 			// IDLE
 			isMoving = false;
-			//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
 		}
 
-		bool changedir = (dx != 0.0f || dz != 0.0f);
+		nextPosition.x += noff.x;
+		nextPosition.z += noff.z;
+
+		bool changedir = (length != 0.0f);
 		GetTransform().SmoothRotate(nextPosition, fixedDeltaTime, changedir);
 		GetTransform().SetPosition({ nextPosition.x, nextPosition.y, nextPosition.z });
 	}
@@ -123,7 +129,7 @@ void Player::UpdateHeight(float FixedDeltaTime)
 	float xFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 0);
 	float zFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 2);
 
-	GetTransform().SetPosition({ xFloat,(terrain->SampleHeight(xFloat, zFloat) + playerHeight), zFloat });
+	GetTransform().SetPosition({ xFloat,(context->terrain->SampleHeight(xFloat, zFloat) + playerHeight), zFloat });
 }
 
 void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime)
@@ -146,6 +152,49 @@ void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) - MathHelper::PI * 2, 0 });
 }
 
+DirectX::XMFLOAT3 Player::CheckCollisions(const float& deltaTime, const float& length)
+{
+	DirectX::XMFLOAT3 result = { 0,0,0 };
+
+	DirectX::XMVECTOR start = GetTransform().GetPosition();
+	float y = DirectX::XMVectorGetByIndex(start, 1);
+	y -= (playerHeight / 2.0f);
+
+	DirectX::XMVectorSetByIndex(start, y, 1);
+
+	DirectX::XMVECTOR direction, offset;
+
+	const int rayCount = 64;
+	float startAngle = static_cast<float>(rand() % 360);
+
+	for (size_t i = 0; i < rayCount; i++)
+	{
+		float angle = startAngle + (float)i * (360.0f / rayCount);
+		float rad = angle * MathHelper::ToRadians;
+
+		float x = cosf(rad);
+		float z = sinf(rad);
+
+		direction = DirectX::XMVector3Normalize({ x,0,z });
+		offset = DirectX::XMVectorAdd(start, DirectX::XMVectorScale(direction, length));
+
+		RaycastHit hit = context->physics->Raycast(start, offset);
+		if (hit.hit)
+		{
+			DirectX::XMVECTOR aa = DirectX::XMVectorSubtract(GetTransform().GetPosition(), hit.position);
+			DirectX::XMFLOAT3 pos;
+			DirectX::XMStoreFloat3(&pos, aa);
+
+			Logger::Write(std::to_string(pos.x));
+
+			result.x += pos.x * deltaTime;// *length2;// // 
+			result.z += pos.z * deltaTime;// * length2;//* fixedDeltaTime;// * 0.05f;
+		}
+	}
+
+	return result;
+}
+
 void Player::InitWeapons()
 {
 }
@@ -154,7 +203,7 @@ void Player::CheckForPickups()
 {
 	if (input->GetKeyDown('e') && (!lefthandFull || !righthandFull))
 	{
-		std::vector<Object*> pickups = scene->GetEntities()->GetObjectsInLayer(ObjectLayer::Pickup);
+		std::vector<Object*> pickups = context->entities->GetObjectsInLayer(ObjectLayer::Pickup);
 		bool foundPickup = false;
 
 		for (auto i = pickups.begin(); i < pickups.end() && !foundPickup; i++)
@@ -185,7 +234,7 @@ void Player::CheckForPickups()
 				}
 
 				obj->SetEnabled(false);
-				spawner->RemovePickup(obj);
+				context->spawner->RemovePickup(obj);
 
 				foundPickup = true;
 			}
@@ -302,7 +351,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		//weapon->gamemanager = this->gamemanager;
 		weapon->PlaySoundEffect();
 		SetActiveWeapon(static_cast<Weapon*>(weapon));
-		scene->GetEntities()->InsertObject(weapon);
+		context->entities->InsertObject(weapon);
 		
 		hand = false;
 		GetTransform().SetRotation(aimDirection);
@@ -325,7 +374,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 
 
 			const float attackRange = 4.0f;
-			auto enemies = scene->GetEntities()->GetObjectsInLayer(ObjectLayer::Enemy);
+			auto enemies = context->entities->GetObjectsInLayer(ObjectLayer::Enemy);
 			int counter = 0;
 
 			for (auto i = enemies.begin(); i < enemies.end(); i++)
@@ -349,7 +398,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			weapon->direction = GetTransform().GetRotation();
 			weapon->PlayBreaksound();
 
-			scene->GetEntities()->RemoveObject(weapon);
+			context->entities->RemoveObject(weapon);
 
 
 			weapon->SetEnabled(false);
@@ -373,7 +422,7 @@ Weapon* Player::CopyWeapon(Weapon* weapon)
 		curr = new Projectile(*proj);
 		curr->SetType(weapon->GetType());
 		curr->SetLayer(ObjectLayer::None);
-		curr->gamemanager = this->gamemanager;
+		curr->context = context;
 	}
 	else if (weapon->GetType() == WeaponType::Spoon)
 	{
@@ -382,7 +431,7 @@ Weapon* Player::CopyWeapon(Weapon* weapon)
 		curr->SetType(weapon->GetType());
 
 		curr->SetLayer(ObjectLayer::None);
-		curr->gamemanager = this->gamemanager;
+		curr->context = context;
 		//scene->GetEntities()->RemoveObject(curr);
 	}
 
@@ -399,9 +448,10 @@ void Player::SetActiveWeapon(Weapon* weapon)
 	this->activeWeapon = weapon;
 }
 
-void Player::SetArrow(Object* obj)
+void Player::SetTargetAndArrow(Object* arrow, Object* winArea)
 {
-	this->arrow = obj;
+	this->arrow = arrow;
+	this->winArea = winArea; 
 }
 
 void Player::UpdateLookAtPosition()
@@ -436,7 +486,7 @@ DirectX::XMVECTOR Player::GetAimDirection() const
 	float t = -1.0f;
 	DirectX::XMVECTOR playerToMouseDirection = { 0,0,0 };
 
-	MathHelper::Ray ray = scene->GetSceneCamera()->ScreenPositionToWorldRay(input->GetMousePosition());
+	MathHelper::Ray ray = context->scene->GetSceneCamera()->ScreenPositionToWorldRay(input->GetMousePosition());
 	float denom = DirectX::XMVectorGetByIndex(DirectX::XMVector3Dot({ 0,-1,0 }, ray.direction), 0);
 	//ray casta mot plane
 	if (denom > 0.000001f)

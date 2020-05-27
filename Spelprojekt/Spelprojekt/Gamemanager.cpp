@@ -20,10 +20,14 @@ Gamemanager::Gamemanager(DX11Handler* dx11) : dxhandler(dx11)
 
 	this->vsyncState = false;
 
+	// difficulty settings
 	this->difficultystate = 1;		// 1 = easy | 2 = medium | 3 = hard
 	this->timer = 120.0f;			// 120.0f	| 160.0f	 | 200.0f 
 	this->nrOfEnemies = 20;			// 20st		| 40st		 | 60st
 	this->activeEnemies = 5;		// 5st		| 7st		 | 9st
+	this->enemyDamage = 5;			// 5		| 10		 | 15
+	this->enemyHealth = 10;			// 10		| 20		 | 30
+
 
 	// Get latest highscore list ---
 	highscoreFiles.open("Datafiles/Highscore.txt");
@@ -45,22 +49,19 @@ Gamemanager::Gamemanager(DX11Handler* dx11) : dxhandler(dx11)
 
 Gamemanager::~Gamemanager()
 {
-	this->music = nullptr;
-	this->music = 0;
-
-	this->soundeffect = nullptr;
-	this->soundeffect = 0;	
+	// erase tracks
+	// deallocate memory	
 }
 
 void Gamemanager::LoadSoundEffects()
 {
 	this->soundeffect->LoadSound("WinSound", "SoundEffects/tadaWin.wav");		// done
-	this->soundeffect->LoadSound("FailSound", "SoundEffects/Fail.wav");		// done
+	this->soundeffect->LoadSound("FailSound", "SoundEffects/Fail.wav");			// done
 
 	this->soundeffect->LoadSound("CoconutThrow", "SoundEffects/Explo1.wav");	// done
-	this->soundeffect->LoadSound("Swoosh", "SoundEffects/Swoosh.wav");		// done
-	this->soundeffect->LoadSound("Splash", "SoundEffects/Splash.wav");	// done
-	this->soundeffect->LoadSound("EnemyHit", "SoundEffects/Punch.wav");		// done
+	this->soundeffect->LoadSound("Swoosh", "SoundEffects/Swoosh.wav");			// done
+	this->soundeffect->LoadSound("Splash", "SoundEffects/Splash.wav");			// done
+	this->soundeffect->LoadSound("EnemyHit", "SoundEffects/Punch.wav");			// done
 	this->soundeffect->LoadSound("PlayerHit", "SoundEffects/playerHit.wav");	
 }
 

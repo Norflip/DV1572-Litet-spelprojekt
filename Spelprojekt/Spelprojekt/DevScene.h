@@ -1,4 +1,7 @@
 #pragma once
+#include "Physics.h"
+#include "RaycastCallback.h"
+
 #include "Scene.h"
 #include "Logger.h"
 #include "Camera.h"
@@ -43,16 +46,18 @@ public:
 	std::string getName() { return this->sceneName; };
 	void checkForNextScene();
 	void SetNextScene(bool winOrLose);
+	
 
 private:
 	void UpdateGUI(const float& deltaTime);
 
 private:
+	WorldContext* context;
+
 	CameraController* controller;
 	Gamemanager* gamemanager;
 	SpawnObjects* spawner;
-
-	WorldContext context;
+	Physics physics;
 
 	GUI* gui;
 	GUIText* gametimerText;
@@ -69,6 +74,7 @@ private:
 
 	std::vector<Scene*>& scenes;
 	Player* player;
+	//Enemy* enemyPrefab1;
 	Terrain terrainMesh;
 	Terrain waterMesh;
 

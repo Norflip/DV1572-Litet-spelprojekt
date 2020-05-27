@@ -11,6 +11,12 @@ void GUI::AddGUIObject(GUIObject *addObj, std::string name)
 	//GUIObjects[name] = addObj;
 }
 
+void GUI::AddGUIButtonObject(GUIObject* addButton, std::string name)
+{
+	GUIButtons.insert({ name,addButton });
+	//GUIObjects[name] = addObj;
+}
+
 void GUI::RemoveGUIObject(std::string name)
 {
 	auto temp =   GUIObjects.find(name);

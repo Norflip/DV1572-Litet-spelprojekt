@@ -1,41 +1,30 @@
 #include "Enemy.h"
 
-Enemy::Enemy(AssimpHandler::AssimpData modelData, Weapon* enemyweapon, Terrain* terrain, DX11Handler& dx11, Scene* scene, Gamemanager* gamemanager, Entities* entities)
-	: terrain(terrain), Object(ObjectLayer::Enemy, modelData.mesh, modelData.material)
+Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext* context)
+	: Object(ObjectLayer::Enemy, modelData.mesh, modelData.material), context(context), activeweapon(nullptr)
 {
-	this->enemyweapon = new Weapon(*enemyweapon);
-	this->enemyweapon->gamemanager = enemyweapon->gamemanager;
-	this->activeweapon = nullptr;
-
 	this->pointGiven = 5;
-	//SetMesh(FBXModel->GetMesh());
-	//SetMaterial(FBXModel->GetMaterial());
-
-	// delete FBXModel? / F
-
 	this->velocity = { 2,0,2 };
 	this->tVelocity = { 0,0,0 };
 
+	this->activeweapon = nullptr;
+	this->movementspeed = 2.0f;
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
-	this->entities = entities;
-	this->gamemanager = gamemanager;
-	//this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
 
-	this->scene = scene;
 	this->hasShot = false;
 	this->cooldownTimer = 5.0f;
+
+	// Health for enemy
+	this->health = context->gamemanager->GetEnemyHealth();	// different
 }
 
 
 Enemy::Enemy(const Enemy& other)
 {
-	this->enemyweapon = new Weapon(*other.enemyweapon);
-	this->enemyweapon->gamemanager = other.enemyweapon->gamemanager;
 	this->activeweapon = other.activeweapon;
 
 	this->pointGiven = other.pointGiven;
-	this->terrain = other.terrain;
 	this->FBXModel = other.FBXModel;
 	SetMesh(other.GetMesh());
 	SetMaterial(other.GetMaterial());
@@ -43,20 +32,23 @@ Enemy::Enemy(const Enemy& other)
 	this->tVelocity = other.tVelocity;
 	this->currentPosition = other.currentPosition;
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
-	this->entities = other.entities;
 	this->SetLayer(other.GetLayer());
 
-	this->gamemanager = other.gamemanager;
+	this->context = other.context;
+
 	//this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
 	this->GetMesh()->skeleton = other.GetMesh()->skeleton;
 	float stop = 0;
-	this->scene = other.scene;
 	this->hasShot = false;
 	this->cooldownTimer = other.cooldownTimer;
+
+	// Health for enemy
+	this->health = other.context->gamemanager->GetEnemyHealth();
 }
 
 Enemy::~Enemy()
 {
+	//delete activeWeapon;
 }
 
 void Enemy::Update(const float& deltaTime)
@@ -180,7 +172,7 @@ DirectX::XMVECTOR Enemy::Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR 
 
 void Enemy::SetTarget(Player* player)
 {
-		this->player = player;
+	this->player = player;
 }
 
 DirectX::XMVECTOR Enemy::GetVelocity()
@@ -189,7 +181,7 @@ DirectX::XMVECTOR Enemy::GetVelocity()
 }
 void Enemy::HitSound()
 {
-	gamemanager->GetSoundeffectHandler()->PlaySound("EnemyHit", gamemanager->GetCurrentSoundVolume());
+	context->gamemanager->GetSoundeffectHandler()->PlaySound("EnemyHit", context->gamemanager->GetCurrentSoundVolume());
 }
 
 Object* Enemy::GetFBXModel()
@@ -205,19 +197,31 @@ void Enemy::UpdateAttackPlayer()
 
 	DirectX::XMVECTOR dist = DirectX::XMVector3Length(riktVec);
 	float distance = DirectX::XMVectorGetByIndex(dist, 0);
-	if (distance < 13.0f) {
-		if (cooldownTimer <= 0.0f) {
-			activeweapon = new Icecream(*static_cast<Icecream*>(enemyweapon));
+
+	if (distance < 13.0f) 
+	{
+		if (cooldownTimer <= 0.0f) 
+		{
+			Icecream* prefab = context->resources->GetResource<Icecream>("icecreamPrefab");
+
+			// PLEASE KILL 
+			activeweapon = new Icecream(*prefab);
 			activeweapon->SetReferenceToPlayer(player);
-			//activeweapon->SetWeaponSpeed(3);
 			activeweapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			activeweapon->direction = GetTransform().GetRotation();
 			activeweapon->PlaySoundEffect();
 			SetActiveWeapon(activeweapon);
-			scene->GetEntities()->InsertObject(activeweapon);			
+			context->entities->InsertObject(activeweapon);
 					
 			cooldownTimer = 5.0f;
 		}
+	}
+}
+
+void Enemy::TakeDamage(float damage)
+{
+	if (this->health > 0.0f) {
+		this->health -= damage;
 	}
 }
 
@@ -226,5 +230,5 @@ void Enemy::UpdateHeight(float fixedDeltaTime)
 	float xFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 0);
 	float zFloat = DirectX::XMVectorGetByIndex(GetTransform().GetPosition(), 2);
 
-	GetTransform().SetPosition({ xFloat,(terrain->SampleHeight(xFloat, zFloat) + enemyHeight), zFloat });
+	GetTransform().SetPosition({ xFloat,(context->terrain->SampleHeight(xFloat, zFloat) + enemyHeight), zFloat });
 }

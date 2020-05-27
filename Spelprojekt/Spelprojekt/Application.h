@@ -7,6 +7,8 @@
 #include "DX11Handler.h"
 #include "Input.h"
 #include <stack>
+#include "Physics.h"
+
 #include "Timer.h"
 #include <vector>
 #include "EndScene.h"
@@ -18,7 +20,7 @@ class Application
 
 public:
 
-	//constructor & destructor
+	//Constructor & destructor
 	Application(HINSTANCE);
 	virtual ~Application();
 
@@ -31,6 +33,7 @@ public:
 	void SetPaused(bool pause) { this->pauseGame = pause; }
 
 	bool exitGame = false;
+
 private:
 	// Variables
 	Window window;
@@ -47,6 +50,11 @@ private:
 
 	std::vector<Scene*>scenes;
 	Renderer* deferredRenderer;
+
+	float timeLastFrame = static_cast<float>(timer.GetMilisecondsElapsed() / 1000.0f);
+	float fixedTimeAccumulation = 0.0f;
+	float currentTime;
+	float deltaTime;
 
 	bool pauseGame = true;
 	Timer timer;

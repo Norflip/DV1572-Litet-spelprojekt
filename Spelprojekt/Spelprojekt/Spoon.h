@@ -7,10 +7,10 @@ class Spoon
 	: public Weapon
 {
 public:
-	Spoon(AssimpHandler::AssimpData model, Gamemanager* gamemanager, Terrain* terrain, DX11Handler& dx11, Entities* entities);
+	Spoon(AssimpHandler::AssimpData model, WorldContext* context);
 	Spoon(const Spoon& other);
 
-	~Spoon();
+	virtual ~Spoon();
 	void Update(const float& deltaTime) override;
 
 	GUIActionbar* GetWeaponSprite() override { return this->weaponSprite; }
@@ -19,10 +19,11 @@ public:
 	void MeleeAttack(float deltaTime);
 	
 	void FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);	
-	void PlaySoundEffect() override { gamemanager->GetSoundeffectHandler()->PlaySound("Swoosh", gamemanager->GetCurrentSoundVolume()); }
-	void PlayBreaksound() override { gamemanager->GetSoundeffectHandler()->PlaySound("Splash", gamemanager->GetCurrentSoundVolume()); }
+	void PlaySoundEffect() override;
+	void PlayBreaksound() override;
 	void Use() override { this->used++; };
 	int CheckUsage() override { return this->used; }
+	float AttackDamage() override { return this->damage; }
 
 	void SetReferenceToPlayer(Player* player) override { this->player = player; }
 

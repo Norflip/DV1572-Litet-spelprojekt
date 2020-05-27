@@ -1,6 +1,6 @@
 #include "IntroGUI.h"
 
-IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scene, Gamemanager* gamemanager) : dx11(dx11)    // tabrot soundeffect
+IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scene, Gamemanager* gamemanager) : dx11(dx11)   
 {
     this->currentScene = scene;
     this->gui = gui;
@@ -9,10 +9,18 @@ IntroGUI::IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraControll
     this->gamemanager = gamemanager;
     this->currentMusicVolume = gamemanager->GetCurrentMusicVolume();
     this->currentSoundVolume = gamemanager->GetCurrentSoundVolume();
+
+    this->trackoneChecked = true;
+    this->tracktwoChecked = false;
+    this->trackthreeChecked = false;
 }
 
 IntroGUI::~IntroGUI()
 {    
+    delete gui;
+    delete input;
+    delete gamemanager;
+    delete currentScene;
 }
 
 void IntroGUI::Update()
@@ -92,6 +100,8 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy_active.png";
         lastMedium = "Sprites/medium.png";
         lastHard = "Sprites/hard.png";
+        gamemanager->SetEnemyHealth(10);
+        gamemanager->SetEnemyDamage(5);
         gamemanager->SetActiveEnemies(5);
         gamemanager->SetTotalEnemies(20);
         gamemanager->SetTimer(120.0f);
@@ -100,6 +110,8 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy.png";
         lastMedium = "Sprites/medium_active.png";
         lastHard = "Sprites/hard.png";
+        gamemanager->SetEnemyHealth(20);
+        gamemanager->SetEnemyDamage(10);
         gamemanager->SetActiveEnemies(7);
         gamemanager->SetTotalEnemies(40);
         gamemanager->SetTimer(160.0f);
@@ -108,6 +120,8 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy.png";
         lastMedium = "Sprites/medium.png";
         lastHard = "Sprites/hard_active.png";
+        gamemanager->SetEnemyHealth(30);
+        gamemanager->SetEnemyDamage(15);
         gamemanager->SetActiveEnemies(9);
         gamemanager->SetTotalEnemies(60);
         gamemanager->SetTimer(200.0f);
@@ -207,6 +221,7 @@ void IntroGUI::Start()
 void IntroGUI::LoadStart()
 {
     ClearGUI();
+    ClearButtons();
     
     //LOAD ALL GUI OBJECTS FOR START, ONCE
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 100.0f), "play");    
@@ -224,7 +239,7 @@ void IntroGUI::Options()
     GUISprite* musicVolBar = static_cast<GUISprite*>(gui->GetGUIList()->at("MusicBar"));    
 
     GUISprite* lowMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("leftmusicvolume"));
-    if (lowMusicVolume->Clicked(input) && gamemanager->GetCurrentMusicVolume() != 0)
+    if (lowMusicVolume->Clicked(input) && gamemanager->GetCurrentMusicVolume() > 0)
     {
         if (gamemanager->GetCurrentMusicVolume() > 0) {
             currentMusicVolume = gamemanager->GetCurrentMusicVolume();
@@ -235,7 +250,7 @@ void IntroGUI::Options()
     }
 
     GUISprite* highMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightmusicvolume"));    
-    if (highMusicVolume->Clicked(input) && gamemanager->GetCurrentMusicVolume() != 1)
+    if (highMusicVolume->Clicked(input) && gamemanager->GetCurrentMusicVolume() < 1)
     {
         if (gamemanager->GetCurrentMusicVolume() < 1 )
         {
@@ -665,8 +680,7 @@ void IntroGUI::LoadSoundtracks()
 
 void IntroGUI::Highscore()
 {
-    GUISprite* backtoint = static_cast<GUISprite*>(gui->GetGUIList()->at("goback"));
-
+    GUISprite* backtoint = static_cast<GUISprite*>(gui->GetGUIList()->at("goback"));    
     if (backtoint->Clicked(input)) {
         first = true;
         menu = Menu::start;
@@ -680,12 +694,13 @@ void IntroGUI::Highscore()
     else {
         backtoint->SetWICSprite(dx11, "Sprites/backtointro.png");
     }
-    
+
 }
 
 void IntroGUI::LoadHighscore()
 {
     ClearGUI();
+
     GUISprite* highscoretitle = new GUISprite(dx11, "Sprites/highscoretitle.png", 90.0f, 65.0f);
     gui->AddGUIObject(highscoretitle, "highscoretitle");
 
@@ -693,7 +708,6 @@ void IntroGUI::LoadHighscore()
     gui->AddGUIObject(highscoreframe, "highscoreframe");
 
     gamemanager->DisplayHighscore(gui);
-
 
     GUISprite* backtomenu = new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f);
     gui->AddGUIObject(backtomenu, "goback");
@@ -730,6 +744,8 @@ void IntroGUI::Quit()
     else {
         backagain->SetWICSprite(dx11, "Sprites/backtointro.png");
     }
+
+
 }
 
 void IntroGUI::LoadQuit()
@@ -742,6 +758,18 @@ void IntroGUI::LoadQuit()
     first = false;
 }
 
+void IntroGUI::ClearButtons()
+{
+    for (auto& it : *gui->GetGUIButtonList())
+    {
+        // Do stuff
+        GUIObject* test = it.second;
+        delete test;
+
+    }
+    gui->GetGUIButtonList()->clear();
+}
+
 void IntroGUI::ClearGUI()
 {
     for (auto& it : *gui->GetGUIList()) 
@@ -749,7 +777,7 @@ void IntroGUI::ClearGUI()
         // Do stuff
         GUIObject* test = it.second;
         delete test;
+
     }
     gui->GetGUIList()->clear();
 }
-

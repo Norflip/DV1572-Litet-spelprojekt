@@ -40,7 +40,9 @@ public:
 	void LoadQuit();
 
 private:
+	void ClearButtons();	// asdsadsadas
 	void ClearGUI();
+
 	bool first = true;
 	Menu menu = Menu::start;
 	
@@ -65,6 +67,5 @@ private:
 	bool tracktwoChecked;
 	bool trackthreeChecked;		
 	//	-	-	//	-	-	//	
-
 	std::string lastEasy, lastMedium, lastHard;
 };

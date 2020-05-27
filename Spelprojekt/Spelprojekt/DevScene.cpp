@@ -4,10 +4,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 {
 	//----- GUI SHIET |  Set gui last |
 
-
-	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
-	window.GetInput()->LockCursor(false);
-
 	Lights& lights = renderer->GetLights();
 	lights.SetSunDirection({ 0, -1, 0 });
 	lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
@@ -16,11 +12,11 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
 	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
 
-	this->spawner = new SpawnObjects(entities, &terrainMesh, gamemanager, dx11);
+	this->context = new WorldContext();
+	this->spawner = new SpawnObjects(context);
 
 	gametimerText = new GUIText(dx11, "Time until extraction", window.GetWidth() / 2.0f - 150.0f, 0);
 	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f - 100.0f, 30);
-
 	totalScore = new GUIText(dx11, "Score", 210.0f, 5.0f);
 	totalScore->SetFontSize({ 3.0f, 3.0f });
 	totalScore->SetFontColor({ 1,0,0,1 });
@@ -29,17 +25,102 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	totalEnemies->SetFontSize({ 2.0f, 2.0f });
 	totalEnemies->SetFontColor({ 0.5,1,0,1 });
 
+	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
+	window.GetInput()->LockCursor(false);
+
 	// HEALTH
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
 	actionbarRight = new GUIActionbar(dx11, "Sprites/Actionbar.png", 400.0f, 650.0f);
 	score = new GUISprite(dx11, "Sprites/score.png", 10.0f, 19.0f);
 	enemies = new GUISprite(dx11, "Sprites/enemiesleft.png", 10, 80);
-
 	healthbar = new GUISprite(dx11, "Sprites/Healthbar.png", 10.0f, 650.0f);
-
+	healthbar->HealthBar(100.0f, 100.0f);
 	//--------------------------------
 	gui = new GUI(dx11);
+
+	
+	this->arrow = nullptr;
+	this->assimpScene = nullptr;
+	this->billBoard = nullptr;
+	this->canWin = false;
+	this->player = nullptr;
+	this->timeUntilEnd = 0.0f;
+
+	context->entities = entities;
+	context->gamemanager = gamemanager;
+	context->resources = &resources;
+	context->spawner = spawner;
+	context->terrain = &terrainMesh;
+	context->dx11 = &dx11;
+	context->physics = &physics;
+	context->scene = this;
+}
+
+DevScene::~DevScene()
+{		
+	delete context;
+	delete controller;
+}
+
+void DevScene::Load()
+{
+
+	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
+	this->timeUntilEnd = 10.0f; // gamemanager->GetTimer();		// get time from gamemanager
+	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
+
+	Timer testSpeed;
+	testSpeed.Start();
+
+	// Exit Wagon
+	Object* wagon = new Object(ObjectLayer::Enviroment, resources.GetModel("wagonModel"));
+	entities->InsertObject(wagon);
+	spawner->PlaceWagon(wagon);
+
+
+	// GROUNDH MESH
+	Object* terrainObject = new Object(ObjectLayer::None, terrainMesh.GetMesh(), resources.GetResource<Material>("terrainMaterial"));
+	entities->InsertObject(terrainObject);
+
+
+	// ------- water shader
+	Object* water = new Object(ObjectLayer::None, waterMesh.GetMesh(), resources.GetResource<Material>("waterMaterial"));
+	water->GetTransform().Translate({ 0,5,0, });
+	water->GetTransform().SetRotation({ 0,0,0 });
+	entities->InsertObject(water);
+	water->isWater = true;
+
+
+	// ------ PLAYER
+	this->player = new Player(resources.GetModel("playerModel"), controller, gui, context);
+	this->player->GetTransform().SetPosition({ 55, 4, 55 });
+	this->player->GetTransform().Scale(2.0, 2.0, 2.0);
+	this->player->ScaleLocalBounds().ScaleMinMax(DirectX::XMMatrixScaling(0.5, 0.5, 0.5));
+	this->player->SetLayer(ObjectLayer::Player);
+	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
+	entities->InsertObject(this->player);
+	context->player = player;
+
+	
+
+	// PREFABS
+	spawner->SetEnemyPrefab(resources.GetResource<Enemy>("enemyPrefab1"));
+	spawner->SetPickupPrefab(resources.GetResource<Spoon>("spoonPrefab"), WeaponType::Spoon);
+	spawner->SetPickupPrefab(resources.GetResource<Projectile>("coconutPrefab"), WeaponType::Coconut);
+	
+
+	// ------ Leveldesign
+	CreateSceneObjects();
+
+
+	// - - - - - Exit arrow
+	arrow = new Object(ObjectLayer::None, resources.GetModel("arrowModel"));
+	arrow->GetTransform().Translate(35, 10, 30);
+	player->SetTargetAndArrow(arrow, wagon);
+	entities->InsertObject(arrow);
+	arrow->SetVisible(false);
+
 
 	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
 	// Add objects
@@ -51,75 +132,11 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	gui->AddGUIObject(totalScore, "totalscore");
 	gui->AddGUIObject(enemies, "enemiesleft");
 	gui->AddGUIObject(totalEnemies, "totalenemiesleft");
-
 	gui->AddGUIObject(healthbar, "healthbar");
 	gui->AddGUIObject(healthFrame, "healthFrame");
-}
 
-DevScene::~DevScene()
-{
-	delete gui;
-	delete controller;
-}
-
-void DevScene::Load()
-{
-	healthbar->HealthBar(100.0f, 100.0f);
+	// Set GUI
 	renderer->SetGUI(gui); 	// Set GUI
-
-	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
-	this->timeUntilEnd = 10.0f; // gamemanager->GetTimer();		// get time from gamemanager
-	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
-
-	Timer testSpeed;
-	testSpeed.Start();
-
-
-
-	// Exit Wagon
-	Object* wagon = new Object(ObjectLayer::Enviroment, resources.GetModel("wagonModel"));
-	entities->InsertObject(wagon);
-	spawner->PlaceWagon(wagon);
-
-	// GROUNDH MESH
-	Object* terrainObject = new Object(ObjectLayer::None, terrainMesh.GetMesh(), resources.GetResource<Material>("terrainMaterial"));
-	entities->InsertObject(terrainObject);
-
-	// ------- water shader
-	
-	Object* water = new Object(ObjectLayer::None, waterMesh.GetMesh(), resources.GetResource<Material>("waterMaterial"));
-	water->GetTransform().Translate({ 0,5,0, });
-	water->GetTransform().SetRotation({ 0,0,0 });
-	entities->InsertObject(water);
-
-	water->isWater = true;
-
-	// ------ PLAYER
-	//AssimpHandler::AssimpData playerModel = *AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, resources.GetResource<Shader>("animationShader"));
-	this->player = new Player(resources.GetModel("playerModel"), controller, spawner, &terrainMesh, gui, gamemanager, wagon, dx11, this);
-
-	this->player->GetTransform().SetPosition({ 55, 4, 55 });
-	this->player->GetTransform().Scale(2.0, 2.0, 2.0);
-	this->player->SetLayer(ObjectLayer::Player);
-	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
-	entities->InsertObject(this->player);
-
-	spawner->SetEnemyPrefab(resources.GetResource<Enemy>("enemyPrefab1"));
-	spawner->SetPickupPrefab(resources.GetResource<Spoon>("spoonPrefab"), WeaponType::Spoon);
-	spawner->SetPickupPrefab(resources.GetResource<Projectile>("coconutPrefab"), WeaponType::Coconut);
-
-
-	// ------ Leveldesign
-	CreateSceneObjects();
-
-	// - - - - - Exit arrow
-	arrow = new Object(ObjectLayer::None, resources.GetModel("arrowModel"));
-	arrow->GetTransform().Translate(35, 10, 30);
-	player->SetArrow(arrow);
-	entities->InsertObject(arrow);
-	arrow->SetVisible(false);
-
-
 
 	gametimer.Start();
 
@@ -130,6 +147,7 @@ void DevScene::Load()
 
 	testSpeed.Stop();
 	std::cout << std::endl << "loadTime:  " << testSpeed.GetMilisecondsElapsed() << std::endl;
+
 }
 
 void DevScene::Unload()
@@ -241,6 +259,7 @@ void DevScene::LoadResources()
 	AssimpHandler::AssimpData* playerModel = AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, resources.GetResource<Shader>("animationShader"));
 	resources.AddModel("playerModel", playerModel);
 
+
 	/*
 		ANIMATIONS
 	*/
@@ -261,23 +280,26 @@ void DevScene::LoadResources()
 	/*
 		PREFABS
 	*/
-	
-	Icecream* icecreamPrefab = new Icecream(resources.GetModel("icecreamModel"), gamemanager, &terrainMesh, dx11, entities);
+
+	Icecream* icecreamPrefab = new Icecream(resources.GetModel("icecreamModel"), context);
 	resources.AddResource("icecreamPrefab", icecreamPrefab);
 
-	Projectile* coconutPrefab = new Projectile(resources.GetModel("coconutModel"), gamemanager, &terrainMesh, dx11, entities);
+	Projectile* coconutPrefab = new Projectile(resources.GetModel("coconutModel"), context);
 	resources.AddResource("coconutPrefab", coconutPrefab);
 
-	Spoon* spoonPrefab = new Spoon(resources.GetModel("spoonModel"), gamemanager, &terrainMesh, dx11, entities);
+	Spoon* spoonPrefab = new Spoon(resources.GetModel("spoonModel"), context);
 	resources.AddResource("spoonPrefab", spoonPrefab);
 
 
-	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), icecreamPrefab, &terrainMesh, dx11, this, gamemanager, entities);
+	//-------- ENEMY prefab
+	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), context);
 	enemyPrefab1->GetTransform().Translate(30, 7, 35);
 	enemyPrefab1->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	enemyPrefab1->SetTarget(player);
 	enemyPrefab1->SetEnabled(false);
 	resources.AddResource("enemyPrefab1", enemyPrefab1);
+
+	
 
 	/*
 		GUI
@@ -297,10 +319,31 @@ void DevScene::Update(const float& deltaTime)
 {
 	this->cameraFocusPosition = player->GetTransform().GetPosition();
 	billBoard->GetTransform().SetPosition({ player->GetTransform().GetPosition().m128_f32[0],player->GetTransform().GetPosition().m128_f32[1] + 6, player->GetTransform().GetPosition().m128_f32[2] });
-	
+
 	this->spawner->Update(deltaTime);
 	Scene::Update(deltaTime);
 
+	// fixa
+
+	// Change all weapons to vector
+	//for(auto i : coconuts)
+	//	player->UpdateHands(i);
+
+	//for (auto i : spoons)
+	//	player->UpdateHands(i);
+
+	// Create the ray 
+
+	rp3d::Vector3 start = physics.Convert(DirectX::XMVectorAdd(player->GetTransform().GetPosition(), { 0, -100, 0 }));
+	rp3d::Vector3 end = physics.Convert(DirectX::XMVectorAdd(player->GetTransform().GetPosition(), { 0, 100, 0 }));
+	rp3d::Ray ray(start, end);
+
+	// Create an instance of your callback class 
+	RaycastCallback callbackObject;
+	physics.GetWorld()->raycast(ray, &callbackObject);
+
+
+	//
 	UpdateGUI(deltaTime);
 }
 
@@ -326,7 +369,7 @@ void DevScene::CreateSceneObjects()
 
 	if (true)
 	{
-		
+
 		// save the shaders somewhere, remember to clean it up
 		Shader* defaultShader = new Shader();
 		defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
@@ -377,6 +420,10 @@ void DevScene::CreateSceneObjects()
 		beachstands[2]->GetTransform().Translate(60, 7, 55);
 		beachstands[2]->GetTransform().SetRotation({ -0.1, 0.8, 0 });
 
+		for (int i = 0; i < 3; i++)
+		{
+			physics.CreateCollisionBodyBox(beachstands[i]);
+		}
 
 		////////////////////////// SUNCHAIR /////////////////////////////		
 		// Chairs Left beachside
@@ -450,12 +497,16 @@ void DevScene::CreateSceneObjects()
 		sunChairs[20]->GetTransform().Translate(66, 6.5, 35);
 		sunChairs[20]->GetTransform().Rotate(-0.1f, -5.7, 0);
 
+		for (int i = 0; i < 21; i++)
+		{
+			physics.CreateCollisionBodyBox(sunChairs[i]);
+		}
 
 		////////////////////////// PARASOLLS /////////////////////////////
 		// Parasoll left beachside
 		Object* parasolls[7];
 
-		for (int i = 0; i < 7; i++) 
+		for (int i = 0; i < 7; i++)
 		{
 			parasolls[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("parasollModel"));
 			entities->InsertObject(parasolls[i]);
@@ -472,6 +523,11 @@ void DevScene::CreateSceneObjects()
 		parasolls[5]->GetTransform().Rotate(-0.05, 0, 0);
 		parasolls[6]->GetTransform().Translate(65, 6, 40);
 		parasolls[6]->GetTransform().Rotate(-0.05, 0, 0);
+
+		for (int i = 0; i < 7; i++)
+		{
+			//physics.CreateCollisionBodyCapsule(parasolls[i], 0.2f, 0.0f, 0.0f);
+		}
 
 
 		////////////////////////// SURFBOARDS /////////////////////////////
@@ -524,7 +580,7 @@ void DevScene::CreateSceneObjects()
 
 
 		Object* blueballs[3];
-		
+
 		blueballs[0] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballBlueModel"));
 		blueballs[0]->GetTransform().Translate(105, 6.5, 35);
 		blueballs[0]->GetTransform().Rotate(0.2f, -5, 0);
@@ -545,7 +601,7 @@ void DevScene::CreateSceneObjects()
 
 		////////////////////////// BEACHBALLS /////////////////////////////
 		Object* bushes[13];
-		for (int i = 0; i < 13; i++) 
+		for (int i = 0; i < 13; i++)
 		{
 			bushes[i] = new Object(ObjectLayer::Enviroment, resources.GetModel("bushModel"));
 			entities->InsertObject(bushes[i]);
@@ -691,6 +747,13 @@ void DevScene::CreateSceneObjects()
 		palms[20]->GetTransform().Translate(150.0f, 7.8f, 145.0f);
 		palms[21]->GetTransform().Translate(200.0f, 7.8f, 180.0f);
 
+		for (int i = 0; i < 22; i++)
+		{
+			//palms[i]->GetTransform().RandomizeYRotation();
+
+			// flytta den 1 0 0 t.ex i förhållande till rotationen
+			physics.CreateCollisionBodyCapsule(palms[i], 0.5f, 0.0f, 0.0f);
+		}
 	}
 
 	spawner->SpawnInitial();
@@ -735,7 +798,6 @@ void DevScene::UpdateGUI(const float& deltaTime)
 {
 	//FPS STUFF
 	fpsTimer.Start();
-
 	healthbar->HealthBar(100.0f, player->GetHealth());
 
 	totalEnemies->SetString(std::to_string(this->spawner->CountEnemiesRemaining()));

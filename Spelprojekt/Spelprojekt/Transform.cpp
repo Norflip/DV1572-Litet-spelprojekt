@@ -101,6 +101,12 @@ void Transform::Translate(DirectX::XMVECTOR translation)
 	this->position = DirectX::XMVectorAdd(this->position, translation);
 }
 
+void Transform::RandomizeYRotation()
+{
+	float y = rand() % 360;
+	this->rotation = { 0,y,0 };
+}
+
 
 //New
 void Transform::Scale(float x, float y, float z)

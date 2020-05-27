@@ -32,12 +32,15 @@ public:
 
 	const Transform& GetTransform() const  { return this->transform; }
 	Transform& GetTransform() { return this->transform; }
+
 	void SetMaterial(Material* material) { this->material = material; }
 	Material* GetMaterial() const { return this->material; }
+	
 	void SetMesh(Mesh* mesh);
 	Mesh* GetMesh() const { return this->mesh; }
 
 	AABB GetLocalBounds() const { return this->localBounds; }
+	AABB& ScaleLocalBounds() { return this->localBounds; }
 	AABB GetWorldBounds() const;
 
 	void UpdateLocalBounds();
@@ -56,7 +59,7 @@ public:
 	void SetVisible(bool visible) { this->visible = visible; }
 
 	bool isWater = false;
-	
+
 private:
 	Transform transform;
 	AABB localBounds;

@@ -37,6 +37,8 @@ public:
 	void Translate(float x, float y, float z);
 	void Translate(DirectX::XMVECTOR translation);
 
+	void RandomizeYRotation();
+
 	// new
 	void Scale(float x, float y, float z);
 	void Scale(DirectX::XMVECTOR scale);

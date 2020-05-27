@@ -10,7 +10,7 @@ class Player;
 class Enemy : public Object
 {
 	public: 
-		Enemy(AssimpHandler::AssimpData modelData, Weapon* enemyweapon, Terrain* terrain, DX11Handler&, Scene* scene, Gamemanager* gamemanager, Entities* entity);
+		Enemy(AssimpHandler::AssimpData modelData, WorldContext* context);
 		Enemy(const Enemy& other);
 		~Enemy();
 
@@ -30,15 +30,20 @@ class Enemy : public Object
 		void UpdateAttackPlayer();
 		void SetActiveWeapon(Weapon* enemyweapon) { this->activeweapon = enemyweapon; }
 		Weapon* GetActiveWeapon() const { return this->activeweapon; };
+
+		// health enemy
+		void TakeDamage(float damage);
+
+		float GetHealthLeft() { return this->health; }
 	
 	private:
+		WorldContext* context;
+		void UpdateTestBoids(float fixedDeltaTime);
 		DirectX::XMVECTOR velocity;
+		DirectX::XMVECTOR tVelocity;
+		float movementspeed;
 		void UpdateHeight(float fixedDeltaTime);
 		void UpdateMovement(float fixedDeltaTime);
-		void UpdateTestBoids(float fixedDeltaTime);
-		DirectX::XMVECTOR tVelocity;
-
-		Terrain* terrain;
 		float scaleY;
 		float scaleXZ;
 		Player* player;
@@ -53,14 +58,14 @@ class Enemy : public Object
 				
 		// ENEMY SHOT
 		float cooldownTimer;
-		Scene* scene;
 		float timeuntilReload;
+
 		Timer* waitTime;
 		bool hasShot;
-		Weapon* enemyweapon;
+
+		// ENEMYHP
+		float health;
 		Weapon* activeweapon;
 
-
-		Gamemanager* gamemanager;
 		int pointGiven;
 };

@@ -9,7 +9,6 @@
 
 class IntroGUI;
 #include "IntroGui.h"
-//#include "SoundHandler.h"
 #include "Terrain.h"
 class IntroScene : public Scene
 {
@@ -26,17 +25,15 @@ public:
 	Scene* GetNextScene() const override;
 
 	CameraController* controller;
-	GUISprite* healthFrame;
+	//GUISprite* healthFrame;
 	void setNextScene();
-
 	bool& exitGame;
+
 private:
 	IntroGUI* introGUI;
-	Input* input;
+	//Input* input;
 	GUI* gui;
-	std::vector<Scene*>& scenes;
-		
+	std::vector<Scene*>& scenes;		
 	Gamemanager* gamemanager;
-	//float volumeScale = 0.1f; 
 };
 
