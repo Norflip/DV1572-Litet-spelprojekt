@@ -4,7 +4,7 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext* context)
 	: Object(ObjectLayer::Enemy, modelData.mesh, modelData.material), context(context), activeweapon(nullptr)
 {
 	this->pointGiven = 5;
-	
+	this->activeweapon = nullptr;
 	this->movementspeed = 2.0f;
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
@@ -39,7 +39,7 @@ Enemy::Enemy(const Enemy& other)
 	this->cooldownTimer = other.cooldownTimer;
 
 	// Health for enemy
-	this->health = other.health;
+	this->health = other.context->gamemanager->GetEnemyHealth();
 }
 
 Enemy::~Enemy()
@@ -90,7 +90,7 @@ void Enemy::UpdateMovement(float fixedDeltaTime)
 
 void Enemy::SetTarget(Player* player)
 {
-		this->player = player;
+	this->player = player;
 }
 
 void Enemy::HitSound()

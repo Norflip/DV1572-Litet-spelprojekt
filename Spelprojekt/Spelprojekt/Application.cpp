@@ -35,7 +35,15 @@ Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(fal
 }
 
 Application::~Application()
-{		
+{	
+	/*delete gamemanager;
+
+	scenes.clear();
+	delete introScene;
+	delete endScene;
+	delete gameScene;
+	delete currentScene;*/
+
 	Logger::Close();
 }
 

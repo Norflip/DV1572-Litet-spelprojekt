@@ -40,6 +40,7 @@ public:
 	Mesh* GetMesh() const { return this->mesh; }
 
 	AABB GetLocalBounds() const { return this->localBounds; }
+	AABB& ScaleLocalBounds() { return this->localBounds; }
 	AABB GetWorldBounds() const;
 
 	void UpdateLocalBounds();
@@ -58,7 +59,7 @@ public:
 	void SetVisible(bool visible) { this->visible = visible; }
 
 	bool isWater = false;
-	
+
 private:
 	Transform transform;
 	AABB localBounds;

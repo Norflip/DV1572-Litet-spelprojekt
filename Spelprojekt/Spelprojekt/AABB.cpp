@@ -109,3 +109,9 @@ float AABB::SqrDistanceToPoint(DirectX::XMVECTOR point)
 
 	return sqDist;
 }
+
+void AABB::ScaleMinMax(DirectX::XMMATRIX scale)
+{
+	this->min = DirectX::XMVector3Transform(this->min, scale);
+	this->max = DirectX::XMVector3Transform(this->max, scale);
+}

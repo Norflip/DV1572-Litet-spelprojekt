@@ -26,7 +26,7 @@ Icecream::Icecream(const Icecream& other) : Weapon(WeaponType::Icecream, ObjectL
 
 	this->player = nullptr;
 	this->movementspeed = other.movementspeed;
-	this->damage = other.damage;
+	this->damage = other.context->gamemanager->GetEnemyDamage();
 }
 
 Icecream::~Icecream()

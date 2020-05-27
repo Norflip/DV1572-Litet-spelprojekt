@@ -18,14 +18,21 @@ IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, st
 	gamemanager->GetSoundeffectHandler()->SetGlobalVolume(gamemanager->GetCurrentSoundVolume());
 	gamemanager->GetMusicHandler()->LoadSound("Monster", "SoundEffects/MonstersInc.wav");
 	gamemanager->GetMusicHandler()->SetGlobalVolume(gamemanager->GetCurrentMusicVolume());	
-
+	
 	// Gui
 	gui = new GUI(dx11);
+	introGUI = nullptr;
 }
 
 IntroScene::~IntroScene()
 {	
+	delete gui;
+	delete introGUI;	
 	delete controller;
+	delete camera;
+
+	delete nextScene;
+	scenes.clear();
 }
 
 void IntroScene::Load()
@@ -37,7 +44,6 @@ void IntroScene::Load()
 	introGUI = new IntroGUI(gui, dx11, controller, this, gamemanager);
 	renderer->SetGUI(gui);
 		
-
 	Object* glasse = new Object(ObjectLayer::Enviroment, resources.GetModel("playerModel"));
 	glasse->GetTransform().Translate(0, 0.65+9, -3);
 	glasse->GetTransform().Rotate(0, -0.6, 0);
@@ -152,12 +158,13 @@ Scene* IntroScene::GetNextScene() const
 
 void IntroScene::setNextScene()
 {
-	Input* input = this->window.GetInput();
+	//Input* input = this->window.GetInput();
 
 	// Change scene logic
 	for (int i = 0; i < scenes.size(); i++)
 	{
-		if (scenes[i]->GetName() == "DevScene")
+		if (scenes[i]->GetName() == "DevScene") {
 			nextScene = scenes[i];
+		}			
 	}
 }
