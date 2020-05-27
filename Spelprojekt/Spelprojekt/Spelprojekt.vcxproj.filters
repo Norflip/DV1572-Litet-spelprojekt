@@ -311,13 +311,16 @@
     <ClInclude Include="Physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RaycastCallback.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Icecream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WorldContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RaycastHit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RaycastCallback.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -418,6 +418,10 @@ void DevScene::CreateSceneObjects()
 		beachstands[2]->GetTransform().Translate(60, 7, 55);
 		beachstands[2]->GetTransform().SetRotation({ -0.1, 0.8, 0 });
 
+		for (int i = 0; i < 3; i++)
+		{
+			physics.CreateCollisionBodyBox(beachstands[i]);
+		}
 
 		////////////////////////// SUNCHAIR /////////////////////////////		
 		// Chairs Left beachside
@@ -517,6 +521,11 @@ void DevScene::CreateSceneObjects()
 		parasolls[5]->GetTransform().Rotate(-0.05, 0, 0);
 		parasolls[6]->GetTransform().Translate(65, 6, 40);
 		parasolls[6]->GetTransform().Rotate(-0.05, 0, 0);
+
+		for (int i = 0; i < 7; i++)
+		{
+			//physics.CreateCollisionBodyCapsule(parasolls[i], 0.2f, 0.0f, 0.0f);
+		}
 
 
 		////////////////////////// SURFBOARDS /////////////////////////////
@@ -741,7 +750,7 @@ void DevScene::CreateSceneObjects()
 			//palms[i]->GetTransform().RandomizeYRotation();
 
 			// flytta den 1 0 0 t.ex i förhållande till rotationen
-			physics.CreateCollisionBodyCapsule(palms[i], 2.0f, 1.0f, 0.0f);
+			physics.CreateCollisionBodyCapsule(palms[i], 0.5f, 0.0f, 0.0f);
 		}
 	}
 

@@ -241,6 +241,7 @@
     <ClInclude Include="Physics.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="RaycastCallback.h" />
+    <ClInclude Include="RaycastHit.h" />
     <ClInclude Include="Resources.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="Spoon.h" />

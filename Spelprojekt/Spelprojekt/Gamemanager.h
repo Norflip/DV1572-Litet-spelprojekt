@@ -7,7 +7,8 @@
 
 const int MAXSCORES = 6;	// 6 is for new score + sortation
 
-class Gamemanager {
+class Gamemanager 
+{
 public:
 	Gamemanager(DX11Handler* dx11);
 	virtual ~Gamemanager();

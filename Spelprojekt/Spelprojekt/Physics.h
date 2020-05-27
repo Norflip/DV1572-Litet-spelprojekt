@@ -4,6 +4,8 @@
 #include "Transform.h"
 #include "Logger.h"
 #include <unordered_map>
+#include "RaycastHit.h"
+#include "RaycastCallback.h"
 
 class Physics
 {
@@ -26,9 +28,10 @@ public:
 
 	rp3d::CollisionWorld* GetWorld() const { return this->world; }
 
+	RaycastHit Raycast (DirectX::XMVECTOR start, DirectX::XMVECTOR end);
+
 private:
 	std::unordered_map<Mesh*, rp3d::ConvexMeshShape*> meshShapeCache;
 	rp3d::CollisionWorld* world;
-	rp3d::Vector3 gravity;
-
+	std::vector< rp3d::CollisionBody*> bodies;
 };

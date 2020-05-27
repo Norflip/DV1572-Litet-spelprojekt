@@ -1,3 +1,5 @@
+#include "Physics.h"
+
 #include "Player.h"
 #include "Scene.h"
 #include "SpawnObjects.h"
@@ -36,6 +38,8 @@ Player::~Player()
 
 void Player::Update(const float& deltaTime)
 {
+
+
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
 	CheckForPickups();
@@ -63,6 +67,8 @@ void Player::UpdateMovement(float fixedDeltaTime)
 	DirectX::XMStoreFloat3(&nextPosition, GetTransform().GetPosition());
 	currentPosition = nextPosition;
 
+	DirectX::XMFLOAT3 noff = { 0,0,0 };
+
 	if (controller->GetState() == CameraController::State::Follow)
 	{
 		if (controller->getInput()->GetKey('p'))
@@ -85,8 +91,8 @@ void Player::UpdateMovement(float fixedDeltaTime)
 		{
 			dx /= length;
 			dz /= length;
-			nextPosition.x += dx * fixedDeltaTime * movementspeed;
-			nextPosition.z += dz * fixedDeltaTime * movementspeed;
+			noff.x = dx * fixedDeltaTime * movementspeed;
+			noff.z = dz * fixedDeltaTime * movementspeed;
 
 			// kolla höjd istället? 
 			DirectX::XMVECTOR dot = DirectX::XMVector3Dot(context->terrain->SampleNormal(nextPosition.x, nextPosition.z), { 0,1,0 });
@@ -99,6 +105,39 @@ void Player::UpdateMovement(float fixedDeltaTime)
 			}
 			else
 			{
+				DirectX::XMVECTOR start = GetTransform().GetPosition();
+				float y = DirectX::XMVectorGetByIndex(start, 1);
+				y -= 2.0f;
+				DirectX::XMVectorSetByIndex(start, y, 1);
+
+				DirectX::XMVECTOR direction, offset;
+
+				const int rayCount = 64;
+				float startAngle = static_cast<float>(rand() % 360);
+
+				for (size_t i = 0; i < rayCount; i++)
+				{
+					float angle = startAngle + (float)i * (360.0f / rayCount);
+					float rad = angle * MathHelper::ToRadians;
+
+					float x = cosf(rad);
+					float z = sinf(rad);
+
+					direction = DirectX::XMVector3Normalize({ x,0,z });
+					offset = DirectX::XMVectorAdd(start, DirectX::XMVectorScale(direction, length));
+
+					RaycastHit hit = context->physics->Raycast(start, offset);
+					if (hit.hit)
+					{
+						DirectX::XMVECTOR aa = DirectX::XMVectorSubtract(GetTransform().GetPosition(), hit.position);
+						DirectX::XMFLOAT3 pos;
+						DirectX::XMStoreFloat3(&pos, aa);
+
+						noff.x += pos.x * fixedDeltaTime;// *length2;// // 
+						noff.z += pos.z * fixedDeltaTime;// * length2;//* fixedDeltaTime;// * 0.05f;
+					}
+				}
+
 				// run
 				isMoving = true;
 				//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[0]);
@@ -110,6 +149,11 @@ void Player::UpdateMovement(float fixedDeltaTime)
 			isMoving = false;
 			//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
 		}
+
+		nextPosition.x += noff.x;
+		nextPosition.y += noff.y;
+		nextPosition.z += noff.z;
+
 
 		bool changedir = (dx != 0.0f || dz != 0.0f);
 		GetTransform().SmoothRotate(nextPosition, fixedDeltaTime, changedir);
