@@ -9,7 +9,6 @@
 
 class IntroGUI;
 #include "IntroGui.h"
-//#include "SoundHandler.h"
 #include "Terrain.h"
 class IntroScene : public Scene
 {
@@ -37,6 +36,5 @@ private:
 	std::vector<Scene*>& scenes;
 		
 	Gamemanager* gamemanager;
-	//float volumeScale = 0.1f; 
 };
 

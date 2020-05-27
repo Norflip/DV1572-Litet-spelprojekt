@@ -233,7 +233,7 @@ void IntroGUI::Options()
     GUISprite* musicVolBar = static_cast<GUISprite*>(gui->GetGUIList()->at("MusicBar"));    
 
     GUISprite* lowMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("leftmusicvolume"));
-    if (lowMusicVolume->Clicked(input) && gamemanager->GetCurrentMusicVolume() != 0)
+    if (lowMusicVolume->Clicked(input) && gamemanager->GetCurrentMusicVolume() > 0)
     {
         if (gamemanager->GetCurrentMusicVolume() > 0) {
             currentMusicVolume = gamemanager->GetCurrentMusicVolume();
@@ -244,7 +244,7 @@ void IntroGUI::Options()
     }
 
     GUISprite* highMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightmusicvolume"));    
-    if (highMusicVolume->Clicked(input) && gamemanager->GetCurrentMusicVolume() != 1)
+    if (highMusicVolume->Clicked(input) && gamemanager->GetCurrentMusicVolume() < 1)
     {
         if (gamemanager->GetCurrentMusicVolume() < 1 )
         {
@@ -762,4 +762,3 @@ void IntroGUI::ClearGUI()
     }
     gui->GetGUIList()->clear();
 }
-

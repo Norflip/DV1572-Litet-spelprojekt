@@ -3,6 +3,9 @@
 Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(false)
 {
 	srand((int)time(0));
+	this->deltaTime = 0.0f;
+	this->currentTime = 0.0f;
+
 	this->window.Initialize(); // initializes the win32 window
 	this->dx11.Initialize(this->window); // creates swapchain, device, deviceContext
 	this->deferredRenderer = new Renderer(this->window.GetWidth(), this->window.GetHeight(), timer, dx11);
