@@ -101,6 +101,7 @@ void DevScene::Load()
 	this->player = new Player(resources.GetModel("playerModel"), controller, gui, context);
 	this->player->GetTransform().SetPosition({ 55, 4, 55 });
 	this->player->GetTransform().Scale(2.0, 2.0, 2.0);
+	this->player->ScaleLocalBounds().ScaleMinMax(DirectX::XMMatrixScaling(0.5, 0.5, 0.5));
 	this->player->SetLayer(ObjectLayer::Player);
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
 	entities->InsertObject(this->player);
@@ -260,6 +261,7 @@ void DevScene::LoadResources()
 
 	AssimpHandler::AssimpData* playerModel = AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, resources.GetResource<Shader>("animationShader"));
 	resources.AddModel("playerModel", playerModel);
+
 
 	/*
 		ANIMATIONS

@@ -68,3 +68,4 @@ void Object::Render(Renderer* renderer, DirectX::XMMATRIX view, DirectX::XMMATRI
 	if(IsVisible())
 		renderer->DrawMesh(mesh, transform.GetWorldMatrix(), view, projection, right, up, centre);
 }
+
