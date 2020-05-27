@@ -34,7 +34,7 @@ void Entities::RemoveObject(Object* object)
 
 	if (findLayerVector != objectsInLayerMap.end())
 	{
-		std::vector<Object*> &v = objectsInLayerMap[layer];
+		std::vector<Object*>& v = objectsInLayerMap[layer];
 		auto g = std::find(v.begin(), v.end(), object);
 		if (g != v.end())
 			v.erase(g);

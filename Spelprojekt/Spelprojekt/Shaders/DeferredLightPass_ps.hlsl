@@ -162,7 +162,7 @@ float4 main(PixelInputType input) : SV_TARGET
 	*/
 
 	const float bias = 0.00001f;
-	const float PCFSpread = 1200.0f; // 2k works aswell
+	const float PCFSpread = 1.0f / 2048.0f; // 2k works aswell
 
 	float4 lightViewPosition = mul(mul(position, sunView), sunProjection);
 
@@ -183,7 +183,7 @@ float4 main(PixelInputType input) : SV_TARGET
 		for (int i = 0; i < POSSION_DISK_SAMPLE_COUNT; i++)
 		{
 			int index = int(16.0 * random(input.uv.xyy, i)) % 16;
-			float sampledDepthValue = shadowTexture.Sample(ssaoSamplerState, projectTexCoord + poissonDisk16[i] / PCFSpread).r;
+			float sampledDepthValue = shadowTexture.Sample(ssaoSamplerState, projectTexCoord + (poissonDisk16[i] * PCFSpread)).r;
 			
 			if (lightDepthValue >= sampledDepthValue)
 			{
@@ -198,7 +198,7 @@ float4 main(PixelInputType input) : SV_TARGET
 
 	//return  max(1.055 * pow(C_lin, 0.416666667) - 0.055, 0);
 
-	float gamma = 2.2f;
+	const float gamma = 1.0f / 2.2f;
 	float t = 1.0f - (ssaoResult * visibility);
-	return saturate(pow(lerp(finalColor, float4(0,0,0,1), t), 1.0f / gamma));
+	return saturate(pow(lerp(finalColor, float4(0,0,0,1), t),  gamma));
 }
