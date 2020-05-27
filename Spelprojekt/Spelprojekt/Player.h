@@ -45,6 +45,7 @@ public:
 	float GetHealth() const { return this->playerHealth; }
 
 private:
+	DirectX::XMFLOAT3 CheckCollisions(const float& deltaTime, const float& length);
 	void InitWeapons();
 
 	void CheckForPickups();

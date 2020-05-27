@@ -94,68 +94,41 @@ void Player::UpdateMovement(float fixedDeltaTime)
 			noff.x = dx * fixedDeltaTime * movementspeed;
 			noff.z = dz * fixedDeltaTime * movementspeed;
 
+
+			float height = context->terrain->SampleHeight(nextPosition.x, nextPosition.z);
+
+
 			// kolla höjd istället? 
 			DirectX::XMVECTOR dot = DirectX::XMVector3Dot(context->terrain->SampleNormal(nextPosition.x, nextPosition.z), { 0,1,0 });
-			if (DirectX::XMVectorGetByIndex(dot, 0) < 0.85f)
+
+
+			if (height < 1.0f)
 			{
-				//idle
-				//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
+				noff.x = 0.0f;
+				noff.z = 0.0f;
+
 				isMoving = false;
-				return;
+				//return;
 			}
 			else
 			{
-				DirectX::XMVECTOR start = GetTransform().GetPosition();
-				float y = DirectX::XMVectorGetByIndex(start, 1);
-				y -= 2.0f;
-				DirectX::XMVectorSetByIndex(start, y, 1);
+				DirectX::XMFLOAT3 result = CheckCollisions(fixedDeltaTime, length);
+				noff.x += result.x;
+				noff.z += result.z;
 
-				DirectX::XMVECTOR direction, offset;
-
-				const int rayCount = 64;
-				float startAngle = static_cast<float>(rand() % 360);
-
-				for (size_t i = 0; i < rayCount; i++)
-				{
-					float angle = startAngle + (float)i * (360.0f / rayCount);
-					float rad = angle * MathHelper::ToRadians;
-
-					float x = cosf(rad);
-					float z = sinf(rad);
-
-					direction = DirectX::XMVector3Normalize({ x,0,z });
-					offset = DirectX::XMVectorAdd(start, DirectX::XMVectorScale(direction, length));
-
-					RaycastHit hit = context->physics->Raycast(start, offset);
-					if (hit.hit)
-					{
-						DirectX::XMVECTOR aa = DirectX::XMVectorSubtract(GetTransform().GetPosition(), hit.position);
-						DirectX::XMFLOAT3 pos;
-						DirectX::XMStoreFloat3(&pos, aa);
-
-						noff.x += pos.x * fixedDeltaTime;// *length2;// // 
-						noff.z += pos.z * fixedDeltaTime;// * length2;//* fixedDeltaTime;// * 0.05f;
-					}
-				}
-
-				// run
 				isMoving = true;
-				//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[0]);
 			}
 		}
 		else
 		{
 			// IDLE
 			isMoving = false;
-			//GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[1]);
 		}
 
 		nextPosition.x += noff.x;
-		nextPosition.y += noff.y;
 		nextPosition.z += noff.z;
 
-
-		bool changedir = (dx != 0.0f || dz != 0.0f);
+		bool changedir = (length != 0.0f);
 		GetTransform().SmoothRotate(nextPosition, fixedDeltaTime, changedir);
 		GetTransform().SetPosition({ nextPosition.x, nextPosition.y, nextPosition.z });
 	}
@@ -187,6 +160,49 @@ void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) + MathHelper::PI * 2, 0 });
 	if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) > MathHelper::PI * 2)
 		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) - MathHelper::PI * 2, 0 });
+}
+
+DirectX::XMFLOAT3 Player::CheckCollisions(const float& deltaTime, const float& length)
+{
+	DirectX::XMFLOAT3 result = { 0,0,0 };
+
+	DirectX::XMVECTOR start = GetTransform().GetPosition();
+	float y = DirectX::XMVectorGetByIndex(start, 1);
+	y -= (playerHeight / 2.0f);
+
+	DirectX::XMVectorSetByIndex(start, y, 1);
+
+	DirectX::XMVECTOR direction, offset;
+
+	const int rayCount = 64;
+	float startAngle = static_cast<float>(rand() % 360);
+
+	for (size_t i = 0; i < rayCount; i++)
+	{
+		float angle = startAngle + (float)i * (360.0f / rayCount);
+		float rad = angle * MathHelper::ToRadians;
+
+		float x = cosf(rad);
+		float z = sinf(rad);
+
+		direction = DirectX::XMVector3Normalize({ x,0,z });
+		offset = DirectX::XMVectorAdd(start, DirectX::XMVectorScale(direction, length));
+
+		RaycastHit hit = context->physics->Raycast(start, offset);
+		if (hit.hit)
+		{
+			DirectX::XMVECTOR aa = DirectX::XMVectorSubtract(GetTransform().GetPosition(), hit.position);
+			DirectX::XMFLOAT3 pos;
+			DirectX::XMStoreFloat3(&pos, aa);
+
+			Logger::Write(std::to_string(pos.x));
+
+			result.x += pos.x * deltaTime;// *length2;// // 
+			result.z += pos.z * deltaTime;// * length2;//* fixedDeltaTime;// * 0.05f;
+		}
+	}
+
+	return result;
 }
 
 void Player::InitWeapons()
