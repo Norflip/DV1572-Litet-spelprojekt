@@ -26,12 +26,12 @@ IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, st
 
 IntroScene::~IntroScene()
 {	
-	delete gui;
+	/*delete gui;
 	delete introGUI;	
 	delete controller;
 	delete camera;
 
-	delete nextScene;
+	delete nextScene;*/
 	scenes.clear();
 }
 

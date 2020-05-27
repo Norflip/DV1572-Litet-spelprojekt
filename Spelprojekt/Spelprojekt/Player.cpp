@@ -227,6 +227,7 @@ void Player::CheckForPickups()
 
 				obj->SetEnabled(false);
 				context->spawner->RemovePickup(obj);
+				delete obj;
 
 				foundPickup = true;
 			}

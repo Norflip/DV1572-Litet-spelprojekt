@@ -12,7 +12,7 @@ class Enemy : public Object
 	public: 
 		Enemy(AssimpHandler::AssimpData modelData, WorldContext* context);
 		Enemy(const Enemy& other);
-		~Enemy();
+		virtual ~Enemy();
 
 		void Update(const float& deltaTime) override;
 		void FixedUpdate(const float& fixedDeltaTime) override;
@@ -61,6 +61,7 @@ class Enemy : public Object
 
 		Timer* waitTime;
 		bool hasShot;
+		float flyTime;
 
 		// ENEMYHP
 		float health;

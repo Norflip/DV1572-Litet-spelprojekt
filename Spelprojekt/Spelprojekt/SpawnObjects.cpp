@@ -16,9 +16,12 @@
 //	this->dx11 = dx11;
 //}
 
-SpawnObjects::SpawnObjects(WorldContext* context) : context(context), enemyPrefab(nullptr), maxEnemies(10), enemyCount(0)
+SpawnObjects::SpawnObjects(WorldContext* context) : context(context), enemyPrefab(nullptr), maxEnemies(0), enemyCount(0)
 {
-
+	this->pickupsPrefabs[0] = nullptr;
+	this->pickupsPrefabs[1] = nullptr;
+	this->spawnmap = nullptr;
+	this->wagon = nullptr;
 }
 
 void SpawnObjects::SpawnInitial()
@@ -66,7 +69,6 @@ void SpawnObjects::SpawnInitial()
 
 		clone->SetType(WeaponType::Spoon);
 		clone->GetTransform().SetPosition(GetRandomSpawnPosition(1.0f));
-		//clone->gamemanager = this->gamemanager;
 		context->entities->InsertObject(clone);
 	}
 
@@ -199,7 +201,7 @@ void SpawnObjects::UpdateSpawnEnemy()
 		enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 		enemy->SetTarget(player);
 
-		context->entities->InsertObject(enemy);// ->AddObject(enemy);
+		context->entities->InsertObject(enemy); // ->AddObject(enemy);
 		enemyCount++;		
 	}
 }
@@ -221,16 +223,21 @@ void SpawnObjects::UpdateRemoveEnemy()
 			{
 				e->HitSound();
 				e->TakeDamage(player->GetActiveWeapon()->AttackDamage());
+
 				if (e->GetHealthLeft() <= 0.0f) {
-					player->IncreasePoints(e->GivePoints());
-					context->entities->RemoveObject(e);
+				player->IncreasePoints(e->GivePoints());
+
+					RemoveEnemy(e);
 					delete e;
+					e = nullptr;
+									
+
 					enemyCount--;
 					maxEnemies--;
 				}
 
 				context->entities->RemoveObject(player->GetActiveWeapon());
-				player->GetActiveWeapon()->SetEnabled(false); // new
+				//player->GetActiveWeapon()->SetEnabled(false); // new
 				delete player->GetActiveWeapon();
 				player->SetActiveWeapon(nullptr);	
 				

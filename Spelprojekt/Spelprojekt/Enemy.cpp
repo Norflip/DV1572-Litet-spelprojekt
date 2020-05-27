@@ -8,12 +8,14 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext* context)
 	this->tVelocity = { 0,0,0 };
 
 	this->activeweapon = nullptr;
+
 	this->movementspeed = 2.0f;
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 
 	this->hasShot = false;
 	this->cooldownTimer = 5.0f;
+	this->flyTime = 0.0f;
 
 	// Health for enemy
 	this->health = context->gamemanager->GetEnemyHealth();	// different
@@ -36,7 +38,6 @@ Enemy::Enemy(const Enemy& other)
 
 	this->context = other.context;
 
-	//this->gamemanager->GetSoundeffectHandler()->LoadSound("HitEnemy", "SoundEffects/Punch.wav");
 	this->GetMesh()->skeleton = other.GetMesh()->skeleton;
 	float stop = 0;
 	this->hasShot = false;
@@ -60,6 +61,19 @@ void Enemy::Update(const float& deltaTime)
 
 	if (cooldownTimer > 0.0f)
 		cooldownTimer -= deltaTime;
+
+	if (hasShot) {
+		if (flyTime > 0.0f)
+			flyTime -= deltaTime;
+		else if(flyTime <= 0.0f){
+			context->entities->RemoveObject(activeweapon);
+			//delete activeweapon;
+			flyTime = 0.0f;
+			activeweapon = nullptr;
+			hasShot = false;		
+		}
+	}		
+
 }
 
 void Enemy::FixedUpdate(const float& fixedDeltaTime)
@@ -210,9 +224,10 @@ void Enemy::UpdateAttackPlayer()
 			activeweapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			activeweapon->direction = GetTransform().GetRotation();
 			activeweapon->PlaySoundEffect();
-			SetActiveWeapon(activeweapon);
+			//SetActiveWeapon(activeweapon);
 			context->entities->InsertObject(activeweapon);
-					
+			hasShot = true;
+			flyTime = 5.0f;
 			cooldownTimer = 5.0f;
 		}
 	}

@@ -31,7 +31,7 @@ Gamemanager::Gamemanager(DX11Handler* dx11) : dxhandler(dx11)
 
 	// Get latest highscore list ---
 	highscoreFiles.open("Datafiles/Highscore.txt");
-
+	
 	for (int i = 0; i < MAXSCORES; i++) {
 		highscoreFiles >> this->highscorePoints[i];
 		highscoreFiles >> this->highscorename[i];
@@ -50,6 +50,7 @@ Gamemanager::Gamemanager(DX11Handler* dx11) : dxhandler(dx11)
 Gamemanager::~Gamemanager()
 {
 	// erase tracks
+
 	// deallocate memory	
 }
 

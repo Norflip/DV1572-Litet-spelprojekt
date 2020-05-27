@@ -65,8 +65,8 @@ void Icecream::UpdateHitPlayer()
 {
 	if (this->player != nullptr && this != nullptr)
 	{
-		if (this->GetWorldBounds().Overlaps(this->player->GetWorldBounds()))
-		{
+		if (this->GetWorldBounds().Overlaps(this->player->GetWorldBounds())) {
+
 			std::cout << "HIT PLAYER" << std::endl;
 			this->player->TakeDamage(AttackDamage());
 			context->entities->RemoveObject(this);
