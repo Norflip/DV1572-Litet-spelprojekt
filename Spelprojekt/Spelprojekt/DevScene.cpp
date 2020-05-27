@@ -233,7 +233,7 @@ void DevScene::LoadResources()
 	resources.AddModel("coconutModel", AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, toonShader));
 	resources.AddModel("spoonModel", AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, toonShader));
 	resources.AddModel("wagonModel", AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, toonShader));
-	resources.AddModel("enemyModel", AssimpHandler::loadFbxObject("Animations/animanim.fbx", dx11, toonShader));
+	resources.AddModel("enemyModel", AssimpHandler::loadFbxObject("Animations/animanim.fbx", dx11, animationShader));
 	resources.AddModel("arrowModel", AssimpHandler::loadFbxObject("Models/Arrow.fbx", dx11, toonShader));
 
 	resources.AddModel("quadInv", AssimpHandler::loadFbxObject("Models/QuadInv.fbx", dx11, billboardShader));
@@ -297,6 +297,11 @@ void DevScene::LoadResources()
 	enemyPrefab1->GetTransform().Scale(0.275f, 0.275f, 0.275f);
 	enemyPrefab1->SetTarget(player);
 	enemyPrefab1->SetEnabled(false);
+
+	this->assimpScene = imp.ReadFile("Animations/enemy.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, enemyPrefab1->GetMesh()->skeleton, "Enemy");
+	enemyPrefab1->GetMesh()->skeleton->SetFirstAnimation(enemyPrefab1->GetMesh()->skeleton->animations[0]);
+
 	resources.AddResource("enemyPrefab1", enemyPrefab1);
 
 	
@@ -309,10 +314,8 @@ void DevScene::LoadResources()
 	waterMesh.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), true);
 
 
-
 	delete this->assimpScene;
 	this->assimpScene = nullptr;
-
 }
 
 void DevScene::Update(const float& deltaTime)
@@ -393,14 +396,14 @@ void DevScene::CreateSceneObjects()
 		////////////////////////// ROCKS /////////////////////////////
 		Object* rocks = new Object(ObjectLayer::Enviroment, resources.GetModel("rockModel"));
 		entities->InsertObject(rocks);
-		rocks->GetTransform().Rotate(0, 180, 0);
-		rocks->GetTransform().Translate(195, 5, 145);
+		rocks->GetTransform().Rotate(0.0f, 180.0f, 0.0f);
+		rocks->GetTransform().Translate(195.0f, 5.0f, 145.0f);
 
 
 		////////////////////////// BOATS /////////////////////////////
 		Object* boat = new Object(ObjectLayer::Enviroment, resources.GetModel("boatModel"));
-		boat->GetTransform().Translate(205, 6.2f, 115);
-		boat->GetTransform().SetRotation({ 0.1, 1.7, -0.15 });
+		boat->GetTransform().Translate(205.0f, 6.2f, 115.0f);
+		boat->GetTransform().SetRotation({ 0.1f, 1.7f, -0.15f });
 		entities->InsertObject(boat);
 
 
@@ -412,13 +415,13 @@ void DevScene::CreateSceneObjects()
 			entities->InsertObject(beachstands[i]);
 		}
 
-		beachstands[0]->GetTransform().Translate(135, 7, 48);
+		beachstands[0]->GetTransform().Translate(135.0f, 7.0f, 48.0f);
 
-		beachstands[1]->GetTransform().Translate(125, 7, 48);
-		beachstands[1]->GetTransform().SetRotation({ -0.1, -0.1, 0 });
+		beachstands[1]->GetTransform().Translate(125.0f, 7.0f, 48.0f);
+		beachstands[1]->GetTransform().SetRotation({ -0.1f, -0.1f, 0.0f });
 
-		beachstands[2]->GetTransform().Translate(60, 7, 55);
-		beachstands[2]->GetTransform().SetRotation({ -0.1, 0.8, 0 });
+		beachstands[2]->GetTransform().Translate(60.0f, 7.0f, 55.0f);
+		beachstands[2]->GetTransform().SetRotation({ -0.1f, 0.8f, 0.0f });
 
 		for (int i = 0; i < 3; i++)
 		{
@@ -434,68 +437,68 @@ void DevScene::CreateSceneObjects()
 			entities->InsertObject(sunChairs[i]);
 		}
 
-		sunChairs[0]->GetTransform().Translate(200, 6.5, 40);
-		sunChairs[0]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[0]->GetTransform().Translate(200.0f, 6.5f, 40.0f);
+		sunChairs[0]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[1]->GetTransform().Translate(195, 6.5, 39.8);
-		sunChairs[1]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[1]->GetTransform().Translate(195.0f, 6.5f, 39.8f);
+		sunChairs[1]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[2]->GetTransform().Translate(190, 6.5, 39.6);
-		sunChairs[2]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[2]->GetTransform().Translate(190.0f, 6.5f, 39.6f);
+		sunChairs[2]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[3]->GetTransform().Translate(175, 6.5, 39.6);
-		sunChairs[3]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[3]->GetTransform().Translate(175.0f, 6.5f, 39.6f);
+		sunChairs[3]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[4]->GetTransform().Translate(170, 6.5, 39.4);
-		sunChairs[4]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[4]->GetTransform().Translate(170.0f, 6.5f, 39.4f);
+		sunChairs[4]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[5]->GetTransform().Translate(165, 6.5, 39.2);
-		sunChairs[5]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[5]->GetTransform().Translate(165.0f, 6.5f, 39.2f);
+		sunChairs[5]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[6]->GetTransform().Translate(150, 6.5, 39.2);
-		sunChairs[6]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[6]->GetTransform().Translate(150.0f, 6.5f, 39.2f);
+		sunChairs[6]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[7]->GetTransform().Translate(145, 6.5, 39.2);
-		sunChairs[7]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[7]->GetTransform().Translate(145.0f, 6.5f, 39.2f);
+		sunChairs[7]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[8]->GetTransform().Translate(140, 6.5, 39.2);
-		sunChairs[8]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[8]->GetTransform().Translate(140.0f, 6.5f, 39.2f);
+		sunChairs[8]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[9]->GetTransform().Translate(120, 6.5, 38);
-		sunChairs[9]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[9]->GetTransform().Translate(120.0f, 6.5f, 38.0f);
+		sunChairs[9]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[10]->GetTransform().Translate(115, 6.5, 37.6);
-		sunChairs[10]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[10]->GetTransform().Translate(115.0f, 6.5f, 37.6f);
+		sunChairs[10]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[11]->GetTransform().Translate(110, 6.5, 37.4);
-		sunChairs[11]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[11]->GetTransform().Translate(110.0f, 6.5f, 37.4f);
+		sunChairs[11]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[12]->GetTransform().Translate(90, 6.5, 34);
-		sunChairs[12]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[12]->GetTransform().Translate(90.0f, 6.5f, 34.0f);
+		sunChairs[12]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[13]->GetTransform().Translate(85, 6.5, 34);
-		sunChairs[13]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[13]->GetTransform().Translate(85.0f, 6.5f, 34.0f);
+		sunChairs[13]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[14]->GetTransform().Translate(80, 6.5, 34);
-		sunChairs[14]->GetTransform().Rotate(-0.1f, -6.3, 0);
+		sunChairs[14]->GetTransform().Translate(80.0f, 6.5f, 34.0f);
+		sunChairs[14]->GetTransform().Rotate(-0.1f, -6.3f, 0.0f);
 
-		sunChairs[15]->GetTransform().Translate(35, 6.5, 57);
-		sunChairs[15]->GetTransform().Rotate(0.0f, -5.7, 0);
+		sunChairs[15]->GetTransform().Translate(35.0f, 6.5f, 57.0f);
+		sunChairs[15]->GetTransform().Rotate(0.0f, -5.7f, 0.0f);
 
-		sunChairs[16]->GetTransform().Translate(40, 6.5, 55);
-		sunChairs[16]->GetTransform().Rotate(0.0f, -5.5, 0);
+		sunChairs[16]->GetTransform().Translate(40.0f, 6.5f, 55.0f);
+		sunChairs[16]->GetTransform().Rotate(0.0f, -5.5f, 0.0f);
 
-		sunChairs[17]->GetTransform().Translate(42, 6.5, 51);
-		sunChairs[17]->GetTransform().Rotate(0.0f, -5.3, 0);
+		sunChairs[17]->GetTransform().Translate(42.0f, 6.5f, 51.0f);
+		sunChairs[17]->GetTransform().Rotate(0.0f, -5.3f, 0.0f);
 
-		sunChairs[18]->GetTransform().Translate(58, 6.5, 39);
-		sunChairs[18]->GetTransform().Rotate(-0.1f, -5.7, 0);
+		sunChairs[18]->GetTransform().Translate(58.0f, 6.5f, 39.0f);
+		sunChairs[18]->GetTransform().Rotate(-0.1f, -5.7f, 0.0f);
 
-		sunChairs[19]->GetTransform().Translate(62, 6.5, 37);
-		sunChairs[19]->GetTransform().Rotate(-0.1f, -5.7, 0);
+		sunChairs[19]->GetTransform().Translate(62.0f, 6.5f, 37.0f);
+		sunChairs[19]->GetTransform().Rotate(-0.1f, -5.7f, 0.0f);
 
-		sunChairs[20]->GetTransform().Translate(66, 6.5, 35);
-		sunChairs[20]->GetTransform().Rotate(-0.1f, -5.7, 0);
+		sunChairs[20]->GetTransform().Translate(66.0f, 6.5f, 35.0f);
+		sunChairs[20]->GetTransform().Rotate(-0.1f, -5.7f, 0.0f);
 
 		for (int i = 0; i < 21; i++)
 		{
@@ -512,17 +515,17 @@ void DevScene::CreateSceneObjects()
 			entities->InsertObject(parasolls[i]);
 		}
 
-		parasolls[0]->GetTransform().Translate(192.5, 5.3, 40);
-		parasolls[1]->GetTransform().Translate(172.5, 5.4, 40);
-		parasolls[2]->GetTransform().Translate(147.5, 5.5, 40);
-		parasolls[3]->GetTransform().Translate(117.5, 5.6, 38);
-		parasolls[3]->GetTransform().Rotate(-0.05, 0, 0);
-		parasolls[4]->GetTransform().Translate(87.5, 5.6, 35);
-		parasolls[4]->GetTransform().Rotate(-0.05, 0, 0);
-		parasolls[5]->GetTransform().Translate(45, 5.6, 55);
-		parasolls[5]->GetTransform().Rotate(-0.05, 0, 0);
-		parasolls[6]->GetTransform().Translate(65, 6, 40);
-		parasolls[6]->GetTransform().Rotate(-0.05, 0, 0);
+		parasolls[0]->GetTransform().Translate(192.5f, 5.3f, 40.0f);
+		parasolls[1]->GetTransform().Translate(172.5f, 5.4f, 40.0f);
+		parasolls[2]->GetTransform().Translate(147.5f, 5.5f, 40.0f);
+		parasolls[3]->GetTransform().Translate(117.5f, 5.6f, 38.0f);
+		parasolls[3]->GetTransform().Rotate(-0.05f, 0.0f, 0.0f);
+		parasolls[4]->GetTransform().Translate(87.5f, 5.6f, 35.0f);
+		parasolls[4]->GetTransform().Rotate(-0.05f, 0.0f, 0.0f);
+		parasolls[5]->GetTransform().Translate(45.0f, 5.6f, 55.0f);
+		parasolls[5]->GetTransform().Rotate(-0.05f, 0.0f, 0.0f);
+		parasolls[6]->GetTransform().Translate(65.0f, 6.0f, 40.0f);
+		parasolls[6]->GetTransform().Rotate(-0.05f, 0.0f, 0.0f);
 
 		for (int i = 0; i < 7; i++)
 		{
@@ -533,26 +536,26 @@ void DevScene::CreateSceneObjects()
 		////////////////////////// SURFBOARDS /////////////////////////////
 		Object* surfboardsBlue[2];
 		surfboardsBlue[0] = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardBlueModel"));
-		surfboardsBlue[0]->GetTransform().Translate(130, 7, 35);
+		surfboardsBlue[0]->GetTransform().Translate(130.0f, 7.0f, 35.0f);
 		entities->InsertObject(surfboardsBlue[0]);
 
 		surfboardsBlue[1] = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardBlueModel"));
-		surfboardsBlue[1]->GetTransform().Translate(168, 7.3, 210);
+		surfboardsBlue[1]->GetTransform().Translate(168.0f, 7.3f, 210.0f);
 		entities->InsertObject(surfboardsBlue[1]);
 
 
 		Object* surfboardOrange[2];
 		surfboardOrange[0] = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardOrangeModel"));
-		surfboardOrange[0]->GetTransform().Translate(128, 7, 33);
+		surfboardOrange[0]->GetTransform().Translate(128.0f, 7.0f, 33.0f);
 		entities->InsertObject(surfboardOrange[0]);
 
 		surfboardOrange[1] = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardOrangeModel"));
-		surfboardOrange[1]->GetTransform().Translate(168, 7.3, 205);
+		surfboardOrange[1]->GetTransform().Translate(168.0f, 7.3f, 205.0f);
 		entities->InsertObject(surfboardOrange[1]);
 
 
 		Object* SurfboardTrippy = new Object(ObjectLayer::Enviroment, resources.GetModel("surfboardTrippyModel"));
-		SurfboardTrippy->GetTransform().Translate(130, 7, 37);
+		SurfboardTrippy->GetTransform().Translate(130.0f, 7.0f, 37.0f);
 		entities->InsertObject(SurfboardTrippy);
 
 
@@ -563,37 +566,35 @@ void DevScene::CreateSceneObjects()
 
 		Object* redballs[3];
 		redballs[0] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballRedModel"));
-		redballs[0]->GetTransform().Translate(100, 7, 38);
-		redballs[0]->GetTransform().Rotate(0.2f, -5, 0);
+		redballs[0]->GetTransform().Translate(100.0f, 7.0f, 38.0f);
+		redballs[0]->GetTransform().Rotate(0.2f, -5.0f, 0.0f);
 		entities->InsertObject(redballs[0]);
 
 		redballs[1] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballRedModel"));
-		redballs[1]->GetTransform().Translate(160, 7, 190);
-		redballs[1]->GetTransform().Rotate(0.2f, -5, 0);
+		redballs[1]->GetTransform().Translate(160.0f, 7.0f, 190.0f);
+		redballs[1]->GetTransform().Rotate(0.2f, -5.0f, 0.0f);
 		entities->InsertObject(redballs[1]);
 
 		redballs[2] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballRedModel"));
-		redballs[2]->GetTransform().Translate(35, 6, 45);
-		redballs[2]->GetTransform().Rotate(0.2f, -5, 0);
+		redballs[2]->GetTransform().Translate(35.0f, 6.0f, 45.0f);
+		redballs[2]->GetTransform().Rotate(0.2f, -5.0f, 0.0f);
 		entities->InsertObject(redballs[2]);
-
-
 
 		Object* blueballs[3];
 
 		blueballs[0] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballBlueModel"));
-		blueballs[0]->GetTransform().Translate(105, 6.5, 35);
-		blueballs[0]->GetTransform().Rotate(0.2f, -5, 0);
+		blueballs[0]->GetTransform().Translate(105.0f, 6.5f, 35.0f);
+		blueballs[0]->GetTransform().Rotate(0.2f, -5.0f, 0.0f);
 		entities->InsertObject(blueballs[0]);
 
 		blueballs[1] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballBlueModel"));
-		blueballs[1]->GetTransform().Translate(155, 6.5, 195);
-		blueballs[1]->GetTransform().Rotate(0.2f, -5, 0);
+		blueballs[1]->GetTransform().Translate(155.0f, 6.5f, 195.0f);
+		blueballs[1]->GetTransform().Rotate(0.2f, -5.0f, 0.0f);
 		entities->InsertObject(blueballs[1]);
 
 		blueballs[2] = new Object(ObjectLayer::Enviroment, resources.GetModel("beachballBlueModel"));
-		blueballs[2]->GetTransform().Translate(40, 6.2, 40);
-		blueballs[2]->GetTransform().Rotate(0.2f, -5, 0);
+		blueballs[2]->GetTransform().Translate(40.0f, 6.2f, 40.0f);
+		blueballs[2]->GetTransform().Rotate(0.2f, -5.0f, 0.0f);
 		entities->InsertObject(blueballs[2]);
 
 
@@ -609,16 +610,16 @@ void DevScene::CreateSceneObjects()
 
 
 		// 2 Stands bottom beach //
-		bushes[0]->GetTransform().Translate(142, 7, 50);
-		bushes[0]->GetTransform().Rotate(0.05f, -5, 0);
+		bushes[0]->GetTransform().Translate(142.0f, 7.0f, 50.0f);
+		bushes[0]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 
-		bushes[1]->GetTransform().Translate(120, 7, 47);
-		bushes[1]->GetTransform().Rotate(0.05f, -5, 0);
+		bushes[1]->GetTransform().Translate(120.0f, 7.0f, 47.0f);
+		bushes[1]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 		////
 
 		// Stand bottom beach left side
-		bushes[2]->GetTransform().Translate(75, 6.5, 43);
-		bushes[2]->GetTransform().Rotate(0.05f, -5, 0);
+		bushes[2]->GetTransform().Translate(75.0f, 6.5f, 43.0f);
+		bushes[2]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 
 		bushes[3]->GetTransform().Translate(70.0f, 6.5f, 45.0f);
 		bushes[3]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
@@ -664,12 +665,12 @@ void DevScene::CreateSceneObjects()
 		////////////////////////// Fireplace stuff /////////////////////////////
 
 		Object* bungalow = new Object(ObjectLayer::Enviroment, resources.GetModel("bungalowModel"));
-		bungalow->GetTransform().Translate(30.0f, 7, 213.0f);
+		bungalow->GetTransform().Translate(30.0f, 7.0f, 213.0f);
 		bungalow->GetTransform().SetRotation({ 0.0f, -0.9f, 0.0f });
 		entities->InsertObject(bungalow);
 
 		Object* gate = new Object(ObjectLayer::Enviroment, resources.GetModel("gateModel"));
-		gate->GetTransform().Translate(60.0f, 6.2, 198);
+		gate->GetTransform().Translate(60.0f, 6.2f, 198.0f);
 		gate->GetTransform().SetRotation({ 0.0f, -2.2f, -0.1f });
 		entities->InsertObject(gate);
 

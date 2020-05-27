@@ -8,6 +8,14 @@ Lights::Lights(size_t screenWidth, size_t screenHeight, size_t width, size_t hei
 	lightConstantBuffer.ssao_intensity = 2.2f;
 	lightConstantBuffer.ssao_radius = 0.8f;*/
 
+	// Initialiserade för att slippa varningar //
+	this->pointLight_ID = 0;
+	this->tProjection = DirectX::XMMatrixIdentity();
+	this->dirty = false;
+	this->tShadowTransform = DirectX::XMMatrixIdentity();
+	this->tView = DirectX::XMMatrixIdentity();
+	this->lightConstantBuffer = LightData();
+	// Initialiserade för att slippa varningar
 
 	sunCamera = new Camera(90.0f, width, height);
 }
@@ -79,7 +87,7 @@ void Lights::UpdateConstantBuffer(Camera* camera, ID3D11DeviceContext* context)
 
 	//lightConstantBuffer.worldToView = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(camera->GetView(), camera->GetProjection()));
 	lightConstantBuffer.worldToView = DirectX::XMMatrixTranspose(camera->GetView());
-	lightConstantBuffer.pointLightCount = pointLightMap.size();
+	lightConstantBuffer.pointLightCount = (int)pointLightMap.size();
 	//lightConstantBuffer.screenSize = { static_cast<float>(width), static_cast<float>(height) };
 
 	DirectX::XMStoreFloat3(&lightConstantBuffer.eyePosition, camera->GetTransform().GetPosition());

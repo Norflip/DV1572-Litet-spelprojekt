@@ -4,6 +4,11 @@ const float SHADOW_MAP_SIZE = 2048;
 
 Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11) : dx11(dx11), timer(timer), lights(width, height, 96, 96), ssao(width, height), gbuffersampler(nullptr)
 {
+	// Initialiserade för att slippa varningar
+	this->currentRenderTarget = nullptr;
+	this->meshMat = nullptr;
+	// Initialiserade för att slippa varningar
+
 	this->gbufferRenderTarget = new RenderTarget(4, width, height, true);
 	this->gbufferRenderTarget->Initalize(dx11.GetDevice());
 
@@ -17,7 +22,7 @@ Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11)
 	worldBuffer_ptr = dx11.CreateBuffer<WorldData>(cb_world);
 	gbuffersampler = dx11.CreateSampler(D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP);
 
-	this->shadowRenderTarget = new RenderTarget(0, SHADOW_MAP_SIZE, SHADOW_MAP_SIZE, true);
+	this->shadowRenderTarget = new RenderTarget(0, (size_t)SHADOW_MAP_SIZE, (size_t)SHADOW_MAP_SIZE, true);
 	this->shadowRenderTarget->Initalize(dx11.GetDevice());
 
 	
@@ -42,7 +47,7 @@ void Renderer::SetRenderTarget(RenderTarget* renderTarget)
 	this->currentRenderTarget = renderTarget;
 
 	dx11.GetContext()->RSSetViewports(1, &currentRenderTarget->GetViewport());
-	dx11.GetContext()->OMSetRenderTargets(currentRenderTarget->BufferCount(), currentRenderTarget->GetRenderTargetViews(), currentRenderTarget->GetDepthStencil());
+	dx11.GetContext()->OMSetRenderTargets((UINT)currentRenderTarget->BufferCount(), currentRenderTarget->GetRenderTargetViews(), currentRenderTarget->GetDepthStencil());
 
 	if (currentRenderTarget->GetDepthStencilState() != nullptr)
 		dx11.GetContext()->OMSetDepthStencilState(currentRenderTarget->GetDepthStencilState(), 0);
@@ -75,7 +80,7 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 
 	if (mesh->skeleton && mesh->skeleton->animations.size() > 0)
 	{
-		for (int i = 0; i < mesh->skeleton->GetNumberOfBones(); i++)
+		for (unsigned int i = 0; i < mesh->skeleton->GetNumberOfBones(); i++)
 		{
 			cb_world.boneTransforms[i] = mesh->skeleton->GetCurrentAnimation()->GetBone(i).GetFinalTransformation((unsigned int)mesh->skeleton->GetKeyframe());
 		}
@@ -142,19 +147,19 @@ void Renderer::DisplayFrame(Camera* camera)
 
 	//// bind ssao output texture
 	ID3D11ShaderResourceView* ssaoSRV = ssao.GetOutputSRV();
-	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount(), 1, &ssaoSRV);
+	dx11.GetContext()->PSSetShaderResources((UINT)gbufferRenderTarget->BufferCount(), 1, &ssaoSRV);
 	dx11.GetContext()->PSSetSamplers(0, 1, &gbuffersampler);
 	 
 	ID3D11ShaderResourceView* shadowSRV = shadowRenderTarget->GetDepthSRV();
-	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount() + 1, 1, &shadowSRV);
+	dx11.GetContext()->PSSetShaderResources((UINT)gbufferRenderTarget->BufferCount() + 1, 1, &shadowSRV);
 
 	DrawScreenQuad();
 
 	//// unbinds ssao_random texture
 	ID3D11ShaderResourceView* pSRV[1] = { NULL };
 	ID3D11SamplerState* ssrf[1] = { NULL };
-	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount(), 1, pSRV);
-	dx11.GetContext()->PSSetShaderResources(gbufferRenderTarget->BufferCount() + 1, 1, pSRV);
+	dx11.GetContext()->PSSetShaderResources((UINT)gbufferRenderTarget->BufferCount(), 1, pSRV);
+	dx11.GetContext()->PSSetShaderResources((UINT)gbufferRenderTarget->BufferCount() + 1, 1, pSRV);
 
 	//dx11.GetContext()->PSSetSamplers(0, 1, ssrf);
 
@@ -180,5 +185,5 @@ void Renderer::DrawMesh(Mesh* mesh)
 	dx11.GetContext()->IASetIndexBuffer(mesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	dx11.GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	dx11.GetContext()->DrawIndexed(mesh->indices.size(), 0, 0);
+	dx11.GetContext()->DrawIndexed((UINT)mesh->indices.size(), 0, 0);
 }

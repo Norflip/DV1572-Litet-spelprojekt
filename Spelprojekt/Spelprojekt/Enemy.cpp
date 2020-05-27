@@ -78,7 +78,7 @@ void Enemy::Update(const float& deltaTime)
 
 void Enemy::FixedUpdate(const float& fixedDeltaTime)
 {
-	//this->GetMesh()->skeleton->AddKeyframe();
+	this->GetMesh()->skeleton->AddKeyframe();
 }
 
 void Enemy::UpdateMovement(float fixedDeltaTime)

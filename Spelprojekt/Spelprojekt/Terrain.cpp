@@ -7,6 +7,8 @@
 
 Terrain::Terrain() : mesh(nullptr)
 {
+	this->height = 0;
+	this->width = 0;
 }
 
 Terrain::~Terrain()
@@ -44,16 +46,16 @@ void Terrain::GenerateMesh(std::string texturePath, ID3D11Device* device, bool w
 
 			vertList.push_back(vertex);
 
-			if (z < height - 1 && x < width - 1)
+			if ((int)z < height - static_cast<long long>(1) && (int)x < width - static_cast<long long>(1))
 			{
 				// triangle 1
-				indexList.push_back((amountOfIndecies + width));
-				indexList.push_back((amountOfIndecies + width) + 1);
-				indexList.push_back(amountOfIndecies + 1);
+				indexList.push_back((unsigned int)(amountOfIndecies + width));
+				indexList.push_back((unsigned int)(amountOfIndecies + width) + 1);
+				indexList.push_back((unsigned int)(amountOfIndecies + 1));
 				//triangle 2
-				indexList.push_back(amountOfIndecies + width);
-				indexList.push_back(amountOfIndecies + 1);
-				indexList.push_back(amountOfIndecies);
+				indexList.push_back((unsigned int)(amountOfIndecies + width));
+				indexList.push_back((unsigned int)(amountOfIndecies + 1));
+				indexList.push_back((unsigned int)(amountOfIndecies));
 			}
 
 			amountOfIndecies++;
@@ -120,10 +122,10 @@ float Terrain::SampleHeight(float x, float z)
 	}
 
 	bool bottomTriangle = (howFarX + howFarZ) <= 1.f;
-	float topRightHeight = GetMesh()->vertexes.at(row * GetMapWidth() + col).position.y;
-	float topLeftHeight = GetMesh()->vertexes.at(row * GetMapWidth() + col + 1).position.y;
-	float bottomLeftHeight = GetMesh()->vertexes.at((row + 1) * GetMapWidth() + col).position.y;
-	float bottomRightTriangle = GetMesh()->vertexes.at((row + 1) * GetMapWidth() + col + 1).position.y;
+	float topRightHeight = GetMesh()->vertexes.at(row * static_cast<long long>(GetMapWidth()) + col).position.y;
+	float topLeftHeight = GetMesh()->vertexes.at(row * static_cast<long long>(GetMapWidth()) + col + 1).position.y;
+	float bottomLeftHeight = GetMesh()->vertexes.at((row + static_cast<long long>(1)) * static_cast<long long>(GetMapWidth()) + col).position.y;
+	float bottomRightTriangle = GetMesh()->vertexes.at((row + static_cast<long long>(1)) * static_cast<long long>(GetMapWidth()) + col + 1).position.y;
 	float resultHeight = 0;
 
 	if (bottomTriangle)
@@ -132,6 +134,7 @@ float Terrain::SampleHeight(float x, float z)
 		float vy = bottomLeftHeight - topRightHeight;
 		resultHeight = topRightHeight + howFarX * uy + howFarZ * vy;
 	}
+
 	else
 	{
 		float uy = bottomLeftHeight - bottomRightTriangle;
@@ -159,10 +162,10 @@ DirectX::XMVECTOR Terrain::SampleNormal(float x, float z)
 
 	//bool bottomTriangle = (howFarX + howFarZ) <= 1.f;
 
-	DirectX::XMVECTOR bottomLeft = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at(row * GetMapWidth() + col).normal);
-	DirectX::XMVECTOR bottomRight = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at(row * GetMapWidth() + col + 1).normal);
-	DirectX::XMVECTOR topLeft = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at((row + 1) * GetMapWidth() + col).normal);
-	DirectX::XMVECTOR topRight = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at((row + 1) * GetMapWidth() + col + 1).normal);
+	DirectX::XMVECTOR bottomLeft = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at(row * static_cast<long long>(GetMapWidth()) + col).normal);
+	DirectX::XMVECTOR bottomRight = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at(row * static_cast<long long>(GetMapWidth()) + col + 1).normal);
+	DirectX::XMVECTOR topLeft = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at((row + static_cast<long long>(1)) * static_cast<long long>(GetMapWidth()) + col).normal);
+	DirectX::XMVECTOR topRight = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at((row + static_cast<long long>(1)) * static_cast<long long>(GetMapWidth()) + col + 1).normal);
 
 	DirectX::XMVECTOR top = DirectX::XMVectorLerp(topLeft, topRight, howFarX);
 	DirectX::XMVECTOR bottom = DirectX::XMVectorLerp(bottomLeft, bottomRight, howFarX);

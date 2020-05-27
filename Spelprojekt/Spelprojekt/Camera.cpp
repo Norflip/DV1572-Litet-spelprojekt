@@ -112,7 +112,7 @@ MathHelper::Ray Camera::ScreenPositionToWorldRay(const POINTS& point) const
 {
 	MathHelper::Ray ray;
 	DirectX::FXMVECTOR v = { point.x, point.y, 0 };
-	DirectX::XMVECTOR worldPos = DirectX::XMVector3Unproject(v, 0.0f, 0.0f, width, height, 0.0f, 1.0f, projection, view, DirectX::XMMatrixIdentity());
+	DirectX::XMVECTOR worldPos = DirectX::XMVector3Unproject(v, 0.0f, 0.0f, (float)width, (float)height, 0.0f, 1.0f, projection, view, DirectX::XMMatrixIdentity());
 	ray.origin = GetTransform().GetPosition();
 	ray.direction = DirectX::XMVectorSubtract(worldPos, ray.origin);
 	ray.direction = DirectX::XMVector3Normalize(ray.direction);

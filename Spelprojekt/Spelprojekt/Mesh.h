@@ -31,6 +31,13 @@ struct Mesh
 
 	Skeleton* skeleton;
 
+	Mesh()
+	{
+		vertexBuffer = nullptr;
+		indexBuffer = nullptr;
+		skeleton = nullptr;
+	}
+
 	~Mesh()
 	{
 		if (vertexBuffer) 
@@ -46,16 +53,16 @@ namespace MeshCreator
 	{
 		Mesh* mesh = new Mesh();
 
-		mesh->vertexBuffer = nullptr;
+		//mesh->vertexBuffer = nullptr;
 		mesh->vertexes = vertices;
-		mesh->indexBuffer = nullptr;
+		//mesh->indexBuffer = nullptr;
 		mesh->indices = indices;
 
 		// creates vertex buffer
 		D3D11_BUFFER_DESC vertexBufferDescription;
 		ZeroMemory(&vertexBufferDescription, sizeof(vertexBufferDescription));
 		vertexBufferDescription.Usage = D3D11_USAGE_DEFAULT;
-		vertexBufferDescription.ByteWidth = sizeof(MeshVertex) * mesh->vertexes.size();
+		vertexBufferDescription.ByteWidth = (UINT)(sizeof(MeshVertex) * mesh->vertexes.size());
 		vertexBufferDescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
 		D3D11_SUBRESOURCE_DATA vertexBuffer_subResource;
@@ -70,7 +77,7 @@ namespace MeshCreator
 		// creates index buffer
 		D3D11_BUFFER_DESC indexBufferDescription;
 		indexBufferDescription.Usage = D3D11_USAGE_DEFAULT;
-		indexBufferDescription.ByteWidth = sizeof(unsigned int) * indices.size();
+		indexBufferDescription.ByteWidth = (UINT)(sizeof(unsigned int) * indices.size());
 		indexBufferDescription.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		indexBufferDescription.CPUAccessFlags = 0;
 		indexBufferDescription.MiscFlags = 0;

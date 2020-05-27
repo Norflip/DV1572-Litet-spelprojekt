@@ -124,12 +124,12 @@ namespace ShittyOBJLoader
 
 							DirectX::XMVECTOR d = DirectX::XMVectorAdd(
 								DirectX::XMLoadFloat3(&vertexes[j].normal),
-								DirectX::XMLoadFloat3(&normals[std::stoi(subd[2]) - 1])
+								DirectX::XMLoadFloat3(&normals[std::stoi(subd[2]) - static_cast<long long>(1)])
 							);
 							//d = dx::XMVector3Normalize(d);
 
 							DirectX::XMStoreFloat3(&vertexes[j].normal, d);
-							vertexes[j].uv = uvs[std::stoi(subd[1]) - 1];
+							vertexes[j].uv = uvs[std::stoi(subd[1]) - static_cast<long long>(1)];
 						}
 					}
 				}

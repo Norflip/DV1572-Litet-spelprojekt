@@ -78,7 +78,7 @@ namespace Logger
 #if ENABLE_CONSOLE_OUTPUT
 			AllocConsole();
 			HANDLE stdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-			int hConsole = _open_osfhandle((long)stdHandle, _O_TEXT);
+			int hConsole = _open_osfhandle((intptr_t)stdHandle, _O_TEXT);
 			FILE* fp = _fdopen(hConsole, "w");
 			freopen_s(&fp, "CONOUT$", "w", stdout);
 #endif

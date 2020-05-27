@@ -281,7 +281,7 @@ namespace AssimpHandler
 			float animationLength = (float)scene->mAnimations[0]->mDuration;
 			Animation* newAnimation = new Animation();
 
-			newAnimation->SetLength(animationLength);
+			newAnimation->SetLength((unsigned int)animationLength);
 			newAnimation->SetBoneAmount(skeleton->GetNumberOfBones());
 			newAnimation->GetBoneVector().resize(newAnimation->GetNumberOfBones());
 			newAnimation->SetName(animName);
@@ -291,29 +291,7 @@ namespace AssimpHandler
 				ReadSceneHierarchy(i, scene, scene->mRootNode, identity, newAnimation, skeleton);
 			}
 
-			Animation* test = new Animation;
-			test->SetLength(animationLength * 2 - 2);
-			test->SetBoneAmount(skeleton->GetNumberOfBones());
-			test->GetBoneVector().resize(newAnimation->GetNumberOfBones());
-			test->SetName(animName);
-
-			for (int i = 0; i < newAnimation->GetNumberOfBones(); i++)
-			{
-				for (int j = 0; j < newAnimation->GetLength(); j++)
-				{
-					if (j == 0 || j == newAnimation->GetLength() - 1)
-					{
-						test->GetBone(i).SetFinalTransformation(newAnimation->GetBone(i).GetFinalTransformation(j));
-					}
-					else
-					{
-						test->GetBone(i).SetFinalTransformation(newAnimation->GetBone(i).GetFinalTransformation(j));
-						test->GetBone(i).SetFinalTransformation(newAnimation->GetBone(i).GetFinalTransformation(j));
-					}
-				}
-			}
-
-			skeleton->animations.push_back(test);
+			skeleton->animations.push_back(newAnimation);
 		}
 		
 	}
