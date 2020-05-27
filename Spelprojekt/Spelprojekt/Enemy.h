@@ -48,7 +48,6 @@ class Enemy : public Object
 		float scaleXZ;
 		Player* player;
 		Object* FBXModel;
-		Entities* entities;
 		DirectX::XMVECTOR BoidsAlgorithm(ObjectLayer object);
 		DirectX::XMVECTOR Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR distance, float distF);
 

@@ -115,7 +115,7 @@ DirectX::XMVECTOR Enemy::BoidsAlgorithm(ObjectLayer object)
 	DirectX::XMVECTOR avgDir = DirectX::XMVector3Normalize(GetVelocity());
 	DirectX::XMVECTOR avgPosition = GetTransform().GetPosition();
 	int objInRadius = 0;
-	auto checkEntity = entities->GetObjectsInLayer(object);
+	auto checkEntity = context->entities->GetObjectsInLayer(object);
 	for (auto entity : checkEntity)
 	{
 		if (GetID() == entity->GetID())

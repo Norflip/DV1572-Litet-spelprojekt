@@ -223,13 +223,16 @@ void SpawnObjects::UpdateRemoveEnemy()
 				if (e->GetHealthLeft() <= 0.0f) {
 					player->IncreasePoints(e->GivePoints());
 					context->entities->RemoveObject(e);
+					delete e;
 					enemyCount--;
 					maxEnemies--;
 				}
 
 				context->entities->RemoveObject(player->GetActiveWeapon());
 				player->GetActiveWeapon()->SetEnabled(false); // new
-				player->SetActiveWeapon(nullptr);				
+				delete player->GetActiveWeapon();
+				player->SetActiveWeapon(nullptr);	
+				
 			}
 		}
 	}
