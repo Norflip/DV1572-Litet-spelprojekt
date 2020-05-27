@@ -31,7 +31,7 @@ class SpawnObjects
 	const float RespawnTimer = 30.0f;
 
 	const float CoconutRespawnTime = 30.0f;
-	const int CoconutsPerTree = 2;
+	const int CoconutsPerTree = 4;
 	const float CoconutOffset = 3.0f;
 
 	const float MinimumSpawnHeight = 4.0f;

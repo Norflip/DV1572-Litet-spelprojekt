@@ -30,6 +30,7 @@ void SpawnObjects::SpawnInitial()
 	std::vector<Object*> trees = context->entities->GetObjectsInLayer(ObjectLayer::Tree);
 	for (auto i : trees)
 	{
+		float startAngle = static_cast<float>(rand() % 360);
 		DirectX::XMVECTOR position = i->GetTransform().GetPosition();
 
 		for (size_t j = 0; j < CoconutsPerTree; j++)
@@ -37,7 +38,7 @@ void SpawnObjects::SpawnInitial()
 			DirectX::XMFLOAT3 pos;
 			DirectX::XMStoreFloat3(&pos, position);
 
-			float angle = (float)j * (360.0f / CoconutsPerTree);
+			float angle = startAngle + ((float)j * (360.0f / CoconutsPerTree));
 			float x = pos.x + cosf(angle * MathHelper::ToRadians) * CoconutOffset;
 			float z = pos.z + sinf(angle * MathHelper::ToRadians) * CoconutOffset;
 			float y = context->terrain->SampleHeight(x, z) + 0.4f;
