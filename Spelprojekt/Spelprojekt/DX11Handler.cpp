@@ -96,11 +96,9 @@ void DX11Handler::Initialize(const Window& window)
 	resultCreateRasterizer = device->CreateRasterizerState(&rasterizerDescription, &waterRasterizerState);
 	assert(SUCCEEDED(resultCreateRasterizer));
 
-
-
 	context->RSSetState(mainRasterizerState);
 
-	this->defaultSampler = CreateSampler(D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
+	this->defaultSampler = CreateSampler(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP);
 }
 
 ID3D11SamplerState* DX11Handler::CreateSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode)

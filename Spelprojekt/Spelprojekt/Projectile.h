@@ -18,7 +18,7 @@ public:
 
 	GUIActionbar* GetWeaponSprite() override { return this->weaponSprite; } 	
 	void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;
-	void rangedAttack(float deltaTime);	
+	void RotateProjectile(float deltaTime);	
 	void PlaySoundEffect() override;
 	void SetReferenceToPlayer(Player* player) override { this->player = player; }
 	void SetWeaponSpeed(int value) override { this->movementspeed = value; };

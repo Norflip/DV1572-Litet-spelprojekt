@@ -1,4 +1,5 @@
 #pragma once
+#include "RaycastHit.h"
 #include "Scene.h"
 #include "Terrain.h"
 #include "assimpHandler.h"
@@ -9,63 +10,74 @@ class Player;
 
 class Enemy : public Object
 {
-	public: 
-		Enemy(AssimpHandler::AssimpData modelData, WorldContext* context);
-		Enemy(const Enemy& other);
-		virtual ~Enemy();
+	const float ATTACK_RANGE = 13.0f;
+	const float MOVEMENT_SPEED = 2.0f;
+	const int POINT_VALUE = 5;
 
-		void Update(const float& deltaTime) override;
-		void FixedUpdate(const float& fixedDeltaTime) override;
+	const float startCD = 2.0f;
+	const float minCD = 4.0f;
+	const float maxCD = 6.0f;
 
-		void SetHeight(float height) { this->enemyHeight = height; };
-		void SetTarget(Player* player);
-		DirectX::XMVECTOR GetVelocity();
+public:
+	Enemy(Mesh* mesh, Material* material, WorldContext* context);
+	Enemy(AssimpHandler::AssimpData modelData, WorldContext* context);
+	Enemy(const Enemy& other);
+	virtual ~Enemy();
 
-		void HitSound();
-		
-		Object* GetFBXModel();
+	void Update(const float& deltaTime) override;
+	void FixedUpdate(const float& fixedDeltaTime) override;
 
-		int GivePoints() { return this->pointGiven; }
+	void SetHeight(float height) { this->enemyHeight = height; };
+	DirectX::XMVECTOR GetVelocity();
 
-		void UpdateAttackPlayer();
-		void SetActiveWeapon(Weapon* enemyweapon) { this->activeweapon = enemyweapon; }
-		Weapon* GetActiveWeapon() const { return this->activeweapon; };
+	void HitSound();
 
-		// health enemy
-		void TakeDamage(float damage);
+	int GetPointValue() const { return POINT_VALUE; }
 
-		float GetHealthLeft() { return this->health; }
+	void UpdateAttackPlayer();
+	void SetActiveWeapon(Weapon* enemyweapon) { this->activeweapon = enemyweapon; }
+	Weapon* GetActiveWeapon() const { return this->activeweapon; };
+
+	void DeactivateWeapon();
+
+	// health enemy
+	void TakeDamage(float damage);
+	void ResetHealth();
+	float GetHealthLeft() { return this->health; }
+
+private:
 	
-	private:
-		WorldContext* context;
-		void UpdateTestBoids(float fixedDeltaTime);
-		DirectX::XMVECTOR velocity;
-		DirectX::XMVECTOR tVelocity;
-		float movementspeed;
-		void UpdateHeight(float fixedDeltaTime);
-		void UpdateMovement(float fixedDeltaTime);
-		float scaleY;
-		float scaleXZ;
-		Player* player;
-		Object* FBXModel;
-		DirectX::XMVECTOR BoidsAlgorithm(ObjectLayer object);
-		DirectX::XMVECTOR Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR distance, float distF);
+	DirectX::XMFLOAT3 CheckCollisions(const float& deltaTime, const float& length);
 
-		DirectX::XMFLOAT3 currentPosition;
-		float nextDir = 0.0f;
-		float enemyHeight = 4.65f;	
-				
-		// ENEMY SHOT
-		float cooldownTimer;
-		float timeuntilReload;
+	void UpdateTestBoids(float fixedDeltaTime);
+	void UpdateHeight(float fixedDeltaTime);
+	void UpdateMovement(float fixedDeltaTime);
+	DirectX::XMVECTOR BoidsAlgorithm(ObjectLayer object);
+	DirectX::XMVECTOR Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR distance, float distF);
 
-		Timer* waitTime;
-		bool hasShot;
-		float flyTime;
 
-		// ENEMYHP
-		float health;
-		Weapon* activeweapon;
 
-		int pointGiven;
+private:
+	WorldContext* context;
+	DirectX::XMVECTOR velocity;
+	DirectX::XMVECTOR tVelocity;
+
+	DirectX::XMFLOAT3 currentPosition;
+	float nextDir = 0.0f;
+	float enemyHeight = 4.65f;
+
+	// ENEMY SHOT
+	float cooldownTimer;
+
+	bool hasShot;
+	float flyTime;
+
+	// ENEMYHP
+	float health;
+	Weapon* activeweapon;
+
+	// FILIPS VARIATION
+	Icecream* weapon;
+	float CD;
+
 };

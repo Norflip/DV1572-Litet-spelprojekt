@@ -20,7 +20,8 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->righthandFull = false;
 	this->leftWeapon = nullptr;
 	this->rightWeapon = nullptr;
-
+	this->activeWeapon = nullptr;
+	this->arrowRotation = { 0,0,0 };
 	this->playerHealth = 100.0f;
 
 	this->winArea = winArea;
@@ -57,7 +58,7 @@ void Player::TakeDamage(float damage)
 	if (playerHealth > 0.0f)
 	{
 		playerHealth -= damage;
-		// INSERT SOUND WHEN IT WORKS...........................
+		context->gamemanager->GetSoundeffectHandler()->PlaySound("Splash", context->gamemanager->GetCurrentSoundVolume());
 	}
 }
 
@@ -187,10 +188,6 @@ DirectX::XMFLOAT3 Player::CheckCollisions(const float& deltaTime, const float& l
 	return result;
 }
 
-void Player::InitWeapons()
-{
-}
-
 void Player::CheckForPickups()
 {
 	if (input->GetKeyDown('e') && (!lefthandFull || !righthandFull))
@@ -227,7 +224,6 @@ void Player::CheckForPickups()
 
 				obj->SetEnabled(false);
 				context->spawner->RemovePickup(obj);
-				delete obj;
 
 				foundPickup = true;
 			}
@@ -320,22 +316,6 @@ void Player::UseWeapon()
 
 void Player::WeaponUsage(Weapon* weapon, bool& hand)
 {
-	std::string str = "";
-
-	switch (weapon->GetType())
-	{
-	case WeaponType::Coconut:
-		str = "coconut";
-		break;
-	case WeaponType::Spoon:
-		str = "spoon";
-		break;
-	default:
-		break;
-	}
-
-	Logger::Write(str);
-
 	if (weapon->GetType() == WeaponType::Coconut)
 	{
 		DirectX::XMVECTOR aimDirection = GetAimDirection();
@@ -343,15 +323,16 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		weapon->direction = aimDirection;
 		//weapon->gamemanager = this->gamemanager;
 		weapon->PlaySoundEffect();
+
+
 		SetActiveWeapon(static_cast<Weapon*>(weapon));
 		context->entities->InsertObject(weapon);
-		
+
 		hand = false;
 		GetTransform().SetRotation(aimDirection);
 		this->rangedAttacking = true;
 	}
-
-	if (weapon->GetType() == WeaponType::Spoon)
+	else if (weapon->GetType() == WeaponType::Spoon)
 	{
 		Logger::Write("USES: " + std::to_string(weapon->CheckUsage()));
 
@@ -414,7 +395,6 @@ Weapon* Player::CopyWeapon(Weapon* weapon)
 		Projectile* proj = static_cast<Projectile*>(weapon);
 		curr = new Projectile(*proj);
 		curr->SetType(weapon->GetType());
-		curr->SetLayer(ObjectLayer::None);
 		curr->context = context;
 	}
 	else if (weapon->GetType() == WeaponType::Spoon)
@@ -423,7 +403,6 @@ Weapon* Player::CopyWeapon(Weapon* weapon)
 		curr = new Spoon(*spoonweap);
 		curr->SetType(weapon->GetType());
 
-		curr->SetLayer(ObjectLayer::None);
 		curr->context = context;
 		//scene->GetEntities()->RemoveObject(curr);
 	}
@@ -444,7 +423,7 @@ void Player::SetActiveWeapon(Weapon* weapon)
 void Player::SetTargetAndArrow(Object* arrow, Object* winArea)
 {
 	this->arrow = arrow;
-	this->winArea = winArea; 
+	this->winArea = winArea;
 }
 
 void Player::UpdateLookAtPosition()
@@ -469,6 +448,16 @@ void Player::UpdateLookAtPosition()
 		//GetTransform().SetRotation({ (GetTransform().GetRotation().m128_f32[0] + (-8.f * deltaTime)) ,GetTransform().GetRotation().m128_f32[1]  ,GetTransform().GetRotation().m128_f32[2] });
 
 		//arrow->GetTransform().LookAt(this->exitPosition);		
+	}
+}
+
+void Player::RemoveActiveWeapon()
+{
+	if (activeWeapon != nullptr)
+	{
+		context->entities->RemoveObject(activeWeapon);
+		delete activeWeapon;
+		activeWeapon = nullptr;
 	}
 }
 
