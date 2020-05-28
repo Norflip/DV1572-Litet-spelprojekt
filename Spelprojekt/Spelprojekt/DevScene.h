@@ -62,11 +62,10 @@ private:
 	GUI* gui;
 	GUIText* gametimerText;
 	GUIText* fpsText;
+	GUISprite* gamehub;
 	GUISprite* healthFrame;
 	GUISprite* healthbar;
-	GUISprite* score;
 	GUIText* totalScore;
-	GUISprite* enemies;
 	GUIText* totalEnemies;
 
 	GUIActionbar* actionbarLeft;
