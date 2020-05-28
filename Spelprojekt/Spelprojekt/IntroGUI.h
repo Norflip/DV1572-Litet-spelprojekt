@@ -15,6 +15,8 @@ public:
 	~IntroGUI();
 	enum class Menu
 	{
+		credits,
+		howtoplay,
 		start,
 		options,
 		soundtracks,
@@ -26,6 +28,12 @@ public:
 
 	void Start();	//Game starts here
 	void LoadStart();
+
+	void HowToPlay();
+	void LoadHowToPlay();
+
+	void Credits();
+	void LoadsCredits();
 
 	void Options(); // enable / disable stuff
 	void LoadOptions();
