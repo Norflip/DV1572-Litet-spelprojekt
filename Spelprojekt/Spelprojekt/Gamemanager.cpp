@@ -50,7 +50,6 @@ Gamemanager::Gamemanager(DX11Handler* dx11) : dxhandler(dx11)
 Gamemanager::~Gamemanager()
 {
 	// erase tracks
-
 	// deallocate memory	
 }
 
@@ -58,12 +57,11 @@ void Gamemanager::LoadSoundEffects()
 {
 	this->soundeffect->LoadSound("WinSound", "SoundEffects/tadaWin.wav");		// done
 	this->soundeffect->LoadSound("FailSound", "SoundEffects/Fail.wav");			// done
-
 	this->soundeffect->LoadSound("CoconutThrow", "SoundEffects/Explo1.wav");	// done
 	this->soundeffect->LoadSound("Swoosh", "SoundEffects/Swoosh.wav");			// done
 	this->soundeffect->LoadSound("Splash", "SoundEffects/Splash.wav");			// done
 	this->soundeffect->LoadSound("EnemyHit", "SoundEffects/Punch.wav");			// done
-	this->soundeffect->LoadSound("PlayerHit", "SoundEffects/playerHit.wav");	
+	this->soundeffect->LoadSound("PlayerHit", "SoundEffects/playerHit.wav");	// done
 }
 
 void Gamemanager::LoadMusicTracks()

@@ -29,6 +29,16 @@ void IntroGUI::Update()
 
     switch (menu)
     {
+    case Menu::credits:
+        if (first)
+            LoadsCredits();
+        Credits();
+        break;
+    case Menu::howtoplay:
+        if (first)
+            LoadHowToPlay();
+        HowToPlay();
+        break;
     case Menu::start:
         if (first)
             LoadStart();
@@ -132,14 +142,17 @@ void IntroGUI::Update()
 
 void IntroGUI::Start()
 { 
-    // gotta fix if static cast fails
+    // PLAY (Go to how to play)
     GUISprite* play = static_cast<GUISprite*>(gui->GetGUIList()->at("play"));
     if (play->Clicked(input))
     {
         //ClearGUI();
-        currentScene->setNextScene();
+        menu = Menu::howtoplay;
+        first = true;
+        //currentScene->setNextScene();
     }
 
+    // OPTIONS
     GUISprite* options = static_cast<GUISprite*>(gui->GetGUIList()->at("options"));
     if (options->Clicked(input))
     {
@@ -166,6 +179,16 @@ void IntroGUI::Start()
         first = true;
     }
 
+    // credits
+    GUISprite* credits = static_cast<GUISprite*>(gui->GetGUIList()->at("credits"));
+    if (credits->Clicked(input))
+    {
+        //ClearGUI();
+        menu = Menu::credits;
+        first = true;
+    }
+
+    // QUIT
     GUISprite* quit = static_cast<GUISprite*>(gui->GetGUIList()->at("quit"));
     if (quit->Clicked(input))
     {
@@ -175,8 +198,8 @@ void IntroGUI::Start()
     }
         
 
-    // MOUSEOVER
-    // play
+    // MOUSEOVER CHECKS
+    // Play
     if (play->MouseOver(input)) {
         play->SetWICSprite(dx11, "Sprites/play_mouseover.png");
     }
@@ -207,8 +230,15 @@ void IntroGUI::Start()
     else {
         highscore->SetWICSprite(dx11, "Sprites/highscore.png");
     }
-       
 
+    // Credits
+    if (credits->MouseOver(input)) {
+        credits->SetWICSprite(dx11, "Sprites/creditsbutton_mouseover.png");
+    }
+    else {
+        credits->SetWICSprite(dx11, "Sprites/creditsbutton.png");
+    }
+     
     //quit
     if (quit->MouseOver(input)) {
         quit->SetWICSprite(dx11, "Sprites/quit_mouseover.png");
@@ -221,14 +251,89 @@ void IntroGUI::Start()
 void IntroGUI::LoadStart()
 {
     ClearGUI();
-    ClearButtons();
+    //ClearButtons();
     
     //LOAD ALL GUI OBJECTS FOR START, ONCE
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 100.0f), "play");    
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/options.png", 100.0f, 200.0f), "options");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/soundtracks.png", 100.0f, 300.0f), "soundtracks");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/highscore.png", 100.0f, 400.0f), "highscore");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/creditsbutton.png", 925.0f, 500.0f), "credits");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/quit.png", 100.0f, 500.0f), "quit");
+
+    first = false;
+}
+
+void IntroGUI::HowToPlay()
+{
+    // gotta fix if static cast fails
+    GUISprite* play = static_cast<GUISprite*>(gui->GetGUIList()->at("play"));
+    if (play->Clicked(input))
+    {
+        //ClearGUI();
+        currentScene->setNextScene();
+    }
+
+    // play
+    if (play->MouseOver(input)) {
+        play->SetWICSprite(dx11, "Sprites/start_mouseover.png");
+    }
+    else {
+        play->SetWICSprite(dx11, "Sprites/start.png");
+    }
+
+    GUISprite* backtointroNEW = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
+    if (backtointroNEW->Clicked(input)) {
+        first = true;
+        menu = Menu::start;
+    }
+
+    // mouseover
+    if (backtointroNEW->MouseOver(input))
+    {
+        backtointroNEW->SetWICSprite(dx11, "Sprites/backtointro_mouseover.png");
+    }
+    else {
+        backtointroNEW->SetWICSprite(dx11, "Sprites/backtointro.png");
+    }
+}
+
+void IntroGUI::LoadHowToPlay()
+{
+    ClearGUI();
+
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/HowToPlayKeys.png", 20.0f, 15.0f), "howtoplay");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/HowToPlay2.png", 600.0, 345.0f), "howtoplay2");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/start.png", 100.0f, 400.0f), "play");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
+
+    first = false;
+}
+
+void IntroGUI::Credits()
+{
+
+    GUISprite* backtointroNEW = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
+    if (backtointroNEW->Clicked(input)) {
+        first = true;
+        menu = Menu::start;
+    }
+
+    // mouseover
+    if (backtointroNEW->MouseOver(input))
+    {
+        backtointroNEW->SetWICSprite(dx11, "Sprites/backtointro_mouseover.png");
+    }
+    else {
+        backtointroNEW->SetWICSprite(dx11, "Sprites/backtointro.png");
+    }
+}
+
+void IntroGUI::LoadsCredits()
+{
+    ClearGUI();
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/credits.png", 350.0f, 20.0f), "credits");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
 
     first = false;
 }
