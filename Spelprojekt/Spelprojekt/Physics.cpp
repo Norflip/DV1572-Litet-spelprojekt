@@ -137,7 +137,7 @@ rp3d::ConvexMeshShape* Physics::ConvertMeshToConvexShape(Mesh* mesh)
 
 	for (size_t i = 0; i < faceCount; i++)
 	{
-		face->indexBase = i * 3;
+		face->indexBase = (i * 3);
 		face->nbVertices = 3;
 		face++;
 	}
