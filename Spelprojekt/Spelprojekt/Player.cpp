@@ -334,7 +334,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 	}
 	else if (weapon->GetType() == WeaponType::Spoon)
 	{
-		Logger::Write("USES: " + std::to_string(weapon->CheckUsage()));
+		//Logger::Write("USES: " + std::to_string(weapon->CheckUsage()));
 
 		if (weapon->CheckUsage() < 2)
 		{

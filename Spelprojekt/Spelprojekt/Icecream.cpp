@@ -44,7 +44,7 @@ void Icecream::Update(const float& deltaTime)
 
 void Icecream::TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 {
-	Logger::Write("ASDKOAWKODAKOWDKOAWDKOAWDJIOAWFIHJNOPAWFAWFJIOAWFAWFJIOPAWF");
+	//Logger::Write("ASDKOAWKODAKOWDKOAWDKOAWDJIOAWFIHJNOPAWFAWFJIOAWFAWFJIOPAWF");
 	GetTransform().SetPosition(pos);
 	GetTransform().SetRotation(rot);
 	this->direction = rot;

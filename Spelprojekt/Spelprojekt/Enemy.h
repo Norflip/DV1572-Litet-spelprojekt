@@ -35,8 +35,8 @@ public:
 	int GetPointValue() const { return POINT_VALUE; }
 
 	void UpdateAttackPlayer();
-	void SetActiveWeapon(Weapon* enemyweapon) { this->activeweapon = enemyweapon; }
-	Weapon* GetActiveWeapon() const { return this->activeweapon; };
+	//void SetActiveWeapon(Weapon* enemyweapon) { this->activeweapon = enemyweapon; }
+	//Weapon* GetActiveWeapon() const { return this->activeweapon; };
 
 	void DeactivateWeapon();
 
@@ -74,7 +74,6 @@ private:
 
 	// ENEMYHP
 	float health;
-	Weapon* activeweapon;
 
 	// FILIPS VARIATION
 	Icecream* weapon;

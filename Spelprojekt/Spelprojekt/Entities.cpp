@@ -18,16 +18,37 @@ void Entities::SetBounds(AABB worldBounds)
 
 void Entities::InsertObject(Object* object)
 {
-
 	ObjectLayer layer = object->GetLayer();
-
 	auto findLayerVector = objectsInLayerMap.find(layer);
 
 	if (findLayerVector == objectsInLayerMap.end())
+	{
 		objectsInLayerMap.insert({ layer, std::vector<Object*>() });
+		objectsInLayerMap[layer].push_back(object);
+	}
+	else
+	{
+		auto find0 = std::find(objectsInLayerMap[layer].begin(), objectsInLayerMap[layer].end(), object);
+		if (find0 != objectsInLayerMap[layer].end())
+		{
+			Logger::Write("DUUUUUUUUUUPLICATE");
+		}
+		else
+		{
+			objectsInLayerMap[layer].push_back(object);
+		}
+	}
 
-	objectsInLayerMap[layer].push_back(object);
-	allEntities.push_back(object);
+	auto find1 = std::find(allEntities.begin(), allEntities.end(), object);
+	if (find1 == allEntities.end())
+	{
+		allEntities.push_back(object);
+	}
+	else
+	{
+
+		Logger::Write("DUUUUUUUUUUPLICATE     22222");
+	}
 }
 
 void Entities::RemoveObject(Object* object)
@@ -49,7 +70,7 @@ void Entities::RemoveObject(Object* object)
 	auto g = std::find(allEntities.begin(), allEntities.end(), object);
 	if (g != allEntities.end())
 		allEntities.erase(g);
-	
+
 	//allEntities.erase(std::remove(allEntities.begin(), allEntities.end(), object), allEntities.end());
 }
 

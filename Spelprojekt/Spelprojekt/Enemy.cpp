@@ -24,6 +24,7 @@ Enemy::Enemy(Mesh* mesh, Material* material, WorldContext* context) : Object(Obj
 	weapon->SetReferenceToPlayer(context->player);
 	weapon->SetOwner(this);
 	weapon->SetEnabled(false);
+	context->entities->InsertObject(weapon);
 }
 
 Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext* context) : Enemy(modelData.mesh, modelData.material, context) {}
@@ -31,8 +32,8 @@ Enemy::Enemy(const Enemy& other) : Enemy(other.GetMesh(), other.GetMaterial(), o
 
 Enemy::~Enemy()
 {
-	context->entities->RemoveObject(weapon);
-	delete weapon;
+	//context->entities->RemoveObject(weapon);
+	//delete weapon;
 }
 
 void Enemy::Update(const float& deltaTime)
@@ -229,8 +230,9 @@ void Enemy::UpdateAttackPlayer()
 			weapon->PlaySoundEffect();
 			weapon->SetEnabled(true);
 			weapon->SetType(WeaponType::Icecream);
+			weapon->SetEnabled(true);
 
-			context->entities->InsertObject(weapon);
+			//context->entities->InsertObject(weapon);
 
 			hasShot = true;
 			flyTime = 5.0f;
@@ -241,7 +243,7 @@ void Enemy::UpdateAttackPlayer()
 
 void Enemy::DeactivateWeapon()
 {
-	context->entities->RemoveObject(weapon);
+	//context->entities->RemoveObject(weapon);
 	weapon->SetEnabled(false);
 	flyTime = 0.0f;
 }

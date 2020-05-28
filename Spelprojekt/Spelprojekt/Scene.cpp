@@ -14,7 +14,7 @@ Scene::Scene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& wi
 Scene::~Scene()
 {
 	// loop everything and delete
-	delete camera;
+	delete camera; 
 }
 
 void Scene::Unload()
