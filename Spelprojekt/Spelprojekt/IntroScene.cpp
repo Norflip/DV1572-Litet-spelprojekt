@@ -5,7 +5,8 @@
 IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::vector<Scene*>& scenes, bool& exitGame,  Gamemanager* gamemanager) : Scene("IntroScene", renderer, dx11, window), scenes(scenes), exitGame(exitGame)
 {
 	this->camera = new Camera(90.0f, window.GetWidth(), window.GetHeight());
-	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::Follow);
+	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::None);
+	
 	window.GetInput()->LockCursor(false);
 	this->nextScene = nullptr;
 	Lights& lights = renderer->GetLights();	
@@ -14,7 +15,7 @@ IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, st
 	lights.SetSunIntensity(0.9f);
 		
 	// Gamemanager
-	this->gamemanager = gamemanager;	
+	this->gamemanager = gamemanager;
 	gamemanager->GetSoundeffectHandler()->SetGlobalVolume(gamemanager->GetCurrentSoundVolume());
 	gamemanager->GetMusicHandler()->LoadSound("Monster", "SoundEffects/MonstersInc.wav");
 	gamemanager->GetMusicHandler()->SetGlobalVolume(gamemanager->GetCurrentMusicVolume());	
@@ -45,23 +46,23 @@ void IntroScene::Load()
 	renderer->SetGUI(gui);
 		
 	Object* glasse = new Object(ObjectLayer::Enviroment, resources.GetModel("playerModel"));
-	glasse->GetTransform().Translate(0.0f, 0.65f+9.0f, -3.0f);
+	glasse->GetTransform().Translate(0.0f, 7.5f, -3.0f);
 	glasse->GetTransform().Rotate(0.0f, -0.6f, 0.0f);
 	entities->InsertObject(glasse);	
 
 	Object* wagon = new Object(ObjectLayer::Enviroment, resources.GetModel("wagonModel"));
-	wagon->GetTransform().Translate(7.0f, -1.75f+10.0f, 1.0f);
-	wagon->GetTransform().Rotate(0.0f, 0.1f, 0.0f);
-	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
+	wagon->GetTransform().Translate(7.0f, 7.43f, 1.0f);
+	wagon->GetTransform().Rotate(0.0f, 0.3f, 0.0f);
+	wagon->GetTransform().Scale(0.4f, 0.4f, 0.4f);
 	entities->InsertObject(wagon);
-	controller->SetFollow(&glasse->GetTransform(), { 0.0f, 1.0f, 0.0f });	
+	//controller->SetFollow(&glasse->GetTransform(), { 0.0f, 1.0f, -1.0f });	
 
 	//// ------- BACKGROUND
 
 	Object* background = new Object(ObjectLayer::Enviroment, resources.GetModel("backgroundPlane"));
-	background->GetTransform().Translate(5.0f, 19.0f, 15.0f);
+	background->GetTransform().Translate(5.0f, 22.0f, 15.0f);
 	background->GetTransform().Rotate(-1.5f, 0.0f, 0.0f);
-	background->GetTransform().Scale(100.0f, 1.0f, 24.0f);
+	background->GetTransform().Scale(100.0f, 2.0f, 35.0f);
 	//backGround->GetMaterial()->GetTexture(0)->SetSampler(dx11.GetDevice());
 	entities->InsertObject(background);
 
@@ -71,6 +72,12 @@ void IntroScene::Load()
 	Object* terrainObject = new Object(ObjectLayer::None, ground.GetMesh(), resources.GetResource<Material>("terrainMaterial"));
 	terrainObject->GetTransform().SetPosition({ -100.0f, -2.0f+8.5f, -10.0f });
 	entities->InsertObject(terrainObject);
+
+	//Camera
+	this->camera->GetTransform().SetPosition({0.0f, 7.44f, -4.5f});
+	this->camera->GetTransform().SetRotation({-0.1f, 0.1f, 0.0f});
+	this->camera->UpdateView();
+	
 }
 
 void IntroScene::Unload()
@@ -133,7 +140,7 @@ void IntroScene::LoadResources()
 	resources.AddModel("playerModel", AssimpHandler::loadFbxObject("Models/Glasse_intro_Pose.fbx", dx11, toonShader));
 	resources.AddModel("wagonModel", AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, toonShader));
 	resources.AddModel("backgroundPlane", AssimpHandler::loadFbxObject("Models/Background_Plane.fbx", dx11, toonShader));
-
+	//resources.AddModel("cameraAnchor", AssimpHandler::loadFbxObject("Models/Icecream.fbx", dx11, toonShader));
 
 	/*
 		GUI
@@ -144,10 +151,7 @@ void IntroScene::LoadResources()
 
 void IntroScene::Update(const float& deltaTime)
 {
-	this->cameraFocusPosition = { 0.0f,0.0f,5.0f };
-
 	Scene::Update(deltaTime);
-	controller->Update(deltaTime);
 	introGUI->Update();
 }
 

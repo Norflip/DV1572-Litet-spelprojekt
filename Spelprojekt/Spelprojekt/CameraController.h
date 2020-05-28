@@ -29,7 +29,6 @@ public:
 private:
 	void UpdateFree(const float& deltaTime);
 	void UpdateFollow(const float& deltaTime);
-
 private:
 	Camera* camera;
 	Input* input;

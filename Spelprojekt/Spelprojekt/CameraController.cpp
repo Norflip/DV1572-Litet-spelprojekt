@@ -23,7 +23,6 @@ void CameraController::Update(const float& deltaTime)
 		SetState(following ? CameraController::State::Free : CameraController::State::Follow);
 	}
 
-
 	switch (currentState)
 	{
 	case CameraController::State::Follow:

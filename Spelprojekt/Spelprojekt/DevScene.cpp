@@ -252,7 +252,9 @@ void DevScene::LoadResources()
 	resources.AddModel("bushModel", AssimpHandler::loadFbxObject("Models/Bush.fbx", dx11, toonShader));
 	resources.AddModel("bungalowModel", AssimpHandler::loadFbxObject("Models/Beachbungalow.fbx", dx11, toonShader));
 	resources.AddModel("gateModel", AssimpHandler::loadFbxObject("Models/Gate.fbx", dx11, toonShader));
-	resources.AddModel("restplaceModel", AssimpHandler::loadFbxObject("Models/Restplace.fbx", dx11, toonShader));
+	resources.AddModel("restplaceBase", AssimpHandler::loadFbxObject("Models/Grill_Base.fbx", dx11, toonShader));
+	resources.AddModel("restplaceRoof", AssimpHandler::loadFbxObject("Models/Grill_Roof.fbx", dx11, toonShader));
+	resources.AddModel("restplaceStairs", AssimpHandler::loadFbxObject("Models/Grill_Stairs.fbx", dx11, toonShader));
 	resources.AddModel("benchModel", AssimpHandler::loadFbxObject("Models/Bench.fbx", dx11, toonShader));
 	resources.AddModel("palmModel", AssimpHandler::loadFbxObject("Models/Palm.fbx", dx11, toonShader));
 
@@ -673,11 +675,25 @@ void DevScene::CreateSceneObjects()
 		gate->GetTransform().Translate(60.0f, 6.2f, 198.0f);
 		gate->GetTransform().SetRotation({ 0.0f, -2.2f, -0.1f });
 		entities->InsertObject(gate);
+		physics.CreateCollisionBodyBox(gate);
 
-		Object* restplace = new Object(ObjectLayer::Enviroment, resources.GetModel("restplaceModel"));
-		restplace->GetTransform().Translate(107.0f, 7.5f, 140.0f);
-		restplace->GetTransform().SetRotation({ 0.0f, -1.5f, 0.0f });
-		entities->InsertObject(restplace);
+		Object* restplaceBase = new Object(ObjectLayer::Enviroment, resources.GetModel("restplaceBase"));
+		restplaceBase->GetTransform().Translate(107.0f, 7.5f, 140.0f);
+		restplaceBase->GetTransform().SetRotation({ 0.0f, -1.5f, 0.0f });
+		entities->InsertObject(restplaceBase);
+		physics.CreateCollisionBodyBox(restplaceBase);
+
+		Object* restplaceRoof = new Object(ObjectLayer::Enviroment, resources.GetModel("restplaceRoof"));
+		restplaceRoof->GetTransform().Translate(107.0f, 7.5f, 140.0f);
+		restplaceRoof->GetTransform().SetRotation({ 0.0f, -1.5f, 0.0f });
+		entities->InsertObject(restplaceRoof);
+		
+
+		Object* restplaceStair = new Object(ObjectLayer::Enviroment, resources.GetModel("restplaceStairs"));
+		restplaceStair->GetTransform().Translate(107.0f, 7.5f, 140.0f);
+		restplaceStair->GetTransform().SetRotation({ 0.0f, -1.5f, 0.0f });
+		entities->InsertObject(restplaceStair);
+		physics.CreateCollisionBodyBox(restplaceStair);
 
 
 		// Benches left beachside
@@ -688,10 +704,10 @@ void DevScene::CreateSceneObjects()
 			entities->InsertObject(benches[i]);
 		}
 
-		benches[0]->GetTransform().Translate(170.0f, 7.0f, 118.0f);
+		benches[0]->GetTransform().Translate(170.0f, 5.5f, 118.0f);
 		benches[0]->GetTransform().SetRotation({ 0.0f, 0.4f, 0.0f });
 
-		benches[1]->GetTransform().Translate(157.0f, 7.0f, 122.0f);
+		benches[1]->GetTransform().Translate(157.0f, 5.3f, 122.0f);
 		benches[1]->GetTransform().SetRotation({ 0.0f, 0.3f, 0.0f });
 
 		benches[2]->GetTransform().Translate(140.0f, 7.0f, 195.0f);
@@ -700,10 +716,11 @@ void DevScene::CreateSceneObjects()
 		benches[3]->GetTransform().Translate(170.0f, 7.0f, 190.0f);
 		benches[3]->GetTransform().SetRotation({ 0.0f, 2.5f, 0.0f });
 
+		for (int i = 0; i < 4; i++){
+			physics.CreateCollisionBodyBox(benches[i]);
+		}
+		
 		////////////////////////// PALMS /////////////////////////////
-
-
-
 
 		// Palms left beach side 
 		Object* palms[22];
@@ -714,9 +731,9 @@ void DevScene::CreateSceneObjects()
 
 		// Bottom beach //
 		palms[0]->GetTransform().Translate(200.0f, 7.8f, 60.0f);
-		palms[1]->GetTransform().Translate(180.0f, 7.8f, 75.0f);
+		palms[1]->GetTransform().Translate(180.0f, 6.6f, 75.0f);
 		palms[2]->GetTransform().Translate(160.0f, 7.8f, 60.0f);
-		palms[3]->GetTransform().Translate(145.0f, 7.8f, 73.0f);
+		palms[3]->GetTransform().Translate(145.0f, 6.8f, 73.0f);
 		palms[4]->GetTransform().Translate(125.0f, 7.8f, 60.0f);
 		palms[5]->GetTransform().Translate(105.0f, 7.8f, 75.0f);
 		/////
