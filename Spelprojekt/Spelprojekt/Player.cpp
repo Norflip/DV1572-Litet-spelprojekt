@@ -344,9 +344,6 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			weapon->Use();
 			//activeWeapon = nullptr;
 
-
-
-
 			const float attackRange = 4.0f;
 			auto enemies = context->entities->GetObjectsInLayer(ObjectLayer::Enemy);
 			int counter = 0;
@@ -373,7 +370,6 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			weapon->PlayBreaksound();
 
 			context->entities->RemoveObject(weapon);
-
 
 			weapon->SetEnabled(false);
 			weapon = nullptr;
@@ -402,9 +398,7 @@ Weapon* Player::CopyWeapon(Weapon* weapon)
 		Spoon* spoonweap = static_cast<Spoon*>(weapon);
 		curr = new Spoon(*spoonweap);
 		curr->SetType(weapon->GetType());
-
 		curr->context = context;
-		//scene->GetEntities()->RemoveObject(curr);
 	}
 
 	return curr;

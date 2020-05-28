@@ -6,9 +6,7 @@ Enemy::Enemy(Mesh* mesh, Material* material, WorldContext* context) : Object(Obj
 	this->velocity = { 2,0,2 };
 	this->tVelocity = { 0,0,0 };
 
-	this->hasShot = false;
 	this->cooldownTimer = 0.0f;
-	this->flyTime = 0.0f;
 
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
@@ -21,8 +19,6 @@ Enemy::Enemy(Mesh* mesh, Material* material, WorldContext* context) : Object(Obj
 
 	// PLEASE KILL 
 	weapon = new Icecream(*prefab);
-	weapon->SetReferenceToPlayer(context->player);
-	weapon->SetOwner(this);
 	weapon->SetEnabled(false);
 	context->entities->InsertObject(weapon);
 }
@@ -234,8 +230,6 @@ void Enemy::UpdateAttackPlayer()
 
 			//context->entities->InsertObject(weapon);
 
-			hasShot = true;
-			flyTime = 5.0f;
 			cooldownTimer = 5.0f;
 		}
 	}
@@ -245,7 +239,6 @@ void Enemy::DeactivateWeapon()
 {
 	//context->entities->RemoveObject(weapon);
 	weapon->SetEnabled(false);
-	flyTime = 0.0f;
 }
 
 void Enemy::TakeDamage(float damage)

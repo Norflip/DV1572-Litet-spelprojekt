@@ -20,15 +20,8 @@ public:
 	void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;
 	void RotateProjectile(float deltaTime);
 	void PlaySoundEffect() override;
-	void SetReferenceToPlayer(Player* player) override { this->player = player; }
 	void SetWeaponSpeed(int value) override { this->movementspeed = value; };
 	float AttackDamage() override { return this->damage; }
-
-	void SetOwner(Enemy*);
-
 	void UpdateHitPlayer();
 
-private:
-	Player* player;
-	Enemy* owner;
 };

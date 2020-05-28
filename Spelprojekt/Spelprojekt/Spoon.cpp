@@ -2,17 +2,14 @@
 
 Spoon::Spoon(AssimpHandler::AssimpData model, WorldContext* context) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup, model, context)
 {
-	//this->movementspeeds = 3;
 	this->direction = { 0,0,0 }; // makes us shoot in the direction of the object initial rotation
 
 	this->weaponSprite = new GUIActionbar(*context->dx11, "Sprites/Slev.png", 0.0f, 0.0f);
 	this->attack = false;
 	this->weaponDamage = 5.0f;
-
-//	this->gamemanager->GetSoundeffectHandler()->LoadSound("Break", "SoundEffects/spoonbreak.wav");
 	this->used = 0;
-	this->player = nullptr;
 	this->damage = 15.0f;
+	this->movementspeed = 15.0f;
 }
 
 Spoon::Spoon(const Spoon& other) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup, other.GetMesh(), other.GetMaterial(), other.context)
@@ -22,17 +19,15 @@ Spoon::Spoon(const Spoon& other) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup
 	this->direction = other.direction;
 
 	this->weaponSprite = other.weaponSprite;
-	this->weaponDamage = other.weaponDamage;
 	this->attack = false;
+	this->weaponDamage = other.weaponDamage;
 	this->used = 0;
-	this->player = nullptr;
-	this->movementspeed = 0;
+	this->movementspeed = other.movementspeed;
 	this->damage = other.damage;
 }
 
 Spoon::~Spoon()
-{
-	
+{	
 }
 
 void Spoon::TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)

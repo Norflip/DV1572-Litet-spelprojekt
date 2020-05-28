@@ -834,7 +834,7 @@ void DevScene::UpdateGUI(const float& deltaTime)
 	totalScore->SetString(std::to_string(player->GetPoints()));
 
 	//gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
-	controller->Update(deltaTime);
+	
 
 	fpsTimer.Stop();
 	fpsText->SetString("FPS: " + std::to_string((int)(1 / ((fpsTimer.GetMicrosecondsElapsed() / 1000000)))));

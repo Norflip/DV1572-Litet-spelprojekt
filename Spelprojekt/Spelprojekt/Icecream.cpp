@@ -8,7 +8,6 @@ Icecream::Icecream(AssimpHandler::AssimpData modelData, WorldContext* context) :
 
 	this->attack = false;
 	this->weaponDamage = 10.0f;
-	this->player = nullptr;
 	this->movementspeed = 10;
 
 	// attackdamage
@@ -25,7 +24,6 @@ Icecream::Icecream(const Icecream& other) : Weapon(WeaponType::Icecream, ObjectL
 	this->attack = false;
 	this->weaponDamage = other.weaponDamage;
 
-	this->player = nullptr;
 	this->movementspeed = other.movementspeed;
 	this->damage = other.context->gamemanager->GetEnemyDamage();
 }
@@ -44,11 +42,9 @@ void Icecream::Update(const float& deltaTime)
 
 void Icecream::TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 {
-	//Logger::Write("ASDKOAWKODAKOWDKOAWDKOAWDJIOAWFIHJNOPAWFAWFJIOAWFAWFJIOPAWF");
 	GetTransform().SetPosition(pos);
 	GetTransform().SetRotation(rot);
 	this->direction = rot;
-
 	this->attack = true;
 }
 
@@ -64,21 +60,15 @@ void Icecream::PlaySoundEffect()
 	context->gamemanager->GetSoundeffectHandler()->PlaySound("Swoosh", context->gamemanager->GetCurrentSoundVolume());
 }
 
-void Icecream::SetOwner(Enemy* owner)
-{
-	this->owner = owner;
-}
-
 void Icecream::UpdateHitPlayer()
 {
-	if (IsEnabled() && this->player != nullptr && this != nullptr)
+	if (IsEnabled() && context->player != nullptr && this != nullptr)
 	{
-		if (this->GetWorldBounds().Overlaps(this->player->GetWorldBounds())) {
+		if (this->GetWorldBounds().Overlaps(context->player->GetWorldBounds())) {
 
 			std::cout << "HIT PLAYER" << std::endl;
-			this->player->TakeDamage(AttackDamage());
+			context->player->TakeDamage(AttackDamage());
 			this->SetEnabled(false);
-			owner->DeactivateWeapon();
 		}
 	}
 }

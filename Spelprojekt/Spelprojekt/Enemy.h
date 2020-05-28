@@ -13,11 +13,7 @@ class Enemy : public Object
 	const float ATTACK_RANGE = 13.0f;
 	const float MOVEMENT_SPEED = 2.0f;
 	const int POINT_VALUE = 5;
-
-	const float startCD = 2.0f;
-	const float minCD = 4.0f;
-	const float maxCD = 6.0f;
-
+	
 public:
 	Enemy(Mesh* mesh, Material* material, WorldContext* context);
 	Enemy(AssimpHandler::AssimpData modelData, WorldContext* context);
@@ -31,13 +27,8 @@ public:
 	DirectX::XMVECTOR GetVelocity();
 
 	void HitSound();
-
 	int GetPointValue() const { return POINT_VALUE; }
-
 	void UpdateAttackPlayer();
-	//void SetActiveWeapon(Weapon* enemyweapon) { this->activeweapon = enemyweapon; }
-	//Weapon* GetActiveWeapon() const { return this->activeweapon; };
-
 	void DeactivateWeapon();
 
 	// health enemy
@@ -55,8 +46,6 @@ private:
 	DirectX::XMVECTOR BoidsAlgorithm(ObjectLayer object);
 	DirectX::XMVECTOR Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR distance, float distF);
 
-
-
 private:
 	WorldContext* context;
 	DirectX::XMVECTOR velocity;
@@ -69,14 +58,10 @@ private:
 	// ENEMY SHOT
 	float cooldownTimer;
 
-	bool hasShot;
-	float flyTime;
-
 	// ENEMYHP
 	float health;
 
 	// FILIPS VARIATION
 	Icecream* weapon;
-	float CD;
 
 };

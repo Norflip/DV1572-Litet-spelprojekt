@@ -41,7 +41,6 @@ public:
 	virtual void PlayBreaksound()  {}
 	virtual int CheckUsage() { return this->used; }
 	virtual void Use() {}; 
-	virtual void SetReferenceToPlayer(Player* player) {};
 	virtual void SetWeaponSpeed(int value) {};
 	virtual float AttackDamage() { return this->damage; }
 
@@ -53,7 +52,6 @@ public:
 protected:	
 	int movementspeed;	
 	float damage;
-	//Player* player;
 	WeaponType type;
 	GUIActionbar* weaponSprite;	
 	bool attack;
