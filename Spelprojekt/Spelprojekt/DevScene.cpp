@@ -14,32 +14,41 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 
 	this->context = new WorldContext();
 	this->spawner = new SpawnObjects(context);
-
-	gametimerText = new GUIText(dx11, "Time until extraction", window.GetWidth() / 2.0f - 150.0f, 0);
-	fpsText = new GUIText(dx11, "Fps", window.GetWidth() / 2.0f - 100.0f, 30);
-	totalScore = new GUIText(dx11, "Score", 210.0f, 5.0f);
-	totalScore->SetFontSize({ 3.0f, 3.0f });
+		
+	// Fps
+	fpsText = new GUIText(dx11, "Fps", window.GetWidth() -100.0f, 10);
+	
+	// Score text
+	totalScore = new GUIText(dx11, "Score", 150.0f, 0.0f);
+	totalScore->SetFontSize({ 2.0f, 2.0f });
 	totalScore->SetFontColor({ 1,0,0,1 });
 
-	totalEnemies = new GUIText(dx11, "Enemiesleft", 250, 70);
+	// Total enemies
+	totalEnemies = new GUIText(dx11, "Enemiesleft", 280, 45);
 	totalEnemies->SetFontSize({ 2.0f, 2.0f });
-	totalEnemies->SetFontColor({ 0.5,1,0,1 });
+	totalEnemies->SetFontColor({ 1,0,0,1 });
 
+	// Time left
+	gametimerText = new GUIText(dx11, "Time until extraction", 70.0f, 97.5f);
+	gametimerText->SetFontSize({ 2.0f, 2.0f });
+	gametimerText->SetFontColor({ 1,0,0,1 });
+
+	// Controller
 	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
 	window.GetInput()->LockCursor(false);
 
-	// HEALTH
+	// Health
+	gamehub = new GUISprite(dx11, "Sprites/gamehub.png", 10.0f, 10.0f);
 	healthFrame = new GUISprite(dx11, "Sprites/Frame.png", 10.0f, 650.0f);
 	actionbarLeft = new GUIActionbar(dx11, "Sprites/Actionbar.png", 325.0f, 650.0f);
 	actionbarRight = new GUIActionbar(dx11, "Sprites/Actionbar.png", 400.0f, 650.0f);
-	score = new GUISprite(dx11, "Sprites/score.png", 10.0f, 19.0f);
-	enemies = new GUISprite(dx11, "Sprites/enemiesleft.png", 10, 80);
 	healthbar = new GUISprite(dx11, "Sprites/Healthbar.png", 10.0f, 650.0f);
 	healthbar->HealthBar(100.0f, 100.0f);
 	//--------------------------------
-	gui = new GUI(dx11);
 
-	
+	// New gui
+	gui = new GUI(dx11);
+		
 	this->arrow = nullptr;
 	this->assimpScene = nullptr;
 	this->billBoard = nullptr;
@@ -66,9 +75,8 @@ DevScene::~DevScene()
 
 void DevScene::Load()
 {
-
 	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
-	this->timeUntilEnd = 10.0f; // gamemanager->GetTimer();		// get time from gamemanager
+	this->timeUntilEnd = 3.0f; // gamemanager->GetTimer();		// get time from gamemanager
 	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
 
 	Timer testSpeed;
@@ -125,13 +133,14 @@ void DevScene::Load()
 
 	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
 	// Add objects
+	gui->AddGUIObject(gamehub, "clockicon");
 	gui->AddGUIObject(gametimerText, "gametimerText");
 	gui->AddGUIObject(fpsText, "fpsText");
 	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
 	gui->AddGUIObject(actionbarRight, "actionbarRight");
-	gui->AddGUIObject(score, "score");
+	//gui->AddGUIObject(score, "score");
 	gui->AddGUIObject(totalScore, "totalscore");
-	gui->AddGUIObject(enemies, "enemiesleft");
+	//gui->AddGUIObject(enemies, "enemiesleft");
 	gui->AddGUIObject(totalEnemies, "totalenemiesleft");
 	gui->AddGUIObject(healthbar, "healthbar");
 	gui->AddGUIObject(healthFrame, "healthFrame");
@@ -805,21 +814,22 @@ void DevScene::UpdateGUI(const float& deltaTime)
 	totalEnemies->SetString(std::to_string(this->spawner->CountEnemiesRemaining()));
 	totalScore->SetString(std::to_string(player->GetPoints()));
 
-	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
+	//gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
 	controller->Update(deltaTime);
 
 	fpsTimer.Stop();
 	fpsText->SetString("FPS: " + std::to_string((int)(1 / ((fpsTimer.GetMicrosecondsElapsed() / 1000000)))));
 	fpsTimer.Restart();
-	checkForNextScene();
 
-	gametimerText->SetString("Time until extraction: " + std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd))));
+	//checkForNextScene();
+
+	gametimerText->SetString(std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd))));
 
 	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f || this->spawner->CountEnemiesRemaining() == 0)
 	{
 		arrow->SetVisible(true);
 		gametimerText->SetString("Move to exit");
-		gametimerText->SetPosition(window.GetWidth() / 2.0f - 80.0f, 0.0f);
+		//gametimerText->SetPosition(window.GetWidth() / 2.0f - 80.0f, 0.0f);
 		canWin = true;
 	}
 
@@ -828,8 +838,8 @@ void DevScene::UpdateGUI(const float& deltaTime)
 		// SET CURRENTSCORE TO GAMEMANAGER
 		gamemanager->SetCurrentScore(player->GetPoints() - 50);
 
-		gametimerText->SetString("You lost");
-		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
+		//gametimerText->SetString("You lost");
+		//gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(false);
 	}
 
@@ -838,8 +848,8 @@ void DevScene::UpdateGUI(const float& deltaTime)
 		// SET CURRENTSCORE TO GAMEMANAGER
 		gamemanager->SetCurrentScore(player->GetPoints() + 20);	// Different extra points for different difficulties maybe
 
-		gametimerText->SetString("You won");
-		gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
+		//gametimerText->SetString("You won");
+		//gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
 		SetNextScene(true);
 	}
 }

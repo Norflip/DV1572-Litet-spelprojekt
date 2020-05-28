@@ -332,7 +332,7 @@ void IntroGUI::Credits()
 void IntroGUI::LoadsCredits()
 {
     ClearGUI();
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/credits.png", 350.0f, 20.0f), "credits");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/credits.png", 350.0f, 5.0f), "credits");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
 
     first = false;
@@ -624,23 +624,25 @@ void IntroGUI::LoadOptions()
 
     // VSYNC ON/OFF   
     GUISprite* vsyncONOFF_on = new GUISprite(dx11, this->lastOn, 500.0f, 312.0f);
-    GUISprite* vsyncONOFF_off = new GUISprite(dx11, this->lastOff, 700.0, 312.0f);
+    GUISprite* vsyncONOFF_off = new GUISprite(dx11, this->lastOff, 700.0f, 312.0f);
     gui->AddGUIObject(vsyncONOFF_on, "vsyncON");
     gui->AddGUIObject(vsyncONOFF_off, "vsyncOFF");
     
     ///////////////////////////////
     
-    // frame and bar music    
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower.png", 480.0f, 107.0f), "leftmusicvolume");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher.png", 845.0f, 107.0f), "rightmusicvolume");
+    // frame and bar music     
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 550.0f, 107.0f), "MusicBar");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 550.0f, 107.0f), "MusicFrame");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower.png", 480.0f, 107.0f), "leftmusicvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher.png", 845.0f, 107.0f), "rightmusicvolume");
+   
 
     // frame and bar sounds    
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower.png", 480.0f, 210.0f), "leftsoundvolume");
-    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher.png", 845.0f, 210.0f), "rightsoundvolume");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolBar.png", 550.0f, 210.0f), "SoundsBar");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolFrame.png", 550.0f, 210.0f), "SoundFrame");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolLower.png", 480.0f, 210.0f), "leftsoundvolume");
+    gui->AddGUIObject(new GUISprite(dx11, "Sprites/VolHigher.png", 845.0f, 210.0f), "rightsoundvolume");
+    
 
     ///////////////////////////////
 
