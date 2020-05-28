@@ -40,8 +40,9 @@ public:
 	void RandomizeYRotation();
 
 	// new
-	void Scale(float x, float y, float z);
-	void Scale(DirectX::XMVECTOR scale);
+	void SetScale(float x, float y, float z);
+	void SetScale(DirectX::XMVECTOR scale);
+	DirectX::XMVECTOR GetScale() const { return this->scale; }
 
 	Transform Clone();
 	void ApplyToTransform(Transform& transform);

@@ -109,15 +109,16 @@ void Transform::RandomizeYRotation()
 
 
 //New
-void Transform::Scale(float x, float y, float z)
+void Transform::SetScale(float x, float y, float z)
 {
-	Scale({ x,y,z });
+	SetScale({ x,y,z });
 }
 
-void Transform::Scale(DirectX::XMVECTOR scale)
+void Transform::SetScale(DirectX::XMVECTOR scale)
 {
-	this->scale = DirectX::XMVectorMultiply(this->scale, scale);
+	this->scale = scale;
 }
+
 Transform Transform::Clone()
 {
 	return Transform(position, rotation, scale);

@@ -3,6 +3,7 @@
 #include "Gamemanager.h"
 #include "Player.h"
 
+class Enemy;
 class Player;
 
 class Icecream 
@@ -17,14 +18,17 @@ public:
 
 	GUIActionbar* GetWeaponSprite() override { return this->weaponSprite; }
 	void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;
-	void rangedAttack(float deltaTime);
+	void RotateProjectile(float deltaTime);
 	void PlaySoundEffect() override;
 	void SetReferenceToPlayer(Player* player) override { this->player = player; }
 	void SetWeaponSpeed(int value) override { this->movementspeed = value; };
 	float AttackDamage() override { return this->damage; }
 
+	void SetOwner(Enemy*);
+
 	void UpdateHitPlayer();
 
 private:
 	Player* player;
+	Enemy* owner;
 };

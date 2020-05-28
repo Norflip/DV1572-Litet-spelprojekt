@@ -24,6 +24,16 @@ SpawnObjects::SpawnObjects(WorldContext* context) : context(context), enemyPrefa
 	this->wagon = nullptr;
 }
 
+SpawnObjects::~SpawnObjects()
+{
+	while (!enemyPool.empty())
+	{
+		Enemy* e = enemyPool.front();
+		enemyPool.pop();
+		delete e;
+	}
+}
+
 void SpawnObjects::SpawnInitial()
 {
 	// find trees and place N around
@@ -54,7 +64,7 @@ void SpawnObjects::SpawnInitial()
 	}
 
 	// SPOOOOOONS
-	std::vector<DirectX::XMVECTOR> spoonPositions = { 
+	std::vector<DirectX::XMVECTOR> spoonPositions = {
 		{130, 8, 40},
 		{28, 7, 47},
 		{145.0f, 8.5f, 193.0f},
@@ -72,7 +82,7 @@ void SpawnObjects::SpawnInitial()
 		context->entities->InsertObject(clone);
 	}
 
-	wagon->GetTransform().Scale(0.5f, 0.5f, 0.5f);
+	wagon->GetTransform().SetScale(0.5f, 0.5f, 0.5f);
 	wagon->GetTransform().Translate(GetRandomSpawnPosition(1.0f));
 	wagon->GetTransform().Rotate(0.05f, -5, 0);
 }
@@ -141,10 +151,6 @@ void SpawnObjects::RemovePickup(Object* object)
 	respawnTimers.push_back(respawn);
 }
 
-void SpawnObjects::RemoveEnemy(Enemy* enemy)
-{
-	context->entities->RemoveObject(enemy);
-}
 
 bool SpawnObjects::PointIsWalkable(float x, float z)
 {
@@ -164,7 +170,7 @@ DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition(float heightOffset)
 	{
 		float x = static_cast<float>(rand() % context->terrain->GetMapWidth());
 		float z = static_cast<float>(rand() % context->terrain->GetMapHeight());
-		float y = context->terrain->SampleHeight(x,z);
+		float y = context->terrain->SampleHeight(x, z);
 
 		if (y >= MinimumSpawnHeight)
 		{
@@ -178,6 +184,49 @@ DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition(float heightOffset)
 	return position;
 }
 
+void SpawnObjects::AddEnemyToPool()
+{
+	Player* player = static_cast<Player*>(context->entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
+	Enemy* enemy = new Enemy(*enemyPrefab);
+	//enemy->SetLayer(ObjectLayer::Enemy);
+
+	enemyPool.push(enemy);
+}
+
+
+void SpawnObjects::RemoveEnemy(Enemy* enemy)
+{
+	enemy->SetEnabled(false);
+	context->entities->RemoveObject(enemy);
+	enemyPool.push(enemy);
+}
+
+Enemy* SpawnObjects::SpawnEnemy()
+{
+	if (enemyPool.empty())
+		AddEnemyToPool();
+
+	Enemy* e = enemyPool.front();
+	enemyPool.pop();
+	e->ResetHealth();
+	context->entities->InsertObject(e);
+	e->SetEnabled(true);
+
+
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, context->player->GetTransform().GetPosition());
+
+	float angle = (float)(rand() % 16) * (360.0f / CoconutsPerTree);
+	float x = pos.x + cosf(angle * MathHelper::ToRadians) * 20.0f;
+	float z = pos.z + sinf(angle * MathHelper::ToRadians) * 20.0f;
+	float y = context->terrain->SampleHeight(x, z) + 0.4f;
+
+	e->GetTransform().SetPosition({ x,y,z });
+	e->GetTransform().SetScale(0.275f, 0.275f, 0.275f);
+
+	return e;
+}
+
 void SpawnObjects::UpdateSpawnEnemy()
 {
 	// skapar fler fiender om vi saknar
@@ -185,24 +234,8 @@ void SpawnObjects::UpdateSpawnEnemy()
 
 	if (enemyCount < context->gamemanager->GetActiveEnemies() && maxEnemies != 0)
 	{
-		Player* player = static_cast<Player*>(context->entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
-		Enemy* enemy = new Enemy(*enemyPrefab);
-		//enemy->SetLayer(ObjectLayer::Enemy);
-
-		DirectX::XMFLOAT3 pos;
-		DirectX::XMStoreFloat3(&pos, player->GetTransform().GetPosition());
-
-		float angle = (float)(rand() % 16) * (360.0f / CoconutsPerTree);
-		float x = pos.x + cosf(angle * MathHelper::ToRadians) * 20.0f;
-		float z = pos.z + sinf(angle * MathHelper::ToRadians) * 20.0f;
-		float y = context->terrain->SampleHeight(x, z) + 0.4f;
-
-		enemy->GetTransform().SetPosition({ x,y,z });
-		enemy->GetTransform().Scale(0.275f, 0.275f, 0.275f);
-		enemy->SetTarget(player);
-
-		context->entities->InsertObject(enemy); // ->AddObject(enemy);
-		enemyCount++;		
+		SpawnEnemy();
+		enemyCount++;
 	}
 }
 
@@ -211,36 +244,25 @@ void SpawnObjects::UpdateRemoveEnemy()
 	auto enemies = context->entities->GetObjectsInLayer(ObjectLayer::Enemy);
 
 	Enemy* e = nullptr;
-	Player* player = static_cast<Player*>(context->entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
+	Player* player = context->player;
 
 	for (auto i : enemies)
 	{
 		e = static_cast<Enemy*>(i);
 
-		if (e != nullptr && player->GetActiveWeapon() != nullptr)
+		if (e != nullptr && player->GetActiveWeapon() != nullptr && player->GetActiveWeapon()->GetWorldBounds().Overlaps(e->GetWorldBounds()))
 		{
-			if (player->GetActiveWeapon()->GetWorldBounds().Overlaps(e->GetWorldBounds()))	// e ist f�r i?
+			e->HitSound();
+			e->TakeDamage(player->GetActiveWeapon()->AttackDamage());
+			player->RemoveActiveWeapon();
+
+			if (e->GetHealthLeft() <= 0.0f)
 			{
-				e->HitSound();
-				e->TakeDamage(player->GetActiveWeapon()->AttackDamage());
+				player->IncreasePoints(e->GetPointValue());
+				RemoveEnemy(e);
 
-				if (e->GetHealthLeft() <= 0.0f) {
-				player->IncreasePoints(e->GivePoints());
-
-					RemoveEnemy(e);
-					delete e;
-					e = nullptr;
-									
-
-					enemyCount--;
-					maxEnemies--;
-				}
-
-				context->entities->RemoveObject(player->GetActiveWeapon());
-				//player->GetActiveWeapon()->SetEnabled(false); // new
-				delete player->GetActiveWeapon();
-				player->SetActiveWeapon(nullptr);	
-				
+				enemyCount--;
+				maxEnemies--;
 			}
 		}
 	}
