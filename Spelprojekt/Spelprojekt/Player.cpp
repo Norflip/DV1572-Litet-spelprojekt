@@ -20,7 +20,8 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->righthandFull = false;
 	this->leftWeapon = nullptr;
 	this->rightWeapon = nullptr;
-
+	this->activeWeapon = nullptr;
+	this->arrowRotation = { 0,0,0 };
 	this->playerHealth = 100.0f;
 
 	this->winArea = winArea;
@@ -57,7 +58,7 @@ void Player::TakeDamage(float damage)
 	if (playerHealth > 0.0f)
 	{
 		playerHealth -= damage;
-		// INSERT SOUND WHEN IT WORKS...........................
+		context->gamemanager->GetSoundeffectHandler()->PlaySound("Splash", context->gamemanager->GetCurrentSoundVolume());
 	}
 }
 

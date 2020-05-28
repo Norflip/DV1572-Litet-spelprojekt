@@ -73,7 +73,7 @@ private:
 	bool lefthandFull, righthandFull;
 	//
 
-	float scaleXZ, scaleY;		
+	//float scaleXZ, scaleY;		
 
 	DirectX::XMFLOAT3 currentPosition;
 	float nextDir = 0;	

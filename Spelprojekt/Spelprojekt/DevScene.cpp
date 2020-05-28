@@ -47,6 +47,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	this->player = nullptr;
 	this->timeUntilEnd = 0.0f;
 
+	// Fillcontext
 	context->entities = entities;
 	context->gamemanager = gamemanager;
 	context->resources = &resources;

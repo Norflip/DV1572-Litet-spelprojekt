@@ -133,12 +133,6 @@ void IntroScene::LoadResources()
 	resources.AddModel("playerModel", AssimpHandler::loadFbxObject("Models/Glasse_intro_Pose.fbx", dx11, toonShader));
 	resources.AddModel("wagonModel", AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, toonShader));
 	resources.AddModel("backgroundPlane", AssimpHandler::loadFbxObject("Models/Background_Plane.fbx", dx11, toonShader));
-
-
-	/*
-		GUI
-	*/
-
 	
 }
 
@@ -158,8 +152,6 @@ Scene* IntroScene::GetNextScene() const
 
 void IntroScene::setNextScene()
 {
-	//Input* input = this->window.GetInput();
-
 	// Change scene logic
 	for (int i = 0; i < scenes.size(); i++)
 	{
