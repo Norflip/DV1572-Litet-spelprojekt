@@ -408,7 +408,8 @@ void DevScene::CreateSceneObjects()
 		boat->GetTransform().Translate(205.0f, 6.2f, 115.0f);
 		boat->GetTransform().SetRotation({ 0.1f, 1.7f, -0.15f });
 		entities->InsertObject(boat);
-
+		physics.CreateCollisionBodyBoxCustom(boat, 4.0f, 10.0f, 1.0f);
+		
 
 		////////////////////////// STANDS /////////////////////////////
 		// Left beach stand
