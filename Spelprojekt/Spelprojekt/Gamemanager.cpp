@@ -47,9 +47,9 @@ Gamemanager::Gamemanager(DX11Handler* dx11) : dxhandler(dx11)
 }
 
 Gamemanager::~Gamemanager()
-{
-	// erase tracks
-	// deallocate memory	
+{	
+	//delete soundeffect;
+	//delete music;
 }
 
 void Gamemanager::LoadSoundEffects()

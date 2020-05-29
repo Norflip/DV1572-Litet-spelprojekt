@@ -33,6 +33,12 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	gametimerText->SetFontSize({ 2.0f, 2.0f });
 	gametimerText->SetFontColor({ 1,0,0,1 });
 
+	// Exittext
+	exitText = new GUIText(dx11, "Move to exit", window.GetWidth()/3.0f+140.0f, 10.0f);
+	exitText->SetFontSize({ 1.0f, 1.0f });
+	exitText->SetFontColor({ 1,0,0,1 });
+
+
 	// Controller
 	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
 	window.GetInput()->LockCursor(false);
@@ -53,6 +59,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	this->assimpScene = nullptr;
 	this->billBoard = nullptr;
 	this->canWin = false;
+	this->exitActive = false;
 	this->player = nullptr;
 	this->timeUntilEnd = 0.0f;
 
@@ -75,9 +82,13 @@ DevScene::~DevScene()
 
 void DevScene::Load()
 {
+	// Exit text ska vara false i början
+	if (exitActive)
+		exitActive = false;
+
 	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
-	this->timeUntilEnd = 10.0f; // gamemanager->GetTimer();		// get time from gamemanager
-	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
+	this->timeUntilEnd = 500.0f; // gamemanager->GetTimer();		
+	this->spawner->SetMaxEnemies(1 /*gamemanager->GetTotalEnemies()*/);	// gamemanager->GetTotalEnemies()
 
 	Timer testSpeed;
 	testSpeed.Start();
@@ -132,28 +143,23 @@ void DevScene::Load()
 
 
 	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
-	// Add objects
+	// Add objects	
 	gui->AddGUIObject(gamehub, "clockicon");
 	gui->AddGUIObject(gametimerText, "gametimerText");
 	gui->AddGUIObject(fpsText, "fpsText");
 	gui->AddGUIObject(actionbarLeft, "actionbarLeft");
 	gui->AddGUIObject(actionbarRight, "actionbarRight");
-	//gui->AddGUIObject(score, "score");
 	gui->AddGUIObject(totalScore, "totalscore");
-	//gui->AddGUIObject(enemies, "enemiesleft");
 	gui->AddGUIObject(totalEnemies, "totalenemiesleft");
 	gui->AddGUIObject(healthbar, "healthbar");
 	gui->AddGUIObject(healthFrame, "healthFrame");
-
+	
 	// Set GUI
 	renderer->SetGUI(gui); 	// Set GUI
 
 	gametimer.Start();
 
-	// Play scenemusic
-	//gamemanager->GetMusicHandler()->StopSound();
-	//gamemanager->GetMusicHandler()->LoadSound("Levelsound", gamemanager->GetMusicTrack());
-	//gamemanager->GetMusicHandler()->PlaySound("Levelsound", gamemanager->GetCurrentMusicVolume());
+	// Play scenemusic	
 	gamemanager->PlayMusic();
 
 	testSpeed.Stop();
@@ -168,7 +174,6 @@ void DevScene::Unload()
 
 	// @TODO
 	gametimer.Restart();
-	gametimer.Stop();
 	spawner->Clear();
 }
 
@@ -318,10 +323,7 @@ void DevScene::LoadResources()
 	resources.AddResource("enemyPrefab1", enemyPrefab1);
 
 	
-
-	/*
-		GUI
-	*/
+	// TERRAIN 'N WATER MESH
 
 	terrainMesh.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
 	waterMesh.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), true);
@@ -349,8 +351,6 @@ void DevScene::Update(const float& deltaTime)
 	RaycastCallback callbackObject;
 	physics.GetWorld()->raycast(ray, &callbackObject);
 
-
-	//
 	UpdateGUI(deltaTime);
 }
 
@@ -858,24 +858,46 @@ void DevScene::UpdateGUI(const float& deltaTime)
 	// Timer to end
 	gametimerText->SetString(std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd))));
 
-	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f || this->spawner->CountEnemiesRemaining() == 0)
-	{
+	// Time remaining == 0
+	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f) {
+		if (!exitActive) {
+			gui->AddGUIObject(exitText, "exit");
+			exitActive = true;
+		}
+
 		arrow->SetVisible(true);
-		gametimerText->SetString("Move to exit");
+		gametimerText->SetString("0");
 		canWin = true;
 	}
 
+	// Enemies remaining == 0
+	if (this->spawner->CountEnemiesRemaining() == 0) {
+		if (!exitActive) {
+			gui->AddGUIObject(exitText, "exit");
+			exitActive = true;
+		}
+
+		arrow->SetVisible(true);
+		totalEnemies->SetString("0");
+		canWin = true;
+	}
+
+
 	if (player->GetPlayerHealth() <= 0.0f)
 	{
+		gametimer.Stop();
+
 		// SET CURRENTSCORE TO GAMEMANAGER
-		gamemanager->SetCurrentScore(player->GetPoints() - 20);		
+		gamemanager->SetCurrentScore(player->GetPoints() - 20 + gametimer.GetTimeUntilEnd(timeUntilEnd));
 		SetNextScene(false);
 	}
 
 	if (canWin && player->GetWorldBounds().Overlaps(this->player->GetWinArea()->GetWorldBounds()))
 	{
+		gametimer.Stop();
+
 		// SET CURRENTSCORE TO GAMEMANAGER
-		gamemanager->SetCurrentScore(player->GetPoints() + 20);		
+		gamemanager->SetCurrentScore(player->GetPoints() + 20 + (int)gametimer.GetTimeUntilEnd(timeUntilEnd));
 		SetNextScene(true);
 	}
 }

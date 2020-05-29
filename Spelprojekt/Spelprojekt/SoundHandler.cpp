@@ -16,6 +16,12 @@ SoundHandler::SoundHandler()
 
 SoundHandler::~SoundHandler()
 {
+	for (auto i : soundMap) {
+		delete i.second;
+	}
+
+	soundMap.clear();
+	//delete audioEngine;
 }
 
 void SoundHandler::LoadSound(std::string key, std::string filePath)

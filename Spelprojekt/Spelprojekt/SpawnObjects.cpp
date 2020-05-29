@@ -298,11 +298,14 @@ void SpawnObjects::UpdateEnemies(const float& deltaTime)
 
 				if (e->GetHealthLeft() <= 0.0f)
 				{
-					player->IncreasePoints(e->GetPointValue());
-					RemoveEnemy(e);
+					if (CountEnemiesRemaining() != 0) 
+					{
+						player->IncreasePoints(e->GetPointValue());
+						maxEnemies--;
+					}					
 
-					enemyCount--;
-					maxEnemies--;
+					RemoveEnemy(e);
+					enemyCount--;						
 				}
 
 				continue;
@@ -320,6 +323,7 @@ void SpawnObjects::UpdateEnemies(const float& deltaTime)
 			else
 			{
 				e->ResetTeleportationTimer();
+							
 			}
 		}
 	}

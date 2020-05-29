@@ -17,7 +17,6 @@ IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, st
 	// Gamemanager
 	this->gamemanager = gamemanager;
 	gamemanager->GetSoundeffectHandler()->SetGlobalVolume(gamemanager->GetCurrentSoundVolume());
-	//gamemanager->GetMusicHandler()->LoadSound("Monster", "SoundEffects/MonstersInc.wav");
 	gamemanager->GetMusicHandler()->SetGlobalVolume(gamemanager->GetCurrentMusicVolume());	
 	
 	// Gui
