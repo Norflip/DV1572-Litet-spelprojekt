@@ -18,8 +18,11 @@ Weapon::Weapon(WeaponType type, ObjectLayer layer, AssimpHandler::AssimpData mod
 
 Weapon::~Weapon()
 {
-	/*if (this->weaponSprite != nullptr)
-		delete this->weaponSprite;*/
+	if (this->weaponSprite != nullptr)
+	{
+		delete this->weaponSprite;
+		this->weaponSprite = nullptr;
+	}
 }
 
 void Weapon::Update(const float& deltaTime)

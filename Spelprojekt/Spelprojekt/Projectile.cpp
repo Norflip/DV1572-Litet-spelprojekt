@@ -20,7 +20,7 @@ Projectile::Projectile(const Projectile& other) : Projectile(other.GetMesh(), ot
 
 Projectile::~Projectile()
 {	
-	delete this->weaponSprite;
+	
 }
 
 //void Projectile::TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
