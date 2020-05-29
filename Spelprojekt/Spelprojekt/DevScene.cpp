@@ -337,21 +337,9 @@ void DevScene::Update(const float& deltaTime)
 
 	Scene::Update(deltaTime);
 
-
 	this->spawner->Update(deltaTime);
 	this->controller->Update(deltaTime);
-
-	// fixa
-
-	// Change all weapons to vector
-	//for(auto i : coconuts)
-	//	player->UpdateHands(i);
-
-	//for (auto i : spoons)
-	//	player->UpdateHands(i);
-
-	// Create the ray 
-
+		
 	rp3d::Vector3 start = physics.Convert(DirectX::XMVectorAdd(player->GetTransform().GetPosition(), { 0, -100, 0 }));
 	rp3d::Vector3 end = physics.Convert(DirectX::XMVectorAdd(player->GetTransform().GetPosition(), { 0, 100, 0 }));
 	rp3d::Ray ray(start, end);

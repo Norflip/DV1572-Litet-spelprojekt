@@ -22,6 +22,8 @@ SpawnObjects::SpawnObjects(WorldContext* context) : context(context), enemyPrefa
 	this->pickupsPrefabs[1] = nullptr;
 	this->spawnmap = nullptr;
 	this->wagon = nullptr;
+
+	this->rTimer = 10.0f;
 }
 
 SpawnObjects::~SpawnObjects()
@@ -109,7 +111,6 @@ void SpawnObjects::Update(const float& deltaTime)
 
 			clone->GetTransform().SetPosition(respawnTimers[i].position);
 			clone->GetTransform().SetRotation(respawnTimers[i].rotation);
-			//clone->gamemanager = this->gamemanager;
 			context->entities->InsertObject(clone);
 
 			respawnTimers.erase(respawnTimers.begin() + i);
@@ -118,6 +119,7 @@ void SpawnObjects::Update(const float& deltaTime)
 
 	UpdateSpawnEnemy();
 	UpdateRemoveEnemy();
+	//CheckDistanceForRespawn(deltaTime);
 }
 
 void SpawnObjects::SetPickupPrefab(Object* obj, WeaponType type)
@@ -158,6 +160,36 @@ bool SpawnObjects::PointIsWalkable(float x, float z)
 	float height = context->terrain->SampleHeight(x, z);
 
 	return !(height < 0.8f || DirectX::XMVectorGetByIndex(dot, 0) < 0.85f);
+}
+
+void SpawnObjects::CheckDistanceForRespawn(float deltaTime)
+{
+	Enemy* e = nullptr;
+	DirectX::XMVECTOR vecPlayer = context->player->GetTransform().GetPosition();
+	auto enemies = context->entities->GetObjectsInLayer(ObjectLayer::Enemy);
+	for (auto i : enemies)
+	{
+		e = static_cast<Enemy*>(i);
+		DirectX::XMVECTOR vecEnemy = e->GetTransform().GetPosition();
+		DirectX::XMVECTOR riktVec = DirectX::XMVectorSubtract(vecPlayer, vecEnemy);
+		DirectX::XMVECTOR dist = DirectX::XMVector3Length(riktVec);
+		float distance = DirectX::XMVectorGetByIndex(dist, 0);
+
+		if (distance > 30.0f) {
+			if (rTimer > 0.0f) {
+				rTimer -= deltaTime;
+			}
+			else {
+				std::cout << "RESPAWN" << std::endl;
+				e->GetTransform().SetPosition(GetRandomSpawnPosition(1.0f));
+				rTimer = 10.0f;
+			}
+		}
+		else {
+			if (rTimer != 10.0f)
+				rTimer = 10.0f;
+		}
+	}
 }
 
 DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition(float heightOffset)
@@ -237,6 +269,7 @@ void SpawnObjects::UpdateSpawnEnemy()
 		SpawnEnemy();
 		enemyCount++;
 	}
+
 }
 
 void SpawnObjects::UpdateRemoveEnemy()

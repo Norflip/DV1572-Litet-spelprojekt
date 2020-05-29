@@ -55,6 +55,9 @@ public:
 
 	bool PointIsWalkable(float x, float z);
 
+
+	void CheckDistanceForRespawn(float deltaTime);
+
 private:
 	DirectX::XMVECTOR GetRandomSpawnPosition(float heightOffset);
 
@@ -66,6 +69,8 @@ private:
 	void UpdateRemoveEnemy();
 
 private:
+	float rTimer;
+
 	bool* spawnmap;
 	WorldContext* context;
 
