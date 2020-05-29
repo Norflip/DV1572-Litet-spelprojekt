@@ -81,7 +81,7 @@ private:
 	Timer fpsTimer;
 	float timeUntilEnd;
 	bool canWin;
-
+	
 	Object* arrow;
 	Object* billBoard;
 	const aiScene* assimpScene;

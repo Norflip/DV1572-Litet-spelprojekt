@@ -6,7 +6,7 @@ IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, st
 {
 	this->camera = new Camera(90.0f, window.GetWidth(), window.GetHeight());
 	this->controller = new CameraController(camera, window.GetInput(), CameraController::State::None);
-	
+
 	window.GetInput()->LockCursor(false);
 	this->nextScene = nullptr;
 	Lights& lights = renderer->GetLights();	
@@ -46,9 +46,16 @@ void IntroScene::Load()
 	renderer->SetGUI(gui);
 		
 	Object* glasse = new Object(ObjectLayer::Enviroment, resources.GetModel("playerModel"));
-	glasse->GetTransform().Translate(0.0f, 7.5f, -3.0f);
-	glasse->GetTransform().Rotate(0.0f, -0.6f, 0.0f);
-	entities->InsertObject(glasse);	
+	glasse->GetTransform().Translate(0.0f, 8.2f, -2.0f);
+	glasse->GetTransform().Rotate(0.0f, -0.3f, 0.0f);
+	glasse->GetTransform().SetScale(0.6f, 0.6f, 0.6f);
+	entities->InsertObject(glasse);
+
+	Object* enemy = new Object(ObjectLayer::Enviroment, resources.GetModel("enemyModel"));
+	enemy->GetTransform().Translate(0.8f, 6.4f, -1.0f);
+	enemy->GetTransform().Rotate(0.0f, 0.5f, 0.0f);
+	enemy->GetTransform().SetScale(0.15f, 0.15f, 0.15f);
+	entities->InsertObject(enemy);
 
 	Object* wagon = new Object(ObjectLayer::Enviroment, resources.GetModel("wagonModel"));
 	wagon->GetTransform().Translate(7.0f, 7.43f, 1.0f);
@@ -137,10 +144,10 @@ void IntroScene::LoadResources()
 		MODELS
 	*/
 
-	resources.AddModel("playerModel", AssimpHandler::loadFbxObject("Models/Glasse_intro_Pose.fbx", dx11, toonShader));
+	resources.AddModel("playerModel", AssimpHandler::loadFbxObject("Models/Glasse_Intro_Pose_NEW.fbx", dx11, toonShader));
+	resources.AddModel("enemyModel", AssimpHandler::loadFbxObject("Models/Enemy_Intro.fbx", dx11, toonShader));
 	resources.AddModel("wagonModel", AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, toonShader));
 	resources.AddModel("backgroundPlane", AssimpHandler::loadFbxObject("Models/Background_Plane.fbx", dx11, toonShader));
-	
 }
 
 void IntroScene::Update(const float& deltaTime)
