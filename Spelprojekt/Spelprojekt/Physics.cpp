@@ -194,6 +194,20 @@ rp3d::Vector3 Physics::Convert(DirectX::XMVECTOR v3)
 	return rp3d::Vector3(v.x, v.y, v.z);
 }
 
+rp3d::CollisionBody* Physics::CreateCollisionBodyBoxCustom(Object* object, float x, float y, float z)
+{
+	rp3d::Transform rpTransform = ConvertTransform(object->GetTransform());
+	rp3d::CollisionBody* body = world->createCollisionBody(rpTransform);// rp3d::Transform::identity());
+	const rp3d::Vector3 halfExtents(x, y, z);
+
+	//const rp3d::Vector3 extends = Convert(DirectX::XMVectorScale(object->GetLocalBounds().GetSize(), 0.5f));
+	rp3d::BoxShape* box = new rp3d::BoxShape(halfExtents);
+
+	bodies.push_back(body);
+	body->addCollisionShape(box, rp3d::Transform::identity());
+	return body;
+}
+
 rp3d::CollisionBody* Physics::CreateCollisionBodyBox(Object* object)
 {
 	rp3d::Transform rpTransform = ConvertTransform(object->GetTransform());

@@ -516,7 +516,7 @@ void DevScene::CreateSceneObjects()
 
 		for (int i = 0; i < 21; i++)
 		{
-			physics.CreateCollisionBodyBox(sunChairs[i]);
+			physics.CreateCollisionBodyBoxCustom(sunChairs[i], 1.0f, 10.0f, 3.0f);
 		}
 
 		////////////////////////// PARASOLLS /////////////////////////////
@@ -543,7 +543,7 @@ void DevScene::CreateSceneObjects()
 
 		for (int i = 0; i < 7; i++)
 		{
-			//physics.CreateCollisionBodyCapsule(parasolls[i], 0.2f, 0.0f, 0.0f);
+			physics.CreateCollisionBodyCapsule(parasolls[i], 0.2f, 0.0f, 0.0f);
 		}
 
 
@@ -572,8 +572,17 @@ void DevScene::CreateSceneObjects()
 		SurfboardTrippy->GetTransform().Translate(130.0f, 7.0f, 37.0f);
 		entities->InsertObject(SurfboardTrippy);
 
+		for (int i = 0; i < 2; i++)
+		{
+			physics.CreateCollisionBodyBoxCustom(surfboardsBlue[i], 0.5f, 10.0f, 1.0f);
+		}
 
+		for (int i = 0; i < 2; i++)
+		{
+			physics.CreateCollisionBodyBoxCustom(surfboardOrange[i], 0.5f, 10.0f, 1.0f);
+		}
 
+		physics.CreateCollisionBodyBoxCustom(SurfboardTrippy, 0.5f, 10.0f, 1.0f);
 
 		////////////////////////// BEACHBALLS /////////////////////////////
 		// Balls left beachside
@@ -611,10 +620,19 @@ void DevScene::CreateSceneObjects()
 		blueballs[2]->GetTransform().Rotate(0.2f, -5.0f, 0.0f);
 		entities->InsertObject(blueballs[2]);
 
+		for (int i = 0; i < 3; i++)
+		{
+			physics.CreateCollisionBodyCapsule(redballs[i], 0.5f, 0.0f, 0.0f);
+		}
+
+		for (int i = 0; i < 3; i++)
+		{
+			physics.CreateCollisionBodyCapsule(blueballs[i], 0.5f, 0.0f, 0.0f);
+		}
 
 
 
-		////////////////////////// BEACHBALLS /////////////////////////////
+		////////////////////////// BUSHES /////////////////////////////
 		Object* bushes[13];
 		for (int i = 0; i < 13; i++)
 		{
@@ -675,6 +693,10 @@ void DevScene::CreateSceneObjects()
 		bushes[12]->GetTransform().Translate(163.0f, 7.5f, 185.0f);
 		bushes[12]->GetTransform().Rotate(0.05f, -5.0f, 0.0f);
 
+		for (int i = 0; i < 13; i++)
+		{
+			physics.CreateCollisionBodyCapsule(bushes[i], 1.0f, 0.0f, 0.0f);
+		}
 
 		////////////////////////// Fireplace stuff /////////////////////////////
 
@@ -682,13 +704,14 @@ void DevScene::CreateSceneObjects()
 		bungalow->GetTransform().Translate(30.0f, 7.0f, 213.0f);
 		bungalow->GetTransform().SetRotation({ 0.0f, -0.9f, 0.0f });
 		entities->InsertObject(bungalow);
+		physics.CreateCollisionBodyBox(bungalow);
 
 		Object* gate = new Object(ObjectLayer::Enviroment, resources.GetModel("gateModel"));
 		gate->GetTransform().Translate(60.0f, 6.2f, 198.0f);
 		gate->GetTransform().SetRotation({ 0.0f, -2.2f, -0.1f });
 		entities->InsertObject(gate);
-		physics.CreateCollisionBodyBox(gate);
-
+		physics.CreateCollisionBodyBoxCustom(gate, 1.0f, 10.0f, 2.5f);
+		
 		Object* restplaceBase = new Object(ObjectLayer::Enviroment, resources.GetModel("restplaceBase"));
 		restplaceBase->GetTransform().Translate(107.0f, 7.5f, 140.0f);
 		restplaceBase->GetTransform().SetRotation({ 0.0f, -1.5f, 0.0f });
@@ -729,7 +752,7 @@ void DevScene::CreateSceneObjects()
 		benches[3]->GetTransform().SetRotation({ 0.0f, 2.5f, 0.0f });
 
 		for (int i = 0; i < 4; i++){
-			physics.CreateCollisionBodyBox(benches[i]);
+			physics.CreateCollisionBodyBoxCustom(benches[i], 2.5f, 10.0f, 1.0f);
 		}
 		
 		////////////////////////// PALMS /////////////////////////////

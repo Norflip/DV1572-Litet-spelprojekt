@@ -21,6 +21,7 @@ public:
 
 	rp3d::Vector3 Convert(DirectX::XMVECTOR v3);
 
+	rp3d::CollisionBody* CreateCollisionBodyBoxCustom(Object* object,float x, float y, float z);
 	rp3d::CollisionBody* CreateCollisionBodyBox(Object* object);
 	rp3d::CollisionBody* CreateCollisionBodyConvex(Object* object);
 	rp3d::CollisionBody* CreateCollisionBodyCapsule(Object* object, float radius, float xOffset = 0, float zOffset = 0, float height = 100.0f);
