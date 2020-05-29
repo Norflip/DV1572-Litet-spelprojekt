@@ -76,7 +76,7 @@ DevScene::~DevScene()
 void DevScene::Load()
 {
 	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
-	this->timeUntilEnd = 3.0f; // gamemanager->GetTimer();		// get time from gamemanager
+	this->timeUntilEnd = 10.0f; // gamemanager->GetTimer();		// get time from gamemanager
 	this->spawner->SetMaxEnemies(gamemanager->GetTotalEnemies());
 
 	Timer testSpeed;
@@ -151,9 +151,10 @@ void DevScene::Load()
 	gametimer.Start();
 
 	// Play scenemusic
-	gamemanager->GetMusicHandler()->StopSound();
-	gamemanager->GetMusicHandler()->LoadSound("Levelsound", gamemanager->GetMusicTrack());
-	gamemanager->GetMusicHandler()->PlaySound("Levelsound", gamemanager->GetCurrentMusicVolume());
+	//gamemanager->GetMusicHandler()->StopSound();
+	//gamemanager->GetMusicHandler()->LoadSound("Levelsound", gamemanager->GetMusicTrack());
+	//gamemanager->GetMusicHandler()->PlaySound("Levelsound", gamemanager->GetCurrentMusicVolume());
+	gamemanager->PlayMusic();
 
 	testSpeed.Stop();
 	std::cout << std::endl << "loadTime:  " << testSpeed.GetMilisecondsElapsed() << std::endl;
@@ -332,7 +333,7 @@ void DevScene::LoadResources()
 void DevScene::Update(const float& deltaTime)
 {
 	this->cameraFocusPosition = player->GetTransform().GetPosition();
-	billBoard->GetTransform().SetPosition({ player->GetTransform().GetPosition().m128_f32[0],player->GetTransform().GetPosition().m128_f32[1] + 6, player->GetTransform().GetPosition().m128_f32[2] });
+	//billBoard->GetTransform().SetPosition({ player->GetTransform().GetPosition().m128_f32[0],player->GetTransform().GetPosition().m128_f32[1] + 6, player->GetTransform().GetPosition().m128_f32[2] });
 
 	Scene::Update(deltaTime);
 
@@ -378,11 +379,11 @@ Scene* DevScene::GetNextScene() const
 void DevScene::CreateSceneObjects()
 {
 
-	billBoard = new Object(ObjectLayer::Enviroment, resources.GetModel("quadInv"));
+	/*billBoard = new Object(ObjectLayer::Enviroment, resources.GetModel("quadInv"));
 	billBoard->GetTransform().Translate(55, 12, 55);
 	billBoard->GetTransform().SetScale(1, 1, 1);
 	billBoard->GetTransform().SetRotation({ 0,0, 0 });
-	entities->InsertObject(billBoard);
+	entities->InsertObject(billBoard);*/
 
 	if (true)
 	{
@@ -849,49 +850,42 @@ void DevScene::SetNextScene(bool winOrLose)
 
 void DevScene::UpdateGUI(const float& deltaTime)
 {
-	//FPS STUFF
+	//FPS Start timer
 	fpsTimer.Start();
+
+	// Player health
 	healthbar->HealthBar(100.0f, player->GetHealth());
 
+	// Enemies left and total score
 	totalEnemies->SetString(std::to_string(this->spawner->CountEnemiesRemaining()));
 	totalScore->SetString(std::to_string(player->GetPoints()));
-
-	//gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
-	
-
+		
+	// Fps stuff
 	fpsTimer.Stop();
 	fpsText->SetString("FPS: " + std::to_string((int)(1 / ((fpsTimer.GetMicrosecondsElapsed() / 1000000)))));
 	fpsTimer.Restart();
 
-	//checkForNextScene();
-
+	// Timer to end
 	gametimerText->SetString(std::to_string(static_cast<int>(gametimer.GetTimeUntilEnd(timeUntilEnd))));
 
 	if (gametimer.GetTimeUntilEnd(timeUntilEnd) <= 0.0f || this->spawner->CountEnemiesRemaining() == 0)
 	{
 		arrow->SetVisible(true);
 		gametimerText->SetString("Move to exit");
-		//gametimerText->SetPosition(window.GetWidth() / 2.0f - 80.0f, 0.0f);
 		canWin = true;
 	}
 
 	if (player->GetPlayerHealth() <= 0.0f)
 	{
 		// SET CURRENTSCORE TO GAMEMANAGER
-		gamemanager->SetCurrentScore(player->GetPoints() - 50);
-
-		//gametimerText->SetString("You lost");
-		//gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
+		gamemanager->SetCurrentScore(player->GetPoints() - 20);		
 		SetNextScene(false);
 	}
 
 	if (canWin && player->GetWorldBounds().Overlaps(this->player->GetWinArea()->GetWorldBounds()))
 	{
 		// SET CURRENTSCORE TO GAMEMANAGER
-		gamemanager->SetCurrentScore(player->GetPoints() + 20);	// Different extra points for different difficulties maybe
-
-		//gametimerText->SetString("You won");
-		//gametimerText->SetPosition(window.GetWidth() / 2.0f - 75.0f, 0.0f);
+		gamemanager->SetCurrentScore(player->GetPoints() + 20);		
 		SetNextScene(true);
 	}
 }

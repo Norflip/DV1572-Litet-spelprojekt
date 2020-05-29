@@ -73,19 +73,16 @@ void IntroGUI::Update()
         trackoneChecked = true;
         tracktwoChecked = false;
         trackthreeChecked = false;
-        gamemanager->SetMusictrack("SoundEffects/Ben.wav");
         break;
     case 2:
         trackoneChecked = false;
         tracktwoChecked = true;
         trackthreeChecked = false;
-        gamemanager->SetMusictrack("SoundEffects/FluffingDuck.wav");
         break;
     case 3:
         trackoneChecked = false;
         tracktwoChecked = false;
         trackthreeChecked = true;
-        gamemanager->SetMusictrack("SoundEffects/Cuphead.wav");
         break;
     }
 
@@ -312,7 +309,6 @@ void IntroGUI::LoadHowToPlay()
 
 void IntroGUI::Credits()
 {
-
     GUISprite* backtointroNEW = static_cast<GUISprite*>(gui->GetGUIList()->at("backtointro"));
     if (backtointroNEW->Clicked(input)) {
         first = true;
@@ -357,8 +353,7 @@ void IntroGUI::Options()
     GUISprite* highMusicVolume = static_cast<GUISprite*>(gui->GetGUIList()->at("rightmusicvolume"));    
     if (highMusicVolume->Clicked(input) && gamemanager->GetCurrentMusicVolume() < 1)
     {
-        if (gamemanager->GetCurrentMusicVolume() < 1 )
-        {
+        if (gamemanager->GetCurrentMusicVolume() < 1 ) {
             currentMusicVolume = gamemanager->GetCurrentMusicVolume();
             currentMusicVolume += volumeScale;
             gamemanager->SetCurrentMusicVolume(currentMusicVolume);
@@ -447,89 +442,6 @@ void IntroGUI::Options()
 
             currentScene->GetRenderer()->setVsync(true);
         }    
-
-       /*
-        // THIS WORKS
-        
-        //dx11.GetSwapChain()->SetFullscreenState(true, NULL);
-
-       // HRESULT hr;
-
-       // dx11.GetContext()->OMSetRenderTargets(0, 0, 0);
-
-       // dx11.GetRTV()->Release();
-       // // resize hwnd here?
-
-
-       // HWND testHWND = currentScene->getWindow().GetHWND();
-       //// SetWindowPos(testHWND, NULL, 0, 0, 1920, 1080, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
-
-       // // STENCIL NEED TO BE RECREATED
-
-       // hr = dx11.GetSwapChain()->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
-       // assert(SUCCEEDED(hr));
-       // ID3D11Texture2D* pBuffer;
-       // hr = dx11.GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D),
-       //     (void**)&pBuffer);
-       // assert(SUCCEEDED(hr));
-       // ID3D11RenderTargetView* test = dx11.GetRTV();
-       // hr = dx11.GetDevice()->CreateRenderTargetView(pBuffer, NULL, &test);
-       // assert(SUCCEEDED(hr));
-       // pBuffer->Release();
-       // dx11.GetContext()->OMSetRenderTargets(1, &test, NULL);
-
-       // //dx11.SetRTV(test);
-
-       // //dx11.GetDevice()->CreateRenderTargetView(dx11.GetBackBufferPtr(), nullptr, &test);
-       // //dx11.GetBackBufferPtr()->Release();
-
-       // ID3D11DepthStencilView* dsv;
-       // 
-
-       // // VIEWPORT
-       // D3D11_VIEWPORT viewport;
-       // ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
-       // viewport.TopLeftX = 0.0f;
-       // viewport.TopLeftY = 0.0f;
-       // viewport.Width = static_cast<float>(1280);
-       // viewport.Height = static_cast<float>(720);
-       // viewport.MinDepth = 0.0f;
-       // viewport.MaxDepth = 1.0f;
-
-       // // DEPTH TEXTURE
-       // D3D11_TEXTURE2D_DESC depthTexDesc;
-       // depthTexDesc.Width = 1280;
-       // depthTexDesc.Height = 720;
-       // depthTexDesc.MipLevels = 1;
-       // depthTexDesc.ArraySize = 1;
-       // depthTexDesc.SampleDesc.Count = 1;
-       // depthTexDesc.SampleDesc.Quality = 0;
-       // depthTexDesc.Format = DXGI_FORMAT_D32_FLOAT;
-       // depthTexDesc.Usage = D3D11_USAGE_DEFAULT;
-       // depthTexDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-       // depthTexDesc.CPUAccessFlags = 0;
-       // depthTexDesc.MiscFlags = 0;
-
-       //
-       // std::cout << "HERE";
-       // ID3D11Texture2D* depthTexture;
-       // hr = dx11.GetDevice()->CreateTexture2D(&depthTexDesc, 0, &depthTexture);
-       // assert(SUCCEEDED(hr));
-
-       // D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
-       // dsvDesc.Format = depthTexDesc.Format;
-       // dsvDesc.Flags = 0;
-       // dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-       // dsvDesc.Texture2D.MipSlice = 0;
-
-       // hr = dx11.GetDevice()->CreateDepthStencilView(depthTexture, &dsvDesc, &dsv);
-       // assert(SUCCEEDED(hr));
-
-       // /*depthTexture->Release();
-       // depthTexture = nullptr;*/
-       // RenderTarget* target = new RenderTarget(test, nullptr, dsv, viewport);
-       // dx11.SetRenderTarget(target);
-       //// this->backbuffer = new RenderTarget(backbufferRTV, nullptr, dsv, viewport);                
     }
 
     if (vsyncOFF->Clicked(input)) {
@@ -722,8 +634,7 @@ void IntroGUI::Soundtracks()
     if (checkboxthree->MouseOver(input) && !trackthreeChecked) {
         cup->SetWICSprite(dx11, "Sprites/cupsong.png");
         checkboxthree->SetWICSprite(dx11, "Sprites/checkbox_mouseover.png");
-        
-    }
+        }
     else {
         if (trackthreeChecked) {
             checkboxthree->SetWICSprite(dx11, "Sprites/checkbox_checked.png");

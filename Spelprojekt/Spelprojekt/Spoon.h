@@ -19,9 +19,9 @@ public:
 	void FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);	
 
 	void PlaySoundEffect() override;
-	void PlayBreaksound() override;
-	void Use() override { this->used++; };
-	int CheckUsage() override { return this->used; }
-	float AttackDamage() override { return this->damage; }
+	//void PlayBreaksound() override;
+	//void Use() override { this->used++; };
+	//int CheckUsage() override { return this->used; }
 
+	float AttackDamage() override { return this->damage; }
 };

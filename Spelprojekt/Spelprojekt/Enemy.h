@@ -11,7 +11,7 @@ class Player;
 class Enemy : public Object
 {
 	const float ATTACK_RANGE = 13.0f;
-	const float MOVEMENT_SPEED = 2.0f;
+	const float MOVEMENT_SPEED = 1.5f;
 	const int POINT_VALUE = 5;
 	
 public:

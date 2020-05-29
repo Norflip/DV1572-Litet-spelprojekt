@@ -66,7 +66,7 @@ void Icecream::UpdateHitPlayer()
 	{
 		if (this->GetWorldBounds().Overlaps(context->player->GetWorldBounds())) {
 
-			std::cout << "HIT PLAYER" << std::endl;
+			//std::cout << "HIT PLAYER" << std::endl;
 			context->player->TakeDamage(AttackDamage());
 			this->SetEnabled(false);
 		}
