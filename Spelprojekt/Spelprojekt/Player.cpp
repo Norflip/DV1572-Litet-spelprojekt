@@ -364,9 +364,6 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			weapon->Use();
 			//activeWeapon = nullptr;
 
-
-
-
 			const float attackRange = 4.0f;
 			auto enemies = context->entities->GetObjectsInLayer(ObjectLayer::Enemy);
 			int counter = 0;
@@ -381,7 +378,6 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 				if (sqrDistance < attackRange * attackRange)
 					counter++;
 			}
-
 			Logger::Write("INRANGE " + std::to_string(counter) + " / " + std::to_string(enemies.size()));
 		}
 		else
@@ -393,7 +389,6 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			weapon->PlayBreaksound();
 
 			context->entities->RemoveObject(weapon);
-
 
 			weapon->SetEnabled(false);
 			weapon = nullptr;

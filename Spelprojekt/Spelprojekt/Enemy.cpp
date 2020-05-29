@@ -1,4 +1,4 @@
-#include "Enemy.h"
+﻿#include "Enemy.h"
 
 Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext* context)
 	: Object(ObjectLayer::Enemy, modelData.mesh, modelData.material), context(context), activeweapon(nullptr)
@@ -221,6 +221,7 @@ void Enemy::UpdateAttackPlayer()
 			// PLEASE KILL 
 			activeweapon = new Icecream(*prefab);
 			activeweapon->SetReferenceToPlayer(player);
+			//GetTransform().SetRotation(DirectX::XMVectorSubtract())
 			activeweapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			activeweapon->direction = GetTransform().GetRotation();
 			activeweapon->PlaySoundEffect();
