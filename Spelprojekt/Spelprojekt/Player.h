@@ -25,6 +25,8 @@ public:
 	void Update(const float& deltaTime) override;	
 	void TakeDamage(float damage);	
 	float GetPlayerHealth();
+	void IncreaseHealth();
+	void HealthCheck(float deltaTime);
 
 	//void UpdateMeleeWeaponPosition();
 	void UseWeapon();
@@ -89,5 +91,7 @@ private:
 	bool isMoving;
 	bool rangedAttacking;
 	bool meleeAttacking;
+
+	float healthTimer;
 }; 
 

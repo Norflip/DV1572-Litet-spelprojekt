@@ -31,6 +31,8 @@ Player::Player(AssimpHandler::AssimpData modelData, CameraController* controller
 	this->isMoving = false;
 	this->rangedAttacking = false;
 	this->meleeAttacking = false;
+
+	this->healthTimer = 5.0f;
 }
 
 Player::~Player()
@@ -48,6 +50,8 @@ void Player::Update(const float& deltaTime)
 
 	UpdateLookAtPosition();
 	UpdateAnimations();
+
+	HealthCheck(deltaTime);
 }
 
 
@@ -392,6 +396,31 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 float Player::GetPlayerHealth()
 {
 	return playerHealth;
+}
+
+void Player::IncreaseHealth()
+{
+	if(GetPlayerHealth() != 100.0f)
+		this->playerHealth += 5.0f;
+}
+
+void Player::HealthCheck(float deltaTime)
+{
+	if (GetHealth() < 100.0f)
+	{
+		if (healthTimer <= 0.0f) {
+			IncreaseHealth();
+			healthTimer = 5.0f;
+		}
+		else {
+			healthTimer -= deltaTime;
+		}
+	}
+	else
+	{
+		if (healthTimer != 5.0f)
+			healthTimer = 5.0f;
+	}
 }
 
 Weapon* Player::CopyWeapon(Weapon* weapon)
