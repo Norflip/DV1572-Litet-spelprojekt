@@ -277,6 +277,7 @@ void DevScene::LoadResources()
 		ANIMATIONS
 	*/
 
+	Assimp::Importer imp;
 	this->assimpScene = imp.ReadFile("Animations/Glasse_Walk_Cycle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
 	AssimpHandler::saveAnimationData(assimpScene, playerModel->mesh->skeleton, "Walk");
 
@@ -326,8 +327,8 @@ void DevScene::LoadResources()
 	waterMesh.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), true);
 
 
-	delete this->assimpScene;
-	this->assimpScene = nullptr;
+	/*delete this->assimpScene;
+	this->assimpScene = nullptr;*/
 }
 
 void DevScene::Update(const float& deltaTime)

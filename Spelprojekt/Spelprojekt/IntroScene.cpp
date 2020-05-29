@@ -45,11 +45,18 @@ void IntroScene::Load()
 	introGUI = new IntroGUI(gui, dx11, controller, this, gamemanager);
 	renderer->SetGUI(gui);
 		
-	Object* glasse = new Object(ObjectLayer::Enviroment, resources.GetModel("playerModel"));
-	glasse->GetTransform().Translate(0.0f, 7.5f, -3.0f);
-	glasse->GetTransform().Rotate(0.0f, -0.6f, 0.0f);
-	entities->InsertObject(glasse);	
+	this->glass = new Object(ObjectLayer::Player, resources.GetModel("playerModel"));
+	this->glass->GetTransform().Translate(0.0f, 7.5f, -3.0f);
+	this->glass->GetTransform().Rotate(0.0f, -0.6f, 0.0f);
 
+	Assimp::Importer imp;
+	const aiScene* assimpScene = imp.ReadFile("Animations/Glasse_Idle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+
+	AssimpHandler::saveAnimationData(assimpScene, this->glass->GetMesh()->skeleton, "Idle");
+	this->glass->GetMesh()->skeleton->SetFirstAnimation(this->glass->GetMesh()->skeleton->animations[0]);
+	entities->InsertObject(this->glass);
+
+	
 	Object* wagon = new Object(ObjectLayer::Enviroment, resources.GetModel("wagonModel"));
 	wagon->GetTransform().Translate(7.0f, 7.43f, 1.0f);
 	wagon->GetTransform().Rotate(0.0f, 0.3f, 0.0f);
@@ -98,6 +105,10 @@ void IntroScene::LoadResources()
 	toonShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
 	toonShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 
+	Shader* animationShader = new Shader();
+	animationShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
+	animationShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "animation", dx11.GetDevice());
+
 	// ------- TERRAIN
 	Shader* terrainShader = new Shader();
 	terrainShader->LoadPixelShader(L"Shaders/Terrain_ps.hlsl", "main", dx11.GetDevice());
@@ -105,6 +116,7 @@ void IntroScene::LoadResources()
 
 	resources.AddResource("toonShader", toonShader);
 	resources.AddResource("terrainShader", terrainShader);
+	resources.AddResource("animationShader", animationShader);
 
 	/*
 		TEXTURES
@@ -137,16 +149,22 @@ void IntroScene::LoadResources()
 		MODELS
 	*/
 
-	resources.AddModel("playerModel", AssimpHandler::loadFbxObject("Models/Glasse_intro_Pose.fbx", dx11, toonShader));
+	resources.AddModel("playerModel", AssimpHandler::loadFbxObject("Animations/Glasse_Idle.fbx", dx11, animationShader));
 	resources.AddModel("wagonModel", AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, toonShader));
 	resources.AddModel("backgroundPlane", AssimpHandler::loadFbxObject("Models/Background_Plane.fbx", dx11, toonShader));
-	
+
 }
 
 void IntroScene::Update(const float& deltaTime)
 {
 	Scene::Update(deltaTime);
 	introGUI->Update();
+}
+
+void IntroScene::FixedUpdate(const float& fixedDeltaTime)
+{
+	Scene::FixedUpdate(fixedDeltaTime);
+	this->glass->GetMesh()->skeleton->AddKeyframe();
 }
 
 Scene* IntroScene::GetNextScene() const

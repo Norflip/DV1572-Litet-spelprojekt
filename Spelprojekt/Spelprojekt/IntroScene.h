@@ -22,6 +22,8 @@ public:
 	void LoadResources() override;
 
 	void Update(const float& deltaTime) override;
+	void FixedUpdate(const float& fixedDeltaTime) override;
+
 	Scene* GetNextScene() const override;
 
 	CameraController* controller;
@@ -35,5 +37,6 @@ private:
 	GUI* gui;
 	std::vector<Scene*>& scenes;		
 	Gamemanager* gamemanager;
+	Object* glass;
 };
 
