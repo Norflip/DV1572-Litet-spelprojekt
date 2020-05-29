@@ -1,78 +1,49 @@
-﻿#include "Enemy.h"
+#include "Physics.h"
+#include "Enemy.h"
 
-Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext* context)
-	: Object(ObjectLayer::Enemy, modelData.mesh, modelData.material), context(context), activeweapon(nullptr)
+Enemy::Enemy(Mesh* mesh, Material* material, WorldContext* context) : Object(ObjectLayer::Enemy, mesh, material), context(context), weapon(nullptr)
 {
-	this->pointGiven = 5;
 	this->velocity = { 2,0,2 };
 	this->tVelocity = { 0,0,0 };
 
-	this->activeweapon = nullptr;
+	this->hasShot = false;
+	this->cooldownTimer = 0.0f;
+	this->flyTime = 0.0f;
 
-	this->movementspeed = 2.0f;
 	this->currentPosition = { 0,0,0 };
 	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
 
-	this->hasShot = false;
-	this->cooldownTimer = 5.0f;
-	this->flyTime = 0.0f;
-
 	// Health for enemy
-	this->health = context->gamemanager->GetEnemyHealth();	// different
+	this->health = context->gamemanager->GetEnemyHealth();
+
+
+	Icecream* prefab = context->resources->GetResource<Icecream>("icecreamPrefab");
+
+	// PLEASE KILL 
+	weapon = new Icecream(*prefab);
+	weapon->SetReferenceToPlayer(context->player);
+	weapon->SetOwner(this);
+	weapon->SetEnabled(false);
 }
 
-
-Enemy::Enemy(const Enemy& other)
-{
-	this->activeweapon = other.activeweapon;
-
-	this->pointGiven = other.pointGiven;
-	this->FBXModel = other.FBXModel;
-	SetMesh(other.GetMesh());
-	SetMaterial(other.GetMaterial());
-	this->velocity = other.velocity;
-	this->tVelocity = other.tVelocity;
-	this->currentPosition = other.currentPosition;
-	DirectX::XMStoreFloat3(&currentPosition, GetTransform().GetPosition());
-	this->SetLayer(other.GetLayer());
-
-	this->context = other.context;
-
-	this->GetMesh()->skeleton = other.GetMesh()->skeleton;
-	float stop = 0;
-	this->hasShot = false;
-	this->cooldownTimer = other.cooldownTimer;
-
-	// Health for enemy
-	this->health = other.context->gamemanager->GetEnemyHealth();
-}
+Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext* context) : Enemy(modelData.mesh, modelData.material, context) {}
+Enemy::Enemy(const Enemy& other) : Enemy(other.GetMesh(), other.GetMaterial(), other.context) {}
 
 Enemy::~Enemy()
 {
-	//delete activeWeapon;
+	context->entities->RemoveObject(weapon);
+	delete weapon;
 }
 
 void Enemy::Update(const float& deltaTime)
 {
+	if (cooldownTimer > 0.0f)
+		cooldownTimer -= deltaTime;
+
 	UpdateHeight(deltaTime);
 	UpdateMovement(deltaTime);
 
 	UpdateAttackPlayer();
-
-	if (cooldownTimer > 0.0f)
-		cooldownTimer -= deltaTime;
-
-	if (hasShot) {
-		if (flyTime > 0.0f)
-			flyTime -= deltaTime;
-		else if(flyTime <= 0.0f){
-			context->entities->RemoveObject(activeweapon);
-			//delete activeweapon;
-			flyTime = 0.0f;
-			activeweapon = nullptr;
-			hasShot = false;		
-		}
-	}		
 
 }
 
@@ -83,8 +54,9 @@ void Enemy::FixedUpdate(const float& fixedDeltaTime)
 
 void Enemy::UpdateMovement(float fixedDeltaTime)
 {
+	// kolla distants
 
-	if (!GetWorldBounds().Overlaps(player->GetWorldBounds()))
+	if (!GetWorldBounds().Overlaps(context->player->GetWorldBounds()))
 	{
 		tVelocity = DirectX::XMVectorAdd(tVelocity, BoidsAlgorithm(ObjectLayer::Enemy));
 		tVelocity = DirectX::XMVectorScale(tVelocity, fixedDeltaTime);
@@ -94,8 +66,12 @@ void Enemy::UpdateMovement(float fixedDeltaTime)
 		DirectX::XMFLOAT3 nextPos;
 		DirectX::XMStoreFloat3(&nextPos, GetTransform().GetPosition());
 		currentPosition = nextPos;
+
+
 		DirectX::XMFLOAT3 pPos;
-		DirectX::XMStoreFloat3(&pPos, player->GetTransform().GetPosition());
+		DirectX::XMStoreFloat3(&pPos, context->player->GetTransform().GetPosition());
+
+		DirectX::XMFLOAT3 off = { 0,0,0 };
 
 		if (pPos.z >= nextPos.z)
 			nextPos.z += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 2);
@@ -108,9 +84,51 @@ void Enemy::UpdateMovement(float fixedDeltaTime)
 
 		//Logger::Write(LOG_LEVEL::Info, "Chase player " + std::to_string(nextPos.x));
 
+		/*float vlength = DirectX::XMVectorGetByIndex(DirectX::XMVector3Length(velocity), 0);
+
+		DirectX::XMFLOAT3 collisionOffset = CheckCollisions(fixedDeltaTime, vlength);
+		nextPos.x += collisionOffset.x;
+		nextPos.y += collisionOffset.y;
+		nextPos.z += collisionOffset.z;*/
+
 		GetTransform().SmoothRotate(nextPos, fixedDeltaTime, true);
 		GetTransform().SetPosition({ nextPos.x, nextPos.y, nextPos.z });
 	}
+}
+
+DirectX::XMFLOAT3 Enemy::CheckCollisions(const float& deltaTime, const float& length)
+{
+	DirectX::XMFLOAT3 result = { 0,0,0 };
+	DirectX::XMVECTOR start = GetTransform().GetPosition();
+	float y = DirectX::XMVectorGetByIndex(start, 1);
+	y -= (1.0f / 2.0f);
+
+	DirectX::XMVectorSetByIndex(start, y, 1);
+	DirectX::XMVECTOR direction, offset;
+
+	const int rayCount = 64;
+	float startAngle = static_cast<float>(rand() % 360);
+
+	for (size_t i = 0; i < rayCount; i++)
+	{
+		float angle = startAngle + (float)i * (360.0f / rayCount);
+		float rad = angle * MathHelper::ToRadians;
+
+		direction = DirectX::XMVector3Normalize({ cosf(rad),0,sinf(rad) });
+		offset = DirectX::XMVectorAdd(start, DirectX::XMVectorScale(direction, length));
+
+		RaycastHit hit = context->physics->Raycast(start, offset);
+		if (hit.hit)
+		{
+			DirectX::XMFLOAT3 pos;
+			DirectX::XMStoreFloat3(&pos, DirectX::XMVectorSubtract(GetTransform().GetPosition(), hit.position));
+
+			result.x += pos.x;// *length2;// // 
+			result.z += pos.z;// * length2;//* fixedDeltaTime;// * 0.05f;
+		}
+	}
+
+	return result;
 }
 
 void Enemy::UpdateTestBoids(float fixedDeltaTime)
@@ -134,6 +152,7 @@ DirectX::XMVECTOR Enemy::BoidsAlgorithm(ObjectLayer object)
 	{
 		if (GetID() == entity->GetID())
 			continue;
+
 		DirectX::XMVECTOR offset = DirectX::XMVectorSubtract(GetTransform().GetPosition(), entity->GetTransform().GetPosition());
 		DirectX::XMVECTOR distance = DirectX::XMVector3Length(offset);
 		
@@ -184,11 +203,6 @@ DirectX::XMVECTOR Enemy::Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR 
 	return steering;
 }
 
-void Enemy::SetTarget(Player* player)
-{
-	this->player = player;
-}
-
 DirectX::XMVECTOR Enemy::GetVelocity()
 {
 	return tVelocity;
@@ -198,21 +212,16 @@ void Enemy::HitSound()
 	context->gamemanager->GetSoundeffectHandler()->PlaySound("EnemyHit", context->gamemanager->GetCurrentSoundVolume());
 }
 
-Object* Enemy::GetFBXModel()
-{
-	return FBXModel;
-}
-
 void Enemy::UpdateAttackPlayer()
 {
-	DirectX::XMVECTOR vecPlayer = player->GetTransform().GetPosition();
+	DirectX::XMVECTOR vecPlayer = context->player->GetTransform().GetPosition();
 	DirectX::XMVECTOR vecEnemy = GetTransform().GetPosition();
 	DirectX::XMVECTOR riktVec = DirectX::XMVectorSubtract(vecPlayer, vecEnemy);
 
 	DirectX::XMVECTOR dist = DirectX::XMVector3Length(riktVec);
 	float distance = DirectX::XMVectorGetByIndex(dist, 0);
 
-	if (distance < 13.0f) 
+	if (distance < ATTACK_RANGE)
 	{
 		if (cooldownTimer <= 0.0f) 
 		{
@@ -227,6 +236,13 @@ void Enemy::UpdateAttackPlayer()
 			activeweapon->PlaySoundEffect();
 			//SetActiveWeapon(activeweapon);
 			context->entities->InsertObject(activeweapon);
+			weapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
+			weapon->PlaySoundEffect();
+			weapon->SetEnabled(true);
+			weapon->SetType(WeaponType::Icecream);
+
+			context->entities->InsertObject(weapon);
+
 			hasShot = true;
 			flyTime = 5.0f;
 			cooldownTimer = 5.0f;
@@ -234,11 +250,23 @@ void Enemy::UpdateAttackPlayer()
 	}
 }
 
+void Enemy::DeactivateWeapon()
+{
+	context->entities->RemoveObject(weapon);
+	weapon->SetEnabled(false);
+	flyTime = 0.0f;
+}
+
 void Enemy::TakeDamage(float damage)
 {
 	if (this->health > 0.0f) {
 		this->health -= damage;
 	}
+}
+
+void Enemy::ResetHealth()
+{
+	this->health = context->gamemanager->GetEnemyHealth();
 }
 
 void Enemy::UpdateHeight(float fixedDeltaTime)

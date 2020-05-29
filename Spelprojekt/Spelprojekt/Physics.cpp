@@ -31,6 +31,10 @@ rp3d::Transform interpolatedTransform = Transform::interpolateTransforms(prevTra
 
 Physics::~Physics()
 {
+	for (int i = bodies.size() - 1; i >= 0; i--)
+	{
+		delete bodies[i];
+	}
 }
 
 
@@ -137,7 +141,7 @@ rp3d::ConvexMeshShape* Physics::ConvertMeshToConvexShape(Mesh* mesh)
 
 	for (size_t i = 0; i < faceCount; i++)
 	{
-		face->indexBase = i * 3;
+		face->indexBase = (i * 3);
 		face->nbVertices = 3;
 		face++;
 	}

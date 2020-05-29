@@ -38,6 +38,8 @@ public:
 	void SetTargetAndArrow(Object* arrow, Object* winObject);
 	void UpdateLookAtPosition();
 
+	void RemoveActiveWeapon();
+
 	int GetPoints() { return this->points; }
 	void IncreasePoints(int points) { this->points += points; }
 
@@ -46,7 +48,6 @@ public:
 
 private:
 	DirectX::XMFLOAT3 CheckCollisions(const float& deltaTime, const float& length);
-	void InitWeapons();
 
 	void CheckForPickups();
 

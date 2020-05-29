@@ -17,9 +17,6 @@ Projectile::Projectile(AssimpHandler::AssimpData modelData, WorldContext* contex
 
 Projectile::Projectile(const Projectile& other) : Weapon(WeaponType::Coconut, ObjectLayer::Pickup, other.GetMesh(), other.GetMaterial(), other.context)
 {
-	GetTransform().SetPosition(other.GetTransform().GetPosition());
-	GetTransform().SetRotation(other.GetTransform().GetRotation());
-
 	this->direction = other.direction;
 	this->weaponSprite = other.weaponSprite;
 	this->attack = false;
@@ -44,7 +41,7 @@ void Projectile::TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 	this->attack = true;	
 }
 
-void Projectile::rangedAttack(float deltaTime)
+void Projectile::RotateProjectile(float deltaTime)
 {		
 	nextPos = { (GetTransform().GetPosition().m128_f32[0] + (-std::sinf(direction.m128_f32[1]) * movementspeed) * deltaTime) ,GetTransform().GetPosition().m128_f32[1], (GetTransform().GetPosition().m128_f32[2] + (-std::cosf(direction.m128_f32[1]) * movementspeed) * deltaTime) };	// 30 = speed
 	GetTransform().SetPosition(nextPos);
@@ -72,5 +69,5 @@ void Projectile::PlaySoundEffect()
 void Projectile::Update(const float& deltaTime)
 {
 	if(attack)
-		rangedAttack(deltaTime);
+		RotateProjectile(deltaTime);
 }

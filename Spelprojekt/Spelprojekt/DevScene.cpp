@@ -96,7 +96,7 @@ void DevScene::Load()
 	// ------ PLAYER
 	this->player = new Player(resources.GetModel("playerModel"), controller, gui, context);
 	this->player->GetTransform().SetPosition({ 55, 4, 55 });
-	this->player->GetTransform().Scale(2.0, 2.0, 2.0);
+	this->player->GetTransform().SetScale(2.0, 2.0, 2.0);
 	this->player->ScaleLocalBounds().ScaleMinMax(DirectX::XMMatrixScaling(0.5, 0.5, 0.5));
 	this->player->SetLayer(ObjectLayer::Player);
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
@@ -295,8 +295,7 @@ void DevScene::LoadResources()
 	//-------- ENEMY prefab
 	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), context);
 	enemyPrefab1->GetTransform().Translate(30, 7, 35);
-	enemyPrefab1->GetTransform().Scale(0.275f, 0.275f, 0.275f);
-	enemyPrefab1->SetTarget(player);
+	enemyPrefab1->GetTransform().SetScale(0.275f, 0.275f, 0.275f);
 	enemyPrefab1->SetEnabled(false);
 
 	this->assimpScene = imp.ReadFile("Animations/enemy.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
@@ -324,8 +323,11 @@ void DevScene::Update(const float& deltaTime)
 	this->cameraFocusPosition = player->GetTransform().GetPosition();
 	billBoard->GetTransform().SetPosition({ player->GetTransform().GetPosition().m128_f32[0],player->GetTransform().GetPosition().m128_f32[1] + 6, player->GetTransform().GetPosition().m128_f32[2] });
 
-	this->spawner->Update(deltaTime);
 	Scene::Update(deltaTime);
+
+
+	this->spawner->Update(deltaTime);
+	this->controller->Update(deltaTime);
 
 	// fixa
 
@@ -367,7 +369,7 @@ void DevScene::CreateSceneObjects()
 
 	billBoard = new Object(ObjectLayer::Enviroment, resources.GetModel("quadInv"));
 	billBoard->GetTransform().Translate(55, 12, 55);
-	billBoard->GetTransform().Scale(1, 1, 1);
+	billBoard->GetTransform().SetScale(1, 1, 1);
 	billBoard->GetTransform().SetRotation({ 0,0, 0 });
 	entities->InsertObject(billBoard);
 
@@ -806,7 +808,6 @@ void DevScene::UpdateGUI(const float& deltaTime)
 	totalScore->SetString(std::to_string(player->GetPoints()));
 
 	gametimerText->SetString("Timer: " + std::to_string(static_cast<int>(std::floor(gametimer.GetMilisecondsElapsed() / 1000.0))));
-	controller->Update(deltaTime);
 
 	fpsTimer.Stop();
 	fpsText->SetString("FPS: " + std::to_string((int)(1 / ((fpsTimer.GetMicrosecondsElapsed() / 1000000)))));

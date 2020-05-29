@@ -19,6 +19,7 @@ struct GBUFFER
 	float4 position : SV_Target3;
 };
 
+
 GBUFFER main(VS_OUTPUT input) : SV_TARGET
 {
 	GBUFFER output;
@@ -31,14 +32,14 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 	float4 testColor = float4(0.30f, 0.63f, 0.93f, 1.0f);
 	//testColor = float4(heightMap.x, heightMap.y,1, 1);
 
-	//float intensity = dot(normalize(input.normal), DiffuseLightDirection);
 	
 	float intensity = (heightMap.x + heightMap.y + heightMap.z) / 3;
 	if (intensity < 0)
 		intensity = 0;
-
 	
 	intensity += ((input.worldPosition.y-(5.5f)) / 50);
+	intensity = saturate(intensity);
+
 
 	// Discretize the intensity, based on a few cutoff points
 	if (intensity > 0.4)
@@ -51,7 +52,7 @@ GBUFFER main(VS_OUTPUT input) : SV_TARGET
 	testColor = float4(0.8, 0.8, 0.8, 1.0) * testColor;
 
 
-	//testColor = float4(testColor.xyz + (input.worldPosition.y/30),1);
+	testColor = float4(testColor.xyz + (input.worldPosition.y/30),1);
 
 
 

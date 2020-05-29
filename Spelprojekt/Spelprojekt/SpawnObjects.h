@@ -31,14 +31,14 @@ class SpawnObjects
 	const float RespawnTimer = 30.0f;
 
 	const float CoconutRespawnTime = 30.0f;
-	const int CoconutsPerTree = 4;
+	const int CoconutsPerTree = 3;
 	const float CoconutOffset = 3.0f;
 
 	const float MinimumSpawnHeight = 4.0f;
 
 public:
 	SpawnObjects(WorldContext* context);
-	virtual ~SpawnObjects() {};
+	virtual ~SpawnObjects();
 
 	void SpawnInitial();
 	void Clear();
@@ -52,12 +52,15 @@ public:
 
 	void Update(const float& deltaTime);
 	void RemovePickup(Object* object);
-	void RemoveEnemy(Enemy*);
 
 	bool PointIsWalkable(float x, float z);
 
 private:
 	DirectX::XMVECTOR GetRandomSpawnPosition(float heightOffset);
+
+	void AddEnemyToPool();
+	void RemoveEnemy(Enemy*);
+	Enemy* SpawnEnemy();
 
 	void UpdateSpawnEnemy();
 	void UpdateRemoveEnemy();
@@ -73,6 +76,8 @@ private:
 	int enemyCount;
 
 	std::vector<RespawnPickup> respawnTimers;
+
+	std::queue<Enemy*> enemyPool;
 
 	//std::vector<Enemy*> enemies;
 };

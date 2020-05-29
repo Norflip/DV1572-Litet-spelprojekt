@@ -18,8 +18,11 @@ void Entities::SetBounds(AABB worldBounds)
 
 void Entities::InsertObject(Object* object)
 {
+
 	ObjectLayer layer = object->GetLayer();
+
 	auto findLayerVector = objectsInLayerMap.find(layer);
+
 	if (findLayerVector == objectsInLayerMap.end())
 		objectsInLayerMap.insert({ layer, std::vector<Object*>() });
 
@@ -34,16 +37,27 @@ void Entities::RemoveObject(Object* object)
 
 	if (findLayerVector != objectsInLayerMap.end())
 	{
-		std::vector<Object*>& v = objectsInLayerMap[layer];
+		std::vector<Object*> v = objectsInLayerMap[layer];
 		auto g = std::find(v.begin(), v.end(), object);
 		if (g != v.end())
 			v.erase(g);
+
+		objectsInLayerMap[layer] = v;
 	}
 
-	// all
+	//// all
 	auto g = std::find(allEntities.begin(), allEntities.end(), object);
 	if (g != allEntities.end())
 		allEntities.erase(g);
+	
+	//allEntities.erase(std::remove(allEntities.begin(), allEntities.end(), object), allEntities.end());
+}
+
+void Entities::ChangeLayer(Object* object, ObjectLayer layer)
+{
+	RemoveObject(object);
+	object->SetLayer(layer);
+	InsertObject(object);
 }
 
 std::vector<Object*> Entities::GetObjectsInLayer(ObjectLayer layer)
@@ -152,7 +166,7 @@ std::vector<Object*> Entities::GetObjectsInView(Camera* camera)
 
 				for (auto j : df)
 				{
-					if (visited.find(j->GetID()) == visited.end() && camera->IsBoundsInView(j->GetWorldBounds()))
+					if (j->IsEnabled() && visited.find(j->GetID()) == visited.end() && camera->IsBoundsInView(j->GetWorldBounds()))
 					{
 						visited.insert(j->GetID());
 						inView.push_back(j);
@@ -170,5 +184,4 @@ void Entities::Clear()
 {
 	allEntities.clear();
 	objectsInLayerMap.clear();
-	objectToLayerMap.clear();
 }
