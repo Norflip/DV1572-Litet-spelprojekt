@@ -139,7 +139,7 @@ void Enemy::UpdateTestBoids(float fixedDeltaTime)
 DirectX::XMVECTOR Enemy::BoidsAlgorithm(ObjectLayer object)
 {
 	float separationRadius = 3.0f;
-	float alignRadius = 45.0f;
+	float alignRadius = 10.0f;
 	DirectX::XMVECTOR velocity = { 0,0,0 };
 	DirectX::XMVECTOR avgDir = DirectX::XMVector3Normalize(GetVelocity());
 	DirectX::XMVECTOR avgPosition = GetTransform().GetPosition();
