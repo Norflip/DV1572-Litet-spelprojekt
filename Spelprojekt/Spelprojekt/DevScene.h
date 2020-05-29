@@ -67,6 +67,7 @@ private:
 	GUISprite* healthbar;
 	GUIText* totalScore;
 	GUIText* totalEnemies;
+	GUIText* exitText;
 
 	GUIActionbar* actionbarLeft;
 	GUIActionbar* actionbarRight;
@@ -81,7 +82,7 @@ private:
 	Timer fpsTimer;
 	float timeUntilEnd;
 	bool canWin;
-
+	bool exitActive;
 	Object* arrow;
 	Object* billBoard;
 	const aiScene* assimpScene;
