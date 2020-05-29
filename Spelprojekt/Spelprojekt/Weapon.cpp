@@ -1,7 +1,7 @@
 #include "Weapon.h"
 
 
-Weapon::Weapon(WeaponType type, ObjectLayer layer, Mesh* mesh, Material* material, WorldContext* context) : Object(layer, mesh, material), context(context), weaponSprite(nullptr)
+Weapon::Weapon(WeaponType type, ObjectLayer layer, Mesh* mesh, Material* material, WorldContext* context) : Object(layer, mesh, material), context(context), weaponSprite(nullptr), type(type)
 {
 	this->direction = { 0,0,0 };
 	this->nextPos = { 0,0,0 };

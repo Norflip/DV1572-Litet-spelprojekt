@@ -26,7 +26,7 @@ class Weapon : public Object
 public:
 	Weapon(WeaponType type, ObjectLayer layer, Mesh* mesh, Material* material, WorldContext* context);
 	Weapon(WeaponType type, ObjectLayer layer, AssimpHandler::AssimpData model, WorldContext* context);
-	~Weapon();
+	virtual ~Weapon();
 		
 	virtual void Update(const float& deltaTime) override;
 	virtual void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);

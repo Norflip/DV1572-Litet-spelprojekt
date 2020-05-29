@@ -28,14 +28,29 @@ Enemy::Enemy(const Enemy& other) : Enemy(other.GetMesh(), other.GetMaterial(), o
 
 Enemy::~Enemy()
 {
-	//context->entities->RemoveObject(weapon);
-	//delete weapon;
+	
 }
 
 void Enemy::Update(const float& deltaTime)
 {
 	if (cooldownTimer > 0.0f)
 		cooldownTimer -= deltaTime;
+
+
+	//Icecream* prefab = context->resources->GetResource<Icecream>("icecreamPrefab");
+
+	//if (weapon->GetMesh() != prefab->GetMesh())
+	//{
+	//	context->entities->RemoveObject(weapon);
+	//	delete weapon;
+	//	weapon = nullptr;
+
+	//	weapon = new Icecream(*prefab);
+	//	weapon->SetEnabled(false);
+	//	context->entities->InsertObject(weapon);
+
+	//	Logger::Write("awdawd");
+	//}
 
 	UpdateHeight(deltaTime);
 	UpdateMovement(deltaTime);
@@ -224,11 +239,8 @@ void Enemy::UpdateAttackPlayer()
 		{
 			weapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			weapon->PlaySoundEffect();
-			weapon->SetEnabled(true);
 			weapon->SetType(WeaponType::Icecream);
 			weapon->SetEnabled(true);
-
-			//context->entities->InsertObject(weapon);
 
 			cooldownTimer = 5.0f;
 		}
@@ -237,7 +249,6 @@ void Enemy::UpdateAttackPlayer()
 
 void Enemy::DeactivateWeapon()
 {
-	//context->entities->RemoveObject(weapon);
 	weapon->SetEnabled(false);
 }
 

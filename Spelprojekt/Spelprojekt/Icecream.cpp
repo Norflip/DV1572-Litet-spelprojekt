@@ -17,6 +17,12 @@ Icecream::Icecream(AssimpHandler::AssimpData modelData, WorldContext* context) :
 
 Icecream::Icecream(const Icecream& other) : Icecream(other.GetMesh(), other.GetMaterial(), other.context)
 {
+	if (other.GetType() != WeaponType::Icecream)
+	{
+
+		throw std::exception();
+	}
+
 	GetTransform().SetPosition(other.GetTransform().GetPosition());
 	GetTransform().SetRotation(other.GetTransform().GetRotation());
 }

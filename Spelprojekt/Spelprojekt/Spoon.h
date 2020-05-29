@@ -10,9 +10,8 @@ public:
 	Spoon(Mesh* mesh, Material* material, WorldContext* context);
 	Spoon(AssimpHandler::AssimpData model, WorldContext* context);
 	Spoon(const Spoon& other);
-
 	virtual ~Spoon();
-	void Update(const float& deltaTime) override;
+
 
 	//GUIActionbar* GetWeaponSprite() override { return this->weaponSprite; }	
 

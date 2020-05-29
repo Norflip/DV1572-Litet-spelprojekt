@@ -41,7 +41,7 @@ public:
 	SpawnObjects(WorldContext* context);
 	virtual ~SpawnObjects();
 
-	void SpawnInitial();
+	void Initialize();
 	void Clear();
 
 	void SetMaxEnemies(int amount);
@@ -58,6 +58,7 @@ public:
 
 
 	void CheckDistanceForRespawn(float deltaTime);
+	void Purge();
 
 private:
 	DirectX::XMVECTOR GetRandomSpawnPosition(float heightOffset);
@@ -66,6 +67,7 @@ private:
 	void AddEnemyToPool();
 	void RemoveEnemy(Enemy*);
 	Enemy* SpawnEnemy();
+
 
 	void UpdateSpawnEnemy();
 	void UpdateEnemies(const float& deltaTime);

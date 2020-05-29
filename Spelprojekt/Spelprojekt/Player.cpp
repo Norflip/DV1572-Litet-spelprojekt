@@ -326,7 +326,6 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		weapon->TriggerAttack(GetTransform().GetPosition(), aimDirection);
 		weapon->PlaySoundEffect();
 
-
 		SetActiveWeapon(static_cast<Weapon*>(weapon));
 		context->entities->InsertObject(weapon);
 
