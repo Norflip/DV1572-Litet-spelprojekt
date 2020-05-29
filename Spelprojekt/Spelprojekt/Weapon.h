@@ -20,42 +20,50 @@ enum class WeaponType
 
 class Weapon : public Object
 {
-public:
+	const float GRAVITY = 12.0f;
+	const float START_Y_VELOCITY = 3.0f;
 
+public:
 	Weapon(WeaponType type, ObjectLayer layer, Mesh* mesh, Material* material, WorldContext* context);
 	Weapon(WeaponType type, ObjectLayer layer, AssimpHandler::AssimpData model, WorldContext* context);
 	~Weapon();
 		
-	//void meleeAttack(float deltaTime);	//Ska sitta inne i slev // ska tas bort
-
-	void Update(const float& deltaTime) override;
-
-	virtual void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) { this->attack = true; GetTransform().SetPosition(pos); GetTransform().SetRotation(rot); };
+	virtual void Update(const float& deltaTime) override;
+	virtual void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);
 	
-	virtual float GetWeaponDamage() { return this->weaponDamage; }	
-	virtual GUIActionbar* GetWeaponSprite() { return this->weaponSprite; }		
+	float GetWeaponDamage() { return this->damage; }	
+	GUIActionbar* GetWeaponSprite() { return this->weaponSprite; }		
+
 	WeaponType GetType() const { return this->type; }
 	void SetType(WeaponType type) { this->type = type; }
 
-	virtual void PlaySoundEffect() {}
-	virtual void PlayBreaksound()  {}
-	virtual int CheckUsage() { return this->used; }
-	virtual void Use() {}; 
-	virtual void SetWeaponSpeed(int value) {};
-	virtual float AttackDamage() { return this->damage; }
+	virtual void PlaySoundEffect() = 0;
+	virtual void PlayBreaksound() = 0;
 
+	int CheckUsage() { return this->used; }
+	virtual void Use() {}; 
+
+	void SetWeaponSpeed(int value) { this->movementspeed = value; };
+	float AttackDamage() { return this->damage; }
+	void Move(const float& deltaTime);
+	
+	virtual void OnHitGround();
+	WorldContext* context;
+
+private:
 	DirectX::XMVECTOR direction;
 	DirectX::XMVECTOR nextPos;
-
-	WorldContext* context;
 	
 protected:	
 	int movementspeed;	
-	float damage;
+
 	WeaponType type;
 	GUIActionbar* weaponSprite;	
-	bool attack;
-	float weaponDamage;
+	bool inFlight;
+	float damage;
 	int used;
+
+	float yVelocity;
+	float startHeight;
 };
 

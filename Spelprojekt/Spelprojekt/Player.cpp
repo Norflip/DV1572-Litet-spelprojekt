@@ -324,7 +324,6 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 	{
 		//DirectX::XMVECTOR aimDirection = GetAimDirection();
 		weapon->TriggerAttack(GetTransform().GetPosition(), aimDirection);
-		weapon->direction = aimDirection;
 		weapon->PlaySoundEffect();
 
 
@@ -343,7 +342,6 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		/*if (weapon->CheckUsage() < 2)
 		{*/
 			weapon->TriggerAttack(GetTransform().GetPosition(), aimDirection);
-			weapon->direction = aimDirection;
 			weapon->PlaySoundEffect();
 
 			SetActiveWeapon(static_cast<Weapon*>(weapon));
