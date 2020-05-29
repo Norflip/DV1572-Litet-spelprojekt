@@ -7,7 +7,7 @@ Spoon::Spoon(AssimpHandler::AssimpData model, WorldContext* context) : Weapon(We
 	this->weaponSprite = new GUIActionbar(*context->dx11, "Sprites/Slev.png", 0.0f, 0.0f);
 	this->attack = false;
 	this->weaponDamage = 5.0f;
-	this->used = 0;
+	//this->used = 0;
 	this->damage = 15.0f;
 	this->movementspeed = 15.0f;
 }
@@ -21,7 +21,7 @@ Spoon::Spoon(const Spoon& other) : Weapon(WeaponType::Spoon, ObjectLayer::Pickup
 	this->weaponSprite = other.weaponSprite;
 	this->attack = false;
 	this->weaponDamage = other.weaponDamage;
-	this->used = 0;
+	//this->used = 0;
 	this->movementspeed = other.movementspeed;
 	this->damage = other.damage;
 }
@@ -34,7 +34,7 @@ void Spoon::TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 {
 	GetTransform().SetPosition(pos);
 	GetTransform().SetRotation(rot);	
-	this->used += 1;
+	//this->used += 1;
 	this->attack = true;
 }
 
@@ -56,13 +56,13 @@ void Spoon::PlaySoundEffect()
 	context->gamemanager->GetSoundeffectHandler()->PlaySound("Swoosh", context->gamemanager->GetCurrentSoundVolume());
 }
 
-void Spoon::PlayBreaksound()
-{
-	context->gamemanager->GetSoundeffectHandler()->PlaySound("Splash", context->gamemanager->GetCurrentSoundVolume());
-}
+//void Spoon::PlayBreaksound()
+//{
+//	context->gamemanager->GetSoundeffectHandler()->PlaySound("Splash", context->gamemanager->GetCurrentSoundVolume());
+//}
 
 void Spoon::Update(const float& deltaTime)
 {	
-	//if (attack && used == 3)
-	//	MeleeAttack(deltaTime);
+	if (attack)
+		MeleeAttack(deltaTime);
 }

@@ -26,7 +26,7 @@ public:
 	void TakeDamage(float damage);	
 	float GetPlayerHealth();
 
-	void UpdateMeleeWeaponPosition();
+	//void UpdateMeleeWeaponPosition();
 	void UseWeapon();
 	void WeaponUsage(Weapon*, bool& hand);
 
@@ -53,7 +53,6 @@ private:
 
 	void UpdateMovement(float FixedDeltaTime);
 	void UpdateHeight(float FixedDeltaTime);
-	void TriggerAttack();
 	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 	float ShortestRotation(float currentDir, float nextDir);
 	void UpdateAnimations();
@@ -72,8 +71,7 @@ private:
 	GUIActionbar* rightActionbar;
 	bool lefthandFull, righthandFull;
 	//
-
-	//float scaleXZ, scaleY;		
+	
 
 	DirectX::XMFLOAT3 currentPosition;
 	float nextDir = 0;	

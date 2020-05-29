@@ -15,8 +15,7 @@ Gamemanager::Gamemanager(DX11Handler* dx11) : dxhandler(dx11)
 	LoadMusicTracks();
 
 	// Level soundtrack from start
-	this->currentTrack = 1;			// 1 | 2 | 3 - Track1 | Track2 | Track3
-	this->currentMusictrack = "SoundEffects/Ben.wav";
+	this->currentTrack = 1;			// 1 | 2 | 3 - Track1 | Track2 | Track3	
 
 	this->vsyncState = false;
 
@@ -66,7 +65,27 @@ void Gamemanager::LoadSoundEffects()
 
 void Gamemanager::LoadMusicTracks()
 {
-	
+	this->music->LoadSound("Monster", "SoundEffects/MonstersInc.wav");		// done
+	this->music->LoadSound("Ben", "SoundEffects/Ben.wav");					// done
+	this->music->LoadSound("Duck", "SoundEffects/FluffingDuck.wav");		// done
+	this->music->LoadSound("Cup", "SoundEffects/Cuphead.wav");				// done
+}
+
+void Gamemanager::PlayMusic()
+{
+	this->music->StopSound();
+
+	switch (GetCurrentTrack()) {
+	case 1:
+		this->music->PlaySound("Ben", GetCurrentMusicVolume());
+		break;
+	case 2:
+		this->music->PlaySound("Duck", GetCurrentMusicVolume());
+		break;
+	case 3:
+		this->music->PlaySound("Cup", GetCurrentMusicVolume());
+		break;
+	}
 }
 
 void Gamemanager::UpdateHighscore(GUI* gui, int score)
@@ -153,7 +172,6 @@ void Gamemanager::DisplayHighscore(GUI* gui)
 			newHighscore[i]->SetFontColor({ 1,0,0,1 });
 		}
 	}
-	
 
 }
 

@@ -39,13 +39,11 @@ Player::~Player()
 
 void Player::Update(const float& deltaTime)
 {
-
-
 	UpdateMovement(deltaTime);
 	UpdateHeight(deltaTime);
 	CheckForPickups();
 
-	UpdateMeleeWeaponPosition();	// If spoon is equiped
+	//UpdateMeleeWeaponPosition();	// If spoon is equiped
 	UseWeapon();
 
 	UpdateLookAtPosition();
@@ -203,7 +201,7 @@ void Player::CheckForPickups()
 			{
 				if (!lefthandFull)
 				{
-					leftWeapon = CopyWeapon(obj);	//check type
+					leftWeapon = CopyWeapon(obj);
 
 					this->leftActionbar = new GUIActionbar(*obj->GetWeaponSprite());
 					this->leftActionbar->SetPosition(325.0f, 650.0f);
@@ -213,7 +211,7 @@ void Player::CheckForPickups()
 				}
 				else if (lefthandFull && !righthandFull)
 				{
-					rightWeapon = CopyWeapon(obj); //check type
+					rightWeapon = CopyWeapon(obj);
 
 					this->rightActionbar = new GUIActionbar(*obj->GetWeaponSprite());
 					this->rightActionbar->SetPosition(400.0f, 650.0f);
@@ -266,26 +264,26 @@ void Player::UpdateAnimations()
 	}
 }
 
-void Player::UpdateMeleeWeaponPosition()
-{
-	if (lefthandFull)
-	{
-		if (leftWeapon->GetType() == WeaponType::Spoon) {
-			leftWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
-			leftWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
-			leftWeapon->direction = GetTransform().GetRotation();
-		}
-	}
-
-	if (righthandFull)
-	{
-		if (rightWeapon->GetType() == WeaponType::Spoon) {
-			rightWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
-			rightWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
-			rightWeapon->direction = GetTransform().GetRotation();
-		}
-	}
-}
+//void Player::UpdateMeleeWeaponPosition()
+//{
+//	if (lefthandFull)
+//	{
+//		if (leftWeapon->GetType() == WeaponType::Spoon) {
+//			leftWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
+//			leftWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
+//			leftWeapon->direction = GetTransform().GetRotation();
+//		}
+//	}
+//
+//	if (righthandFull)
+//	{
+//		if (rightWeapon->GetType() == WeaponType::Spoon) {
+//			rightWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
+//			rightWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
+//			rightWeapon->direction = GetTransform().GetRotation();
+//		}
+//	}
+//}
 
 void Player::UseWeapon()
 {
@@ -316,12 +314,13 @@ void Player::UseWeapon()
 
 void Player::WeaponUsage(Weapon* weapon, bool& hand)
 {
+	DirectX::XMVECTOR aimDirection = GetAimDirection();
+
 	if (weapon->GetType() == WeaponType::Coconut)
 	{
-		DirectX::XMVECTOR aimDirection = GetAimDirection();
+		//DirectX::XMVECTOR aimDirection = GetAimDirection();
 		weapon->TriggerAttack(GetTransform().GetPosition(), aimDirection);
 		weapon->direction = aimDirection;
-		//weapon->gamemanager = this->gamemanager;
 		weapon->PlaySoundEffect();
 
 
@@ -332,19 +331,31 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 		GetTransform().SetRotation(aimDirection);
 		this->rangedAttacking = true;
 	}
-	else if (weapon->GetType() == WeaponType::Spoon)
+
+	if (weapon->GetType() == WeaponType::Spoon)
 	{
 		//Logger::Write("USES: " + std::to_string(weapon->CheckUsage()));
 
-		if (weapon->CheckUsage() < 2)
-		{
-			this->meleeAttacking = true;
+		/*if (weapon->CheckUsage() < 2)
+		{*/
+			weapon->TriggerAttack(GetTransform().GetPosition(), aimDirection);
+			weapon->direction = aimDirection;
 			weapon->PlaySoundEffect();
+
+			SetActiveWeapon(static_cast<Weapon*>(weapon));
+			context->entities->InsertObject(weapon);
+
+			hand = false;
+			GetTransform().SetRotation(aimDirection);
+			this->rangedAttacking = true;
+
+			/*this->meleeAttacking = true;*/
+			//weapon->PlaySoundEffect();
 			//activeWeapon = static_cast<Weapon*>(weapon);
-			weapon->Use();
+			//weapon->Use();
 			//activeWeapon = nullptr;
 
-			const float attackRange = 4.0f;
+			/*const float attackRange = 4.0f;
 			auto enemies = context->entities->GetObjectsInLayer(ObjectLayer::Enemy);
 			int counter = 0;
 
@@ -357,11 +368,11 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 
 				if (sqrDistance < attackRange * attackRange)
 					counter++;
-			}
+			}*/
 
-			Logger::Write("INRANGE " + std::to_string(counter) + " / " + std::to_string(enemies.size()));
-		}
-		else
+			//Logger::Write("INRANGE " + std::to_string(counter) + " / " + std::to_string(enemies.size()));
+		//}
+		/*else
 		{
 			this->meleeAttacking = true;
 			weapon->PlaySoundEffect();
@@ -374,7 +385,7 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 			weapon->SetEnabled(false);
 			weapon = nullptr;
 			hand = false;
-		}
+		}*/
 	}
 }
 
@@ -485,6 +496,3 @@ DirectX::XMVECTOR Player::GetAimDirection() const
 	return angleToPos;
 }
 
-void Player::TriggerAttack()
-{
-}

@@ -21,8 +21,7 @@ public:
 	// Musictrack settings
 	void SetCurrentTrack(int i) { this->currentTrack = i; }
 	int GetCurrentTrack() { return this->currentTrack; }
-	void SetMusictrack(std::string musictrack) { this->currentMusictrack = musictrack; }
-	std::string GetMusicTrack() { return this->currentMusictrack; }
+	void PlayMusic();
 
 	// Volumes for soundhandlers
 	void SetCurrentMusicVolume(float currentVol) { this->musicVol = currentVol; };
@@ -64,14 +63,14 @@ public:
 private:
 	DX11Handler* dxhandler;
 
+	// Soundhandler / sound / music
 	float musicVol;
 	float soundVol;		
-
 	SoundHandler* soundeffect;
 	SoundHandler* music;
 	int currentTrack;
-	std::string currentMusictrack;
 	
+	// Vsync state
 	bool vsyncState;
 		
 	// Different for different difficulty
