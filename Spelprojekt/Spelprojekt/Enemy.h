@@ -13,7 +13,8 @@ class Enemy : public Object
 	const float ATTACK_RANGE = 13.0f;
 	const float MOVEMENT_SPEED = 1.5f;
 	const int POINT_VALUE = 5;
-	
+	const float TELEPORTATION_COOLDOWN = 2.0f;
+
 public:
 	Enemy(Mesh* mesh, Material* material, WorldContext* context);
 	Enemy(AssimpHandler::AssimpData modelData, WorldContext* context);
@@ -35,6 +36,10 @@ public:
 	void TakeDamage(float damage);
 	void ResetHealth();
 	float GetHealthLeft() { return this->health; }
+
+
+	void ResetTeleportationTimer() { this->teleportationTimer = TELEPORTATION_COOLDOWN; }
+	float teleportationTimer;
 
 private:
 	

@@ -22,6 +22,8 @@ SpawnObjects::SpawnObjects(WorldContext* context) : context(context), enemyPrefa
 	this->pickupsPrefabs[1] = nullptr;
 	this->spawnmap = nullptr;
 	this->wagon = nullptr;
+
+	this->rTimer = 10.0f;
 }
 
 SpawnObjects::~SpawnObjects()
@@ -109,7 +111,6 @@ void SpawnObjects::Update(const float& deltaTime)
 
 			clone->GetTransform().SetPosition(respawnTimers[i].position);
 			clone->GetTransform().SetRotation(respawnTimers[i].rotation);
-			//clone->gamemanager = this->gamemanager;
 			context->entities->InsertObject(clone);
 
 			respawnTimers.erase(respawnTimers.begin() + i);
@@ -117,7 +118,7 @@ void SpawnObjects::Update(const float& deltaTime)
 	}
 
 	UpdateSpawnEnemy();
-	UpdateRemoveEnemy();
+	UpdateEnemies(deltaTime);
 }
 
 void SpawnObjects::SetPickupPrefab(Object* obj, WeaponType type)
@@ -160,6 +161,36 @@ bool SpawnObjects::PointIsWalkable(float x, float z)
 	return !(height < 0.8f || DirectX::XMVectorGetByIndex(dot, 0) < 0.85f);
 }
 
+void SpawnObjects::CheckDistanceForRespawn(float deltaTime)
+{
+	Enemy* e = nullptr;
+	DirectX::XMVECTOR vecPlayer = context->player->GetTransform().GetPosition();
+	auto enemies = context->entities->GetObjectsInLayer(ObjectLayer::Enemy);
+	for (auto i : enemies)
+	{
+		e = static_cast<Enemy*>(i);
+		DirectX::XMVECTOR vecEnemy = e->GetTransform().GetPosition();
+		DirectX::XMVECTOR riktVec = DirectX::XMVectorSubtract(vecPlayer, vecEnemy);
+		DirectX::XMVECTOR dist = DirectX::XMVector3Length(riktVec);
+		float distance = DirectX::XMVectorGetByIndex(dist, 0);
+
+		if (distance > 30.0f) {
+			if (rTimer > 0.0f) {
+				rTimer -= deltaTime;
+			}
+			else {
+				std::cout << "RESPAWN" << std::endl;
+				e->GetTransform().SetPosition(GetRandomSpawnPosition(1.0f));
+				rTimer = 10.0f;
+			}
+		}
+		else {
+			if (rTimer != 10.0f)
+				rTimer = 10.0f;
+		}
+	}
+}
+
 DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition(float heightOffset)
 {
 	bool found = false;
@@ -182,6 +213,19 @@ DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition(float heightOffset)
 	}
 
 	return position;
+}
+
+DirectX::XMVECTOR SpawnObjects::GetRandomEnemyPosition()
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, context->player->GetTransform().GetPosition());
+
+	float angle = (float)(rand() % 16) * (360.0f / CoconutsPerTree);
+	float x = pos.x + cosf(angle * MathHelper::ToRadians) * EnemySpawnDistanceFromPlayer;
+	float z = pos.z + sinf(angle * MathHelper::ToRadians) * EnemySpawnDistanceFromPlayer;
+	float y = context->terrain->SampleHeight(x, z) + 0.4f;
+
+	return { x,y,z };
 }
 
 void SpawnObjects::AddEnemyToPool()
@@ -209,19 +253,10 @@ Enemy* SpawnObjects::SpawnEnemy()
 	Enemy* e = enemyPool.front();
 	enemyPool.pop();
 	e->ResetHealth();
-	context->entities->InsertObject(e);
 	e->SetEnabled(true);
+	context->entities->InsertObject(e);
 
-
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMStoreFloat3(&pos, context->player->GetTransform().GetPosition());
-
-	float angle = (float)(rand() % 16) * (360.0f / CoconutsPerTree);
-	float x = pos.x + cosf(angle * MathHelper::ToRadians) * 20.0f;
-	float z = pos.z + sinf(angle * MathHelper::ToRadians) * 20.0f;
-	float y = context->terrain->SampleHeight(x, z) + 0.4f;
-
-	e->GetTransform().SetPosition({ x,y,z });
+	e->GetTransform().SetPosition(GetRandomEnemyPosition());
 	e->GetTransform().SetScale(0.275f, 0.275f, 0.275f);
 
 	return e;
@@ -232,14 +267,16 @@ void SpawnObjects::UpdateSpawnEnemy()
 	// skapar fler fiender om vi saknar
 	//Logger::Write(std::to_string(enemyCount) + " : " + std::to_string(maxEnemies));
 
+
 	if (enemyCount < context->gamemanager->GetActiveEnemies() && maxEnemies != 0)
 	{
 		SpawnEnemy();
 		enemyCount++;
 	}
+
 }
 
-void SpawnObjects::UpdateRemoveEnemy()
+void SpawnObjects::UpdateEnemies(const float& deltaTime)
 {
 	auto enemies = context->entities->GetObjectsInLayer(ObjectLayer::Enemy);
 
@@ -249,20 +286,44 @@ void SpawnObjects::UpdateRemoveEnemy()
 	for (auto i : enemies)
 	{
 		e = static_cast<Enemy*>(i);
+		AABB enemyBounds = e->GetWorldBounds();
 
-		if (e != nullptr && player->GetActiveWeapon() != nullptr && player->GetActiveWeapon()->GetWorldBounds().Overlaps(e->GetWorldBounds()))
+		if (e != nullptr)
 		{
-			e->HitSound();
-			e->TakeDamage(player->GetActiveWeapon()->AttackDamage());
-			player->RemoveActiveWeapon();
-
-			if (e->GetHealthLeft() <= 0.0f)
+			if (player->GetActiveWeapon() != nullptr && player->GetActiveWeapon()->GetWorldBounds().Overlaps(enemyBounds))
 			{
-				player->IncreasePoints(e->GetPointValue());
-				RemoveEnemy(e);
+				e->HitSound();
+				e->TakeDamage(player->GetActiveWeapon()->AttackDamage());
+				player->RemoveActiveWeapon();
 
-				enemyCount--;
-				maxEnemies--;
+				if (e->GetHealthLeft() <= 0.0f)
+				{
+					if (CountEnemiesRemaining() != 0) 
+					{
+						player->IncreasePoints(e->GetPointValue());
+						maxEnemies--;
+					}					
+
+					RemoveEnemy(e);
+					enemyCount--;						
+				}
+
+				continue;
+			}
+
+			if (!context->scene->GetSceneCamera()->IsBoundsInView(enemyBounds))
+			{
+				e->teleportationTimer -= deltaTime;
+				if (e->teleportationTimer <= 0.0f)
+				{
+					e->GetTransform().SetPosition(GetRandomEnemyPosition());
+					e->ResetTeleportationTimer();
+				}
+			}
+			else
+			{
+				e->ResetTeleportationTimer();
+							
 			}
 		}
 	}
