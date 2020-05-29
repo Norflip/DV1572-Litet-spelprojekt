@@ -118,8 +118,7 @@ void SpawnObjects::Update(const float& deltaTime)
 	}
 
 	UpdateSpawnEnemy();
-	UpdateRemoveEnemy();
-	//CheckDistanceForRespawn(deltaTime);
+	UpdateEnemies();
 }
 
 void SpawnObjects::SetPickupPrefab(Object* obj, WeaponType type)
@@ -216,6 +215,19 @@ DirectX::XMVECTOR SpawnObjects::GetRandomSpawnPosition(float heightOffset)
 	return position;
 }
 
+DirectX::XMVECTOR SpawnObjects::GetRandomEnemyPosition()
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, context->player->GetTransform().GetPosition());
+
+	float angle = (float)(rand() % 16) * (360.0f / CoconutsPerTree);
+	float x = pos.x + cosf(angle * MathHelper::ToRadians) * EnemySpawnDistanceFromPlayer;
+	float z = pos.z + sinf(angle * MathHelper::ToRadians) * EnemySpawnDistanceFromPlayer;
+	float y = context->terrain->SampleHeight(x, z) + 0.4f;
+
+	return { x,y,z };
+}
+
 void SpawnObjects::AddEnemyToPool()
 {
 	Player* player = static_cast<Player*>(context->entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
@@ -241,19 +253,10 @@ Enemy* SpawnObjects::SpawnEnemy()
 	Enemy* e = enemyPool.front();
 	enemyPool.pop();
 	e->ResetHealth();
-	context->entities->InsertObject(e);
 	e->SetEnabled(true);
+	context->entities->InsertObject(e);
 
-
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMStoreFloat3(&pos, context->player->GetTransform().GetPosition());
-
-	float angle = (float)(rand() % 16) * (360.0f / CoconutsPerTree);
-	float x = pos.x + cosf(angle * MathHelper::ToRadians) * 20.0f;
-	float z = pos.z + sinf(angle * MathHelper::ToRadians) * 20.0f;
-	float y = context->terrain->SampleHeight(x, z) + 0.4f;
-
-	e->GetTransform().SetPosition({ x,y,z });
+	e->GetTransform().SetPosition(GetRandomEnemyPosition());
 	e->GetTransform().SetScale(0.275f, 0.275f, 0.275f);
 
 	return e;
@@ -264,6 +267,7 @@ void SpawnObjects::UpdateSpawnEnemy()
 	// skapar fler fiender om vi saknar
 	//Logger::Write(std::to_string(enemyCount) + " : " + std::to_string(maxEnemies));
 
+
 	if (enemyCount < context->gamemanager->GetActiveEnemies() && maxEnemies != 0)
 	{
 		SpawnEnemy();
@@ -272,7 +276,7 @@ void SpawnObjects::UpdateSpawnEnemy()
 
 }
 
-void SpawnObjects::UpdateRemoveEnemy()
+void SpawnObjects::UpdateEnemies()
 {
 	auto enemies = context->entities->GetObjectsInLayer(ObjectLayer::Enemy);
 
@@ -282,8 +286,9 @@ void SpawnObjects::UpdateRemoveEnemy()
 	for (auto i : enemies)
 	{
 		e = static_cast<Enemy*>(i);
+		AABB enemyBounds = e->GetWorldBounds();
 
-		if (e != nullptr && player->GetActiveWeapon() != nullptr && player->GetActiveWeapon()->GetWorldBounds().Overlaps(e->GetWorldBounds()))
+		if (e != nullptr && player->GetActiveWeapon() != nullptr && player->GetActiveWeapon()->GetWorldBounds().Overlaps(enemyBounds))
 		{
 			e->HitSound();
 			e->TakeDamage(player->GetActiveWeapon()->AttackDamage());
@@ -297,6 +302,11 @@ void SpawnObjects::UpdateRemoveEnemy()
 				enemyCount--;
 				maxEnemies--;
 			}
+
+			continue;
 		}
+
+		if(context->scene->GetSceneCamera()->IsBoundsInView(enemyBounds))
+			e->GetTransform().SetPosition(GetRandomEnemyPosition());
 	}
 }

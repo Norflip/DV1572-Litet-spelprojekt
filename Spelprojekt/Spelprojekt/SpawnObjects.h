@@ -35,6 +35,7 @@ class SpawnObjects
 	const float CoconutOffset = 3.0f;
 
 	const float MinimumSpawnHeight = 4.0f;
+	const float EnemySpawnDistanceFromPlayer = 20.0f;
 
 public:
 	SpawnObjects(WorldContext* context);
@@ -60,13 +61,14 @@ public:
 
 private:
 	DirectX::XMVECTOR GetRandomSpawnPosition(float heightOffset);
+	DirectX::XMVECTOR  GetRandomEnemyPosition();
 
 	void AddEnemyToPool();
 	void RemoveEnemy(Enemy*);
 	Enemy* SpawnEnemy();
 
 	void UpdateSpawnEnemy();
-	void UpdateRemoveEnemy();
+	void UpdateEnemies();
 
 private:
 	float rTimer;
