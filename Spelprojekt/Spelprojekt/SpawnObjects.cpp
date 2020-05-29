@@ -118,7 +118,7 @@ void SpawnObjects::Update(const float& deltaTime)
 	}
 
 	UpdateSpawnEnemy();
-	UpdateEnemies();
+	UpdateEnemies(deltaTime);
 }
 
 void SpawnObjects::SetPickupPrefab(Object* obj, WeaponType type)
@@ -276,7 +276,7 @@ void SpawnObjects::UpdateSpawnEnemy()
 
 }
 
-void SpawnObjects::UpdateEnemies()
+void SpawnObjects::UpdateEnemies(const float& deltaTime)
 {
 	auto enemies = context->entities->GetObjectsInLayer(ObjectLayer::Enemy);
 
@@ -288,25 +288,39 @@ void SpawnObjects::UpdateEnemies()
 		e = static_cast<Enemy*>(i);
 		AABB enemyBounds = e->GetWorldBounds();
 
-		if (e != nullptr && player->GetActiveWeapon() != nullptr && player->GetActiveWeapon()->GetWorldBounds().Overlaps(enemyBounds))
+		if (e != nullptr)
 		{
-			e->HitSound();
-			e->TakeDamage(player->GetActiveWeapon()->AttackDamage());
-			player->RemoveActiveWeapon();
-
-			if (e->GetHealthLeft() <= 0.0f)
+			if (player->GetActiveWeapon() != nullptr && player->GetActiveWeapon()->GetWorldBounds().Overlaps(enemyBounds))
 			{
-				player->IncreasePoints(e->GetPointValue());
-				RemoveEnemy(e);
+				e->HitSound();
+				e->TakeDamage(player->GetActiveWeapon()->AttackDamage());
+				player->RemoveActiveWeapon();
 
-				enemyCount--;
-				maxEnemies--;
+				if (e->GetHealthLeft() <= 0.0f)
+				{
+					player->IncreasePoints(e->GetPointValue());
+					RemoveEnemy(e);
+
+					enemyCount--;
+					maxEnemies--;
+				}
+
+				continue;
 			}
 
-			continue;
+			if (!context->scene->GetSceneCamera()->IsBoundsInView(enemyBounds))
+			{
+				e->teleportationTimer -= deltaTime;
+				if (e->teleportationTimer <= 0.0f)
+				{
+					e->GetTransform().SetPosition(GetRandomEnemyPosition());
+					e->ResetTeleportationTimer();
+				}
+			}
+			else
+			{
+				e->ResetTeleportationTimer();
+			}
 		}
-
-		if(context->scene->GetSceneCamera()->IsBoundsInView(enemyBounds))
-			e->GetTransform().SetPosition(GetRandomEnemyPosition());
 	}
 }

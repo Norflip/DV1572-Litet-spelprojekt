@@ -68,7 +68,7 @@ private:
 	Enemy* SpawnEnemy();
 
 	void UpdateSpawnEnemy();
-	void UpdateEnemies();
+	void UpdateEnemies(const float& deltaTime);
 
 private:
 	float rTimer;

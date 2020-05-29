@@ -13,7 +13,7 @@ Enemy::Enemy(Mesh* mesh, Material* material, WorldContext* context) : Object(Obj
 
 	// Health for enemy
 	this->health = context->gamemanager->GetEnemyHealth();
-
+	ResetTeleportationTimer();
 
 	Icecream* prefab = context->resources->GetResource<Icecream>("icecreamPrefab");
 
