@@ -46,10 +46,7 @@ POINTS Input::GetMousePosition() const
 
 POINTS Input::GetMouseDelta() const
 {
-	POINTS points;
-	points.x = currentMouseState.x;
-	points.y = currentMouseState.y;
-	return points;
+	return GetMousePosition();
 }
 
 void Input::LockCursor(bool lockstate)
