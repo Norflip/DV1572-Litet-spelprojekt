@@ -162,7 +162,6 @@ void DevScene::Load()
 
 	testSpeed.Stop();
 	std::cout << std::endl << "loadTime:  " << testSpeed.GetMilisecondsElapsed() << std::endl;
-	loadThread.detach();
 }
 
 void DevScene::Unload()
