@@ -125,7 +125,7 @@ void DevScene::Load()
 	
 
 	// ------ Leveldesign
-	std::thread loadThread(&DevScene::CreateSceneObjects, this);
+	CreateSceneObjects();
 	//CreateSceneObjects();
 
 
