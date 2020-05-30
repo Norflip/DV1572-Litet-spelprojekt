@@ -13,7 +13,7 @@
 #include <vector>
 #include "EndScene.h"
 #include "Gamemanager.h"
-
+#include <future>
 class Application
 {
 	const float TARGET_FIXED_DELTA = 1.0f / 50.0f;
@@ -34,6 +34,7 @@ public:
 
 	bool exitGame = false;
 
+	void loadScenes();
 private:
 	// Variables
 	Window window;
@@ -47,7 +48,6 @@ private:
 	Scene* gameScene;
 	Scene* introScene;
 	Scene* endScene;
-
 	std::vector<Scene*>scenes;
 	Renderer* deferredRenderer;
 

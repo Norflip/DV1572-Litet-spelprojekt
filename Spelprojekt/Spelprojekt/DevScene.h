@@ -21,6 +21,7 @@
 #include "SpawnObjects.h"
 #include "Enemy.h"
 #include "WorldContext.h"
+#include <thread>
 
 class DevScene : public Scene
 {
