@@ -48,10 +48,10 @@ void CameraController::UpdateFree(const float& deltaTime)
 	float forwardDelta = 0.0f;
 	float rightDelta = 0.0f;
 
-	if (input->GetKey('w')) forwardDelta += 1.0f;
-	if (input->GetKey('a')) rightDelta -= 1.0f;
-	if (input->GetKey('s')) forwardDelta -= 1.0f;
-	if (input->GetKey('d')) rightDelta += 1.0f;
+	if (input->GetKey(DirectX::Keyboard::Keys::W)) forwardDelta += 1.0f;
+	if (input->GetKey(DirectX::Keyboard::Keys::A)) rightDelta -= 1.0f;
+	if (input->GetKey(DirectX::Keyboard::Keys::S)) forwardDelta -= 1.0f;
+	if (input->GetKey(DirectX::Keyboard::Keys::D)) rightDelta += 1.0f;
 
 	if (forwardDelta != 0.0f || rightDelta != 0.0f)
 	{

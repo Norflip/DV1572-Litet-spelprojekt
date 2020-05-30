@@ -74,7 +74,7 @@ void Player::UpdateMovement(float fixedDeltaTime)
 
 	if (controller->GetState() == CameraController::State::Follow)
 	{
-		if (controller->getInput()->GetKey('p'))
+		if (controller->getInput()->GetKey(DirectX::Keyboard::Keys::P))
 		{
 			GetMesh()->skeleton->SetCurrentAnimation(GetMesh()->skeleton->animations[2]);
 			return;
@@ -83,10 +83,10 @@ void Player::UpdateMovement(float fixedDeltaTime)
 		float dx = 0.0f;
 		float dz = 0.0f;
 
-		if (input->GetKey('w')) dz += 1.0f;
-		if (input->GetKey('a')) dx -= 1.0f;
-		if (input->GetKey('s')) dz -= 1.0f;
-		if (input->GetKey('d')) dx += 1.0f;
+		if (input->GetKey(DirectX::Keyboard::Keys::W)) dz += 1.0f;
+		if (input->GetKey(DirectX::Keyboard::Keys::A)) dx -= 1.0f;
+		if (input->GetKey(DirectX::Keyboard::Keys::S)) dz -= 1.0f;
+		if (input->GetKey(DirectX::Keyboard::Keys::D)) dx += 1.0f;
 
 		float length = sqrtf(dx * dx + dz * dz);
 
@@ -137,22 +137,23 @@ void Player::UpdateHeight(float FixedDeltaTime)
 
 void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime)
 {
-	float currentDir = DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1);
+	//float currentDir = DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1);
 
-	DirectX::XMVECTOR directionVector = { currentPosition.x - nextPosition.x,0, currentPosition.z - nextPosition.z };
-	//Checks if WASD is pressed. True sets new direction
-	if (input->GetKey('w') || input->GetKey('a') || input->GetKey('s') || input->GetKey('d'))
-		nextDir = atan2(DirectX::XMVectorGetByIndex(directionVector, 0), DirectX::XMVectorGetByIndex(directionVector, 2));
+	//DirectX::XMVECTOR directionVector = { currentPosition.x - nextPosition.x,0, currentPosition.z - nextPosition.z };
+	////Checks if WASD is pressed. True sets new direction
 
-	//Rotates to shortest angle(in rad)
-	GetTransform().Rotate(0, MathHelper::ShortestRotation(currentDir, nextDir) / 3, 0);
-	//GetTransform().Rotate(0, shortestRoration(currentDir, nextDir)/10, 0);
+	//if (input->GetKey('w') || input->GetKey('a') || input->GetKey('s') || input->GetKey('d'))
+	//	nextDir = atan2(DirectX::XMVectorGetByIndex(directionVector, 0), DirectX::XMVectorGetByIndex(directionVector, 2));
 
-	//removes rotations bigger and smaller than 360 & -360
-	if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) < -MathHelper::PI * 2)
-		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) + MathHelper::PI * 2, 0 });
-	if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) > MathHelper::PI * 2)
-		GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) - MathHelper::PI * 2, 0 });
+	////Rotates to shortest angle(in rad)
+	//GetTransform().Rotate(0, MathHelper::ShortestRotation(currentDir, nextDir) / 3, 0);
+	////GetTransform().Rotate(0, shortestRoration(currentDir, nextDir)/10, 0);
+
+	////removes rotations bigger and smaller than 360 & -360
+	//if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) < -MathHelper::PI * 2)
+	//	GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) + MathHelper::PI * 2, 0 });
+	//if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) > MathHelper::PI * 2)
+	//	GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) - MathHelper::PI * 2, 0 });
 }
 
 DirectX::XMFLOAT3 Player::CheckCollisions(const float& deltaTime, const float& length)
@@ -192,7 +193,7 @@ DirectX::XMFLOAT3 Player::CheckCollisions(const float& deltaTime, const float& l
 
 void Player::CheckForPickups()
 {
-	if (input->GetKeyDown('e') && (!lefthandFull || !righthandFull))
+	if (input->GetKeyDown(DirectX::Keyboard::Keys::E) && (!lefthandFull || !righthandFull))
 	{
 		std::vector<Object*> pickups = context->entities->GetObjectsInLayer(ObjectLayer::Pickup);
 		bool foundPickup = false;
@@ -292,7 +293,7 @@ void Player::UpdateAnimations()
 void Player::UseWeapon()
 {
 	// Left hand
-	if (input->GetMouseButtonDown(0) && lefthandFull)
+	if (input->GetLeftMouseButtonDown() && lefthandFull)
 	{
 		WeaponUsage(leftWeapon, lefthandFull);
 
@@ -301,7 +302,7 @@ void Player::UseWeapon()
 	}
 
 	// Right hand
-	if (input->GetMouseButtonDown(1) && righthandFull)
+	if (input->GetRightMouseButtonDown() && righthandFull)
 	{
 		WeaponUsage(rightWeapon, righthandFull);
 

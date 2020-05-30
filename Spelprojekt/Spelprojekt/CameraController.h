@@ -5,7 +5,7 @@
 
 class CameraController
 {
-	const char DEBUG_CAMERA_KEY = 'f';
+	const DirectX::Keyboard::Keys DEBUG_CAMERA_KEY = DirectX::Keyboard::Keys::F;
 
 public:
 

@@ -76,7 +76,7 @@ void Application::Run()
 			currentTime = static_cast<float>(timer.GetMilisecondsElapsed() / 1000.0f);
 			deltaTime = currentTime - timeLastFrame;
 
-			window.GetInput()->UpdateState();
+			window.GetInput()->Update();
 
 			// call update function
 			if (currentScene != nullptr && !pauseGame)

@@ -804,7 +804,7 @@ void DevScene::checkForNextScene()
 	// Används inte längre
 	// Change scene logic
 
-	if (controller->getInput()->GetKeyDown('i'))
+	/*if (controller->getInput()->GetKeyDown('i'))
 	{
 		for (int i = 0; i < scenes.size(); i++)
 		{
@@ -819,7 +819,7 @@ void DevScene::checkForNextScene()
 			}
 
 		}
-	}
+	}*/
 }
 
 void DevScene::SetNextScene(bool winOrLose)

@@ -101,7 +101,7 @@ void GUISprite::SetDDSSprite(DX11Handler& dx11, std::string spriteFile)
 
 bool GUISprite::Clicked(Input* input)
 {
-	if (MouseOver(input) && input->GetMouseButtonDown(0))
+	if (MouseOver(input) && input->GetLeftMouseButtonDown())
 		return true;
 	else
 		return false;

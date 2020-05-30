@@ -1,21 +1,8 @@
 #include "Input.h"
 
-Input::Input(HWND hwnd, size_t width, size_t height) : hwnd(hwnd), height(height), width(width)
+Input::Input(HWND hwnd, size_t width, size_t height) : hwnd(hwnd), height(height), width(width), firstFrame(true), lockCursor(false)
 {
-	//defines MOUSE and KEYBOARD
-	RAWINPUTDEVICE rid[2];
-	rid[0].usUsagePage = 0x01;
-	rid[0].usUsage = 0x02;
-	rid[0].dwFlags = 0;
-	rid[0].hwndTarget = hwnd;
-
-	rid[1].usUsagePage = 0x01;
-	rid[1].usUsage = 0x06;
-	rid[1].dwFlags = 0;
-	rid[1].hwndTarget = hwnd;
-
-	assert(RegisterRawInputDevices(rid, 2, sizeof(RAWINPUTDEVICE)));
-
+	dxmouse.SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 	dxmouse.SetWindow(hwnd);
 }
 
@@ -24,39 +11,45 @@ Input::~Input()
 
 }
 
-bool Input::GetKey(const char& c) const
+bool Input::GetKey(DirectX::Keyboard::Keys key) const
 {
-	return keyboardState[tolower(c)].state;
+	return currentKeyboardState.IsKeyDown(key);
 }
 
-bool Input::GetKeyDown(const char& c) const
+bool Input::GetKeyDown(DirectX::Keyboard::Keys key) const
 {
-	if(keyboardState[tolower(c)].state && !keyboardState[tolower(c)].previousState != 0)
-		std::cout << keyboardState[tolower(c)].state && !keyboardState[tolower(c)].previousState;
-
-
-
-	return keyboardState[tolower(c)].state && !keyboardState[tolower(c)].previousState;
+	return currentKeyboardState.IsKeyDown(key) && !previosKeyboardState.IsKeyDown(key);
 }
 
-bool Input::GetKeyUp(const char& c) const
+bool Input::GetKeyUp(DirectX::Keyboard::Keys key) const
 {
-	return !keyboardState[tolower(c)].state && keyboardState[tolower(c)].previousState;
+	return !currentKeyboardState.IsKeyDown(key) && previosKeyboardState.IsKeyDown(key);
 }
 
-bool Input::GetMouseButton(size_t key) const
+bool Input::GetRightMouseButtonDown() const
 {
-	return mouseButtonState[key].state;
+	return mouseState.rightButton;
 }
 
-bool Input::GetMouseButtonDown(size_t key) const
+bool Input::GetLeftMouseButtonDown() const
 {
-	return mouseButtonState[key].state && !mouseButtonState[key].previousState;
+	return mouseState.leftButton;
 }
 
-bool Input::GetMouseButtonUp(size_t key) const
+POINTS Input::GetMousePosition() const
 {
-	return !mouseButtonState[key].state && mouseButtonState[key].previousState;
+	POINTS points;
+	points.x = mouseState.x;
+	points.y = mouseState.y;
+	return points;
+}
+
+POINTS Input::GetMouseDelta() const
+{
+	POINTS points;
+	points.x = mouseState.x;
+	points.y = mouseState.y;
+	return points;
 }
 
 void Input::LockCursor(bool lockstate)
@@ -73,176 +66,40 @@ void Input::LockCursor(bool lockstate)
 		rect.top = rect.bottom = height / 2;
 		rect.left = rect.right = width / 2;
 
+		dxmouse.SetMode(DirectX::Mouse::MODE_RELATIVE);
+
 		MapWindowPoints(hwnd, nullptr, reinterpret_cast<POINT*>(&rect), 2);
 		ClipCursor(&rect);
 	}
 	else
 	{
+		dxmouse.SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 		ClipCursor(NULL);
 	}
 }
 
 void Input::HandleMessage(UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-
 	DirectX::Keyboard::ProcessMessage(umsg, wParam, lParam);
 	DirectX::Mouse::ProcessMessage(umsg, wParam, lParam);
-
-	//Logger::Write("ADAWD: " + std::to_string(k.A));
-
-	//m.ProcessMessage(umsg, wParam, lParam);
-
-
-
-	const POINTS mousePosition = MAKEPOINTS(lParam);
-
-	switch (umsg)
-	{
-	case WM_LBUTTONDOWN:
-		mouseBuffer.push({ MouseAction::LEFT, mousePosition, true });
-		break;
-
-	case WM_LBUTTONUP:
-		mouseBuffer.push({ MouseAction::LEFT, mousePosition, false });
-		if (!ContainsPoint(mousePosition))
-			ReleaseCapture();
-
-		break;
-
-	case WM_RBUTTONDOWN:
-		mouseBuffer.push({ MouseAction::RIGHT, mousePosition, true });
-		break;
-
-	case WM_RBUTTONUP:
-		mouseBuffer.push({ MouseAction::RIGHT, mousePosition, false });
-		if (!ContainsPoint(mousePosition))
-			ReleaseCapture();
-
-		break;
-
-	case WM_MOUSEMOVE:
-	{
-		POINT ptCursor;
-		GetCursorPos(&ptCursor);
-		ScreenToClient(hwnd, &ptCursor);
-
-		if (ContainsPoint(mousePosition))
-		{
-			current_mpos = mousePosition;
-		}
-		break;
-	}
-
-	// https://docs.microsoft.com/sv-se/windows/win32/dxtecharts/taking-advantage-of-high-dpi-mouse-movement?redirectedfrom=MSDN
-	// https://gamedev.stackexchange.com/questions/72114/how-do-i-handle-directx-mouse-events
-	case WM_INPUT:
-	{
-		UINT size{};
-		if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER)) == -1)
-			break;
-
-		LPBYTE buffer = new BYTE[size];
-		BOOL bufferCorrectSizeResult = GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, buffer, &size, sizeof(RAWINPUTHEADER)) == size;
-
-		if (!bufferCorrectSizeResult)
-			return;
-
-		RAWINPUT* raw = (RAWINPUT*)buffer;
-
-		if (raw->header.dwType == RIM_TYPEKEYBOARD)
-		{
-			USHORT key = raw->data.keyboard.VKey;
-			SetKeyState((char)key, !(raw->data.keyboard.Flags & RI_KEY_BREAK));
-		}
-		else if (raw->header.dwType == RIM_TYPEMOUSE)
-		{
-
-			POINTS mouseDeltaPosition = {};
-			mouseDeltaPosition.x = static_cast<SHORT>(raw->data.mouse.lLastX);
-			mouseDeltaPosition.y = static_cast<SHORT>(raw->data.mouse.lLastY);
-
-			mouseBuffer.push({ MouseAction::DELTA, mouseDeltaPosition });
-		}
-		break;
-	}
-
-	default:
-		break;
-	}
 }
 
-void Input::UpdateState()
+void Input::Update()
 {
+	DirectX::Keyboard::State newState = dxkeyboard.GetState();
 
-	DirectX::Mouse::State st = dxmouse.GetState();
-
-	DirectX::Keyboard::State s = dxkeyboard.GetState();
-	Logger::Write(std::to_string(s.A));
-
-	mouseDelta = { 0,0 };
-	
-	while (!keyqueue.empty())
-		keyqueue.pop();
-	
-
-	for (size_t i = 0; i < 256; i++)
-		keyboardState[i].previousState = keyboardState[i].state;
-
-	for (size_t i = 0; i < 3; i++)
-		mouseButtonState[i].previousState = mouseButtonState[i].state;
-
-	while (!keyboardBuffer.empty())
+	if (firstFrame)
 	{
-		KeyboardEvent keyboardEvent = keyboardBuffer.front();
-		keyboardBuffer.pop();
-		keyboardState[keyboardEvent.key].state = keyboardEvent.state;
-
-		if (GetKeyDown(keyboardEvent.key))
-			keyqueue.push(keyboardEvent.key);
+		currentKeyboardState = previosKeyboardState = newState;
+		firstFrame = false;
+	}
+	else
+	{
+		previosKeyboardState = currentKeyboardState;
+		currentKeyboardState = newState;
 	}
 
-	while (!mouseBuffer.empty())
-	{
-		MouseEvent mouseEvent = mouseBuffer.front();
-		mouseBuffer.pop();
-
-		int d = static_cast<int>(mouseEvent.action);
-
-		if (d >= 0 && d < 3)
-		{
-			mouseButtonState[d].state = mouseEvent.state;
-		}
-		else if (mouseEvent.action == MouseAction::DELTA)
-		{
-			mouseDelta = mouseEvent.pt;
-		}
-	}
+	mouseState = dxmouse.GetState();
 }
 
-char Input::PullKeyChar()
-{
-	if (keyqueue.empty())
-	{
-		char key = keyqueue.front();
-		keyqueue.pop();
-		return key;
-	}
 
-	return 0;
-}
-
-void Input::SetKeyState(char key, bool state)
-{
-	if (key >= 0 && key < 256)
-	{
-		if (keyboardBuffer.size() > 0 && keyboardBuffer.back().key == key && keyboardBuffer.back().state == state)
-			return;
-
-		keyboardBuffer.push({ (char)tolower(key), state });
-	}
-}
-
-BOOL Input::ContainsPoint(const POINTS& pt) const
-{
-	return pt.x >= 0 && pt.x < (SHORT)width&& pt.y >= 0 && pt.y < (SHORT)height;
-}
