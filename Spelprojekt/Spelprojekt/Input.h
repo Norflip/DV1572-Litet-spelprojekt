@@ -26,7 +26,6 @@ public:
 	bool GetRightMouseButtonDown() const;
 	bool GetLeftMouseButtonDown() const;
 
-
 	POINTS GetMousePosition() const;
 	POINTS GetMouseDelta() const;
 
@@ -44,7 +43,9 @@ private:
 
 	DirectX::Keyboard::State currentKeyboardState;
 	DirectX::Keyboard::State previosKeyboardState;
-	DirectX::Mouse::State mouseState;
+	
+	DirectX::Mouse::State previousMouseState;
+	DirectX::Mouse::State currentMouseState;
 
 	DirectX::Keyboard dxkeyboard;
 	DirectX::Mouse dxmouse;

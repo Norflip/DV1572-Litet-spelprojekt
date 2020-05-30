@@ -28,27 +28,27 @@ bool Input::GetKeyUp(DirectX::Keyboard::Keys key) const
 
 bool Input::GetRightMouseButtonDown() const
 {
-	return mouseState.rightButton;
+	return currentMouseState.rightButton && !previousMouseState.rightButton;
 }
 
 bool Input::GetLeftMouseButtonDown() const
 {
-	return mouseState.leftButton;
+	return currentMouseState.leftButton && !previousMouseState.leftButton;
 }
 
 POINTS Input::GetMousePosition() const
 {
 	POINTS points;
-	points.x = mouseState.x;
-	points.y = mouseState.y;
+	points.x = currentMouseState.x;
+	points.y = currentMouseState.y;
 	return points;
 }
 
 POINTS Input::GetMouseDelta() const
 {
 	POINTS points;
-	points.x = mouseState.x;
-	points.y = mouseState.y;
+	points.x = currentMouseState.x;
+	points.y = currentMouseState.y;
 	return points;
 }
 
@@ -86,20 +86,24 @@ void Input::HandleMessage(UINT umsg, WPARAM wParam, LPARAM lParam)
 
 void Input::Update()
 {
-	DirectX::Keyboard::State newState = dxkeyboard.GetState();
+	DirectX::Keyboard::State newKeyboardState = dxkeyboard.GetState();
+	DirectX::Mouse::State newMouseState = dxmouse.GetState();
 
 	if (firstFrame)
 	{
-		currentKeyboardState = previosKeyboardState = newState;
+		currentKeyboardState = previosKeyboardState = newKeyboardState;
+		currentMouseState = previousMouseState = newMouseState;
+
 		firstFrame = false;
 	}
 	else
 	{
 		previosKeyboardState = currentKeyboardState;
-		currentKeyboardState = newState;
-	}
+		currentKeyboardState = newKeyboardState;
 
-	mouseState = dxmouse.GetState();
+		previousMouseState = currentMouseState;
+		currentMouseState = newMouseState;
+	}
 }
 
 
