@@ -4,8 +4,12 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+
 #include <assert.h>
 #include "Logger.h"
+
+#include <Keyboard.h>
+#include <Mouse.h>
 
 class Input
 {
@@ -42,6 +46,9 @@ public:
 	};
 
 public:
+
+	DirectX::Keyboard dxkeyboard;
+	DirectX::Mouse dxmouse;
 
 	Input(HWND, size_t width, size_t height);
 	virtual ~Input();

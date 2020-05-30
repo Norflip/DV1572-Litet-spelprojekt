@@ -15,6 +15,8 @@ Input::Input(HWND hwnd, size_t width, size_t height) : hwnd(hwnd), height(height
 	rid[1].hwndTarget = hwnd;
 
 	assert(RegisterRawInputDevices(rid, 2, sizeof(RAWINPUTDEVICE)));
+
+	dxmouse.SetWindow(hwnd);
 }
 
 Input::~Input()
@@ -82,6 +84,16 @@ void Input::LockCursor(bool lockstate)
 
 void Input::HandleMessage(UINT umsg, WPARAM wParam, LPARAM lParam)
 {
+
+	DirectX::Keyboard::ProcessMessage(umsg, wParam, lParam);
+	DirectX::Mouse::ProcessMessage(umsg, wParam, lParam);
+
+	//Logger::Write("ADAWD: " + std::to_string(k.A));
+
+	//m.ProcessMessage(umsg, wParam, lParam);
+
+
+
 	const POINTS mousePosition = MAKEPOINTS(lParam);
 
 	switch (umsg)
@@ -161,6 +173,11 @@ void Input::HandleMessage(UINT umsg, WPARAM wParam, LPARAM lParam)
 
 void Input::UpdateState()
 {
+
+	DirectX::Mouse::State st = dxmouse.GetState();
+	Logger::Write(std::to_string(st.leftButton));
+
+
 	mouseDelta = { 0,0 };
 	
 	while (!keyqueue.empty())
