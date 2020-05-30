@@ -160,7 +160,7 @@ void DevScene::Load()
 	gametimer.Start();
 
 	// Play scenemusic	
-	gamemanager->PlayMusic();
+	//gamemanager->PlayMusic();
 
 	testSpeed.Stop();
 	std::cout << std::endl << "loadTime:  " << testSpeed.GetMilisecondsElapsed() << std::endl;

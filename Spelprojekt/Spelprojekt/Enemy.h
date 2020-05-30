@@ -68,5 +68,6 @@ private:
 
 	// FILIPS VARIATION
 	Icecream* weapon;
-
+	
+	bool isMoving;
 };

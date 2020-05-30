@@ -21,6 +21,7 @@ Enemy::Enemy(Mesh* mesh, Material* material, WorldContext* context) : Object(Obj
 	weapon = new Icecream(*prefab);
 	weapon->SetEnabled(false);
 	context->entities->InsertObject(weapon);
+	this->isMoving = false;
 }
 
 Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext* context) : Enemy(modelData.mesh, modelData.material, context) {}
@@ -67,19 +68,20 @@ void Enemy::UpdateMovement(float fixedDeltaTime)
 
 		DirectX::XMFLOAT3 pPos;
 		DirectX::XMStoreFloat3(&pPos, context->player->GetTransform().GetPosition());
-
-		DirectX::XMFLOAT3 off = { 0,0,0 };
-
-		if (pPos.z >= nextPos.z)
+		
+		/*if (pPos.z >= nextPos.z)
 			nextPos.z += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 2);
 		if (pPos.x <= nextPos.x)
 			nextPos.x -= fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 0);
 		if (pPos.z <= nextPos.z)
 			nextPos.z -= fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 2);
 		if (pPos.x >= nextPos.x)
-			nextPos.x += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 0);
+			nextPos.x += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 0);*/
 
 		//Logger::Write(LOG_LEVEL::Info, "Chase player " + std::to_string(nextPos.x));
+		
+
+		
 
 		/*float vlength = DirectX::XMVectorGetByIndex(DirectX::XMVector3Length(velocity), 0);
 
@@ -87,6 +89,42 @@ void Enemy::UpdateMovement(float fixedDeltaTime)
 		nextPos.x += collisionOffset.x;
 		nextPos.y += collisionOffset.y;
 		nextPos.z += collisionOffset.z;*/
+
+		DirectX::XMFLOAT3 noff = { 0,0,0 };
+
+		float dx = 0.0f;
+		float dz = 0.0f;
+
+		if (pPos.z >= nextPos.z)
+			dz += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 2);
+		if (pPos.x <= nextPos.x)
+			dx -= fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 0);
+		if (pPos.z <= nextPos.z)
+			dz -= fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 2);
+		if (pPos.x >= nextPos.x)
+			dx += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 0);
+
+		float length = sqrtf(dx * dx + dz * dz);
+
+		dx /= length;
+		dz /= length;
+		noff.x = dx;
+		noff.z = dz;
+
+	/*	bool walkable = context->spawner->PointIsWalkable(nextPos.x + noff.x, nextPos.z + noff.z);
+		isMoving = walkable;
+
+		if (walkable)
+		{
+			DirectX::XMFLOAT3 result = CheckCollisions(fixedDeltaTime, length);
+			noff.x += result.x;
+			noff.z += result.z;
+		}
+		else
+		{
+			noff.x = 0.0f;
+			noff.z = 0.0f;
+		}*/
 
 		GetTransform().SmoothRotate(nextPos, fixedDeltaTime, true);
 		GetTransform().SetPosition({ nextPos.x, nextPos.y, nextPos.z });
