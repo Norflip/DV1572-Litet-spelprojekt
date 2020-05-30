@@ -36,10 +36,11 @@ public:
 	void TakeDamage(float damage);
 	void ResetHealth();
 	float GetHealthLeft() { return this->health; }
-
+	
 
 	void ResetTeleportationTimer() { this->teleportationTimer = TELEPORTATION_COOLDOWN; }
 	float teleportationTimer;
+	void UpdateAnimations();
 
 private:
 	
@@ -69,4 +70,7 @@ private:
 	// FILIPS VARIATION
 	Icecream* weapon;
 
+	bool moving;
+	bool idle;
+	bool throwing;
 };

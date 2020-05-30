@@ -21,6 +21,10 @@ Enemy::Enemy(Mesh* mesh, Material* material, WorldContext* context) : Object(Obj
 	weapon = new Icecream(*prefab);
 	weapon->SetEnabled(false);
 	context->entities->InsertObject(weapon);
+
+	this->moving = false;
+	this->idle = false;
+	this->throwing = false;
 }
 
 Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext* context) : Enemy(modelData.mesh, modelData.material, context) {}
@@ -56,7 +60,7 @@ void Enemy::Update(const float& deltaTime)
 	UpdateMovement(deltaTime);
 
 	UpdateAttackPlayer();
-
+	UpdateAnimations();
 }
 
 void Enemy::FixedUpdate(const float& fixedDeltaTime)
@@ -68,8 +72,10 @@ void Enemy::UpdateMovement(float fixedDeltaTime)
 {
 	// kolla distants
 
-	if (!GetWorldBounds().Overlaps(context->player->GetWorldBounds()))
+	if (!GetWorldBounds().Overlaps(context->player->GetWorldBounds()) && !throwing)
 	{
+		this->moving = true;
+
 		tVelocity = DirectX::XMVectorAdd(tVelocity, BoidsAlgorithm(ObjectLayer::Enemy));
 		tVelocity = DirectX::XMVectorScale(tVelocity, fixedDeltaTime);
 		//Logger::Write(LOG_LEVEL::Info, "T vel " + std::to_string(tVelocity.m128_f32[0]));
@@ -105,6 +111,28 @@ void Enemy::UpdateMovement(float fixedDeltaTime)
 
 		GetTransform().SmoothRotate(nextPos, fixedDeltaTime, true);
 		GetTransform().SetPosition({ nextPos.x, nextPos.y, nextPos.z });
+	}
+
+	else
+	{
+		this->moving = false;
+	}
+
+}
+
+void Enemy::UpdateAnimations()
+{
+	if (moving)
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[0]);
+	}
+	/*if (idle)
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[1]);
+	}*/
+	if (throwing)
+	{
+		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[1]);
 	}
 }
 
@@ -219,6 +247,7 @@ DirectX::XMVECTOR Enemy::GetVelocity()
 {
 	return tVelocity;
 }
+
 void Enemy::HitSound()
 {
 	context->gamemanager->GetSoundeffectHandler()->PlaySound("EnemyHit", context->gamemanager->GetCurrentSoundVolume());
@@ -237,13 +266,24 @@ void Enemy::UpdateAttackPlayer()
 	{
 		if (cooldownTimer <= 0.0f) 
 		{
+			this->throwing = true;
 			weapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			weapon->PlaySoundEffect();
 			weapon->SetType(WeaponType::Icecream);
 			weapon->SetEnabled(true);
-
 			cooldownTimer = 5.0f;
 		}
+
+		if (this->GetMesh()->skeleton->GetKeyframe() >= this->GetMesh()->skeleton->GetCurrentAnimation()->GetLength() - 4 
+			&& this->GetMesh()->skeleton->GetCurrentAnimation()->GetAnimationName() == "EnemyThrow")
+		{
+			this->throwing = false;
+		}
+	}
+
+	else
+	{
+		this->throwing = false;
 	}
 }
 

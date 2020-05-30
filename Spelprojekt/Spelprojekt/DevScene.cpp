@@ -280,7 +280,6 @@ void DevScene::LoadResources()
 		ANIMATIONS
 	*/
 
-	Assimp::Importer imp;
 	this->assimpScene = imp.ReadFile("Animations/Glasse_Walk_Cycle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
 	AssimpHandler::saveAnimationData(assimpScene, playerModel->mesh->skeleton, "Walk");
 
@@ -317,6 +316,9 @@ void DevScene::LoadResources()
 	AssimpHandler::saveAnimationData(assimpScene, enemyPrefab1->GetMesh()->skeleton, "Enemy");
 	enemyPrefab1->GetMesh()->skeleton->SetFirstAnimation(enemyPrefab1->GetMesh()->skeleton->animations[0]);
 
+	this->assimpScene = imp.ReadFile("Animations/EnemyThrow.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, enemyPrefab1->GetMesh()->skeleton, "EnemyThrow");
+
 	resources.AddResource("enemyPrefab1", enemyPrefab1);
 
 	
@@ -332,8 +334,8 @@ void DevScene::LoadResources()
 	spawner->SetPickupPrefab(resources.GetResource<Projectile>("coconutPrefab"), WeaponType::Coconut);
 
 
-	/*delete this->assimpScene;
-	this->assimpScene = nullptr;*/
+	delete this->assimpScene;
+	this->assimpScene = nullptr;
 }
 
 void DevScene::Update(const float& deltaTime)

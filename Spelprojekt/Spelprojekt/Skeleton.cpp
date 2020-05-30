@@ -10,6 +10,13 @@ Skeleton::Skeleton()
 
 Skeleton::~Skeleton()
 {
+	for (int i = 0; i < animations.size(); i++)
+	{
+		delete animations[i];
+		animations[i] = nullptr;
+	}
+
+	animations.clear();
 }
 
 unsigned int Skeleton::GetNumberOfBones()

@@ -86,5 +86,7 @@ private:
 	bool exitActive;
 	Object* arrow;
 	Object* billBoard;
+
+	Assimp::Importer imp;
 	const aiScene* assimpScene;
 };
