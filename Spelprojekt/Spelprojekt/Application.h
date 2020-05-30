@@ -33,8 +33,9 @@ public:
 	void SetPaused(bool pause) { this->pauseGame = pause; }
 
 	bool exitGame = false;
-
+	std::thread* t1;
 	void loadScenes();
+
 private:
 	// Variables
 	Window window;
