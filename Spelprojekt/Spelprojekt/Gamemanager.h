@@ -34,6 +34,9 @@ public:
 	void SetCurrentVSyncState(bool vsync) { this->vsyncState = vsync; }
 
 	// Difficulty 	
+	void SetRecoverHealth(float recover) { this->recover = recover; }
+	float GetRecoverHealth() { return this->recover; }
+
 	void SetDifficultyState(int dif) { this->difficultystate = dif; }
 	int GetDifficultyState() { return this->difficultystate; }
 
@@ -80,6 +83,7 @@ private:
 	int activeEnemies;
 	float enemyDamage;
 	float enemyHealth;
+	float recover;
 
 	// Highscore stuff...
 	std::ofstream writeToHighscore;

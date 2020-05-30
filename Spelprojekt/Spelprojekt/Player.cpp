@@ -397,8 +397,11 @@ float Player::GetPlayerHealth()
 
 void Player::IncreaseHealth()
 {
-	if(GetPlayerHealth() != 100.0f)
-		this->playerHealth += 5.0f;
+	if (GetPlayerHealth() != 100.0f) {
+		this->playerHealth += context->gamemanager->GetRecoverHealth();
+		if (this->playerHealth > 100.0f)
+			this->playerHealth = 100.0f;
+	}		
 }
 
 void Player::HealthCheck(float deltaTime)

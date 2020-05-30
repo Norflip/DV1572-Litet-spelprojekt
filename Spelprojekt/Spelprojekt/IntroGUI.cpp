@@ -107,6 +107,7 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy_active.png";
         lastMedium = "Sprites/medium.png";
         lastHard = "Sprites/hard.png";
+        gamemanager->SetRecoverHealth(2);
         gamemanager->SetEnemyHealth(10);
         gamemanager->SetEnemyDamage(5);
         gamemanager->SetActiveEnemies(5);
@@ -117,6 +118,7 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy.png";
         lastMedium = "Sprites/medium_active.png";
         lastHard = "Sprites/hard.png";
+        gamemanager->SetRecoverHealth(5);
         gamemanager->SetEnemyHealth(20);
         gamemanager->SetEnemyDamage(10);
         gamemanager->SetActiveEnemies(7);
@@ -127,6 +129,7 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy.png";
         lastMedium = "Sprites/medium.png";
         lastHard = "Sprites/hard_active.png";
+        gamemanager->SetRecoverHealth(10);
         gamemanager->SetEnemyHealth(30);
         gamemanager->SetEnemyDamage(15);
         gamemanager->SetActiveEnemies(9);
