@@ -10,6 +10,7 @@
 class IntroGUI;
 #include "IntroGui.h"
 #include "Terrain.h"
+#include <thread>
 class IntroScene : public Scene
 {
 
@@ -30,7 +31,7 @@ public:
 	//GUISprite* healthFrame;
 	void setNextScene();
 	bool& exitGame;
-
+	std::thread* threadPtr;
 private:
 	IntroGUI* introGUI;
 	//Input* input;
@@ -38,5 +39,6 @@ private:
 	std::vector<Scene*>& scenes;		
 	Gamemanager* gamemanager;
 	Object* glass;
+
 };
 

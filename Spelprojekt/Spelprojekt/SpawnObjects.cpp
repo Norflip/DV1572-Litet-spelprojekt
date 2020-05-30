@@ -36,13 +36,16 @@ SpawnObjects::~SpawnObjects()
 	}
 }
 
-void SpawnObjects::SpawnInitial()
+void SpawnObjects::Initialize()
 {
 	// find trees and place N around
 	Weapon* clone = nullptr;
 	Projectile* coconut = static_cast<Projectile*>(pickupsPrefabs[(int)WeaponType::Coconut]);
 
 	std::vector<Object*> trees = context->entities->GetObjectsInLayer(ObjectLayer::Tree);
+
+	Logger::Write("TREES: " + std::to_string(trees.size()));
+
 	for (auto i : trees)
 	{
 		float startAngle = static_cast<float>(rand() % 360);
@@ -260,6 +263,16 @@ Enemy* SpawnObjects::SpawnEnemy()
 	e->GetTransform().SetScale(0.275f, 0.275f, 0.275f);
 
 	return e;
+}
+
+void SpawnObjects::Purge()
+{
+	while (!enemyPool.empty())
+	{
+		Enemy* e = enemyPool.front();
+		enemyPool.pop();
+		delete e;
+	}
 }
 
 void SpawnObjects::UpdateSpawnEnemy()

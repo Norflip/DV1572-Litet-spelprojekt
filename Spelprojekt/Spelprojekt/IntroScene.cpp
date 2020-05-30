@@ -45,13 +45,14 @@ void IntroScene::Load()
 	renderer->SetGUI(gui);
 		
 	this->glass = new Object(ObjectLayer::Player, resources.GetModel("playerModel"));
-	this->glass->GetTransform().Translate(0.0f, 7.5f, -3.0f);
-	this->glass->GetTransform().Rotate(0.0f, -0.6f, 0.0f);
+	this->glass->GetTransform().Translate(-2.5f, 7.5f, -2.5f);
+	this->glass->GetTransform().Rotate(0.0f, 0.0f, 0.0f);
 
 	Assimp::Importer imp;
-	const aiScene* assimpScene = imp.ReadFile("Animations/Glasse_Idle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	const aiScene* assimpScene = imp.ReadFile("Animations/Glasse_Intro_Long.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
 
 	AssimpHandler::saveAnimationData(assimpScene, this->glass->GetMesh()->skeleton, "Idle");
+
 	this->glass->GetMesh()->skeleton->SetFirstAnimation(this->glass->GetMesh()->skeleton->animations[0]);
 	entities->InsertObject(this->glass);
 
@@ -85,6 +86,7 @@ void IntroScene::Load()
 	this->camera->UpdateView();
 	
 }
+
 
 void IntroScene::Unload()
 {
@@ -176,7 +178,12 @@ void IntroScene::setNextScene()
 	// Change scene logic
 	for (int i = 0; i < scenes.size(); i++)
 	{
-		if (scenes[i]->GetName() == "DevScene") {
+		if (scenes[i]->GetName() == "DevScene") 
+		{
+			if (threadPtr->joinable())
+			{
+				threadPtr->join();
+			}
 			nextScene = scenes[i];
 		}			
 	}

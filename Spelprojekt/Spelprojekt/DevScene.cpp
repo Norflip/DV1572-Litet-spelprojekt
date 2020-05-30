@@ -124,14 +124,9 @@ void DevScene::Load()
 
 	
 
-	// PREFABS
-	spawner->SetEnemyPrefab(resources.GetResource<Enemy>("enemyPrefab1"));
-	spawner->SetPickupPrefab(resources.GetResource<Spoon>("spoonPrefab"), WeaponType::Spoon);
-	spawner->SetPickupPrefab(resources.GetResource<Projectile>("coconutPrefab"), WeaponType::Coconut);
-	
-
 	// ------ Leveldesign
 	CreateSceneObjects();
+	//CreateSceneObjects();
 
 
 	// - - - - - Exit arrow
@@ -162,15 +157,18 @@ void DevScene::Load()
 	// Play scenemusic	
 	//gamemanager->PlayMusic();
 
+	// PREFABS
+	spawner->Initialize();
+
 	testSpeed.Stop();
 	std::cout << std::endl << "loadTime:  " << testSpeed.GetMilisecondsElapsed() << std::endl;
-
 }
 
 void DevScene::Unload()
 {
 	Scene::Unload();
 	Logger::Write("devscene unload");
+	spawner->Purge();
 
 	// @TODO
 	gametimer.Restart();
@@ -179,7 +177,7 @@ void DevScene::Unload()
 
 void DevScene::LoadResources()
 {
-
+	
 	// save the shaders somewhere, remember to clean it up
 	Shader* toonShader = new Shader();
 	toonShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
@@ -301,14 +299,13 @@ void DevScene::LoadResources()
 	*/
 
 	Icecream* icecreamPrefab = new Icecream(resources.GetModel("icecreamModel"), context);
-	resources.AddResource("icecreamPrefab", icecreamPrefab);
+	resources.AddResource<Icecream>("icecreamPrefab", icecreamPrefab);
 
 	Projectile* coconutPrefab = new Projectile(resources.GetModel("coconutModel"), context);
-	resources.AddResource("coconutPrefab", coconutPrefab);
+	resources.AddResource<Projectile>("coconutPrefab", coconutPrefab);
 
 	Spoon* spoonPrefab = new Spoon(resources.GetModel("spoonModel"), context);
-	resources.AddResource("spoonPrefab", spoonPrefab);
-
+	resources.AddResource<Spoon>("spoonPrefab", spoonPrefab);
 
 	//-------- ENEMY prefab
 	Enemy* enemyPrefab1 = new Enemy(resources.GetModel("enemyModel"), context);
@@ -327,6 +324,12 @@ void DevScene::LoadResources()
 
 	terrainMesh.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), false);
 	waterMesh.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), true);
+
+
+
+	spawner->SetEnemyPrefab(resources.GetResource<Enemy>("enemyPrefab1"));
+	spawner->SetPickupPrefab(resources.GetResource<Spoon>("spoonPrefab"), WeaponType::Spoon);
+	spawner->SetPickupPrefab(resources.GetResource<Projectile>("coconutPrefab"), WeaponType::Coconut);
 
 
 	/*delete this->assimpScene;
@@ -376,12 +379,6 @@ void DevScene::CreateSceneObjects()
 
 	if (true)
 	{
-
-		// save the shaders somewhere, remember to clean it up
-		Shader* defaultShader = new Shader();
-		defaultShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
-		defaultShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
-
 		////////////////////////// MOUNTAINS /////////////////////////////
 		Object* mountains[2];
 		for (int i = 0; i < 2; i++) {
@@ -800,7 +797,6 @@ void DevScene::CreateSceneObjects()
 		}
 	}
 
-	spawner->SpawnInitial();
 }
 
 void DevScene::checkForNextScene()
@@ -886,7 +882,7 @@ void DevScene::UpdateGUI(const float& deltaTime)
 	if (player->GetPlayerHealth() <= 0.0f)
 	{
 		gametimer.Stop();
-
+		gui->RemoveGUIObject("exit");
 		// SET CURRENTSCORE TO GAMEMANAGER
 		gamemanager->SetCurrentScore(player->GetPoints() - 20 + gametimer.GetTimeUntilEnd(timeUntilEnd));
 		SetNextScene(false);
@@ -895,7 +891,7 @@ void DevScene::UpdateGUI(const float& deltaTime)
 	if (canWin && player->GetWorldBounds().Overlaps(this->player->GetWinArea()->GetWorldBounds()))
 	{
 		gametimer.Stop();
-
+		gui->RemoveGUIObject("exit");
 		// SET CURRENTSCORE TO GAMEMANAGER
 		gamemanager->SetCurrentScore(player->GetPoints() + 20 + (int)gametimer.GetTimeUntilEnd(timeUntilEnd));
 		SetNextScene(true);

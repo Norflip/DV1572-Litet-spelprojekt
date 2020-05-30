@@ -57,8 +57,3 @@ void Spoon::PlayBreaksound()
 //	context->gamemanager->GetSoundeffectHandler()->PlaySound("Splash", context->gamemanager->GetCurrentSoundVolume());
 //}
 
-void Spoon::Update(const float& deltaTime)
-{	
-	if (inFlight)
-		MeleeAttack(deltaTime);
-}

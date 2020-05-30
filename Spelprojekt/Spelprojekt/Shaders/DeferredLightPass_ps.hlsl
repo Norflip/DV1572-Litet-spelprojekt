@@ -70,7 +70,8 @@ struct PixelInputType
 
 
 // Returns a random number based on a vec3 and an int.
-float random(float3 seed, int i) {
+float random(float3 seed, int i) 
+{
 	float4 seed4 = float4(seed, i);
 	float dot_product = dot(seed4, float4(12.9898f, 78.233f, 45.164f, 94.673f));
 	return frac(sin(dot_product) * 43758.5453f);
@@ -162,29 +163,39 @@ float4 main(PixelInputType input) : SV_TARGET
 	*/
 
 	const float bias = 0.00001f;
-	const float PCFSpread = 1.0f / 2048.0f; // 2k works aswell
+	const float PCFSpread = 1.0f / 2048.0f; //texel size av shadow mapp
 
 	float4 lightViewPosition = mul(mul(position, sunView), sunProjection);
 
-	float3 projectTexCoord;
-	projectTexCoord.x = lightViewPosition.x / lightViewPosition.w / 2.0f + 0.5f;
-	projectTexCoord.y = -lightViewPosition.y / lightViewPosition.w / 2.0f + 0.5f;
+	//return lightViewPosition;
+
+
+	float2 projectTexCoord;
+	//projectTexCoord.x = lightViewPosition.x / lightViewPosition.w / 2.0f + 0.5f;
+	//projectTexCoord.y = -lightViewPosition.y / lightViewPosition.w / 2.0f + 0.5f;
+	
+	/*projectTexCoord.x = lightViewPosition.x / 2.0f + 0.5f;
+	projectTexCoord.y = -lightViewPosition.y / 2.0f + 0.5f;
+	*/
+	projectTexCoord.x = lightViewPosition.x / 2.0f + 0.5f;
+	projectTexCoord.y = -lightViewPosition.y / 2.0f + 0.5f;
+
 
 	float visibility = 1.0f;
-	float sampledDepthValue = shadowTexture.Sample(ssaoSamplerState, projectTexCoord).r;
+	//float sampledDepthValue = shadowTexture.Sample(ssaoSamplerState, projectTexCoord).r;
 
 	// kollar om den transformerade positionen är innanför sol kamerans vy
 	if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
 	{
-		float lightDepthValue = (lightViewPosition.z / lightViewPosition.w) - bias;		
-
-		const uint POSSION_DISK_SAMPLE_COUNT = 8;
+		//float lightDepthValue = (lightViewPosition.z / lightViewPosition.w) - bias;		
+		float lightDepthValue = (lightViewPosition.z) - bias;
+		const int POSSION_DISK_SAMPLE_COUNT = 8;
 
 		for (int i = 0; i < POSSION_DISK_SAMPLE_COUNT; i++)
 		{
 			int index = int(16.0 * random(input.uv.xyy, i)) % 16;
 			float sampledDepthValue = shadowTexture.Sample(ssaoSamplerState, projectTexCoord + (poissonDisk16[i] * PCFSpread)).r;
-			
+		
 			if (lightDepthValue >= sampledDepthValue)
 			{
 				float de = (1.0f / float(POSSION_DISK_SAMPLE_COUNT + 1));
@@ -192,13 +203,17 @@ float4 main(PixelInputType input) : SV_TARGET
 			}
 		}
 
-		visibility = saturate(0.3f + visibility);
+		visibility = saturate(0.1f + visibility);
 	}
 
-
 	//return  max(1.055 * pow(C_lin, 0.416666667) - 0.055, 0);
-
 	const float gamma = 1.0f / 2.2f;
-	float t = 1.0f - (ssaoResult * visibility);
-	return saturate(pow(lerp(finalColor, float4(0,0,0,1), t),  gamma));
+
+	float4 color = finalColor * visibility * ssaoResult;
+	color = pow(color, gamma);
+	color.w = 1.0f;
+	return color;
+
+	//float t = 1.0f - (visibility);
+	//return saturate(pow(lerp(finalColor, float4(0,0,0,1), t),  gamma)) * (1.0f - ssaoResult);
 }

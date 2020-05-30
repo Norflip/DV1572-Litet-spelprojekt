@@ -8,7 +8,7 @@ public:
 	Resources();
 	virtual	~Resources();
 
-	template <typename T> void AddResource(std::string key, T* resource);	
+	template <typename T> void AddResource(std::string key, T* resource);
 	template <typename T> T* GetResource(std::string key);
 	AssimpHandler::AssimpData GetModel(std::string key);
 	void AddModel(std::string key, AssimpHandler::AssimpData* data);
@@ -25,7 +25,13 @@ inline void Resources::AddResource(std::string key, T* resource)
 {
 	auto findItem = resourceMap.find(key);
 	if (findItem == resourceMap.end())
+	{
 		resourceMap.insert({ key, static_cast<void*>(resource) });
+	}
+	else
+	{
+		Logger::Write("DUUUUPLICATE 2i2i2i2i2");
+	}
 }
 
 template<typename T>
@@ -38,6 +44,6 @@ inline T* Resources::GetResource(std::string key)
 		void* dd = (*findItem).second;
 		item = static_cast<T*>(dd);
 	}
-		
+
 	return item;
 }
