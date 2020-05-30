@@ -175,8 +175,9 @@ void Input::UpdateState()
 {
 
 	DirectX::Mouse::State st = dxmouse.GetState();
-	Logger::Write(std::to_string(st.leftButton));
 
+	DirectX::Keyboard::State s = dxkeyboard.GetState();
+	Logger::Write(std::to_string(s.A));
 
 	mouseDelta = { 0,0 };
 	
