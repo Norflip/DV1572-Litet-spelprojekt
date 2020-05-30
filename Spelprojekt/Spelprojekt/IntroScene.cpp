@@ -86,6 +86,7 @@ void IntroScene::Load()
 	
 }
 
+
 void IntroScene::Unload()
 {
 	auto allEntities = entities->AllEntities();
@@ -176,7 +177,12 @@ void IntroScene::setNextScene()
 	// Change scene logic
 	for (int i = 0; i < scenes.size(); i++)
 	{
-		if (scenes[i]->GetName() == "DevScene") {
+		if (scenes[i]->GetName() == "DevScene") 
+		{
+			if (threadPtr->joinable())
+			{
+				threadPtr->join();
+			}
 			nextScene = scenes[i];
 		}			
 	}
