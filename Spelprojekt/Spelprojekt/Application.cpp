@@ -21,7 +21,7 @@ Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(fal
 	this->gameScene = new DevScene(this->deferredRenderer, this->dx11, this->window, scenes, gamemanager);
 	this->endScene = new EndScene(this->deferredRenderer, this->dx11, this->window, scenes, "EndScene", exitGame, gamemanager);
 	this->introScene = new IntroScene(this->deferredRenderer, this->dx11, this->window, scenes, exitGame, gamemanager);
-	
+
 	// loads all scenes
 	t1 = new std::thread(&Application::loadScenes, this);
 	//loadScenes();
@@ -35,7 +35,7 @@ Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(fal
 	test->Load();
 	test->threadPtr = t1;
 	currentScene = introScene;
-	//t1.join()
+
 }
 
 Application::~Application()
