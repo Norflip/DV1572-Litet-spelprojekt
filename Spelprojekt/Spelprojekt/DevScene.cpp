@@ -125,7 +125,8 @@ void DevScene::Load()
 	
 
 	// ------ Leveldesign
-	CreateSceneObjects();
+	std::thread loadThread(&DevScene::CreateSceneObjects, this);
+	//CreateSceneObjects();
 
 
 	// - - - - - Exit arrow
@@ -161,7 +162,7 @@ void DevScene::Load()
 
 	testSpeed.Stop();
 	std::cout << std::endl << "loadTime:  " << testSpeed.GetMilisecondsElapsed() << std::endl;
-
+	loadThread.detach();
 }
 
 void DevScene::Unload()
@@ -177,7 +178,7 @@ void DevScene::Unload()
 
 void DevScene::LoadResources()
 {
-
+	
 	// save the shaders somewhere, remember to clean it up
 	Shader* toonShader = new Shader();
 	toonShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());

@@ -22,16 +22,18 @@ Application::Application(HINSTANCE hInstance) : window(hInstance), pauseGame(fal
 	this->endScene = new EndScene(this->deferredRenderer, this->dx11, this->window, scenes, "EndScene", exitGame, gamemanager);
 	this->introScene = new IntroScene(this->deferredRenderer, this->dx11, this->window, scenes, exitGame, gamemanager);
 	
-	gameScene->LoadResources();
-	endScene->LoadResources();
-	introScene->LoadResources();
+	// loads all scenes
+	std::thread t1(&Application::loadScenes, this);
+	//loadScenes();
+	
 
 	scenes.push_back(endScene);
 	scenes.push_back(gameScene);
 	scenes.push_back(introScene);
-
+	introScene->LoadResources();
 	introScene->Load();
 	currentScene = introScene;
+	t1.detach();
 }
 
 Application::~Application()
@@ -102,5 +104,12 @@ void Application::Run()
 			timeLastFrame = currentTime;
 		}
 	}	
+}
+
+void Application::loadScenes()
+{
+	gameScene->LoadResources();
+	endScene->LoadResources();
+
 }
 
