@@ -882,7 +882,7 @@ void DevScene::UpdateGUI(const float& deltaTime)
 	if (player->GetPlayerHealth() <= 0.0f)
 	{
 		gametimer.Stop();
-
+		gui->RemoveGUIObject("exit");
 		// SET CURRENTSCORE TO GAMEMANAGER
 		gamemanager->SetCurrentScore(player->GetPoints() - 20 + gametimer.GetTimeUntilEnd(timeUntilEnd));
 		SetNextScene(false);
@@ -891,7 +891,7 @@ void DevScene::UpdateGUI(const float& deltaTime)
 	if (canWin && player->GetWorldBounds().Overlaps(this->player->GetWinArea()->GetWorldBounds()))
 	{
 		gametimer.Stop();
-
+		gui->RemoveGUIObject("exit");
 		// SET CURRENTSCORE TO GAMEMANAGER
 		gamemanager->SetCurrentScore(player->GetPoints() + 20 + (int)gametimer.GetTimeUntilEnd(timeUntilEnd));
 		SetNextScene(true);
