@@ -77,10 +77,6 @@ namespace AssimpHandler
 			}
 		}
 
-		// Create a new mesh
-		Mesh* tempMesh = new Mesh();
-
-		// TEST AV SKELETON KLASS //
 		// If the scene contains more than 0 bones, then we want to collect the bone information for animations
 		Skeleton* tempSkeleton = new Skeleton();
 		if (scene->mMeshes[0]->mNumBones > 0)

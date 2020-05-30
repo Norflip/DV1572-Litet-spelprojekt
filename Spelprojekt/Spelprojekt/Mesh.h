@@ -44,6 +44,8 @@ struct Mesh
 			vertexBuffer->Release();
 		if (indexBuffer)
 			indexBuffer->Release();
+		if (skeleton)
+			delete skeleton;
 	}
 };
 

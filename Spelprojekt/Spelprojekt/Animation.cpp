@@ -9,6 +9,7 @@ Animation::Animation()
 
 Animation::~Animation()
 {
+	bones.clear();
 }
 
 unsigned int Animation::GetLength()

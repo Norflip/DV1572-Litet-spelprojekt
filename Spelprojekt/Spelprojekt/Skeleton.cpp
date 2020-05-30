@@ -10,6 +10,8 @@ Skeleton::Skeleton()
 
 Skeleton::~Skeleton()
 {
+	currentAnimation = nullptr;
+
 	for (int i = 0; i < animations.size(); i++)
 	{
 		delete animations[i];
