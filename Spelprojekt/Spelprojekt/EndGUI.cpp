@@ -34,6 +34,7 @@ void EndGUI::Restart()
     GUISprite* restart = static_cast<GUISprite*>(gui->GetGUIList()->at("restart"));
     if (restart->Clicked(input))
     {
+        gamemanager->GetSoundeffectHandler()->PlaySound("HereWeGo", gamemanager->GetCurrentSoundVolume());
         currentScene->SetNextScene("game");
         
     }

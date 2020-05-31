@@ -107,6 +107,7 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy_active.png";
         lastMedium = "Sprites/medium.png";
         lastHard = "Sprites/hard.png";
+        gamemanager->SetPlayerCoconutDamage(10);
         gamemanager->SetRecoverHealth(2);
         gamemanager->SetEnemyHealth(10);
         gamemanager->SetEnemyDamage(5);
@@ -118,6 +119,7 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy.png";
         lastMedium = "Sprites/medium_active.png";
         lastHard = "Sprites/hard.png";
+        gamemanager->SetPlayerCoconutDamage(15);
         gamemanager->SetRecoverHealth(5);
         gamemanager->SetEnemyHealth(20);
         gamemanager->SetEnemyDamage(10);
@@ -129,6 +131,7 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy.png";
         lastMedium = "Sprites/medium.png";
         lastHard = "Sprites/hard_active.png";
+        gamemanager->SetPlayerCoconutDamage(20);
         gamemanager->SetRecoverHealth(10);
         gamemanager->SetEnemyHealth(30);
         gamemanager->SetEnemyDamage(15);
@@ -270,8 +273,9 @@ void IntroGUI::HowToPlay()
     GUISprite* play = static_cast<GUISprite*>(gui->GetGUIList()->at("play"));
     if (play->Clicked(input))
     {
-        //ClearGUI();
-        currentScene->setNextScene();
+        //ClearGUI();       
+        gamemanager->GetSoundeffectHandler()->PlaySound("HereWeGo", gamemanager->GetCurrentSoundVolume());
+        currentScene->setNextScene();        
     }
 
     // play

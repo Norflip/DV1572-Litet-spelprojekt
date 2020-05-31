@@ -51,6 +51,7 @@ private:
 	void ClearButtons();	// asdsadsadas
 	void ClearGUI();
 
+	bool hereWeGo = false;
 	bool first = true;
 	Menu menu = Menu::start;
 	

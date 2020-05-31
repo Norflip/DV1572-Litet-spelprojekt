@@ -30,10 +30,13 @@ public:
 	float GetCurrentSoundVolume() { return this->soundVol; }
 	
 	// VSync setting
-	bool GetCurrentVsyncState() { return this->vsyncState; }
 	void SetCurrentVSyncState(bool vsync) { this->vsyncState = vsync; }
+	bool GetCurrentVsyncState() { return this->vsyncState; }
 
 	// Difficulty 	
+	void SetPlayerCoconutDamage(float cocoDamage) { this->cocoDamage = cocoDamage; }
+	float GetCoconutDamage() { return this->cocoDamage; }
+
 	void SetRecoverHealth(float recover) { this->recover = recover; }
 	float GetRecoverHealth() { return this->recover; }
 
@@ -54,7 +57,7 @@ public:
 	float GetEnemyHealth() { return this->enemyHealth; }
 
 	void SetTimer(float time) { this->timer = time; }
-	float GetTimer() { return this->timer; }		
+	float GetTimer() { return this->timer; }
 
 	// Highscore	
 	void SetCurrentScore(int score) { this->currentScore = score; };
@@ -84,6 +87,7 @@ private:
 	float enemyDamage;
 	float enemyHealth;
 	float recover;
+	float cocoDamage;
 
 	// Highscore stuff...
 	std::ofstream writeToHighscore;

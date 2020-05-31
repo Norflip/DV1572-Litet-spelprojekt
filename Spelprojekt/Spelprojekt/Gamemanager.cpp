@@ -61,6 +61,7 @@ void Gamemanager::LoadSoundEffects()
 	this->soundeffect->LoadSound("Splash", "SoundEffects/Splash.wav");			// done
 	this->soundeffect->LoadSound("EnemyHit", "SoundEffects/Punch.wav");			// done
 	this->soundeffect->LoadSound("PlayerHit", "SoundEffects/playerHit.wav");	// done
+	this->soundeffect->LoadSound("HereWeGo", "SoundEffects/herewego.wav");	// done
 }
 
 void Gamemanager::LoadMusicTracks()

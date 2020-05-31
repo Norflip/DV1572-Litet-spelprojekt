@@ -6,9 +6,7 @@ Spoon::Spoon(Mesh* mesh, Material* material, WorldContext* context) : Weapon(Wea
 
 	this->inFlight = false;
 	this->damage = 5.0f;
-	//this->used = 0;
-	this->damage = 15.0f;
-	this->movementspeed = 15.0f;
+	this->movementspeed = 30.0f;
 }
 
 Spoon::Spoon(AssimpHandler::AssimpData model, WorldContext* context) : Spoon(model.mesh, model.material, context) {}

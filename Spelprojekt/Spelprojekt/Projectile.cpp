@@ -5,10 +5,9 @@ Projectile::Projectile(Mesh* mesh, Material* material, WorldContext* context) : 
 	this->weaponSprite = new GUIActionbar(*context->dx11, "Sprites/CoconutNew.png", 0.0f, 0.0f);
 
 	this->inFlight = false;
-	this->damage = 10.0f;
-	this->movementspeed = 30;
+	this->damage = context->gamemanager->GetCoconutDamage();
+	this->movementspeed = 15.0f;
 
-	this->damage = 10.0f;
 }
 
 Projectile::Projectile(AssimpHandler::AssimpData modelData, WorldContext* context) : Projectile(modelData.mesh, modelData.material, context) {}

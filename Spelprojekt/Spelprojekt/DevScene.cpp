@@ -153,6 +153,7 @@ void DevScene::Load()
 	renderer->SetGUI(gui); 	// Set GUI
 
 	gametimer.Start();
+	
 
 	// Play scenemusic	
 	gamemanager->PlayMusic();
@@ -334,8 +335,8 @@ void DevScene::LoadResources()
 	spawner->SetPickupPrefab(resources.GetResource<Projectile>("coconutPrefab"), WeaponType::Coconut);
 
 
-	delete this->assimpScene;
-	this->assimpScene = nullptr;
+	/*delete this->assimpScene;
+	this->assimpScene = nullptr;*/
 }
 
 void DevScene::Update(const float& deltaTime)

@@ -100,6 +100,8 @@ void Enemy::UpdateMovement(float fixedDeltaTime)
 		if (pPos.x >= nextPos.x)
 			nextPos.x += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 0);
 
+
+
 		//Logger::Write(LOG_LEVEL::Info, "Chase player " + std::to_string(nextPos.x));
 
 		/*float vlength = DirectX::XMVectorGetByIndex(DirectX::XMVector3Length(velocity), 0);
@@ -117,6 +119,8 @@ void Enemy::UpdateMovement(float fixedDeltaTime)
 	{
 		this->moving = false;
 	}
+
+	
 
 }
 
