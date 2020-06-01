@@ -88,7 +88,7 @@ void DevScene::Load()
 
 	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
 	this->timeUntilEnd = 500.0f; // gamemanager->GetTimer();		
-	this->spawner->SetMaxEnemies(1 /*gamemanager->GetTotalEnemies()*/);	// gamemanager->GetTotalEnemies()
+	this->spawner->SetMaxEnemies(1 /*gamemanager->GetTotalEnemies()*/);	
 
 	Timer testSpeed;
 	testSpeed.Start();
@@ -115,19 +115,17 @@ void DevScene::Load()
 	// ------ PLAYER
 	this->player = new Player(resources.GetModel("playerModel"), controller, gui, context);
 	this->player->GetTransform().SetPosition({ 55, 4, 55 });
-	this->player->GetTransform().SetScale(2.0, 2.0, 2.0);
+	this->player->GetTransform().SetScale(2.3, 2.3, 2.3);
 	this->player->ScaleLocalBounds().ScaleMinMax(DirectX::XMMatrixScaling(0.5, 0.5, 0.5));
 	this->player->SetLayer(ObjectLayer::Player);
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
 	entities->InsertObject(this->player);
 	context->player = player;
 
-	
+
 
 	// ------ Leveldesign
 	CreateSceneObjects();
-	//CreateSceneObjects();
-
 
 	// - - - - - Exit arrow
 	arrow = new Object(ObjectLayer::None, resources.GetModel("arrowModel"));
@@ -329,10 +327,17 @@ void DevScene::LoadResources()
 	waterMesh.GenerateMesh("Textures/map_displacement_map_small.png", dx11.GetDevice(), true);
 
 
-
 	spawner->SetEnemyPrefab(resources.GetResource<Enemy>("enemyPrefab1"));
 	spawner->SetPickupPrefab(resources.GetResource<Spoon>("spoonPrefab"), WeaponType::Spoon);
 	spawner->SetPickupPrefab(resources.GetResource<Projectile>("coconutPrefab"), WeaponType::Coconut);
+
+	// Tourist
+	AssimpHandler::AssimpData* tourist = AssimpHandler::loadFbxObject("Animations/Regular_Tourist_Idle.fbx", dx11, resources.GetResource<Shader>("animationShader"));
+	resources.AddModel("touristModel", tourist);
+
+	this->assimpScene = imp.ReadFile("Animations/Regular_Tourist_Idle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
+	AssimpHandler::saveAnimationData(assimpScene, tourist->mesh->skeleton, "Idle");
+	tourist->mesh->skeleton->SetFirstAnimation(tourist->mesh->skeleton->animations[0]);
 
 
 	/*delete this->assimpScene;
@@ -364,6 +369,9 @@ void DevScene::FixedUpdate(const float& fixedDeltaTime)
 {
 	Scene::FixedUpdate(fixedDeltaTime);
 	this->player->GetMesh()->skeleton->AddKeyframe();
+	
+	for (int i = 0; i < 3; i++)
+		this->tourist[i]->GetMesh()->skeleton->AddKeyframe();
 }
 
 Scene* DevScene::GetNextScene() const
@@ -798,8 +806,26 @@ void DevScene::CreateSceneObjects()
 			// flytta den 1 0 0 t.ex i förhållande till rotationen
 			physics.CreateCollisionBodyCapsule(palms[i], 0.5f, 0.0f, 0.0f);
 		}
-	}
 
+
+
+
+		for (int i = 0; i < 3; i++) {
+			this->tourist[i] = new Object(ObjectLayer::None, resources.GetModel("touristModel"));
+			entities->InsertObject(tourist[i]);
+		}
+			
+		this->tourist[0]->GetTransform().SetPosition({ 115.0f ,7.5f,40.0f });
+		this->tourist[0]->GetTransform().SetScale(1.5f, 1.5f, 1.5f);
+
+		this->tourist[1]->GetTransform().SetPosition({ 90.0f,10.5f,150.0f });
+		this->tourist[1]->GetTransform().SetRotation({ 0.0f, 0.1f, 0.0f });
+		this->tourist[1]->GetTransform().SetScale(1.5f, 1.5f, 1.5f);
+
+		this->tourist[2]->GetTransform().SetPosition({ 150.0f,8.0f,130.0f });
+		this->tourist[2]->GetTransform().SetRotation({ 0.0f, 0.5f, 0.0f });
+		this->tourist[2]->GetTransform().SetScale(1.5f, 1.5f, 1.5f);
+	}
 }
 
 void DevScene::checkForNextScene()

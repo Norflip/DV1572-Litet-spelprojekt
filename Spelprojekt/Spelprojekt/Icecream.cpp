@@ -6,7 +6,7 @@ Icecream::Icecream(Mesh* mesh, Material* material, WorldContext* context) : Weap
 	this->weaponSprite = nullptr;
 
 	this->inFlight = false;
-	this->damage = 10.0f;
+	//this->damage = 10.0f;
 	this->movementspeed = 10;
 
 	// attackdamage
@@ -60,7 +60,7 @@ void Icecream::UpdateHitPlayer()
 	{
 		if (this->GetWorldBounds().Overlaps(context->player->GetWorldBounds())) 
 		{
-			context->player->TakeDamage(AttackDamage());
+			context->player->TakeDamage(Weapon::AttackDamage());
 			this->SetEnabled(false);
 		}
 	}

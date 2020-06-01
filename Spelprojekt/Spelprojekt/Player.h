@@ -16,7 +16,7 @@ class Scene;
 class Player : public Object
 {
 	const float movementspeed = 7;
-	const float playerHeight = 3;
+	const float playerHeight = 2.5f;
 
 public:
 	Player(AssimpHandler::AssimpData modelData, CameraController* controller, GUI* gui, WorldContext* context);

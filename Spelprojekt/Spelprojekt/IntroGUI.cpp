@@ -263,7 +263,7 @@ void IntroGUI::LoadStart()
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/highscore.png", 100.0f, 400.0f), "highscore");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/creditsbutton.png", 925.0f, 500.0f), "credits");
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/quit.png", 100.0f, 500.0f), "quit");
-
+    
     first = false;
 }
 

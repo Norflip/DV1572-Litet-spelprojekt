@@ -75,6 +75,7 @@ private:
 
 	std::vector<Scene*>& scenes;
 	Player* player;
+
 	//Enemy* enemyPrefab1;
 	Terrain terrainMesh;
 	Terrain waterMesh;
@@ -89,4 +90,7 @@ private:
 
 	Assimp::Importer imp;
 	const aiScene* assimpScene;
+
+	Object* tourist[3];
+	Object* touristOne, *touristTwo, *touristThree;
 };

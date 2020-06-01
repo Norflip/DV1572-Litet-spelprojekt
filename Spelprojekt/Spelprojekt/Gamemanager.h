@@ -33,31 +33,35 @@ public:
 	void SetCurrentVSyncState(bool vsync) { this->vsyncState = vsync; }
 	bool GetCurrentVsyncState() { return this->vsyncState; }
 
+
 	// Difficulty 	
+	void SetDifficultyState(int dif) { this->difficultystate = dif; }
+	int GetDifficultyState() { return this->difficultystate; }
+
+	// Player Settings
 	void SetPlayerCoconutDamage(float cocoDamage) { this->cocoDamage = cocoDamage; }
 	float GetCoconutDamage() { return this->cocoDamage; }
 
 	void SetRecoverHealth(float recover) { this->recover = recover; }
 	float GetRecoverHealth() { return this->recover; }
-
-	void SetDifficultyState(int dif) { this->difficultystate = dif; }
-	int GetDifficultyState() { return this->difficultystate; }
-
+		
+	// Enemy settings
 	void SetActiveEnemies(int activeenemies) { this->activeEnemies = activeenemies; }
 	int GetActiveEnemies() { return this->activeEnemies; }
 
 	void SetTotalEnemies(int enemies) { this->nrOfEnemies = enemies; }
 	int GetTotalEnemies() { return this->nrOfEnemies; }
 
-	// Enemy takedamage
 	void SetEnemyDamage(float damage) { this->enemyDamage = damage; }
 	float GetEnemyDamage() { return this->enemyDamage; }
 
 	void SetEnemyHealth(float health) { this->enemyHealth = health; }
 	float GetEnemyHealth() { return this->enemyHealth; }
 
+	// Gamesetting
 	void SetTimer(float time) { this->timer = time; }
 	float GetTimer() { return this->timer; }
+
 
 	// Highscore	
 	void SetCurrentScore(int score) { this->currentScore = score; };
