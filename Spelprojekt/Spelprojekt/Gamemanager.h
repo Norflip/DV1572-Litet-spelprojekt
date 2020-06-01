@@ -44,6 +44,9 @@ public:
 
 	void SetRecoverHealth(float recover) { this->recover = recover; }
 	float GetRecoverHealth() { return this->recover; }
+
+	void SetExtraPoint(int extraPoint) { this->extraPoint = extraPoint; }
+	int GetExtraPoint() { return this->extraPoint; }
 		
 	// Enemy settings
 	void SetActiveEnemies(int activeenemies) { this->activeEnemies = activeenemies; }
@@ -92,6 +95,7 @@ private:
 	float enemyHealth;
 	float recover;
 	float cocoDamage;
+	int extraPoint;
 
 	// Highscore stuff...
 	std::ofstream writeToHighscore;

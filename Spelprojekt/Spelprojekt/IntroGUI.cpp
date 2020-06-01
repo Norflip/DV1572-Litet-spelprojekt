@@ -114,6 +114,7 @@ void IntroGUI::Update()
         gamemanager->SetActiveEnemies(5);
         gamemanager->SetTotalEnemies(20);
         gamemanager->SetTimer(120.0f);
+        gamemanager->SetExtraPoint(20);
         break;
     case 2:
         lastEasy = "Sprites/easy.png";
@@ -126,6 +127,7 @@ void IntroGUI::Update()
         gamemanager->SetActiveEnemies(7);
         gamemanager->SetTotalEnemies(40);
         gamemanager->SetTimer(160.0f);
+        gamemanager->SetExtraPoint(40);
         break;
     case 3:
         lastEasy = "Sprites/easy.png";
@@ -138,6 +140,7 @@ void IntroGUI::Update()
         gamemanager->SetActiveEnemies(9);
         gamemanager->SetTotalEnemies(60);
         gamemanager->SetTimer(200.0f);
+        gamemanager->SetExtraPoint(60);
         break;
     }
 
