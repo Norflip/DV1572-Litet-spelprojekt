@@ -134,10 +134,10 @@ void Enemy::UpdateAnimations()
 	{
 		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[1]);
 	}*/
-	if (throwing)
+	/*if (throwing)
 	{
 		this->GetMesh()->skeleton->SetCurrentAnimation(this->GetMesh()->skeleton->animations[1]);
-	}
+	}*/
 }
 
 DirectX::XMFLOAT3 Enemy::CheckCollisions(const float& deltaTime, const float& length)
@@ -186,7 +186,7 @@ void Enemy::UpdateTestBoids(float fixedDeltaTime)
 DirectX::XMVECTOR Enemy::BoidsAlgorithm(ObjectLayer object)
 {
 	float separationRadius = 3.0f;
-	float alignRadius = 45.0f;
+	float alignRadius = 10.0f;
 	DirectX::XMVECTOR velocity = { 0,0,0 };
 	DirectX::XMVECTOR avgDir = DirectX::XMVector3Normalize(GetVelocity());
 	DirectX::XMVECTOR avgPosition = GetTransform().GetPosition();
@@ -220,7 +220,7 @@ DirectX::XMVECTOR Enemy::BoidsAlgorithm(ObjectLayer object)
 
 	avgPosition = DirectX::XMVectorScale(avgPosition, 1.0f / (objInRadius + 1));
 	DirectX::XMVECTOR cohesion = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(avgPosition, GetTransform().GetPosition()));
-	cohesion = DirectX::XMVectorScale(cohesion, 2.0f);
+	cohesion = DirectX::XMVectorScale(cohesion, 4.0f);
 	
 	velocity = DirectX::XMVectorAdd(velocity, align);
 	velocity = DirectX::XMVectorAdd(velocity, cohesion);
@@ -242,7 +242,7 @@ DirectX::XMVECTOR Enemy::Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR 
 	{
 		//Logger::Write(LOG_LEVEL::Info, "Separate from other enemy ");
 		//add steering velocity based of length of distance vector
-		steering = DirectX::XMVectorScale(DirectX::XMVector3Normalize(offset), 2.0f);
+		steering = DirectX::XMVectorScale(DirectX::XMVector3Normalize(offset), 5.0f);
 	}
 	return steering;
 }
@@ -270,7 +270,7 @@ void Enemy::UpdateAttackPlayer()
 	{
 		if (cooldownTimer <= 0.0f) 
 		{
-			this->throwing = true;
+			//this->throwing = true;
 			weapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
 			weapon->PlaySoundEffect();
 			weapon->SetType(WeaponType::Icecream);
@@ -278,17 +278,17 @@ void Enemy::UpdateAttackPlayer()
 			cooldownTimer = 5.0f;
 		}
 
-		if (this->GetMesh()->skeleton->GetKeyframe() >= this->GetMesh()->skeleton->GetCurrentAnimation()->GetLength() - 4 
+		/*if (this->GetMesh()->skeleton->GetKeyframe() >= this->GetMesh()->skeleton->GetCurrentAnimation()->GetLength() - 4 
 			&& this->GetMesh()->skeleton->GetCurrentAnimation()->GetAnimationName() == "EnemyThrow")
 		{
 			this->throwing = false;
-		}
+		}*/
 	}
 
-	else
+	/*else
 	{
 		this->throwing = false;
-	}
+	}*/
 }
 
 void Enemy::DeactivateWeapon()
