@@ -186,7 +186,7 @@ void Enemy::UpdateTestBoids(float fixedDeltaTime)
 DirectX::XMVECTOR Enemy::BoidsAlgorithm(ObjectLayer object)
 {
 	float separationRadius = 3.0f;
-	float alignRadius = 10.0f;
+	float alignRadius = 15.0f;
 	DirectX::XMVECTOR velocity = { 0,0,0 };
 	DirectX::XMVECTOR avgDir = DirectX::XMVector3Normalize(GetVelocity());
 	DirectX::XMVECTOR avgPosition = GetTransform().GetPosition();
@@ -215,12 +215,12 @@ DirectX::XMVECTOR Enemy::BoidsAlgorithm(ObjectLayer object)
 		}
 	}
 	avgDir = DirectX::XMVector3Normalize(DirectX::XMVectorScale(avgDir, 1.0f / (objInRadius + 1)));
-	avgDir = DirectX::XMVectorScale(avgDir, 2.0f);
+	avgDir = DirectX::XMVectorScale(avgDir, context->gamemanager->GetEnemySpeed());
 	DirectX::XMVECTOR align = DirectX::XMVectorSubtract(avgDir, GetVelocity());
 
 	avgPosition = DirectX::XMVectorScale(avgPosition, 1.0f / (objInRadius + 1));
 	DirectX::XMVECTOR cohesion = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(avgPosition, GetTransform().GetPosition()));
-	cohesion = DirectX::XMVectorScale(cohesion, 4.0f);
+	cohesion = DirectX::XMVectorScale(cohesion, context->gamemanager->GetEnemySpeed());
 	
 	velocity = DirectX::XMVectorAdd(velocity, align);
 	velocity = DirectX::XMVectorAdd(velocity, cohesion);
@@ -242,7 +242,7 @@ DirectX::XMVECTOR Enemy::Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR 
 	{
 		//Logger::Write(LOG_LEVEL::Info, "Separate from other enemy ");
 		//add steering velocity based of length of distance vector
-		steering = DirectX::XMVectorScale(DirectX::XMVector3Normalize(offset), 5.0f);
+		steering = DirectX::XMVectorScale(DirectX::XMVector3Normalize(offset), 2.0f);
 	}
 	return steering;
 }

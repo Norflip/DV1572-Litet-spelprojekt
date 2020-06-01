@@ -107,11 +107,13 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy_active.png";
         lastMedium = "Sprites/medium.png";
         lastHard = "Sprites/hard.png";
-        gamemanager->SetPlayerCoconutDamage(10);
-        gamemanager->SetRecoverHealth(2);
-        gamemanager->SetEnemyHealth(10);
-        gamemanager->SetEnemyDamage(5);
         gamemanager->SetActiveEnemies(5);
+        gamemanager->SetEnemySpeed(2.5f);
+        gamemanager->SetEnemyHealth(15.0f);
+        gamemanager->SetEnemyDamage(5.0f);
+        gamemanager->SetPlayerCoconutDamage(15.0f);        
+        gamemanager->SetRecoverHealth(10.0f);
+
         gamemanager->SetTotalEnemies(20);
         gamemanager->SetTimer(120.0f);
         gamemanager->SetExtraPoint(20);
@@ -120,26 +122,30 @@ void IntroGUI::Update()
         lastEasy = "Sprites/easy.png";
         lastMedium = "Sprites/medium_active.png";
         lastHard = "Sprites/hard.png";
-        gamemanager->SetPlayerCoconutDamage(15);
-        gamemanager->SetRecoverHealth(5);
-        gamemanager->SetEnemyHealth(20);
-        gamemanager->SetEnemyDamage(10);
-        gamemanager->SetActiveEnemies(7);
-        gamemanager->SetTotalEnemies(40);
-        gamemanager->SetTimer(160.0f);
+        gamemanager->SetActiveEnemies(6);
+        gamemanager->SetEnemySpeed(3.0f);
+        gamemanager->SetEnemyHealth(10.0f);
+        gamemanager->SetEnemyDamage(10.0f);
+        gamemanager->SetPlayerCoconutDamage(10.0f);
+        gamemanager->SetRecoverHealth(20.0f);
+
+        gamemanager->SetTotalEnemies(30);
+        gamemanager->SetTimer(180.0f);
         gamemanager->SetExtraPoint(40);
         break;
     case 3:
         lastEasy = "Sprites/easy.png";
         lastMedium = "Sprites/medium.png";
         lastHard = "Sprites/hard_active.png";
-        gamemanager->SetPlayerCoconutDamage(20);
-        gamemanager->SetRecoverHealth(10);
-        gamemanager->SetEnemyHealth(30);
-        gamemanager->SetEnemyDamage(15);
-        gamemanager->SetActiveEnemies(9);
-        gamemanager->SetTotalEnemies(60);
-        gamemanager->SetTimer(200.0f);
+        gamemanager->SetActiveEnemies(7);
+        gamemanager->SetEnemySpeed(2.0f);
+        gamemanager->SetEnemyHealth(15.0f);
+        gamemanager->SetEnemyDamage(10.0f);
+        gamemanager->SetPlayerCoconutDamage(10.0f);
+        gamemanager->SetRecoverHealth(30.0f);  
+
+        gamemanager->SetTotalEnemies(40);
+        gamemanager->SetTimer(360.0f);
         gamemanager->SetExtraPoint(60);
         break;
     }

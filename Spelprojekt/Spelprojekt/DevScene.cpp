@@ -86,9 +86,11 @@ void DevScene::Load()
 	if (exitActive)
 		exitActive = false;
 
+	this->canWin = false;
+
 	// SET TOTAL ENEMIES AND TOTAL TIME TO EXTRACTION
-	this->timeUntilEnd = 500.0f; // gamemanager->GetTimer();		
-	this->spawner->SetMaxEnemies(1 /*gamemanager->GetTotalEnemies()*/);	
+	this->timeUntilEnd = context->gamemanager->GetTimer();		
+	this->spawner->SetMaxEnemies(context->gamemanager->GetTotalEnemies());	
 
 	Timer testSpeed;
 	testSpeed.Start();

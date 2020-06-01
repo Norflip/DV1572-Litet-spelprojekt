@@ -33,6 +33,9 @@ public:
 	void SetCurrentVSyncState(bool vsync) { this->vsyncState = vsync; }
 	bool GetCurrentVsyncState() { return this->vsyncState; }
 
+	// Enemy boid speed
+	void SetEnemySpeed(float enemySpeed) { this->enemySpeed = enemySpeed; }
+	float GetEnemySpeed() { return this->enemySpeed; }
 
 	// Difficulty 	
 	void SetDifficultyState(int dif) { this->difficultystate = dif; }
@@ -65,7 +68,6 @@ public:
 	void SetTimer(float time) { this->timer = time; }
 	float GetTimer() { return this->timer; }
 
-
 	// Highscore	
 	void SetCurrentScore(int score) { this->currentScore = score; };
 	int GetCurrentScore() { return this->currentScore; }
@@ -93,6 +95,7 @@ private:
 	int activeEnemies;
 	float enemyDamage;
 	float enemyHealth;
+	float enemySpeed;
 	float recover;
 	float cocoDamage;
 	int extraPoint;
