@@ -102,9 +102,23 @@ private:
 	std::ifstream highscoreFiles;
 
 	int currentScore;
-	int highscorePoints[MAXSCORES];
-	std::string highscorename[MAXSCORES];
+
+	// Different highscores
+	int easyHighscorePoints[MAXSCORES];
+	std::string easyHighscoreName[MAXSCORES];
+
+	int normalHighscorePoints[MAXSCORES];
+	std::string normalHighscoreName[MAXSCORES];
+
+	int hardHighscorePoints[MAXSCORES];
+	std::string hardHighscoreName[MAXSCORES];
 		
-	GUIText* displayPoints[MAXSCORES];
-	GUIText* displayNames[MAXSCORES];	
+	GUIText* displayEasyPoints[MAXSCORES];
+	GUIText* displayEasyNames[MAXSCORES];	
+
+	GUIText* displayNormalPoints[MAXSCORES];
+	GUIText* displayNormalNames[MAXSCORES];
+
+	GUIText* displayHardPoints[MAXSCORES];
+	GUIText* displayHardNames[MAXSCORES];
 };

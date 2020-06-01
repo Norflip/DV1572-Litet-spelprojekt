@@ -728,17 +728,22 @@ void IntroGUI::Highscore()
 void IntroGUI::LoadHighscore()
 {
     ClearGUI();
-
+    
     GUISprite* highscoretitle = new GUISprite(dx11, "Sprites/highscoretitle.png", 90.0f, 65.0f);
     gui->AddGUIObject(highscoretitle, "highscoretitle");
 
-    GUISprite* highscoreframe = new GUISprite(dx11, "Sprites/highscorelistframe.png", 80.0f, 150.0f);
-    gui->AddGUIObject(highscoreframe, "highscoreframe");
+    GUISprite* easyHighscore = new GUISprite(dx11, "Sprites/easyHighscore.png", 80.0f, 150.0f);
+    gui->AddGUIObject(easyHighscore, "easyHighscore");
+    GUISprite* normalHighscore = new GUISprite(dx11, "Sprites/normalHighscore.png", 480.0f, 150.0f);
+    gui->AddGUIObject(normalHighscore, "normalHighscore");
+    GUISprite* hardHighscore = new GUISprite(dx11, "Sprites/hardHighscore.png", 880.0f, 150.0f);
+    gui->AddGUIObject(hardHighscore, "hardHighscore");
 
     gamemanager->DisplayHighscore(gui);
 
     GUISprite* backtomenu = new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f);
     gui->AddGUIObject(backtomenu, "goback");
+       
 
     first = false;
 }

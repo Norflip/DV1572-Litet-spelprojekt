@@ -913,7 +913,7 @@ void DevScene::UpdateGUI(const float& deltaTime)
 		gametimer.Stop();
 		gui->RemoveGUIObject("exit");
 		// SET CURRENTSCORE TO GAMEMANAGER
-		gamemanager->SetCurrentScore(player->GetPoints() - 20 + gametimer.GetTimeUntilEnd(timeUntilEnd));
+		gamemanager->SetCurrentScore(player->GetPoints() - 20);
 		SetNextScene(false);
 	}
 
