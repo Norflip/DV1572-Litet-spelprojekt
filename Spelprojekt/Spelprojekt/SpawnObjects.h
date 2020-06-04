@@ -1,6 +1,5 @@
 #pragma once
 #include "DX11Handler.h"
-#include "ShittyOBJLoader.h"
 #include "assimpHandler.h"
 #include "Player.h"
 #include "Entities.h"

@@ -203,9 +203,6 @@
     <ClInclude Include="RenderTarget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShittyOBJLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AABB.h">
       <Filter>Header Files</Filter>
     </ClInclude>

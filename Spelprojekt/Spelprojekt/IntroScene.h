@@ -1,6 +1,5 @@
 #pragma once
 #include "Scene.h"
-#include "ShittyOBJLoader.h"
 #include "Camera.h"
 #include "CameraController.h"
 #include "assimpHandler.h"

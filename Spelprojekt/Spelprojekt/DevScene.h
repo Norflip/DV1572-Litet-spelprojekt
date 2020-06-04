@@ -6,7 +6,6 @@
 #include "Logger.h"
 #include "Camera.h"
 #include <vector>
-#include "ShittyOBJLoader.h"
 #include "Input.h"
 #include "CameraController.h"
 #include "Terrain.h"
