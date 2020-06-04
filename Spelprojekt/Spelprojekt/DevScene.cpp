@@ -5,7 +5,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	//----- GUI SHIET |  Set gui last |
 
 	Lights& lights = renderer->GetLights();
-	lights.SetSunDirection({ 0, -1, 0 });
+	lights.SetSunDirection({ 1, -1, 0 });
 	lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
 	lights.SetSunIntensity(0.6f);
 
