@@ -87,6 +87,7 @@ private:
 	Object* arrow;
 	Object* billBoard;
 
+	// For reading FBX file and animations
 	Assimp::Importer imp;
 	const aiScene* assimpScene;
 

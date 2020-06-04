@@ -76,9 +76,10 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 	//cb_world.shadowTransform = DirectX::XMMatrixTranspose(world);// *lights.tShadowTransform);
 
 
-
+	// Check if the mesh has a valid skeleton and if the skeleton has an animation
 	if (mesh->skeleton && mesh->skeleton->animations.size() > 0)
 	{
+		// Update the constant buffer with the final transformation of every bone in the skeleton, at the current keyframe
 		for (unsigned int i = 0; i < mesh->skeleton->GetNumberOfBones(); i++)
 		{
 			cb_world.boneTransforms[i] = mesh->skeleton->GetCurrentAnimation()->GetBone(i).GetFinalTransformation((unsigned int)mesh->skeleton->GetKeyframe());

@@ -111,6 +111,7 @@ void Scene::Render()
 	renderer->DisplayFrame(camera);
 }
 
+// Sets the state of win or lose, changing to the appropriate endscene
 void Scene::setWinOrLose(bool didWin)
 {
 	this->didWin = didWin;

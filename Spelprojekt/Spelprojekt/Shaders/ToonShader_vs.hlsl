@@ -6,8 +6,8 @@ struct VS_INPUT
 	float2 uv		: TEXCOORD0;
 	float3 normal	: NORMAL;
 	float3 tangent	: TANGENT;
-	float4 weights : BONEWEIGHTS;
-	unsigned int4 IDS : BONEINDICES;
+	float weights : BONEWEIGHTS;
+	unsigned int IDS : BONEINDICES;
 };
 
 struct VS_OUTPUT
@@ -33,6 +33,7 @@ VS_OUTPUT main(VS_INPUT input)
 	return output;
 }
 
+// Entrypoint for animation
 VS_OUTPUT animation(VS_INPUT input)
 {
 	VS_OUTPUT output;
@@ -41,28 +42,20 @@ VS_OUTPUT animation(VS_INPUT input)
 	float3 normals = float3(0.0f, 0.0f, 0.0f);
 	float3 tangents = float3(0.0f, 0.0f, 0.0f);
 
+	// Multiply the vertex position with the bone transform, depending on its ID and weight
+	positions += mul(input.position, boneTransforms[input.IDS]) * input.weights;
 
-	positions += mul(input.position, boneTransforms[input.IDS.x]) * input.weights.x;
-	//positions += mul(input.position, boneTransforms[input.IDS.y]) * input.weights.y;
-	/*positions += mul(input.position, boneTransforms[input.IDS.z]) * input.weights.z;
-	positions += mul(input.position, boneTransforms[input.IDS.w]) * input.weights.w;*/
-	//positions.w = 1.0f;
+	// Multiply the vertex normal with the bone transform, depending on its ID and weight
+	normals += input.weights * mul(input.normal, (float3x3)boneTransforms[input.IDS]).xyz;
 
-
-	normals += input.weights.x * mul(input.normal, (float3x3)boneTransforms[input.IDS.x]).xyz;
-	//normals += input.weights.y * mul(input.normal, (float3x3)boneTransforms[input.IDS.y]).xyz;
-	//normals += input.weights.z * mul(input.normal, (float3x3)boneTransforms[input.IDS.z]).xyz;
-	//normals += input.weights.w * mul(input.normal, (float3x3)boneTransforms[input.IDS.w]).xyz;
-
-	tangents += input.weights.x * mul(input.tangent, (float3x3)boneTransforms[input.IDS.x]).xyz;
-	//tangents += input.weights.y * mul(input.tangent, (float3x3)boneTransforms[input.IDS.y]).xyz;
-	//tangents += input.weights.z * mul(input.tangent, (float3x3)boneTransforms[input.IDS.z]).xyz;
-	//tangents += input.weights.w * mul(input.tangent, (float3x3)boneTransforms[input.IDS.w]).xyz;
+	// Multiply the vertex tangent with the bone transform, depending on its ID and weight
+	tangents += input.weights * mul(input.tangent, (float3x3)boneTransforms[input.IDS]).xyz;
 
 	output.worldPosition = mul(positions, world).xyz;
 	output.normal = mul(normals, world).xyz;
 	output.tangent = mul(tangents, world).xyz;
 	output.uv = input.uv;
 	output.position = mul(positions, mvp);
+
 	return output;
 }

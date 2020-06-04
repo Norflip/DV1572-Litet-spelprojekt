@@ -12,12 +12,12 @@ struct MeshVertex
 	DirectX::XMFLOAT2 uv;
 	DirectX::XMFLOAT3 normal;
 	DirectX::XMFLOAT3 tangent;
-	float weights[4];
-	int IDS[4];
+	float weights;
+	int IDS;
 
-	MeshVertex() : position(0, 0, 0), uv(0, 0), normal(0, 0, 0), tangent(0, 0, 0), weights{ 0.0f, 0.0f, 0.0f, 0.0f }, IDS{ -1,-1,-1,-1 } {}
+	MeshVertex() : position(0, 0, 0), uv(0, 0), normal(0, 0, 0), tangent(0, 0, 0), weights(0.0f), IDS(-1) {}
 	MeshVertex(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT3 normal, DirectX::XMFLOAT3 tangent)
-		: position(position), uv(uv), normal(normal), tangent(tangent), weights{ 0.0f, 0.0f, 0.0f, 0.0f }, IDS{ -1,-1,-1,-1 } {}
+		: position(position), uv(uv), normal(normal), tangent(tangent), weights(0.0f), IDS(-1) {}
 
 };
 
@@ -29,6 +29,7 @@ struct Mesh
 	ID3D11Buffer* indexBuffer;
 	std::vector<unsigned int> indices;
 
+	// Skeleton for animation
 	Skeleton* skeleton;
 
 	Mesh()

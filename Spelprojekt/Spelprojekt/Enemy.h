@@ -71,6 +71,4 @@ private:
 	Icecream* weapon;
 
 	bool moving;
-	bool idle;
-	bool throwing;
 };
