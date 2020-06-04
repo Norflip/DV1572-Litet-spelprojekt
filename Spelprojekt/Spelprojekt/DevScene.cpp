@@ -178,7 +178,6 @@ void DevScene::Unload()
 
 void DevScene::LoadResources()
 {
-	
 	// save the shaders somewhere, remember to clean it up
 	Shader* toonShader = new Shader();
 	toonShader->LoadPixelShader(L"Shaders/ToonShader_ps.hlsl", "main", dx11.GetDevice());
@@ -279,6 +278,7 @@ void DevScene::LoadResources()
 
 	/*
 		ANIMATIONS
+		The animations is read from an fbx file, and saved to a mesh skeleton
 	*/
 
 	this->assimpScene = imp.ReadFile("Animations/Glasse_Walk_Cycle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
@@ -313,12 +313,10 @@ void DevScene::LoadResources()
 	enemyPrefab1->GetTransform().SetScale(0.275f, 0.275f, 0.275f);
 	enemyPrefab1->SetEnabled(false);
 
+	// Animation for enemy
 	this->assimpScene = imp.ReadFile("Animations/enemy.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
 	AssimpHandler::saveAnimationData(assimpScene, enemyPrefab1->GetMesh()->skeleton, "Enemy");
 	enemyPrefab1->GetMesh()->skeleton->SetFirstAnimation(enemyPrefab1->GetMesh()->skeleton->animations[0]);
-
-	this->assimpScene = imp.ReadFile("Animations/EnemyThrow.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
-	AssimpHandler::saveAnimationData(assimpScene, enemyPrefab1->GetMesh()->skeleton, "EnemyThrow");
 
 	resources.AddResource("enemyPrefab1", enemyPrefab1);
 
@@ -340,10 +338,6 @@ void DevScene::LoadResources()
 	this->assimpScene = imp.ReadFile("Animations/Regular_Tourist_Idle.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
 	AssimpHandler::saveAnimationData(assimpScene, tourist->mesh->skeleton, "Idle");
 	tourist->mesh->skeleton->SetFirstAnimation(tourist->mesh->skeleton->animations[0]);
-
-
-	/*delete this->assimpScene;
-	this->assimpScene = nullptr;*/
 }
 
 void DevScene::Update(const float& deltaTime)
@@ -370,6 +364,8 @@ void DevScene::Update(const float& deltaTime)
 void DevScene::FixedUpdate(const float& fixedDeltaTime)
 {
 	Scene::FixedUpdate(fixedDeltaTime);
+
+	// Change keyframe in the animations, in order to animate the object
 	this->player->GetMesh()->skeleton->AddKeyframe();
 	
 	for (int i = 0; i < 3; i++)
@@ -830,31 +826,9 @@ void DevScene::CreateSceneObjects()
 	}
 }
 
-void DevScene::checkForNextScene()
-{
-	// Används inte längre
-	// Change scene logic
-
-	/*if (controller->getInput()->GetKeyDown('i'))
-	{
-		for (int i = 0; i < scenes.size(); i++)
-		{
-			if (scenes[i]->GetName() == "GameOverScene")
-			{
-				nextScene = scenes[i];
-			}
-
-			if (scenes[i]->GetName() == "WinScene")
-			{
-				nextScene = scenes[i];
-			}
-
-		}
-	}*/
-}
-
 void DevScene::SetNextScene(bool winOrLose)
 {
+	// Checks the next scene to endScene, with either win or lose as a statement
 	for (int i = 0; i < scenes.size(); i++)
 	{
 		if (scenes[i]->GetName() == "EndScene")
@@ -909,16 +883,18 @@ void DevScene::UpdateGUI(const float& deltaTime)
 		canWin = true;
 	}
 
-
+	// Health is 0
 	if (player->GetPlayerHealth() <= 0.0f)
 	{
 		gametimer.Stop();
 		gui->RemoveGUIObject("exit");
+
 		// SET CURRENTSCORE TO GAMEMANAGER
 		gamemanager->SetCurrentScore(player->GetPoints() - 20);
 		SetNextScene(false);
 	}
 
+	// If you can win and your bounding box overlaps with the exit area
 	if (canWin && player->GetWorldBounds().Overlaps(this->player->GetWinArea()->GetWorldBounds()))
 	{
 		gametimer.Stop();
