@@ -1,8 +1,7 @@
 #include "Renderer.h"
 
-const float SHADOW_MAP_SIZE = 2048;
 
-Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11) : dx11(dx11), timer(timer), lights(width, height, 96, 96), ssao(width, height), gbuffersampler(nullptr)
+Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11) : dx11(dx11), timer(timer), lights(width, height, 64, 64), ssao(width, height), gbuffersampler(nullptr)
 {
 	// Initialiserade för att slippa varningar
 	this->currentRenderTarget = nullptr;

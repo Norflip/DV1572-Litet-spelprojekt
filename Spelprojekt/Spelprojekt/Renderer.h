@@ -17,6 +17,9 @@ constexpr float CLEAR_COLOR[3] = { 0.592f, 0.824f, 0.949f };
 
 class Renderer
 {
+	const float SHADOW_MAP_SIZE = 2048;
+
+
 public:
 	Renderer(size_t width, size_t height, Timer&, DX11Handler&);
 	virtual ~Renderer();

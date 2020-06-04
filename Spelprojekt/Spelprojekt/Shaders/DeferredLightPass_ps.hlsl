@@ -1,66 +1,38 @@
 
 #include "Lightning.hlsl"
 
+// G - BUFFER
 Texture2D albedoTexture: register(t0);
 Texture2D lightTexture: register(t1);
 Texture2D normalTexture: register(t2);
 Texture2D positionTexture: register(t3);
+
+// SSAO + SHADOW
 Texture2D ssaoTexture : register(t4);
 Texture2D shadowTexture: register(t5);
 
-SamplerState ssaoSamplerState: register(s0);
+SamplerState samplerState: register(s0);
 
-// TA BORT
-SamplerComparisonState shadowSampler2
+static float2 poissonDiskSamples[16] =
 {
-	// sampler state
-	Filter = MIN_MAG_LINEAR_MIP_POINT;
-	AddressU = WRAP;
-	AddressV = WRAP;
-
-	// sampler comparison state
-	ComparisonFunc = LESS;
+	float2(0.7952771f, 0.8865569f),
+	float2(0.05550706f, 0.4227468f),
+	float2(0.6396513f, 0.4324232f),
+	float2(-0.0771156f, 0.8869811f),
+	float2(0.8800477f, 0.05700803f),
+	float2(0.3543596f, -0.2346418f),
+	float2(0.5773101f, -0.6936153f),
+	float2(-0.1994669f, -0.3151286f),
+	float2(-0.01460677f, -0.9079273f),
+	float2(0.9680309f, -0.4074859f),
+	float2(0.9791155f, -0.9828652f),
+	float2(-0.6393556f, -0.8822003f),
+	float2(-0.7635292f, -0.2459009f),
+	float2(-0.9553224f, 0.6004817f),
+	float2(-0.6042864f, 0.2452013f),
+	float2(-0.719184f, 0.9991779f)
 };
 
-static float2 poissonDisk16 [16] =
-{
-	float2(0.2770745f, 0.6951455f),
-	float2(0.1874257f, -0.02561589f),
-	float2(-0.3381929f, 0.8713168f),
-	float2(0.5867746f, 0.1087471f),
-	float2(-0.3078699f, 0.188545f),
-	float2(0.7993396f, 0.4595091f),
-	float2(-0.09242552f, 0.5260149f),
-	float2(0.3657553f, -0.5329605f),
-	float2(-0.3829718f, -0.2476171f),
-	float2(-0.01085108f, -0.6966301f),
-	float2(0.8404155f, -0.3543923f),
-	float2(-0.5186161f, -0.7624033f),
-	float2(-0.8135794f, 0.2328489f),
-	float2(-0.784665f, -0.2434929f),
-	float2(0.9920505f, 0.0855163f),
-	float2(-0.687256f, 0.6711345f)
-};
-
-static float2 poissonDisk4[4] =
-{
-	float2(-0.94201624f, -0.39906216f),
-	float2(0.94558609f, -0.76890725f),
-	float2(-0.094184101f, -0.92938870f),
-	float2(0.34495938f, 0.29387760f)
-};
-
-// TA BORT
-SamplerComparisonState samShadow
-{
-	Filter = COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
-	AddressU = BORDER;
-	AddressV = BORDER;
-	AddressW = BORDER;
-	BorderColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-
-	ComparisonFunc = LESS;
-};
 
 struct PixelInputType
 {
@@ -68,31 +40,27 @@ struct PixelInputType
 	float2 uv : TEXCOORD0;
 };
 
-
-// Returns a random number based on a vec3 and an int.
-float random(float3 seed, int i) 
+// https://gamedev.stackexchange.com/questions/32681/random-number-hlsl
+/*
+	https://web.archive.org/web/20140224205853/http://obge.paradice-insight.us/wiki/Includes_(Effects)
+	källa <- död länk
+*/
+int GetRandomIndex(float4 seed, int maxValue)
 {
-	float4 seed4 = float4(seed, i);
-	float dot_product = dot(seed4, float4(12.9898f, 78.233f, 45.164f, 94.673f));
-	return frac(sin(dot_product) * 43758.5453f);
+	float dot_product = dot(seed, float4(12.9898f, 78.233f, 45.164f, 94.673f));
+	return int(float(maxValue) * frac(sin(dot_product) * 43758.5453f)) % maxValue;
 }
 
 float4 main(PixelInputType input) : SV_TARGET
 {
-	float4 position = positionTexture.Sample(ssaoSamplerState, input.uv);
+	float4 position = positionTexture.Sample(samplerState, input.uv);
 	float shininess = position.a;
 
-	//return position;
-	
 	if (position.w == 0.0f)
 		discard;
 
-	//float4 albedo = albedoTexture.Sample(ssaoSamplerState, input.uv);
-	float4 albedo = albedoTexture.Sample(ssaoSamplerState, input.uv);
-
-	//float3 normal = normalTexture.Load(pixelPos, 0).xyz;
-	float3 normal = normalTexture.Sample(ssaoSamplerState, input.uv).xyz;
-
+	float4 albedo = albedoTexture.Sample(samplerState, input.uv);
+	float3 normal = normalTexture.Sample(samplerState, input.uv).xyz;
 	normal = normalize(normal);
 
 	// DIRECTION DATA
@@ -115,10 +83,10 @@ float4 main(PixelInputType input) : SV_TARGET
 
 	//diffuse = round(diffuse * 5) / 5;
 
-	float4 finalColor = ambient + diffuse;
+	float4 color = ambient + diffuse;
 	for (int i = 0; i < pointLightCount; i++)
 	{
-		finalColor += CalculatePointLight(pointLights[i], normal, position, viewDirection);
+		color += CalculatePointLight(pointLights[i], normal, position, viewDirection);
 	}
 
 
@@ -127,11 +95,11 @@ float4 main(PixelInputType input) : SV_TARGET
 		SSAO
 
 	*/
+	// http://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html
 
-	//float ssaoValue = ssao.Sample(ssaoSamplerState, input.uv).x;
+	//float ssaoValue = ssao.Sample(samplerState, input.uv).x;
 	//return float4(ssaoValue, ssaoValue, ssaoValue, 1.0f);
 
-	// http://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html
 	const int blurSize = 4;
 	float2 texel = 1.0f / screenSize;
 
@@ -142,78 +110,58 @@ float4 main(PixelInputType input) : SV_TARGET
 	{
 		for (int y = 0; y < blurSize; y++)
 		{
-			float2 offset = (float2(x, y) * hlim) * texel;
-			ssaoResult += ssaoTexture.Sample(ssaoSamplerState, input.uv + offset).x;
+			float2 offset = (hlim + float2(x, y)) * texel;
+			ssaoResult += ssaoTexture.Sample(samplerState, input.uv + offset).x;
 		}
 	}
 
 	ssaoResult = ssaoResult / float(blurSize * blurSize);
-	//ssaoResult = saturate(0.3f + ssaoResult);
-
-	//finalColor *= d;
-	//finalColor.w = 1.0f;
-
-
 
 
 	/*
-	
 		SHADOWS
-	
 	*/
-
+	const int POSSION_DISK_SAMPLE_COUNT = 16;
 	const float bias = 0.00001f;
-	const float PCFSpread = 1.0f / 2048.0f; //texel size av shadow mapp
+	const float PCFSpread = 1.0f / 1024; //texel size av shadow mapp
 
-	float4 lightViewPosition = mul(mul(position, sunView), sunProjection);
-
-	//return lightViewPosition;
+	float4 relativeViewPos = mul(mul(position, sunView), sunProjection);
 
 
 	float2 projectTexCoord;
-	//projectTexCoord.x = lightViewPosition.x / lightViewPosition.w / 2.0f + 0.5f;
-	//projectTexCoord.y = -lightViewPosition.y / lightViewPosition.w / 2.0f + 0.5f;
-	
-	/*projectTexCoord.x = lightViewPosition.x / 2.0f + 0.5f;
-	projectTexCoord.y = -lightViewPosition.y / 2.0f + 0.5f;
-	*/
-	projectTexCoord.x = lightViewPosition.x / 2.0f + 0.5f;
-	projectTexCoord.y = -lightViewPosition.y / 2.0f + 0.5f;
-
+	projectTexCoord.x = 0.5f + (relativeViewPos.x / relativeViewPos.w) / 2.0f;
+	projectTexCoord.y = 0.5f - relativeViewPos.y / relativeViewPos.w / 2.0f;
 
 	float visibility = 1.0f;
-	//float sampledDepthValue = shadowTexture.Sample(ssaoSamplerState, projectTexCoord).r;
 
 	// kollar om den transformerade positionen är innanför sol kamerans vy
 	if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
 	{
-		//float lightDepthValue = (lightViewPosition.z / lightViewPosition.w) - bias;		
-		float lightDepthValue = (lightViewPosition.z) - bias;
-		const int POSSION_DISK_SAMPLE_COUNT = 8;
+		// positionens djup relativt till solens kamera
+		float lightDepthValue = (relativeViewPos.z / relativeViewPos.w) - bias;
 
+		[unroll(POSSION_DISK_SAMPLE_COUNT)]
 		for (int i = 0; i < POSSION_DISK_SAMPLE_COUNT; i++)
 		{
-			int index = int(16.0 * random(input.uv.xyy, i)) % 16;
-			float sampledDepthValue = shadowTexture.Sample(ssaoSamplerState, projectTexCoord + (poissonDisk16[i] * PCFSpread)).r;
-		
-			if (lightDepthValue >= sampledDepthValue)
+			float4 seed = float4(input.uv.xyy, i);
+			int index = GetRandomIndex(seed, 16);
+			float sampledDepthValue = shadowTexture.Sample(samplerState, projectTexCoord + (poissonDiskSamples[index] * PCFSpread)).r;
+
+			// om positionens djup är större än skuggans djup som vi samplar så reducerar vi visibility variabeln
+			if (lightDepthValue > sampledDepthValue)
 			{
-				float de = (1.0f / float(POSSION_DISK_SAMPLE_COUNT + 1));
-				visibility -= de * (1.0f - sampledDepthValue);
+				visibility -= (1.0f / POSSION_DISK_SAMPLE_COUNT);
 			}
 		}
-
-		visibility = saturate(0.1f + visibility);
 	}
 
-	//return  max(1.055 * pow(C_lin, 0.416666667) - 0.055, 0);
-	const float gamma = 1.0f / 2.2f;
+	const float minimumVisibility = 0.3f;
+	visibility = saturate(minimumVisibility + (visibility * ssaoResult));
+	color *= (visibility);
 
-	float4 color = finalColor * visibility * ssaoResult;
+	// apply gamma translation
+	const float gamma = 1.0f / 2.2f;
 	color = pow(color, gamma);
 	color.w = 1.0f;
 	return color;
-
-	//float t = 1.0f - (visibility);
-	//return saturate(pow(lerp(finalColor, float4(0,0,0,1), t),  gamma)) * (1.0f - ssaoResult);
 }
