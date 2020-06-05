@@ -24,15 +24,7 @@ Spoon::~Spoon()
 void Spoon::TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 {
 	Weapon::TriggerAttack(pos, rot);
-	// USED? 
 	this->inFlight = true;
-}
-
-void Spoon::MeleeAttack(float deltaTime)
-{	
-	// do melee stuff here
-	//nextPos = { (GetTransform().GetPosition().m128_f32[0] + (-std::sinf(direction.m128_f32[1]) * movementspeed) * deltaTime) ,GetTransform().GetPosition().m128_f32[1], (GetTransform().GetPosition().m128_f32[2] + (-std::cosf(direction.m128_f32[1]) * movementspeed) * deltaTime) };	// 30 = speed
-	//GetTransform().SetPosition(nextPos);		
 }
 
 void Spoon::FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
@@ -49,9 +41,3 @@ void Spoon::PlaySoundEffect()
 void Spoon::PlayBreaksound()
 {
 }
-
-//void Spoon::PlayBreaksound()
-//{
-//	context->gamemanager->GetSoundeffectHandler()->PlaySound("Splash", context->gamemanager->GetCurrentSoundVolume());
-//}
-

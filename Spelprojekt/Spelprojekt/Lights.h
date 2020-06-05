@@ -32,10 +32,6 @@ public:
 	Camera* GetSunCamera() { return this->sunCamera; }
 	void UpdateCameras(DirectX::XMVECTOR focus, const AABB& bounds);
 
-	DirectX::XMMATRIX tProjection;
-	DirectX::XMMATRIX tView;
-	DirectX::XMMATRIX tShadowTransform;
-
 private:
 	size_t width, height;
 	Camera* sunCamera;

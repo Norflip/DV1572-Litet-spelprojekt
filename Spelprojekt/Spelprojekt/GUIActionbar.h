@@ -15,7 +15,6 @@ class GUIActionbar : public GUIObject
 		DirectX::SpriteBatch* spritebatch;
 		ID3D11ShaderResourceView* SRV;
 
-
 		float xPosition, yPosition;
 		float xScale, yScale;
 		float rotation;

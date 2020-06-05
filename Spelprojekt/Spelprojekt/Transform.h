@@ -33,13 +33,11 @@ public:
 	void SetRotation(DirectX::XMVECTOR rotation) { this->rotation = rotation; }
 	void LookAt(DirectX::XMVECTOR position);
 	void LookAtCamera(DirectX::XMVECTOR position);
-	//void LookAway(DirectX::XMVECTOR position);
 	void Translate(float x, float y, float z);
 	void Translate(DirectX::XMVECTOR translation);
 
 	void RandomizeYRotation();
 
-	// new
 	void SetScale(float x, float y, float z);
 	void SetScale(DirectX::XMVECTOR scale);
 	DirectX::XMVECTOR GetScale() const { return this->scale; }

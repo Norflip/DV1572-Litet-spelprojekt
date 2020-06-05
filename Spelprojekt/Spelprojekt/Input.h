@@ -13,9 +13,7 @@
 
 class Input
 {
-
 public:
-
 	Input(HWND, size_t width, size_t height);
 	virtual ~Input();
 
@@ -41,13 +39,11 @@ private:
 	bool lockCursor;
 	bool firstFrame = true;
 
+	DirectX::Keyboard dxkeyboard;
 	DirectX::Keyboard::State currentKeyboardState;
 	DirectX::Keyboard::State previosKeyboardState;
-	
+
+	DirectX::Mouse dxmouse;
 	DirectX::Mouse::State previousMouseState;
 	DirectX::Mouse::State currentMouseState;
-
-	DirectX::Keyboard dxkeyboard;
-	DirectX::Mouse dxmouse;
-
 };

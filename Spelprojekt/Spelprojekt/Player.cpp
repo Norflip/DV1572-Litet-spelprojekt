@@ -45,9 +45,7 @@ void Player::Update(const float& deltaTime)
 	UpdateHeight(deltaTime);
 	CheckForPickups();
 
-	//UpdateMeleeWeaponPosition();	// If spoon is equiped
 	UseWeapon();
-
 	UpdateLookAtPosition();
 	UpdateAnimations();
 
@@ -135,26 +133,6 @@ void Player::UpdateHeight(float FixedDeltaTime)
 	GetTransform().SetPosition({ xFloat,(context->terrain->SampleHeight(xFloat, zFloat) + playerHeight), zFloat });
 }
 
-void Player::RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime)
-{
-	//float currentDir = DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1);
-
-	//DirectX::XMVECTOR directionVector = { currentPosition.x - nextPosition.x,0, currentPosition.z - nextPosition.z };
-	////Checks if WASD is pressed. True sets new direction
-
-	//if (input->GetKey('w') || input->GetKey('a') || input->GetKey('s') || input->GetKey('d'))
-	//	nextDir = atan2(DirectX::XMVectorGetByIndex(directionVector, 0), DirectX::XMVectorGetByIndex(directionVector, 2));
-
-	////Rotates to shortest angle(in rad)
-	//GetTransform().Rotate(0, MathHelper::ShortestRotation(currentDir, nextDir) / 3, 0);
-	////GetTransform().Rotate(0, shortestRoration(currentDir, nextDir)/10, 0);
-
-	////removes rotations bigger and smaller than 360 & -360
-	//if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) < -MathHelper::PI * 2)
-	//	GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) + MathHelper::PI * 2, 0 });
-	//if (DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) > MathHelper::PI * 2)
-	//	GetTransform().SetRotation({ 0, DirectX::XMVectorGetByIndex(GetTransform().GetRotation(), 1) - MathHelper::PI * 2, 0 });
-}
 
 DirectX::XMFLOAT3 Player::CheckCollisions(const float& deltaTime, const float& length)
 {
@@ -183,8 +161,8 @@ DirectX::XMFLOAT3 Player::CheckCollisions(const float& deltaTime, const float& l
 			DirectX::XMFLOAT3 pos;
 			DirectX::XMStoreFloat3(&pos, DirectX::XMVectorSubtract(GetTransform().GetPosition(), hit.position));
 
-			result.x += pos.x * deltaTime;// *length2;// // 
-			result.z += pos.z * deltaTime;// * length2;//* fixedDeltaTime;// * 0.05f;
+			result.x += pos.x * deltaTime;
+			result.z += pos.z * deltaTime;
 		}
 	}
 
@@ -269,27 +247,6 @@ void Player::UpdateAnimations()
 	}
 }
 
-//void Player::UpdateMeleeWeaponPosition()
-//{
-//	if (lefthandFull)
-//	{
-//		if (leftWeapon->GetType() == WeaponType::Spoon) {
-//			leftWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
-//			leftWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
-//			leftWeapon->direction = GetTransform().GetRotation();
-//		}
-//	}
-//
-//	if (righthandFull)
-//	{
-//		if (rightWeapon->GetType() == WeaponType::Spoon) {
-//			rightWeapon->GetTransform().SetPosition(GetTransform().GetPosition());
-//			rightWeapon->GetTransform().SetRotation(GetTransform().GetRotation());
-//			rightWeapon->direction = GetTransform().GetRotation();
-//		}
-//	}
-//}
-
 void Player::UseWeapon()
 {
 	// Left hand
@@ -337,57 +294,15 @@ void Player::WeaponUsage(Weapon* weapon, bool& hand)
 
 	if (weapon->GetType() == WeaponType::Spoon)
 	{
-		//Logger::Write("USES: " + std::to_string(weapon->CheckUsage()));
+		weapon->TriggerAttack(GetTransform().GetPosition(), aimDirection);
+		weapon->PlaySoundEffect();
 
-		/*if (weapon->CheckUsage() < 2)
-		{*/
-			weapon->TriggerAttack(GetTransform().GetPosition(), aimDirection);
-			weapon->PlaySoundEffect();
+		SetActiveWeapon(static_cast<Weapon*>(weapon));
+		context->entities->InsertObject(weapon);
 
-			SetActiveWeapon(static_cast<Weapon*>(weapon));
-			context->entities->InsertObject(weapon);
-
-			hand = false;
-			GetTransform().SetRotation(aimDirection);
-			this->rangedAttacking = true;
-
-			/*this->meleeAttacking = true;*/
-			//weapon->PlaySoundEffect();
-			//activeWeapon = static_cast<Weapon*>(weapon);
-			//weapon->Use();
-			//activeWeapon = nullptr;
-
-			/*const float attackRange = 4.0f;
-			auto enemies = context->entities->GetObjectsInLayer(ObjectLayer::Enemy);
-			int counter = 0;
-
-			for (auto i = enemies.begin(); i < enemies.end(); i++)
-			{
-				DirectX::XMVECTOR a = (*i)->GetTransform().GetPosition();
-				DirectX::XMVECTOR b = GetTransform().GetPosition();
-
-				float sqrDistance = DirectX::XMVectorGetByIndex(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(a, b)), 0);
-
-				if (sqrDistance < attackRange * attackRange)
-					counter++;
-			}*/
-
-			//Logger::Write("INRANGE " + std::to_string(counter) + " / " + std::to_string(enemies.size()));
-		//}
-		/*else
-		{
-			this->meleeAttacking = true;
-			weapon->PlaySoundEffect();
-			weapon->TriggerAttack(GetTransform().GetPosition(), GetTransform().GetRotation());
-			weapon->direction = GetTransform().GetRotation();
-			weapon->PlayBreaksound();
-
-			context->entities->RemoveObject(weapon);
-
-			weapon->SetEnabled(false);
-			weapon = nullptr;
-			hand = false;
-		}*/
+		hand = false;
+		GetTransform().SetRotation(aimDirection);
+		this->rangedAttacking = true;
 	}
 }
 
@@ -402,7 +317,7 @@ void Player::IncreaseHealth()
 		this->playerHealth += context->gamemanager->GetRecoverHealth();
 		if (this->playerHealth > 100.0f)
 			this->playerHealth = 100.0f;
-	}		
+	}
 }
 
 void Player::HealthCheck(float deltaTime)
@@ -466,23 +381,7 @@ void Player::UpdateLookAtPosition()
 	if (arrow != nullptr)
 	{
 		arrow->GetTransform().SetPosition({ GetTransform().GetPosition().m128_f32[0],GetTransform().GetPosition().m128_f32[1],GetTransform().GetPosition().m128_f32[2] });
-		DirectX::XMVECTOR playerPos = GetTransform().GetPosition();
-		DirectX::XMVECTOR testWinPos = winArea->GetTransform().GetPosition();
-
-		//float angle = atan2f(testWinPos.m128_f32[0] - playerPos.m128_f32[0], testWinPos.m128_f32[2] - playerPos.m128_f32[2]);
-
-		//arrow->GetTransform().SetRotation({ 0,angle,0 });
-		//arrow->GetTransform().Rotate(0, MathHelper::PI, 0);
-
 		arrow->GetTransform().LookAt(winArea->GetWorldBounds().GetCenter());
-		//arrow->GetTransform().SetRotation({ 0,0,0});
-		//arrow->GetTransform().GetRotation().m128_f32[0]
-		//arrow->GetTransform().SetRotation({ arrow->GetTransform().GetRotation().m128_f32[0] + MathHelper::PI/2 ,arrow->GetTransform().GetRotation().m128_f32[1] ,arrow->GetTransform().GetRotation().m128_f32[2] });
-		//nextPosition = { (GetTransform().GetPosition().m128_f32[0] + (-std::sinf(arrowDirection.m128_f32[1]) * 30)) ,GetTransform().GetPosition().m128_f32[1], (GetTransform().GetPosition().m128_f32[2] + (-std::cosf(arrowDirection.m128_f32[1]) * 30)) };	// 30 = speed
-		//GetTransform().SetPosition(nextPos);
-		//GetTransform().SetRotation({ (GetTransform().GetRotation().m128_f32[0] + (-8.f * deltaTime)) ,GetTransform().GetRotation().m128_f32[1]  ,GetTransform().GetRotation().m128_f32[2] });
-
-		//arrow->GetTransform().LookAt(this->exitPosition);		
 	}
 }
 

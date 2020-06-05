@@ -107,7 +107,6 @@ void Terrain::GenerateMesh(std::string texturePath, ID3D11Device* device, bool w
 float Terrain::SampleHeight(float x, float z)
 {
 	DirectX::XMFLOAT3 position = { x,0,z };
-	//DirectX::XMStoreFloat3(&position, GetTransform().GetPosition());
 
 	float howFarX = position.x - (int)(position.x / XZScale);
 	float howFarZ = position.z - (int)(position.z / XZScale);
@@ -159,8 +158,6 @@ DirectX::XMVECTOR Terrain::SampleNormal(float x, float z)
 	//quick exit if we are out of the heightmap		//
 	if (row < 0 || col < 0 || row > 250 ||col > 250)
 		return { 0,0,0 };
-
-	//bool bottomTriangle = (howFarX + howFarZ) <= 1.f;
 
 	DirectX::XMVECTOR bottomLeft = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at(row * static_cast<long long>(GetMapWidth()) + col).normal);
 	DirectX::XMVECTOR bottomRight = DirectX::XMLoadFloat3(&GetMesh()->vertexes.at(row * static_cast<long long>(GetMapWidth()) + col + 1).normal);

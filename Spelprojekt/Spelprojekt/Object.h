@@ -1,13 +1,11 @@
 #pragma once
 #include "Transform.h"
-//#include "Renderer.h"
 #include "Mesh.h"
 #include "Material.h"
 #include "AABB.h"
 #include "assimpHandler.h"
 
 class Renderer;
-
 
 enum class ObjectLayer
 {
@@ -58,8 +56,6 @@ public:
 	bool IsEnabled() const { return this->enabled; }
 	bool IsVisible() const { return this->visible; }
 	void SetVisible(bool visible) { this->visible = visible; }
-
-	bool isWater = false;
 
 private:
 	Transform transform;

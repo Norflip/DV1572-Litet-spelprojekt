@@ -8,10 +8,7 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	lights.SetSunDirection({ 1, -1, 0 });
 	lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1 });
 	lights.SetSunIntensity(0.6f);
-
-	//lights->AddPointLight({ -2, 0, 0 }, { 1.0f, 1.0f, 1.0f, 1 }, 50);
-	//lights->AddPointLight({ -2, 0, 10 }, { 0.2f,0.2f, 0.2f, 1 }, 50);	
-
+		
 	this->context = new WorldContext();
 	this->spawner = new SpawnObjects(context);
 		
@@ -38,7 +35,6 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	exitText->SetFontSize({ 1.0f, 1.0f });
 	exitText->SetFontColor({ 1,0,0,1 });
 
-
 	// Controller
 	this->controller = new CameraController(GetSceneCamera(), window.GetInput(), CameraController::State::Follow);
 	window.GetInput()->LockCursor(false);
@@ -62,6 +58,9 @@ DevScene::DevScene(Renderer* renderer, DX11Handler& dx11, Window& window, std::v
 	this->exitActive = false;
 	this->player = nullptr;
 	this->timeUntilEnd = 0.0f;
+
+	for (int i = 0; i < 3; i++)
+		tourist[i] = nullptr;
 
 	// Fillcontext
 	context->entities = entities;
@@ -100,19 +99,15 @@ void DevScene::Load()
 	entities->InsertObject(wagon);
 	spawner->PlaceWagon(wagon);
 
-
 	// GROUNDH MESH
 	Object* terrainObject = new Object(ObjectLayer::None, terrainMesh.GetMesh(), resources.GetResource<Material>("terrainMaterial"));
 	entities->InsertObject(terrainObject);
 
-
-	// ------- water shader
+	// ------- Water Shader
 	Object* water = new Object(ObjectLayer::None, waterMesh.GetMesh(), resources.GetResource<Material>("waterMaterial"));
 	water->GetTransform().Translate({ 0,5,0, });
 	water->GetTransform().SetRotation({ 0,0,0 });
 	entities->InsertObject(water);
-	water->isWater = true;
-
 
 	// ------ PLAYER
 	this->player = new Player(resources.GetModel("playerModel"), controller, gui, context);
@@ -123,9 +118,7 @@ void DevScene::Load()
 	this->controller->SetFollow(&this->player->GetTransform(), { 0, 10.0f, -10.0f });
 	entities->InsertObject(this->player);
 	context->player = player;
-
-
-
+	
 	// ------ Leveldesign
 	CreateSceneObjects();
 
@@ -135,7 +128,6 @@ void DevScene::Load()
 	player->SetTargetAndArrow(arrow, wagon);
 	entities->InsertObject(arrow);
 	arrow->SetVisible(false);
-
 
 	// - - - - - GUI OBJECTs sist, pga inget z-värde. 
 	// Add objects	
@@ -152,8 +144,7 @@ void DevScene::Load()
 	// Set GUI
 	renderer->SetGUI(gui); 	// Set GUI
 
-	gametimer.Start();
-	
+	gametimer.Start();	
 
 	// Play scenemusic	
 	gamemanager->PlayMusic();
@@ -162,7 +153,7 @@ void DevScene::Load()
 	spawner->Initialize();
 
 	testSpeed.Stop();
-	std::cout << std::endl << "loadTime:  " << testSpeed.GetMilisecondsElapsed() << std::endl;
+	std::cout << std::endl << " LoadTime:  " << testSpeed.GetMilisecondsElapsed() << std::endl;
 }
 
 void DevScene::Unload()
@@ -377,13 +368,6 @@ Scene* DevScene::GetNextScene() const
 
 void DevScene::CreateSceneObjects()
 {
-
-	/*billBoard = new Object(ObjectLayer::Enviroment, resources.GetModel("quadInv"));
-	billBoard->GetTransform().Translate(55, 12, 55);
-	billBoard->GetTransform().SetScale(1, 1, 1);
-	billBoard->GetTransform().SetRotation({ 0,0, 0 });
-	entities->InsertObject(billBoard);*/
-
 	if (true)
 	{
 		////////////////////////// MOUNTAINS /////////////////////////////
@@ -797,9 +781,6 @@ void DevScene::CreateSceneObjects()
 
 		for (int i = 0; i < 22; i++)
 		{
-			//palms[i]->GetTransform().RandomizeYRotation();
-
-			// flytta den 1 0 0 t.ex i förhållande till rotationen
 			physics.CreateCollisionBodyCapsule(palms[i], 0.5f, 0.0f, 0.0f);
 		}
 

@@ -10,8 +10,6 @@
 Material::Material(Shader* shader, DX11Handler& dx11) : shader(shader)
 {
 	this->id = material_id_counter++;
-	//Logger::Write("Created material with id " + std::to_string(this->id));
-
 	this->buffer = dx11.CreateBuffer<MaterialData>(materialData);
 
 	this->materialData.ambient = { 0.8f, 0.8f, 0.8f ,1 };
@@ -43,30 +41,7 @@ void Material::SetTexture(size_t index, Texture* texture, SHADER_BIND_TYPE type)
 	{
 		(*gg).second.texture = texture;
 	}
-
-
-	//auto pair = std::pair<Texture*, SHADER_BIND_TYPE>(texture, type);
-
-	//// Searches the textureMap for the given index.
-	//// if not then it will insert the new texture*
-	//// replaces the value else
-	//auto teg = textureMap.find(index);
-
-	//if (teg == textureMap.end())
-	//	textureMap.insert({ index, pair });
-	//else
-	//	(*teg).second = pair;
 }
-
-//Texture* Material::GetTexture(size_t index) const
-//{
-//	Texture* texture = nullptr;
-//	auto teg = textureMap.find(index);
-//	if (teg != textureMap.end())
-//		texture = (*teg).second.first;
-//
-//	return texture;
-//}
 
 void Material::SetSampler(size_t index, ID3D11SamplerState* sampler, SHADER_BIND_TYPE type)
 {
@@ -113,38 +88,6 @@ void Material::Unbind(ID3D11DeviceContext* context)
 			}
 		}
 	}
-
-	////ID3D11Buffer* const nullBuffer[1] = { NULL };
-	////context->PSSetConstantBuffers(CONSTANT_BUFFER_SLOT, 1, nullBuffer);
-
-	//auto iterator = textureMap.begin();
-	//Texture* texture = nullptr;
-	////ZeroMemory(*pSRV, sizeof(ID3D11ShaderResourceView));
-
-	//while (iterator != textureMap.end())
-	//{
-	//	size_t index = (*iterator).first;
-	//	SHADER_BIND_TYPE flag = (*iterator).second.second;
-	//	texture = (*iterator).second.first;
-
-	//	if (flag == SHADER_BIND_TYPE::PIXEL)
-	//	{
-	//		//if (sampler != nullptr)
-	//		//{
-	//		//	//ID3D11SamplerState* testSampler;
-	//		//	//context->PSGetSamplers(index, 1, &testSampler);
-	//		//	//if(testSampler != NULL || testSampler != nullptr)
-	//		//	//context->PSSetSamplers(index, 1, nullptr);
-	//		//}
-	//		context->PSSetShaderResources(index, 1, pSRV);
-	//	}
-	//	else if (flag == SHADER_BIND_TYPE::VERTEX)
-	//	{
-	//		context->VSSetShaderResources(index, 1, pSRV);
-	//	}
-
-	//	iterator++;
-	//}
 }
 
 void Material::Bind(ID3D11DeviceContext* context)
@@ -187,39 +130,4 @@ void Material::Bind(ID3D11DeviceContext* context)
 			}
 		}
 	}
-
-	//this->shader->Bind(context);
-	// update buffer
-
-
-
-	//auto iterator = textureMap.begin();
-	//Texture* texture = nullptr;
-
-	//while (iterator != textureMap.end())
-	//{
-	//	size_t index = (*iterator).first;
-	//	SHADER_BIND_TYPE flag = (*iterator).second.second;
-	//	texture = (*iterator).second.first;
-
-	//	ID3D11ShaderResourceView* srv = texture->GetSRV();
-	//	ID3D11SamplerState* sampler = texture->GetSampler();
-
-	//	if (flag == SHADER_BIND_TYPE::PIXEL)
-	//	{
-	//		//if (sampler != nullptr)
-	//		context->PSSetSamplers(index, 1, &sampler);
-
-	//		context->PSSetShaderResources(index, 1, &srv);
-	//	}
-	//	else if (flag == SHADER_BIND_TYPE::VERTEX)
-	//	{
-	//		//if (sampler != nullptr)
-	//		context->VSSetSamplers(index, 1, &sampler);
-
-	//		context->VSSetShaderResources(index, 1, &srv);
-	//	}
-
-	//	iterator++;
-	//}
 }

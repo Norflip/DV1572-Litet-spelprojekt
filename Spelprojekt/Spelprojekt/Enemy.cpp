@@ -29,8 +29,7 @@ Enemy::Enemy(AssimpHandler::AssimpData modelData, WorldContext* context) : Enemy
 Enemy::Enemy(const Enemy& other) : Enemy(other.GetMesh(), other.GetMaterial(), other.context) {}
 
 Enemy::~Enemy()
-{
-	
+{	
 }
 
 void Enemy::Update(const float& deltaTime)
@@ -82,17 +81,6 @@ void Enemy::UpdateMovement(float fixedDeltaTime)
 		if (pPos.x >= nextPos.x)
 			nextPos.x += fixedDeltaTime * DirectX::XMVectorGetByIndex(velocity, 0);
 
-
-
-		//Logger::Write(LOG_LEVEL::Info, "Chase player " + std::to_string(nextPos.x));
-
-		/*float vlength = DirectX::XMVectorGetByIndex(DirectX::XMVector3Length(velocity), 0);
-
-		DirectX::XMFLOAT3 collisionOffset = CheckCollisions(fixedDeltaTime, vlength);
-		nextPos.x += collisionOffset.x;
-		nextPos.y += collisionOffset.y;
-		nextPos.z += collisionOffset.z;*/
-
 		GetTransform().SmoothRotate(nextPos, fixedDeltaTime, true);
 		GetTransform().SetPosition({ nextPos.x, nextPos.y, nextPos.z });
 	}
@@ -138,21 +126,14 @@ DirectX::XMFLOAT3 Enemy::CheckCollisions(const float& deltaTime, const float& le
 			DirectX::XMFLOAT3 pos;
 			DirectX::XMStoreFloat3(&pos, DirectX::XMVectorSubtract(GetTransform().GetPosition(), hit.position));
 
-			result.x += pos.x;// *length2;// // 
-			result.z += pos.z;// * length2;//* fixedDeltaTime;// * 0.05f;
+			result.x += pos.x;
+			result.z += pos.z;
 		}
 	}
 
 	return result;
 }
 
-void Enemy::UpdateTestBoids(float fixedDeltaTime)
-{
-	tVelocity = DirectX::XMVectorClamp(DirectX::XMVectorAdd(tVelocity, BoidsAlgorithm(ObjectLayer::Enemy)), { 0,0,0 }, { 2,0,2 });
-	tVelocity = DirectX::XMVectorScale(tVelocity, fixedDeltaTime);
-	//Logger::Write(LOG_LEVEL::Info, "T vel " + std::to_string(tVelocity.m128_f32[0]));
-	GetTransform().Translate(tVelocity);
-}
 
 DirectX::XMVECTOR Enemy::BoidsAlgorithm(ObjectLayer object)
 {
@@ -202,8 +183,7 @@ DirectX::XMVECTOR Enemy::BoidsAlgorithm(ObjectLayer object)
 DirectX::XMVECTOR Enemy::Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR distance, float distF)
 {
 	DirectX::XMVECTOR steering = { 0,0,0 };
-	if (distF < 0.001f)
-	{
+	if (distF < 0.001f)	{
 		
 		float randX = (static_cast <float>(rand() % 200) - 100.0f) / 100.0f;
 		float randZ = (static_cast <float>(rand() % 200) - 100.0f) / 100.0f;
@@ -211,9 +191,7 @@ DirectX::XMVECTOR Enemy::Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR 
 	}
 	else
 	{
-		//Logger::Write(LOG_LEVEL::Info, "Separate from other enemy ");
-		//add steering velocity based of length of distance vector
-		steering = DirectX::XMVectorScale(DirectX::XMVector3Normalize(offset), 2.0f);
+		steering = DirectX::XMVectorScale(DirectX::XMVector3Normalize(offset), 4.0f);
 	}
 	return steering;
 }

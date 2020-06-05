@@ -2,21 +2,9 @@
 
 Lights::Lights(size_t screenWidth, size_t screenHeight, size_t width, size_t height) : lightBuffer_ptr(nullptr), width(width), height(height)
 {
-	// FUNGERAR
-	/*lightConstantBuffer.ssao_scale = 1.5f;
-	lightConstantBuffer.ssao_bias = 0.1f;
-	lightConstantBuffer.ssao_intensity = 2.2f;
-	lightConstantBuffer.ssao_radius = 0.8f;*/
-
-	// Initialiserade för att slippa varningar //
 	this->pointLight_ID = 0;
-	this->tProjection = DirectX::XMMatrixIdentity();
 	this->dirty = false;
-	this->tShadowTransform = DirectX::XMMatrixIdentity();
-	this->tView = DirectX::XMMatrixIdentity();
 	this->lightConstantBuffer = LightData();
-	// Initialiserade för att slippa varningar
-
 	sunCamera = new Camera(90.0f, width, height);
 }
 
@@ -77,18 +65,10 @@ void Lights::UpdateConstantBuffer(Camera* camera, ID3D11DeviceContext* context)
 		it++;
 	}
 
-	//lightConstantBuffer.sunView = DirectX::XMMatrixTranspose(sunCamera->GetView());
-	//lightConstantBuffer.sunProjection = DirectX::XMMatrixTranspose(sunCamera->GetOrthographic());
-
-	//DirectX::XMMATRIX proj = DirectX::XMMatrixOrthographicLH(40.0f, 40.0f, 1.0f, 50.0f);
-
 	lightConstantBuffer.sunView = DirectX::XMMatrixTranspose(sunCamera->GetView());
 	lightConstantBuffer.sunProjection = DirectX::XMMatrixTranspose(sunCamera->GetOrthographic());
-
-	//lightConstantBuffer.worldToView = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(camera->GetView(), camera->GetProjection()));
 	lightConstantBuffer.worldToView = DirectX::XMMatrixTranspose(camera->GetView());
 	lightConstantBuffer.pointLightCount = (int)pointLightMap.size();
-	//lightConstantBuffer.screenSize = { static_cast<float>(width), static_cast<float>(height) };
 
 	DirectX::XMStoreFloat3(&lightConstantBuffer.eyePosition, camera->GetTransform().GetPosition());
 	context->UpdateSubresource(lightBuffer_ptr, 0, 0, &lightConstantBuffer, 0, 0);
@@ -103,9 +83,7 @@ void Lights::UpdateCameras(DirectX::XMVECTOR focus, const AABB& bounds)
 
 	DirectX::XMVECTOR offset = DirectX::XMVectorAdd(focus, DirectX::XMVectorScale(DirectX::XMVector3Normalize(sunDirection), sunOffsetDistance * -1));
 
-	//offset = DirectX::XMVectorAdd(focus, { -20, 2, -1 });
 	sunCamera->GetTransform().SetPosition(offset);
 	sunCamera->GetTransform().LookAtCamera(focus);
 	sunCamera->UpdateView();
-
 }

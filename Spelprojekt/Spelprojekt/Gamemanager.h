@@ -1,9 +1,7 @@
 #pragma once
 #include "DX11Handler.h"
 #include "GUI.h"
-//#include "GUIText.h"
 #include "SoundHandler.h"
-
 
 const int MAXSCORES = 6;	// 6 is for new score + sortation
 
@@ -74,6 +72,7 @@ public:
 	void SortHighscore(std::string name[], int points[], int totalscores);
 	void UpdateHighscore(GUI* gui, int score);
 	void DisplayHighscore(GUI* gui);
+	void NewHighscore(std::string highscoreName[], int highscoreScore[], GUIText* displayHighscorename[], GUIText* displayHighscorePoints[]);
 
 private:
 	DX11Handler* dxhandler;

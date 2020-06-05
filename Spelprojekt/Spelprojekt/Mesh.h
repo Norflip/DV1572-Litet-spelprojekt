@@ -39,7 +39,7 @@ struct Mesh
 		skeleton = nullptr;
 	}
 
-	~Mesh()
+	virtual ~Mesh()
 	{
 		if (vertexBuffer) 
 			vertexBuffer->Release();
@@ -97,15 +97,13 @@ namespace MeshCreator
 
 	inline Mesh* CreateScreenQuad(ID3D11Device* device)
 	{
-		const float wh = 1.0f;// (width / 2.0f);
-		const float hh = 1.0f;//(height / 2.0f);
-
+		const float size = 1.0f;
 		std::vector<MeshVertex> vertices =
 		{
-			MeshVertex({ -wh, -hh, 0 }, { 0,1 }, { 0,0,0 }, { 0,0,0 }),		// 0,0
-			MeshVertex({ wh, -hh, 0 }, { 1,1 }, { 0,0,0 }, { 0,0,0 }),		// 0, w
-			MeshVertex({ wh, hh, 0 }, { 1,0 }, { 0,0,0 }, { 0,0,0 }),		// h, w
-			MeshVertex({ -wh, hh, 0 }, { 0,0 }, { 0,0,0 }, { 0,0,0 })		// h, 0
+			MeshVertex({ -size, -size, 0 }, { 0,1 }, { 0,0,0 }, { 0,0,0 }),		// 0,0
+			MeshVertex({ size, -size, 0 }, { 1,1 }, { 0,0,0 }, { 0,0,0 }),		// 0, w
+			MeshVertex({ size, size, 0 }, { 1,0 }, { 0,0,0 }, { 0,0,0 }),		// h, w
+			MeshVertex({ -size, size, 0 }, { 0,0 }, { 0,0,0 }, { 0,0,0 })		// h, 0
 		};
 
 		std::vector<unsigned int> indices = { 3,2,1, 3,1,0 };

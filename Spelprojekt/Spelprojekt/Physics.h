@@ -14,21 +14,15 @@ public:
 	Physics();
 	virtual~Physics();
 
-	//rp3d::RigidBody* CreateRigidBody(float linearDamping, float angularDamping, float x, float y, float z);
-	rp3d::ConvexMeshShape* ConvertMeshToConvexShape(Mesh*);
 	rp3d::ProxyShape* AddCollision(rp3d::ConvexMeshShape* shape, rp3d::RigidBody* body, float mass);
 	rp3d::Transform ConvertTransform(const Transform& transform);
-
 	rp3d::Vector3 Convert(DirectX::XMVECTOR v3);
 
 	rp3d::CollisionBody* CreateCollisionBodyBoxCustom(Object* object,float x, float y, float z);
 	rp3d::CollisionBody* CreateCollisionBodyBox(Object* object);
-	rp3d::CollisionBody* CreateCollisionBodyConvex(Object* object);
 	rp3d::CollisionBody* CreateCollisionBodyCapsule(Object* object, float radius, float xOffset = 0, float zOffset = 0, float height = 100.0f);
-	void UpdateCollisionBody(rp3d::CollisionBody* body, const Transform& transform);
 
 	rp3d::CollisionWorld* GetWorld() const { return this->world; }
-
 	RaycastHit Raycast (DirectX::XMVECTOR start, DirectX::XMVECTOR end);
 
 private:

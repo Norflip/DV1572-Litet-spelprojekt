@@ -13,6 +13,7 @@ class IntroGUI
 public:
 	IntroGUI(GUI* gui, DX11Handler& dx11, CameraController* cameraController, IntroScene* scenes, Gamemanager* gamemanager); // tabrot soundeffect
 	~IntroGUI();
+
 	enum class Menu
 	{
 		credits,
@@ -26,7 +27,7 @@ public:
 			
 	void Update();
 
-	void Start();	//Game starts here
+	void Start();
 	void LoadStart();
 
 	void HowToPlay();
@@ -35,7 +36,7 @@ public:
 	void Credits();
 	void LoadsCredits();
 
-	void Options(); // enable / disable stuff
+	void Options(); 
 	void LoadOptions();
 
 	void Soundtracks();
@@ -44,14 +45,12 @@ public:
 	void Highscore();
 	void LoadHighscore();
 
-	void Quit(); // Sure to Quit
+	void Quit();
 	void LoadQuit();
 
 private:
-	void ClearButtons();	// asdsadsadas
 	void ClearGUI();
 
-	bool hereWeGo = false;
 	bool first = true;
 	Menu menu = Menu::start;
 	
@@ -75,6 +74,6 @@ private:
 	bool trackoneChecked;
 	bool tracktwoChecked;
 	bool trackthreeChecked;		
-	//	-	-	//	-	-	//	
+
 	std::string lastEasy, lastMedium, lastHard;
 };

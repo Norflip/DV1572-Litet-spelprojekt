@@ -39,14 +39,13 @@ public:
 	
 
 	void ResetTeleportationTimer() { this->teleportationTimer = TELEPORTATION_COOLDOWN; }
-	float teleportationTimer;
 	void UpdateAnimations();
+	float teleportationTimer;
 
 private:
 	
 	DirectX::XMFLOAT3 CheckCollisions(const float& deltaTime, const float& length);
 
-	void UpdateTestBoids(float fixedDeltaTime);
 	void UpdateHeight(float fixedDeltaTime);
 	void UpdateMovement(float fixedDeltaTime);
 	DirectX::XMVECTOR BoidsAlgorithm(ObjectLayer object);
@@ -61,14 +60,8 @@ private:
 	float nextDir = 0.0f;
 	float enemyHeight = 4.65f;
 
-	// ENEMY SHOT
 	float cooldownTimer;
-
-	// ENEMYHP
 	float health;
-
-	// FILIPS VARIATION
 	Icecream* weapon;
-
 	bool moving;
 };

@@ -1,6 +1,6 @@
 #pragma once
 #include <d3d11.h>    // D3D 11
-#include <dxgi.h>     // används för swapchain och device / deviceContext
+#include <dxgi.h>     // swapchain +
 #include <assert.h>
 
 class RenderTarget
@@ -11,7 +11,6 @@ public:
 	virtual ~RenderTarget();
 
 	void Initalize(ID3D11Device*);
-
 	void Bind(ID3D11DeviceContext*);
 	void Unbind(ID3D11DeviceContext*);
 

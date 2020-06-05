@@ -17,7 +17,9 @@ public:
 	bool MouseOver(Input* input);
 	int GetTextureHeight() { return this->height; };
 	int GetTextureWidth() { return this->width; };
-	void HealthBar(float maxHealth, float currentHealth);	// Update from player/enemies class current health
+
+	// Update from player/enemies class current health
+	void HealthBar(float maxHealth, float currentHealth);	
 	void VolumeBar(float maxVol, float currentVol);	
 
 private:

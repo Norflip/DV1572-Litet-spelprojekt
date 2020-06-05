@@ -23,7 +23,6 @@ DirectX::XMVECTOR Transform::TransformDirection(DirectX::XMVECTOR dir) const
 
 DirectX::XMMATRIX Transform::GetWorldMatrix() const
 {
-	// apply rotation and scaling aswell
 	return (DirectX::XMMatrixMultiply(DirectX::XMMatrixScalingFromVector(this->scale), DirectX::XMMatrixRotationRollPitchYawFromVector(this->rotation) * DirectX::XMMatrixTranslationFromVector(this->position)));
 }
 
@@ -49,16 +48,10 @@ void Transform::LookAt(DirectX::XMVECTOR lookPosition)
 	float dY = testWinPos.m128_f32[1] - playerPos.m128_f32[1];
 	float dZ = testWinPos.m128_f32[2] - playerPos.m128_f32[2];
 
-
 	float angle = atan2f(dX, dZ);
-	
 	float yaw = angle;// atan2f(direction.x / direction.y);
 
-
-	//float pitch = atanf(sqrtf(direction.x * direction.x + direction.y * direction.y) / direction.z);
 	float pitch = atan2f(sqrtf(dZ * dZ + dX * dX), dY);
-
-	//pitch = atan2f(testWinPos.m128_f32[1] - playerPos.m128_f32[1], testWinPos.m128_f32[2] - playerPos.m128_f32[2]);
 	this->rotation = { pitch, yaw, 0.0f };
 }
 
@@ -78,16 +71,9 @@ void Transform::LookAtCamera(DirectX::XMVECTOR lookPosition)
 	float dY = testWinPos.m128_f32[1] - playerPos.m128_f32[1];
 
 	float angle = atan2f(dX, dZ);
+	float yaw = angle;
 
-	float yaw = angle;// atan2f(direction.x / direction.y);
-
-
-
-	//float pitch = atanf(sqrtf(direction.x * direction.x + direction.y * direction.y) / direction.z);
 	float pitch = atan2(sqrtf(dZ * dZ + dX * dX), dY) - MathHelper::PI;
-
-	//pitch = atan2f(testWinPos.m128_f32[1] - playerPos.m128_f32[1], testWinPos.m128_f32[2] - playerPos.m128_f32[2]);
-
 	this->rotation = { -pitch, yaw, 0.0f };
 }
 
@@ -107,8 +93,6 @@ void Transform::RandomizeYRotation()
 	this->rotation = { 0,y,0 };
 }
 
-
-//New
 void Transform::SetScale(float x, float y, float z)
 {
 	SetScale({ x,y,z });
@@ -131,7 +115,6 @@ void Transform::ApplyToTransform(Transform& transform)
 	this->scale = transform.scale;
 }
 
-
 void Transform::SmoothRotate(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime, bool changeDir)
 {
 	
@@ -147,7 +130,6 @@ void Transform::SmoothRotate(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTim
 
 	//Rotates to shortest angle(in rad)
 	Rotate(0, MathHelper::ShortestRotation(currentDir, nextDir) * (fixedDeltaTime * 3.14f), 0);
-	//GetTransform().Rotate(0, shortestRoration(currentDir, nextDir)/10, 0);
 
 	//removes rotations bigger and smaller than 360 & -360
 	if (DirectX::XMVectorGetByIndex(GetRotation(), 1) < -MathHelper::PI * 2)

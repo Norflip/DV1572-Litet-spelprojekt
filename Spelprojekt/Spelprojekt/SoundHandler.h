@@ -13,9 +13,7 @@ class SoundHandler
 		void DeleteTrack(std::string key);
 		void SetGlobalVolume(float volume);
 		float GetGlobalVolume();
-		void StopSound();
-		void SetLevelSoundtrack(std::string soundname) { this->levelsoundname = soundname; }
-		std::string GetLevelSoundtrack() { return this->levelsoundname; }
+		void ResetSound();		
 
 	private:
 		DirectX::AudioEngine* audioEngine;

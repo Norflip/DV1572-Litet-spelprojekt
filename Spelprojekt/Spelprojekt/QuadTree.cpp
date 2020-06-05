@@ -92,7 +92,6 @@ int QuadTree::GetBoundsIndex(Object* object)
 
 	for (int i = 0; i < 4; i++)
 	{
-		//if(childBounds[i].Overlaps(object->GetWorldBounds()))
 		if (AABBOverlapsXZ(object->GetWorldBounds(), childBounds[i]))
 			flag |= (1 << i);
 	}

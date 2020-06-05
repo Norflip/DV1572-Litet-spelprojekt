@@ -1,21 +1,6 @@
 #include "SpawnObjects.h"
 #include "Enemy.h"
 
-// insert entities reference
-// remove scene
-// AssimpData instead of mesh + material
-// ska ej vara ett objekt
-
-//SpawnObjects::SpawnObjects(Entities* entities, Terrain* terrain, AssimpHandler::AssimpData modelData, Player* player, DX11Handler& dx11)
-//SpawnObjects::SpawnObjects(Entities* entities, Terrain* terrain, AssimpHandler::AssimpData modelData, Player* player, DX11Handler& dx11) {
-//
-//	this->terrain = terrain;	
-//	this->mesh = modelData.mesh;
-//	this->material = modelData.material;
-//	this->player = player;
-//	this->dx11 = dx11;
-//}
-
 SpawnObjects::SpawnObjects(WorldContext* context) : context(context), enemyPrefab(nullptr), maxEnemies(0), enemyCount(0)
 {
 	this->pickupsPrefabs[0] = nullptr;
@@ -44,8 +29,6 @@ void SpawnObjects::Initialize()
 
 	std::vector<Object*> trees = context->entities->GetObjectsInLayer(ObjectLayer::Tree);
 
-	Logger::Write("TREES: " + std::to_string(trees.size()));
-
 	for (auto i : trees)
 	{
 		float startAngle = static_cast<float>(rand() % 360);
@@ -63,7 +46,6 @@ void SpawnObjects::Initialize()
 
 			clone = new Projectile(*coconut);
 			clone->GetTransform().SetPosition({ x,y,z });
-			//clone->context = ;
 			context->entities->InsertObject(clone);
 		}
 	}
@@ -141,7 +123,6 @@ void SpawnObjects::PlaceWagon(Object* wagon)
 
 void SpawnObjects::RemovePickup(Object* object)
 {
-	Logger::Write("removed pickup");
 	context->entities->RemoveObject(object);
 
 	RespawnPickup respawn;
@@ -182,7 +163,6 @@ void SpawnObjects::CheckDistanceForRespawn(float deltaTime)
 				rTimer -= deltaTime;
 			}
 			else {
-				std::cout << "RESPAWN" << std::endl;
 				e->GetTransform().SetPosition(GetRandomSpawnPosition(1.0f));
 				rTimer = 10.0f;
 			}
@@ -235,7 +215,6 @@ void SpawnObjects::AddEnemyToPool()
 {
 	Player* player = static_cast<Player*>(context->entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
 	Enemy* enemy = new Enemy(*enemyPrefab);
-	//enemy->SetLayer(ObjectLayer::Enemy);
 
 	enemyPool.push(enemy);
 }
@@ -277,16 +256,11 @@ void SpawnObjects::Purge()
 
 void SpawnObjects::UpdateSpawnEnemy()
 {
-	// skapar fler fiender om vi saknar
-	//Logger::Write(std::to_string(enemyCount) + " : " + std::to_string(maxEnemies));
-
-
 	if (enemyCount < context->gamemanager->GetActiveEnemies() && maxEnemies != 0)
 	{
 		SpawnEnemy();
 		enemyCount++;
 	}
-
 }
 
 void SpawnObjects::UpdateEnemies(const float& deltaTime)

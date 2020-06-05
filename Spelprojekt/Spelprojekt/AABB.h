@@ -20,11 +20,10 @@ public:
 	DirectX::XMVECTOR GetCenter() const;
 
 	float GetRadius() const;
-
 	bool Overlaps(const AABB& other);
 	float SqrDistanceToPoint(DirectX::XMVECTOR point);
-
 	void ScaleMinMax(DirectX::XMMATRIX scale);
+
 private:
 	DirectX::XMVECTOR min;
 	DirectX::XMVECTOR max;

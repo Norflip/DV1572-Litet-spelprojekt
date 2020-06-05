@@ -2,7 +2,6 @@
 #include "Weapon.h"
 #include "Gamemanager.h"
 #include "Player.h"
-//#include "SoundHandler.h"
 
 class Player;
 
@@ -14,16 +13,7 @@ public:
 	Projectile(const Projectile& other);
 	virtual ~Projectile();
 
-	//void Update(const float& deltaTime) override;
-
-
-	//void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;
-	//void RotateProjectile(float deltaTime);	
-
 	void PlaySoundEffect() override;
 	void PlayBreaksound() override;
-
-	//void OnHitGround();
-
 };
 

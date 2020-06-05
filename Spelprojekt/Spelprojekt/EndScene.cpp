@@ -28,8 +28,8 @@ void EndScene::Load()
 
 void EndScene::Unload()
 {
-	this->gamemanager->GetMusicHandler()->StopSound();
-	this->gamemanager->GetSoundeffectHandler()->StopSound();
+	this->gamemanager->GetMusicHandler()->ResetSound();
+	this->gamemanager->GetSoundeffectHandler()->ResetSound();
 }
 
 void EndScene::LoadResources()
@@ -68,7 +68,7 @@ void EndScene::SetNextScene(std::string whichScene)
 	}
 }
 
-bool EndScene::getWinOrLose()
+bool EndScene::GetWinOrLose()
 {
 	return this->didWin;
 }

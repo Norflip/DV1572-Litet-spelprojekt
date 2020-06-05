@@ -19,19 +19,17 @@ public:
 	void Update(const float& deltaTime) override;
 	Scene* GetNextScene() const override;
 
+	void SetNextScene(std::string whichScene);
+	bool GetWinOrLose();
+
 	bool& exitGame;
 
-	void SetNextScene(std::string whichScene);
-	bool getWinOrLose();
 private:
 
 	Gamemanager* gamemanager;
-
 	CameraController* controller;
 	SoundHandler* soundeffects;
-
 	std::vector<Scene*>& scenes;
 	EndGUI* endGUI;
 	GUI* gui;
-
 };

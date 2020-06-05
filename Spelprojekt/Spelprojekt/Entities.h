@@ -1,5 +1,4 @@
 #pragma once
-
 #include <unordered_map>
 #include <unordered_set>
 #include "Object.h"
@@ -25,7 +24,6 @@ public:
 	std::vector<Object*> GetObjectsInRange(DirectX::XMVECTOR center, float radius, ObjectLayer layer = ObjectLayer::Any);
 	std::vector<Object*> GetObjectsInAABB(const AABB& aabb, ObjectLayer layer = ObjectLayer::Any);
 	std::vector<Object*> GetObjectsInView(Camera* camera);
-	
 	std::vector<Object*> AllEntities() { return this->allEntities; }
 
 	void Clear();

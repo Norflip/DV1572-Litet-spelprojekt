@@ -3,8 +3,7 @@
 #include "Player.h"
 
 class Player;
-class Spoon 
-	: public Weapon
+class Spoon : public Weapon
 {
 public:
 	Spoon(Mesh* mesh, Material* material, WorldContext* context);
@@ -12,16 +11,9 @@ public:
 	Spoon(const Spoon& other);
 	virtual ~Spoon();
 
-
-	//GUIActionbar* GetWeaponSprite() override { return this->weaponSprite; }	
-
 	void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;	
-	void MeleeAttack(float deltaTime);	
 	void FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);	
 
 	void PlaySoundEffect() override;
 	void PlayBreaksound() override;
-
-	//void Use() override { this->used++; };
-	//int CheckUsage() override { return this->used; }
 };
