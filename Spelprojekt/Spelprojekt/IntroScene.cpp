@@ -9,6 +9,7 @@ IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, st
 	
 	window.GetInput()->LockCursor(false);
 	this->nextScene = nullptr;
+
 	Lights& lights = renderer->GetLights();	
 	lights.SetSunDirection({ 1.0f, -2.0f, 3.0f });
 	lights.SetSunColor({ 0.98f, 0.96f, 0.73f, 1.0f });
@@ -26,12 +27,6 @@ IntroScene::IntroScene(Renderer* renderer, DX11Handler& dx11, Window& window, st
 
 IntroScene::~IntroScene()
 {	
-	/*delete gui;
-	delete introGUI;	
-	delete controller;
-	delete camera;
-
-	delete nextScene;*/
 	scenes.clear();
 }
 
@@ -62,7 +57,6 @@ void IntroScene::Load()
 	wagon->GetTransform().Rotate(0.0f, 0.3f, 0.0f);
 	wagon->GetTransform().SetScale(0.4f, 0.4f, 0.4f);
 	entities->InsertObject(wagon);
-	//controller->SetFollow(&glasse->GetTransform(), { 0.0f, 1.0f, -1.0f });	
 
 	//// ------- BACKGROUND
 
@@ -70,7 +64,6 @@ void IntroScene::Load()
 	background->GetTransform().Translate(5.0f, 22.0f, 15.0f);
 	background->GetTransform().Rotate(-1.5f, 0.0f, 0.0f);
 	background->GetTransform().SetScale(100.0f, 2.0f, 35.0f);
-	//backGround->GetMaterial()->GetTexture(0)->SetSampler(dx11.GetDevice());
 	entities->InsertObject(background);
 
 	Terrain ground;

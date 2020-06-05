@@ -3,8 +3,7 @@
 #include "Player.h"
 
 class Player;
-class Spoon 
-	: public Weapon
+class Spoon : public Weapon
 {
 public:
 	Spoon(Mesh* mesh, Material* material, WorldContext* context);
@@ -13,7 +12,6 @@ public:
 	virtual ~Spoon();
 
 	void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;	
-	void MeleeAttack(float deltaTime);	
 	void FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot);	
 
 	void PlaySoundEffect() override;

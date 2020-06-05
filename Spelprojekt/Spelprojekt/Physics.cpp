@@ -46,8 +46,6 @@ rp3d::CollisionBody* Physics::CreateCollisionBodyBoxCustom(Object* object, float
 	rp3d::Transform rpTransform = ConvertTransform(object->GetTransform());
 	rp3d::CollisionBody* body = world->createCollisionBody(rpTransform);// rp3d::Transform::identity());
 	const rp3d::Vector3 halfExtents(x, y, z);
-
-	//const rp3d::Vector3 extends = Convert(DirectX::XMVectorScale(object->GetLocalBounds().GetSize(), 0.5f));
 	rp3d::BoxShape* box = new rp3d::BoxShape(halfExtents);
 
 	bodies.push_back(body);
@@ -95,9 +93,5 @@ RaycastHit Physics::Raycast(DirectX::XMVECTOR start, DirectX::XMVECTOR end)
 	callback.hitInfo.hit = false;
 
 	world->raycast(ray, &callback);
-
-	if (callback.hitInfo.hit)
-		Logger::Write("PPPRRIIIIIIIINNNNNTT");
-
 	return callback.hitInfo;
 }

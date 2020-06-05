@@ -42,7 +42,6 @@ void Window::ResizeWindow(size_t width, size_t height)
 {
 	this->width = width;
 	this->height = height;
-	// event system to update swapchain?
 }
 
 LRESULT Window::WindowProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)

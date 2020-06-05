@@ -27,13 +27,6 @@ void Spoon::TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 	this->inFlight = true;
 }
 
-void Spoon::MeleeAttack(float deltaTime)
-{	
-	// do melee stuff here
-	//nextPos = { (GetTransform().GetPosition().m128_f32[0] + (-std::sinf(direction.m128_f32[1]) * movementspeed) * deltaTime) ,GetTransform().GetPosition().m128_f32[1], (GetTransform().GetPosition().m128_f32[2] + (-std::cosf(direction.m128_f32[1]) * movementspeed) * deltaTime) };	// 30 = speed
-	//GetTransform().SetPosition(nextPos);		
-}
-
 void Spoon::FollowPlayer(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 {
 	GetTransform().SetPosition(pos);

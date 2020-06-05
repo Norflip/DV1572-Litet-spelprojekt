@@ -19,8 +19,6 @@ float3 GetPositionViewSpace(float2 uv)
 
 	float4 position = positionTexture.Sample(ssaoSamplerState, uv);
 	return mul(worldToView, position).xyz;
-
-	//return positionTexture.Load(float3(uv, 0), 0).xyz;
 }
 
 float3 GetNormalViewSpace(float2 uv)
@@ -48,8 +46,6 @@ float2 GetRandom(float2 uv)
 	float2 dd = screenSize * uv / aoRandomTextureSize;
 	float dx = fmod(dd.x, 1.0f);
 	float dy = fmod(dd.y, 1.0f);
-
-	//return ssao_randomVectors.Sample(ssaoSamplerState, uv).xy;
 
 	return normalize(ssao_randomVectors.Sample(ssaoSamplerState, float2(dx, dy)).xy * 2.0f - 1.0f);
 }

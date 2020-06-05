@@ -19,9 +19,9 @@ GUIActionbar::GUIActionbar(DX11Handler& dx11, std::string spriteFile, float x, f
 	this->scale = DirectX::XMVectorSet(this->xScale, this->yScale, 1, 1);
 
 	// Needed for drawfunction //
-	this->rotation = 0.0f;								// NO USE RIGHT NOW
-	this->color = DirectX::XMVectorSet(1, 1, 1, 1);		// NO USE RIGHT NOW
-	this->origin = DirectX::XMVectorSet(1, 1, 1, 1);	// NO USE RIGHT NOW
+	this->rotation = 0.0f;								
+	this->color = DirectX::XMVectorSet(1, 1, 1, 1);		
+	this->origin = DirectX::XMVectorSet(1, 1, 1, 1);	
 	// - - - - - - - - - - - - //	
 
 	this->SRV = nullptr;

@@ -3,10 +3,8 @@
 
 Renderer::Renderer(size_t width, size_t height, Timer& timer, DX11Handler& dx11) : dx11(dx11), timer(timer), lights(width, height, 64, 64), ssao(width, height), gbuffersampler(nullptr)
 {
-	// Initialiserade för att slippa varningar
 	this->currentRenderTarget = nullptr;
 	this->meshMat = nullptr;
-	// Initialiserade för att slippa varningar
 
 	this->gbufferRenderTarget = new RenderTarget(4, width, height, true);
 	this->gbufferRenderTarget->Initalize(dx11.GetDevice());
@@ -73,8 +71,6 @@ void Renderer::DrawMesh(Mesh* mesh, DirectX::XMMATRIX world, DirectX::XMMATRIX v
 	cb_world.vp = DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(view, projection));
 	cb_world.invView = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, view));
 	cb_world.invWorld = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, world));
-	//cb_world.shadowTransform = DirectX::XMMatrixTranspose(world);// *lights.tShadowTransform);
-
 
 	// Check if the mesh has a valid skeleton and if the skeleton has an animation
 	if (mesh->skeleton && mesh->skeleton->animations.size() > 0)
@@ -121,7 +117,6 @@ void Renderer::ShadowPass(DirectX::XMVECTOR focus, const AABB& bounds, Camera* c
 
 	// BIND AND STUFF
 
-
 	// revert back to main rasterizer
 	dx11.GetContext()->RSSetState(dx11.GetMainRasterizerState());
 }
@@ -129,12 +124,6 @@ void Renderer::ShadowPass(DirectX::XMVECTOR focus, const AABB& bounds, Camera* c
 
 void Renderer::DisplayFrame(Camera* camera)
 {
-	
-
-	// loops objects and draws them to the gbuffer
-	// ..
-
-
 	//Uppdate light constant buffer 
 	ssao.Pass(this, gbufferRenderTarget);
 	lights.UpdateConstantBuffer(camera, dx11.GetContext());
@@ -160,8 +149,6 @@ void Renderer::DisplayFrame(Camera* camera)
 	ID3D11SamplerState* ssrf[1] = { NULL };
 	dx11.GetContext()->PSSetShaderResources((UINT)gbufferRenderTarget->BufferCount(), 1, pSRV);
 	dx11.GetContext()->PSSetShaderResources((UINT)gbufferRenderTarget->BufferCount() + 1, 1, pSRV);
-
-	//dx11.GetContext()->PSSetSamplers(0, 1, ssrf);
 
 	// GUI PASS
 	if (gui != nullptr)

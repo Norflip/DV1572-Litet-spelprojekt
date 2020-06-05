@@ -13,7 +13,6 @@ Scene::Scene(std::string name, Renderer* renderer, DX11Handler& dx11, Window& wi
 
 Scene::~Scene()
 {
-	// loop everything and delete
 	delete camera; 
 }
 
@@ -21,21 +20,16 @@ void Scene::Unload()
 {
 	Logger::Write("scene unload");
 
-	// AJIWDJIAWDJIAWD
-
 	auto allEntities = entities->AllEntities();
 
 	for (auto i : allEntities)
-	{
 		delete i;
-	}
 	
 	entities->Clear();
 }
 
 void Scene::Update(const float& deltaTime)
 {
-	//UpdateAddRemoveSceneQueues();
 	entities->UpdateTree();
 
 	for (auto i : entities->AllEntities())
@@ -62,7 +56,6 @@ void Scene::Render()
 
 	renderer->ShadowPass(this->cameraFocusPosition, sceneBounds, camera, entities);
 
-	//dx11.GetContext()->RSSetState(dx11.GetRasterizer());
 	renderer->SetDeferredRenderTarget();
 	renderer->ClearRenderTarget();
 
@@ -80,7 +73,6 @@ void Scene::Render()
 	{
 		if (i->IsEnabled())
 		{
-
 			Material* material = i->GetMaterial();
 			size_t shaderID = material->GetShader()->GetID();
 
@@ -107,7 +99,6 @@ void Scene::Render()
 		}
 	}
 
-	//UpdateAddRemoveSceneQueues();
 	renderer->DisplayFrame(camera);
 }
 

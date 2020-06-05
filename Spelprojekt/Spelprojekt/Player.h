@@ -54,7 +54,6 @@ private:
 
 	void UpdateMovement(float FixedDeltaTime);
 	void UpdateHeight(float FixedDeltaTime);
-	void RotateCharacter(DirectX::XMFLOAT3 nextPosition, float fixedDeltaTime);
 	float ShortestRotation(float currentDir, float nextDir);
 	void UpdateAnimations();
 

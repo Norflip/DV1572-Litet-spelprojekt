@@ -28,7 +28,6 @@ public:
 	RenderTarget* GetBackbufferRenderTarget() const { return this->backbuffer; }
 
 	ID3D11RasterizerState* GetShadowRasterizerState() { return this->shadowRasterizerState; }
-	ID3D11RasterizerState* GetWaterRasterizerState() { return this->waterRasterizerState; }
 	ID3D11RasterizerState* GetMainRasterizerState() { return this->mainRasterizerState; }
 
 	ID3D11SamplerState* CreateSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode);
@@ -47,7 +46,6 @@ private:
 	IDXGISwapChain* swapchain;
 	
 	ID3D11RasterizerState* mainRasterizerState;
-	ID3D11RasterizerState* waterRasterizerState;
 	ID3D11RasterizerState* shadowRasterizerState;
 
 	DXGI_SWAP_CHAIN_DESC swapChainDescription;

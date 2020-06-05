@@ -370,13 +370,6 @@ Scene* DevScene::GetNextScene() const
 
 void DevScene::CreateSceneObjects()
 {
-
-	/*billBoard = new Object(ObjectLayer::Enviroment, resources.GetModel("quadInv"));
-	billBoard->GetTransform().Translate(55, 12, 55);
-	billBoard->GetTransform().SetScale(1, 1, 1);
-	billBoard->GetTransform().SetRotation({ 0,0, 0 });
-	entities->InsertObject(billBoard);*/
-
 	if (true)
 	{
 		////////////////////////// MOUNTAINS /////////////////////////////
@@ -790,9 +783,6 @@ void DevScene::CreateSceneObjects()
 
 		for (int i = 0; i < 22; i++)
 		{
-			//palms[i]->GetTransform().RandomizeYRotation();
-
-			// flytta den 1 0 0 t.ex i förhållande till rotationen
 			physics.CreateCollisionBodyCapsule(palms[i], 0.5f, 0.0f, 0.0f);
 		}
 

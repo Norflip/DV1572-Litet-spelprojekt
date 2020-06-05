@@ -63,10 +63,8 @@ void DX11Handler::Initialize(const Window& window)
 	D3D11_RASTERIZER_DESC rasterizerDescription;
 	ZeroMemory(&rasterizerDescription, sizeof(D3D11_RASTERIZER_DESC));
 
-	rasterizerDescription.FillMode = D3D11_FILL_SOLID; //if we want wireframe, fill etc
+	rasterizerDescription.FillMode = D3D11_FILL_SOLID;
 	rasterizerDescription.CullMode = D3D11_CULL_BACK;
-
-	///* Filips nasty shit >:D
 	rasterizerDescription.DepthClipEnable = true;
 	rasterizerDescription.FrontCounterClockwise = false;
 	rasterizerDescription.ScissorEnable = false;
@@ -79,21 +77,7 @@ void DX11Handler::Initialize(const Window& window)
 
 	// SHADOW RASTERIZER STATE
 	rasterizerDescription.CullMode = D3D11_CULL_FRONT;
-	///shadowRenderStateDesc.ScissorEnable = true;
-	//rasterizerDescription.DepthBias = 10000;
-	//rasterizerDescription.DepthBiasClamp = 0.0f;
-	//rasterizerDescription.SlopeScaledDepthBias = 1.0f;
-
 	resultCreateRasterizer = device->CreateRasterizerState(&rasterizerDescription, &shadowRasterizerState);
-	assert(SUCCEEDED(resultCreateRasterizer));
-
-
-	// WATER RASTERIZER STATE
-	//ZeroMemory(&rasterizerDescription, sizeof(D3D11_RASTERIZER_DESC));
-	rasterizerDescription.DepthBias = -50;
-	//rasterizerDescription.DepthBiasClamp = 100;
-
-	resultCreateRasterizer = device->CreateRasterizerState(&rasterizerDescription, &waterRasterizerState);
 	assert(SUCCEEDED(resultCreateRasterizer));
 
 	context->RSSetState(mainRasterizerState);

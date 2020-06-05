@@ -1,7 +1,6 @@
 #pragma once
 #include <algorithm>
 #include <string>
-
 #include "Renderer.h"
 #include "Input.h"
 #include "Object.h"
@@ -29,8 +28,6 @@ public:
 	virtual Scene* GetNextScene() const = 0;
 
 	Camera* GetSceneCamera() const { return this->camera; }
-
-	//--FPS STUFF
 
 	std::string GetName() { return this->sceneName; };
 	AABB GetSceneBounds() { return sceneBounds; }

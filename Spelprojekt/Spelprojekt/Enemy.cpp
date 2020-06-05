@@ -126,21 +126,14 @@ DirectX::XMFLOAT3 Enemy::CheckCollisions(const float& deltaTime, const float& le
 			DirectX::XMFLOAT3 pos;
 			DirectX::XMStoreFloat3(&pos, DirectX::XMVectorSubtract(GetTransform().GetPosition(), hit.position));
 
-			result.x += pos.x;// *length2;// // 
-			result.z += pos.z;// * length2;//* fixedDeltaTime;// * 0.05f;
+			result.x += pos.x;
+			result.z += pos.z;
 		}
 	}
 
 	return result;
 }
 
-void Enemy::UpdateTestBoids(float fixedDeltaTime)
-{
-	tVelocity = DirectX::XMVectorClamp(DirectX::XMVectorAdd(tVelocity, BoidsAlgorithm(ObjectLayer::Enemy)), { 0,0,0 }, { 2,0,2 });
-	tVelocity = DirectX::XMVectorScale(tVelocity, fixedDeltaTime);
-	//Logger::Write(LOG_LEVEL::Info, "T vel " + std::to_string(tVelocity.m128_f32[0]));
-	GetTransform().Translate(tVelocity);
-}
 
 DirectX::XMVECTOR Enemy::BoidsAlgorithm(ObjectLayer object)
 {
@@ -198,8 +191,6 @@ DirectX::XMVECTOR Enemy::Separation(DirectX::XMVECTOR offset, DirectX::XMVECTOR 
 	}
 	else
 	{
-		//Logger::Write(LOG_LEVEL::Info, "Separate from other enemy ");
-		//add steering velocity based of length of distance vector
 		steering = DirectX::XMVectorScale(DirectX::XMVector3Normalize(offset), 4.0f);
 	}
 	return steering;

@@ -6,10 +6,8 @@ Icecream::Icecream(Mesh* mesh, Material* material, WorldContext* context) : Weap
 	this->weaponSprite = nullptr;
 
 	this->inFlight = false;
-	//this->damage = 10.0f;
 	this->movementspeed = 10;
 
-	// attackdamage
 	this->damage = context->gamemanager->GetEnemyDamage();
 }
 
@@ -18,10 +16,7 @@ Icecream::Icecream(AssimpHandler::AssimpData modelData, WorldContext* context) :
 Icecream::Icecream(const Icecream& other) : Icecream(other.GetMesh(), other.GetMaterial(), other.context)
 {
 	if (other.GetType() != WeaponType::Icecream)
-	{
-
 		throw std::exception();
-	}
 
 	GetTransform().SetPosition(other.GetTransform().GetPosition());
 	GetTransform().SetRotation(other.GetTransform().GetRotation());

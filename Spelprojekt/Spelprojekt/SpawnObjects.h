@@ -8,14 +8,6 @@
 
 class Enemy;
 
-// insert entities reference
-// remove scene
-// AssimpData instead of mesh + material
-// ska ej vara ett objekt
-
-//SpawnObjects::SpawnObjects(Entities* entities, Terrain* terrain, AssimpHandler::AssimpData modelData, Player* player, DX11Handler& dx11)
-// registerEnemy (key, object)
-
 class SpawnObjects
 {
 	struct RespawnPickup
@@ -54,8 +46,6 @@ public:
 	void RemovePickup(Object* object);
 
 	bool PointIsWalkable(float x, float z);
-
-
 	void CheckDistanceForRespawn(float deltaTime);
 	void Purge();
 
@@ -66,7 +56,6 @@ private:
 	void AddEnemyToPool();
 	void RemoveEnemy(Enemy*);
 	Enemy* SpawnEnemy();
-
 
 	void UpdateSpawnEnemy();
 	void UpdateEnemies(const float& deltaTime);
@@ -84,8 +73,6 @@ private:
 	int enemyCount;
 
 	std::vector<RespawnPickup> respawnTimers;
-
 	std::queue<Enemy*> enemyPool;
 
-	//std::vector<Enemy*> enemies;
 };

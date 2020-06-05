@@ -21,7 +21,7 @@ void SSAO::Initialize(DX11Handler* dx11)
 {
 	this->dx11 = dx11;
 	this->randomTexture = Texture::CreateTexture("Textures/ssaoRandom.jpg", *dx11);
-	this->sampler = dx11->GetDefaultSampler();// dx11->CreateSampler(D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP);
+	this->sampler = dx11->GetDefaultSampler();
 
 	this->renderTarget = new RenderTarget(1, width, height, false);
 	this->renderTarget->Initalize(dx11->GetDevice());
@@ -38,18 +38,8 @@ void SSAO::Initialize(DX11Handler* dx11)
 
 void SSAO::Pass(Renderer* renderer, RenderTarget* gBuffer)
 {
-	
-	//ID3D11ShaderResourceView* srvs[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = { 0 };
-	//dx11->GetContext()->PSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, srvs);
-
-
-	// unbind gbuffer?
-	//gBuffer->Unbind(dx11->GetContext());
-
-
 	renderer->SetRenderTarget(renderTarget);
 	renderer->ClearRenderTarget();
-
 
 	// bind ssao_random texture + normal and position buffer
 	ID3D11ShaderResourceView* srv = randomTexture->GetSRV();
@@ -63,17 +53,9 @@ void SSAO::Pass(Renderer* renderer, RenderTarget* gBuffer)
 	// bind SSAO shader
 	shader->Bind(dx11->GetContext());
 	renderer->DrawScreenQuad();
-	
-
-	// bind to output
-
-	// return shaderResourceView from the renderTarget
-
-	// unbinds ssao_random texture
 
 	ID3D11ShaderResourceView* pSRV[1] = { nullptr };
 	ID3D11SamplerState* ssrf[1] = { nullptr };
-
 	dx11->GetContext()->PSSetShaderResources(0, 1, pSRV);
 	dx11->GetContext()->PSSetShaderResources(1, 1, pSRV);
 	dx11->GetContext()->PSSetShaderResources(2, 1, pSRV);

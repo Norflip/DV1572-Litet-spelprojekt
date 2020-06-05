@@ -19,7 +19,6 @@ VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output;
 	output.position = mul(input.position, mvp);
-	//output.position = input.position;
 
 	if (input.weights.x > 0)
 		output.position = mul(mul(input.position, boneTransforms[input.IDS.x]) * input.weights.x, mvp);

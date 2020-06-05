@@ -39,14 +39,13 @@ public:
 	
 
 	void ResetTeleportationTimer() { this->teleportationTimer = TELEPORTATION_COOLDOWN; }
-	float teleportationTimer;
 	void UpdateAnimations();
+	float teleportationTimer;
 
 private:
 	
 	DirectX::XMFLOAT3 CheckCollisions(const float& deltaTime, const float& length);
 
-	void UpdateTestBoids(float fixedDeltaTime);
 	void UpdateHeight(float fixedDeltaTime);
 	void UpdateMovement(float fixedDeltaTime);
 	DirectX::XMVECTOR BoidsAlgorithm(ObjectLayer object);

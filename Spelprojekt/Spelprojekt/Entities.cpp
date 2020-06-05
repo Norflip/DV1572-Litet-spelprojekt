@@ -29,11 +29,7 @@ void Entities::InsertObject(Object* object)
 	else
 	{
 		auto find0 = std::find(objectsInLayerMap[layer].begin(), objectsInLayerMap[layer].end(), object);
-		if (find0 != objectsInLayerMap[layer].end())
-		{
-			Logger::Write("DUUUUUUUUUUPLICATE");
-		}
-		else
+		if (find0 == objectsInLayerMap[layer].end())
 		{
 			objectsInLayerMap[layer].push_back(object);
 		}
@@ -43,11 +39,6 @@ void Entities::InsertObject(Object* object)
 	if (find1 == allEntities.end())
 	{
 		allEntities.push_back(object);
-	}
-	else
-	{
-
-		Logger::Write("DUUUUUUUUUUPLICATE     22222");
 	}
 }
 
@@ -62,16 +53,12 @@ void Entities::RemoveObject(Object* object)
 		auto g = std::find(v.begin(), v.end(), object);
 		if (g != v.end())
 			v.erase(g);
-
-		//objectsInLayerMap[layer] = v;
 	}
 
 	//// all
 	auto g = std::find(allEntities.begin(), allEntities.end(), object);
 	if (g != allEntities.end())
 		allEntities.erase(g);
-
-	//allEntities.erase(std::remove(allEntities.begin(), allEntities.end(), object), allEntities.end());
 }
 
 void Entities::ChangeLayer(Object* object, ObjectLayer layer)
@@ -102,14 +89,13 @@ std::vector<Object*> Entities::GetObjectsInRange(DirectX::XMVECTOR center, float
 
 	for (auto j : inArea)
 	{
-		if (j->IsEnabled() && (((int)j->GetLayer() & (int)layer) == (int)j->GetLayer()))		// j->GetLayer() == layer || layer == ObjectLayer::Any))
+		if (j->IsEnabled() && (((int)j->GetLayer() & (int)layer) == (int)j->GetLayer()))	
 		{
 			DirectX::XMVECTOR a = j->GetTransform().GetPosition();
 			DirectX::XMVECTOR b = center;
 
 			float sqrDistance = DirectX::XMVectorGetByIndex(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(a, b)), 0);
 
-			//float sqrDistance = j->GetWorldBounds().SqrDistanceToPoint(center);
 			if (sqrDistance < radius * radius)
 				inRange.push_back(j);
 		}
@@ -146,7 +132,7 @@ std::vector<Object*> Entities::GetObjectsInAABB(const AABB& aabb, ObjectLayer la
 				{
 					if (visited.find(j->GetID()) == visited.end())
 					{
-						if (j->IsEnabled() && (((int)j->GetLayer() & (int)layer) == (int)j->GetLayer()))		// j->GetLayer() == layer || layer == ObjectLayer::Any))
+						if (j->IsEnabled() && (((int)j->GetLayer() & (int)layer) == (int)j->GetLayer()))
 						{
 							inArea.push_back(j);
 						}
@@ -197,7 +183,6 @@ std::vector<Object*> Entities::GetObjectsInView(Camera* camera)
 		}
 	}
 
-	//Logger::Write("in view: " + std::to_string(inView.size()) + " nr inserted: " + std::to_string(insertCount) + " quadsChecked: " + std::to_string(treeC));
 	return inView;
 }
 

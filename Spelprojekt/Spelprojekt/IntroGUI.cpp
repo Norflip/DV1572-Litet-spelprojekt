@@ -270,7 +270,6 @@ void IntroGUI::LoadStart()
 
 void IntroGUI::HowToPlay()
 {
-    // gotta fix if static cast fails
     GUISprite* play = static_cast<GUISprite*>(gui->GetGUIList()->at("play"));
     if (play->Clicked(input))
     {    
@@ -788,11 +787,7 @@ void IntroGUI::LoadQuit()
 void IntroGUI::ClearGUI()
 {
     for (auto& it : *gui->GetGUIList()) 
-    {
-        // Do stuff
-        GUIObject* test = it.second;
-        delete test;
+        delete it.second;
 
-    }
     gui->GetGUIList()->clear();
 }
