@@ -1,4 +1,3 @@
-
 #include "Lightning.hlsl"
 
 // G - BUFFER
@@ -89,17 +88,9 @@ float4 main(PixelInputType input) : SV_TARGET
 		color += CalculatePointLight(pointLights[i], normal, position, viewDirection);
 	}
 
-
 	/*
-
 		SSAO
-
 	*/
-	// http://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html
-
-	//float ssaoValue = ssao.Sample(samplerState, input.uv).x;
-	//return float4(ssaoValue, ssaoValue, ssaoValue, 1.0f);
-
 	const int blurSize = 4;
 	float2 texel = 1.0f / screenSize;
 
@@ -126,7 +117,6 @@ float4 main(PixelInputType input) : SV_TARGET
 	const float PCFSpread = 1.0f / 1024; //texel size av shadow mapp
 
 	float4 relativeViewPos = mul(mul(position, sunView), sunProjection);
-
 
 	float2 projectTexCoord;
 	projectTexCoord.x = 0.5f + (relativeViewPos.x / relativeViewPos.w) / 2.0f;

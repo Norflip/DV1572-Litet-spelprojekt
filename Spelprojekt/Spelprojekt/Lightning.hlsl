@@ -18,5 +18,5 @@ float4 CalculatePointLight(PointLight light, float3 normal, float3 position, flo
 	float4 diffuse = light.color * diff * attenuation;
 	float4 specular = light.color * spec * attenuation;
 
-	return (ambient+diffuse + specular);
+	return (ambient + diffuse + specular);
 }
