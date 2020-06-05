@@ -63,7 +63,6 @@ void SpawnObjects::Initialize()
 
 			clone = new Projectile(*coconut);
 			clone->GetTransform().SetPosition({ x,y,z });
-			//clone->context = ;
 			context->entities->InsertObject(clone);
 		}
 	}
@@ -235,7 +234,6 @@ void SpawnObjects::AddEnemyToPool()
 {
 	Player* player = static_cast<Player*>(context->entities->GetObjectsInLayer(ObjectLayer::Player)[0]);
 	Enemy* enemy = new Enemy(*enemyPrefab);
-	//enemy->SetLayer(ObjectLayer::Enemy);
 
 	enemyPool.push(enemy);
 }
@@ -277,16 +275,12 @@ void SpawnObjects::Purge()
 
 void SpawnObjects::UpdateSpawnEnemy()
 {
-	// skapar fler fiender om vi saknar
-	//Logger::Write(std::to_string(enemyCount) + " : " + std::to_string(maxEnemies));
-
-
+	
 	if (enemyCount < context->gamemanager->GetActiveEnemies() && maxEnemies != 0)
 	{
 		SpawnEnemy();
 		enemyCount++;
 	}
-
 }
 
 void SpawnObjects::UpdateEnemies(const float& deltaTime)

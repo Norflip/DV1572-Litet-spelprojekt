@@ -33,7 +33,6 @@ public:
 	void Load() override;
 	void Unload() override;
 	void LoadResources() override;
-
 	void Update(const float& deltaTime) override;
 	void FixedUpdate(const float& fixedDeltaTime) override;
 
@@ -44,9 +43,7 @@ public:
 	void CreateSceneObjects();
 
 	std::string getName() { return this->sceneName; };
-	void checkForNextScene();
-	void SetNextScene(bool winOrLose);
-	
+	void SetNextScene(bool winOrLose);	
 
 private:
 	void UpdateGUI(const float& deltaTime);
@@ -92,5 +89,4 @@ private:
 	const aiScene* assimpScene;
 
 	Object* tourist[3];
-	Object* touristOne, *touristTwo, *touristThree;
 };

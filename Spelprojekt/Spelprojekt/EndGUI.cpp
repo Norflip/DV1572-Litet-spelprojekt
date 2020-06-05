@@ -88,7 +88,7 @@ void EndGUI::LoadStart()
     
     if (currentScene->getWinOrLose() == true) {
        winLose = new GUISprite(dx11, "Sprites/Glassbokal_Win.png", 0.0f, 0.0f);
-       this->gamemanager->GetMusicHandler()->StopSound();
+       this->gamemanager->GetMusicHandler()->ResetSound();
        //this->gamemanager->GetMusicHandler()->DeleteTrack("Levelsound");
 
        if (!playedOnce) {
@@ -99,7 +99,7 @@ void EndGUI::LoadStart()
     }
     else {
         winLose = new GUISprite(dx11, "Sprites/Glassbokal_lose.png", 0.0f, 0.0f);
-        this->gamemanager->GetMusicHandler()->StopSound();
+        this->gamemanager->GetMusicHandler()->ResetSound();
         //this->gamemanager->GetMusicHandler()->DeleteTrack("Levelsound");
 
         if (!playedOnce) {

@@ -158,17 +158,14 @@ void IntroGUI::Start()
     GUISprite* play = static_cast<GUISprite*>(gui->GetGUIList()->at("play"));
     if (play->Clicked(input))
     {
-        //ClearGUI();
         menu = Menu::howtoplay;
         first = true;
-        //currentScene->setNextScene();
     }
 
     // OPTIONS
     GUISprite* options = static_cast<GUISprite*>(gui->GetGUIList()->at("options"));
     if (options->Clicked(input))
     {
-        //ClearGUI();
         menu = Menu::options;
         first = true;
     }
@@ -177,7 +174,6 @@ void IntroGUI::Start()
     GUISprite* soundtrack = static_cast<GUISprite*>(gui->GetGUIList()->at("soundtracks"));
     if (soundtrack->Clicked(input))
     {
-        //ClearGUI();
         menu = Menu::soundtracks;
         first = true;
     }
@@ -186,16 +182,14 @@ void IntroGUI::Start()
     GUISprite* highscore = static_cast<GUISprite*>(gui->GetGUIList()->at("highscore"));
     if (highscore->Clicked(input))
     {
-        //ClearGUI();
         menu = Menu::highscore;
         first = true;
     }
 
-    // credits
+    // Credits
     GUISprite* credits = static_cast<GUISprite*>(gui->GetGUIList()->at("credits"));
     if (credits->Clicked(input))
     {
-        //ClearGUI();
         menu = Menu::credits;
         first = true;
     }
@@ -204,7 +198,6 @@ void IntroGUI::Start()
     GUISprite* quit = static_cast<GUISprite*>(gui->GetGUIList()->at("quit"));
     if (quit->Clicked(input))
     {
-        //ClearGUI();
         menu = Menu::quit;
         first = true;
     }
@@ -263,7 +256,6 @@ void IntroGUI::Start()
 void IntroGUI::LoadStart()
 {
     ClearGUI();
-    //ClearButtons();
     
     //LOAD ALL GUI OBJECTS FOR START, ONCE
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/play.png", 100.0f, 100.0f), "play");    
@@ -281,8 +273,7 @@ void IntroGUI::HowToPlay()
     // gotta fix if static cast fails
     GUISprite* play = static_cast<GUISprite*>(gui->GetGUIList()->at("play"));
     if (play->Clicked(input))
-    {
-        //ClearGUI();       
+    {    
         gamemanager->GetSoundeffectHandler()->PlaySound("HereWeGo", gamemanager->GetCurrentSoundVolume());
         currentScene->setNextScene();        
     }
@@ -331,7 +322,7 @@ void IntroGUI::Credits()
         menu = Menu::start;
     }
 
-    // mouseover
+    // Mouseover
     if (backtointroNEW->MouseOver(input))
     {
         backtointroNEW->SetWICSprite(dx11, "Sprites/backtointro_mouseover.png");
@@ -426,7 +417,7 @@ void IntroGUI::Options()
 
     soundsVolBar->VolumeBar(maxVolume, gamemanager->GetCurrentSoundVolume());
 
-    // mouseover
+    // Mouseover
     if (lowSoundVolume->MouseOver(input)) {
         lowSoundVolume->SetWICSprite(dx11, "Sprites/VolLower_mouseover.png");
     }
@@ -678,7 +669,6 @@ void IntroGUI::Soundtracks()
         first = true;
         menu = Menu::start;        
     }
-
 }
 
 void IntroGUI::LoadSoundtracks()
@@ -687,8 +677,6 @@ void IntroGUI::LoadSoundtracks()
 
     GUISprite* soundtrackIcon = new GUISprite(dx11, "Sprites/levelmusic.png", 80.0f, 75.0f);
     gui->AddGUIObject(soundtrackIcon, "soundIcon");
-    /*GUISprite* musicFrame = new GUISprite(dx11, "Sprites/tracksFrame.png", 80.0f, 180.0f);        // MAKE TRANSPARENT MAYBE
-    gui->AddGUIObject(musicFrame, "alltracksframe"); */        
     
     // Checkboxes
     GUISprite* checkfirst = new GUISprite(dx11, "Sprites/checkbox.png", 100.0f, 200.0f);
@@ -728,7 +716,6 @@ void IntroGUI::Highscore()
     else {
         backtoint->SetWICSprite(dx11, "Sprites/backtointro.png");
     }
-
 }
 
 void IntroGUI::LoadHighscore()
@@ -745,6 +732,7 @@ void IntroGUI::LoadHighscore()
     GUISprite* hardHighscore = new GUISprite(dx11, "Sprites/hardHighscore.png", 880.0f, 150.0f);
     gui->AddGUIObject(hardHighscore, "hardHighscore");
 
+    // Display highscorelists
     gamemanager->DisplayHighscore(gui);
 
     GUISprite* backtomenu = new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f);
@@ -795,18 +783,6 @@ void IntroGUI::LoadQuit()
     gui->AddGUIObject(new GUISprite(dx11, "Sprites/backtointro.png", 100.0f, 500.0f), "backtointro");
     
     first = false;
-}
-
-void IntroGUI::ClearButtons()
-{
-    for (auto& it : *gui->GetGUIButtonList())
-    {
-        // Do stuff
-        GUIObject* test = it.second;
-        delete test;
-
-    }
-    gui->GetGUIButtonList()->clear();
 }
 
 void IntroGUI::ClearGUI()

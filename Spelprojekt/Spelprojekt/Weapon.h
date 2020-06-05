@@ -7,7 +7,6 @@
 #include "Gamemanager.h"
 #include "Entities.h"
 #include "WorldContext.h"
-//#include "Player.h"
 
 class Player;
 

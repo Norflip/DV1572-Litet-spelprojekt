@@ -9,7 +9,6 @@ Weapon::Weapon(WeaponType type, ObjectLayer layer, Mesh* mesh, Material* materia
 	this->inFlight = false;
 	this->damage = 0;
 	this->used = 0;
-	//this->player = nullptr;
 	this->movementspeed = 0;
 	this->damage = 0;
 }

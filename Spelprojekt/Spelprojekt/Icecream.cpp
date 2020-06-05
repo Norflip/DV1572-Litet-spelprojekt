@@ -37,14 +37,6 @@ void Icecream::Update(const float& deltaTime)
 	UpdateHitPlayer();
 }
 
-//
-//void Icecream::RotateProjectile(float deltaTime)
-//{
-//	nextPos = { (GetTransform().GetPosition().m128_f32[0] + (-std::sinf(direction.m128_f32[1]) * movementspeed) * deltaTime) ,GetTransform().GetPosition().m128_f32[1], (GetTransform().GetPosition().m128_f32[2] + (-std::cosf(direction.m128_f32[1]) * movementspeed) * deltaTime) };	// 30 = speed
-//	GetTransform().SetPosition(nextPos);
-//	GetTransform().SetRotation({ (GetTransform().GetRotation().m128_f32[0] + (-8.f * deltaTime)) ,GetTransform().GetRotation().m128_f32[1]  ,GetTransform().GetRotation().m128_f32[2] });
-//}
-
 void Icecream::PlaySoundEffect()
 {
 	context->gamemanager->GetSoundeffectHandler()->PlaySound("Swoosh", context->gamemanager->GetCurrentSoundVolume());

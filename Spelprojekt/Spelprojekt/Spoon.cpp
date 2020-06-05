@@ -24,7 +24,6 @@ Spoon::~Spoon()
 void Spoon::TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot)
 {
 	Weapon::TriggerAttack(pos, rot);
-	// USED? 
 	this->inFlight = true;
 }
 
@@ -49,9 +48,3 @@ void Spoon::PlaySoundEffect()
 void Spoon::PlayBreaksound()
 {
 }
-
-//void Spoon::PlayBreaksound()
-//{
-//	context->gamemanager->GetSoundeffectHandler()->PlaySound("Splash", context->gamemanager->GetCurrentSoundVolume());
-//}
-
