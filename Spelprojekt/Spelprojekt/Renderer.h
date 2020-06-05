@@ -19,7 +19,6 @@ class Renderer
 {
 	const float SHADOW_MAP_SIZE = 2048;
 
-
 public:
 	Renderer(size_t width, size_t height, Timer&, DX11Handler&);
 	virtual ~Renderer();
@@ -37,7 +36,6 @@ public:
 	void ShadowPass(DirectX::XMVECTOR focus, const AABB& bounds, Camera* camera, Entities* entities);
 	void DisplayFrame(Camera* camera);
 	void setVsync(bool vsync) { this->vSync = vSync; }
-
 	void DrawScreenQuad();
 
 private:
@@ -68,5 +66,4 @@ private:
 	RenderTarget* currentRenderTarget;
 
 	ID3D11SamplerState* gbuffersampler;
-	//Texture* ssaoRandomTexture;
 };

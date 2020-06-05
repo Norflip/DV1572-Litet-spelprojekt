@@ -18,9 +18,8 @@ public:
 	void Update();
 
 	void LoadStart();
-	void Restart();	//Game starts here
-
-	void Quit(); // Sure to Quit
+	void Restart();
+	void Quit();
 	void LoadQuit();
 
 private:

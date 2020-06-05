@@ -1,9 +1,7 @@
 #pragma once
 #include "DX11Handler.h"
 #include "GUI.h"
-//#include "GUIText.h"
 #include "SoundHandler.h"
-
 
 const int MAXSCORES = 6;	// 6 is for new score + sortation
 

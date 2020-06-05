@@ -34,18 +34,8 @@ public:
 	ID3D11SamplerState* CreateSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE mode);
 	ID3D11SamplerState* GetDefaultSampler() const { return this->defaultSampler; }
 
-	/*
-	void SetRenderTarget(RenderTarget* target) { this->backbuffer = target; }
-	ID3D11Texture2D* GetBackBufferPtr() const { return this->backBufferPtr; }
-
-	ID3D11RenderTargetView* GetRTV() const { return this->backbufferRTV; }
-	void SetRTV(ID3D11RenderTargetView* rtv) { this->backbufferRTV = rtv; }
-	*/
-
 	template <typename T> ID3D11Buffer* CreateBuffer (T& data);
 	
-	void SetFullscreen(bool fullscreen);
-
 private:
 	void CreateBackbufferRenderTarget(size_t width, size_t height);
 

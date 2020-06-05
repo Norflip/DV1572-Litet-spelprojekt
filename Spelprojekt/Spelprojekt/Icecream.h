@@ -15,11 +15,7 @@ public:
 	virtual ~Icecream();
 
 	void Update(const float& deltaTime) override;
-
-	//void TriggerAttack(DirectX::XMVECTOR pos, DirectX::XMVECTOR rot) override;
-	//void RotateProjectile(float deltaTime);
 	void PlaySoundEffect() override;
 	void PlayBreaksound() override;
 	void UpdateHitPlayer();
-
 };

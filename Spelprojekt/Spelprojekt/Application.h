@@ -8,12 +8,12 @@
 #include "Input.h"
 #include <stack>
 #include "Physics.h"
-
 #include "Timer.h"
 #include <vector>
 #include "EndScene.h"
 #include "Gamemanager.h"
 #include <future>
+
 class Application
 {
 	const float TARGET_FIXED_DELTA = 1.0f / 50.0f;

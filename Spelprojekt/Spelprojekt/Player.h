@@ -28,7 +28,6 @@ public:
 	void IncreaseHealth();
 	void HealthCheck(float deltaTime);
 
-	//void UpdateMeleeWeaponPosition();
 	void UseWeapon();
 	void WeaponUsage(Weapon*, bool& hand);
 
@@ -65,24 +64,18 @@ private:
 	GUI* gui;
 	WorldContext* context;
 
-	// Weapon stuff
 	Weapon* rightWeapon;
 	Weapon* leftWeapon;	
 	Weapon* activeWeapon;	
 	GUIActionbar* leftActionbar;
 	GUIActionbar* rightActionbar;
-	bool lefthandFull, righthandFull;
-	//
-	
+	bool lefthandFull, righthandFull;	
 
 	DirectX::XMFLOAT3 currentPosition;
 	float nextDir = 0;	
 
 	std::vector<Weapon*> weapons;
-
-	// New
 	float playerHealth;
-	//
 
 	DirectX::XMVECTOR arrowRotation;
 	Object* arrow;
@@ -91,7 +84,6 @@ private:
 	bool isMoving;
 	bool rangedAttacking;
 	bool meleeAttacking;
-
 	float healthTimer;
 }; 
 

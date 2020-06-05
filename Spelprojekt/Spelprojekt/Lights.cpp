@@ -10,10 +10,7 @@ Lights::Lights(size_t screenWidth, size_t screenHeight, size_t width, size_t hei
 
 	// Initialiserade för att slippa varningar //
 	this->pointLight_ID = 0;
-	this->tProjection = DirectX::XMMatrixIdentity();
 	this->dirty = false;
-	this->tShadowTransform = DirectX::XMMatrixIdentity();
-	this->tView = DirectX::XMMatrixIdentity();
 	this->lightConstantBuffer = LightData();
 	// Initialiserade för att slippa varningar
 

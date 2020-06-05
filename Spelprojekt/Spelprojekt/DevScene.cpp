@@ -111,8 +111,6 @@ void DevScene::Load()
 	water->GetTransform().Translate({ 0,5,0, });
 	water->GetTransform().SetRotation({ 0,0,0 });
 	entities->InsertObject(water);
-	water->isWater = true;
-
 
 	// ------ PLAYER
 	this->player = new Player(resources.GetModel("playerModel"), controller, gui, context);

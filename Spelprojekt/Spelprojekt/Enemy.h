@@ -61,14 +61,8 @@ private:
 	float nextDir = 0.0f;
 	float enemyHeight = 4.65f;
 
-	// ENEMY SHOT
 	float cooldownTimer;
-
-	// ENEMYHP
 	float health;
-
-	// FILIPS VARIATION
 	Icecream* weapon;
-
 	bool moving;
 };

@@ -44,9 +44,7 @@ public:
 	void CreateSceneObjects();
 
 	std::string getName() { return this->sceneName; };
-	void checkForNextScene();
 	void SetNextScene(bool winOrLose);
-	
 
 private:
 	void UpdateGUI(const float& deltaTime);

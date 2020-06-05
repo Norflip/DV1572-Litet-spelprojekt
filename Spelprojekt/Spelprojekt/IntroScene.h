@@ -27,13 +27,11 @@ public:
 	Scene* GetNextScene() const override;
 
 	CameraController* controller;
-	//GUISprite* healthFrame;
 	void setNextScene();
 	bool& exitGame;
 	std::thread* threadPtr;
 private:
 	IntroGUI* introGUI;
-	//Input* input;
 	GUI* gui;
 	std::vector<Scene*>& scenes;		
 	Gamemanager* gamemanager;

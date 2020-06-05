@@ -68,7 +68,7 @@ void EndScene::SetNextScene(std::string whichScene)
 	}
 }
 
-bool EndScene::getWinOrLose()
+bool EndScene::GetWinOrLose()
 {
 	return this->didWin;
 }

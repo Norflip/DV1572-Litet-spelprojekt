@@ -12,6 +12,7 @@ struct WorldData
 	DirectX::XMMATRIX invWorld;
 	DirectX::XMMATRIX invView;
 	DirectX::XMMATRIX vp;
+
 	DirectX::XMFLOAT3 centre;
 	float pad0;
 	DirectX::XMFLOAT3 cameraRight;
@@ -58,17 +59,13 @@ struct MaterialData
 	DirectX::XMFLOAT4 ambient;
 	DirectX::XMFLOAT4 diffuse;
 	DirectX::XMFLOAT4 specular;
-	//DirectX::XMFLOAT4 emissive;
 
 	float shininess;
 	float md_pad[3];
 
-	//float reflectivity;
-
 	// bools för vilka textures som används
 	bool hasAlbedoTexture;
 	bool hasNormalTexture;
-
 };
 
 const int SSAO_CONSTANT_BUFFER_SLOT = 3;

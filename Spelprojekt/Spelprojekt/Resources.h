@@ -28,10 +28,6 @@ inline void Resources::AddResource(std::string key, T* resource)
 	{
 		resourceMap.insert({ key, static_cast<void*>(resource) });
 	}
-	else
-	{
-		Logger::Write("DUUUUPLICATE 2i2i2i2i2");
-	}
 }
 
 template<typename T>
