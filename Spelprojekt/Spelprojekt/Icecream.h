@@ -13,7 +13,6 @@ public:
 	Icecream(AssimpHandler::AssimpData modelData, WorldContext* context);
 	Icecream(const Icecream& other);
 	virtual ~Icecream();
-
 	void Update(const float& deltaTime) override;
 	void PlaySoundEffect() override;
 	void PlayBreaksound() override;

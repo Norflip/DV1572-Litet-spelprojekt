@@ -110,7 +110,7 @@ void Gamemanager::LoadMusicTracks()
 
 void Gamemanager::PlayMusic()
 {
-	this->music->StopSound();
+	this->music->ResetSound();
 
 	switch (GetCurrentTrack()) {
 	case 1:
@@ -132,24 +132,8 @@ void Gamemanager::UpdateHighscore(GUI* gui, int score)
 		if (score > easyHighscorePoints[4]) {
 			GUISprite* newHighscore = new GUISprite(*dxhandler, "Sprites/newhighscore.png", 655.0f, 180.0f);
 			gui->AddGUIObject(newHighscore, "highscore");
-
-			// Init all to OLD. 
-			for (int i = 0; i < MAXSCORES; i++) {
-				easyHighscoreName[i] = "OLD";
-			}
-
-			// Change 6th place in array before sortation
-			easyHighscorePoints[5] = GetCurrentScore();
-			easyHighscoreName[5] = "LATEST";
-
-			// Sort highscore
-			SortHighscore(easyHighscoreName, easyHighscorePoints, MAXSCORES);
-
-			// Rename and set new scores to guitexts
-			for (int i = 0; i < MAXSCORES; i++) {
-				displayEasyPoints[i]->SetString(std::to_string(static_cast<int>(easyHighscorePoints[i])));
-				displayEasyNames[i]->SetString(easyHighscoreName[i]);
-			}
+						
+			NewHighscore(easyHighscoreName, easyHighscorePoints, displayEasyNames, displayEasyPoints);
 
 			// Write to file again
 			writeToHighscore.open("Datafiles/easyHighscore.txt");
@@ -166,24 +150,8 @@ void Gamemanager::UpdateHighscore(GUI* gui, int score)
 		if (score > normalHighscorePoints[4]) {
 			GUISprite* newHighscore = new GUISprite(*dxhandler, "Sprites/newhighscore.png", 655.0f, 180.0f);
 			gui->AddGUIObject(newHighscore, "highscore");
-
-			// Init all to OLD. 
-			for (int i = 0; i < MAXSCORES; i++) {
-				normalHighscoreName[i] = "OLD";
-			}
-
-			// Change 6th place in array before sortation
-			normalHighscorePoints[5] = GetCurrentScore();
-			normalHighscoreName[5] = "LATEST";
-
-			// Sort highscore
-			SortHighscore(normalHighscoreName, normalHighscorePoints, MAXSCORES);
-
-			// Rename and set new scores to guitexts
-			for (int i = 0; i < MAXSCORES; i++) {
-				displayNormalPoints[i]->SetString(std::to_string(static_cast<int>(normalHighscorePoints[i])));
-				displayNormalNames[i]->SetString(normalHighscoreName[i]);
-			}
+						
+			NewHighscore(normalHighscoreName, normalHighscorePoints, displayNormalNames, displayNormalPoints);
 
 			// Write to file again
 			writeToHighscore.open("Datafiles/normalHighscore.txt");
@@ -201,23 +169,7 @@ void Gamemanager::UpdateHighscore(GUI* gui, int score)
 			GUISprite* newHighscore = new GUISprite(*dxhandler, "Sprites/newhighscore.png", 655.0f, 180.0f);
 			gui->AddGUIObject(newHighscore, "highscore");
 
-			// Init all to OLD. 
-			for (int i = 0; i < MAXSCORES; i++) {
-				hardHighscoreName[i] = "OLD";
-			}
-
-			// Change 6th place in array before sortation
-			hardHighscorePoints[5] = GetCurrentScore();
-			hardHighscoreName[5] = "LATEST";
-
-			// Sort highscore
-			SortHighscore(hardHighscoreName, hardHighscorePoints, MAXSCORES);
-
-			// Rename and set new scores to guitexts
-			for (int i = 0; i < MAXSCORES; i++) {
-				displayHardPoints[i]->SetString(std::to_string(static_cast<int>(hardHighscorePoints[i])));
-				displayHardNames[i]->SetString(hardHighscoreName[i]);
-			}
+			NewHighscore(hardHighscoreName, hardHighscorePoints, displayHardNames, displayHardPoints);
 
 			// Write to file again
 			writeToHighscore.open("Datafiles/hardHighscore.txt");
@@ -233,6 +185,27 @@ void Gamemanager::UpdateHighscore(GUI* gui, int score)
 	}	
 }
 
+void Gamemanager::NewHighscore(std::string highscoreName[], int highscoreScore[], GUIText* displayHighscorename[], GUIText* displayHighscorePoints[])
+{
+	// Init all to OLD. 
+	for (int i = 0; i < MAXSCORES; i++) {
+		highscoreName[i] = "OLD";
+	}
+
+	// Change 6th place in array before sortation
+	highscoreScore[5] = GetCurrentScore();
+	highscoreName[5] = "LATEST";
+
+	// Sort highscore
+	SortHighscore(highscoreName, highscoreScore, MAXSCORES);
+
+	// Rename and set new scores to guitexts
+	for (int i = 0; i < MAXSCORES; i++) {
+		displayHighscorePoints[i]->SetString(std::to_string(static_cast<int>(highscoreScore[i])));
+		displayHighscorename[i]->SetString(highscoreName[i]);
+	}
+}
+
 void Gamemanager::DisplayHighscore(GUI* gui)
 {
 	// EASY DISPLAY HIGHSCORE
@@ -240,7 +213,7 @@ void Gamemanager::DisplayHighscore(GUI* gui)
 	for (int i = 0; i < 5; i++) {
 		newEasyHighscoreName[i] = new GUIText(*displayEasyNames[i]);
 		newEasyHighscoreName[i]->SetFontSize({ 1.3f, 1.3f });
-	}
+	}	
 
 	newEasyHighscoreName[0]->SetPosition(145, 260);
 	newEasyHighscoreName[1]->SetPosition(145, 305);

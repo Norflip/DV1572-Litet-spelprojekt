@@ -12,6 +12,8 @@ SoundHandler::SoundHandler()
 	this->audioEngine = new DirectX::AudioEngine(eflags);
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	assert(SUCCEEDED(hr));
+
+	this->soundEffect = nullptr;
 }
 
 SoundHandler::~SoundHandler()
@@ -21,7 +23,6 @@ SoundHandler::~SoundHandler()
 	}
 
 	soundMap.clear();
-	//delete audioEngine;
 }
 
 void SoundHandler::LoadSound(std::string key, std::string filePath)
@@ -57,34 +58,15 @@ float SoundHandler::GetGlobalVolume()
 	return audioEngine->GetMasterVolume();
 }
 
-void SoundHandler::StopSound()
+void SoundHandler::ResetSound()
 {
-	audioEngine->Reset(); // Think this is it. 
-
-	/*if (audioEngine != nullptr) {
-		audioEngine = nullptr;
-		delete audioEngine;
-	}
-		
-	if (soundEffect != nullptr)
-	{
-		soundEffect = nullptr;
-		delete soundEffect;
-	}
-
-	if (soundMap[key]) {
-		soundMap[key] = nullptr;
-		delete soundMap[key];
-	}*/
-		
+	audioEngine->Reset(); 
 }
 
 void SoundHandler::DeleteTrack(std::string key)
 {
 	if (HasKey(key))
 	{
-		//soundEffect = new DirectX::SoundEffect(audioEngine, convertString.c_str());
 		soundMap.erase( key );
 	}
-
 }

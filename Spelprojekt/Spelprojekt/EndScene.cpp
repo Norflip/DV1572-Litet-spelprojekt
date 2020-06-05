@@ -28,8 +28,8 @@ void EndScene::Load()
 
 void EndScene::Unload()
 {
-	this->gamemanager->GetMusicHandler()->StopSound();
-	this->gamemanager->GetSoundeffectHandler()->StopSound();
+	this->gamemanager->GetMusicHandler()->ResetSound();
+	this->gamemanager->GetSoundeffectHandler()->ResetSound();
 }
 
 void EndScene::LoadResources()

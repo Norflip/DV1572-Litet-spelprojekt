@@ -33,7 +33,6 @@ public:
 	void Load() override;
 	void Unload() override;
 	void LoadResources() override;
-
 	void Update(const float& deltaTime) override;
 	void FixedUpdate(const float& fixedDeltaTime) override;
 
@@ -90,5 +89,4 @@ private:
 	const aiScene* assimpScene;
 
 	Object* tourist[3];
-	Object* touristOne, *touristTwo, *touristThree;
 };

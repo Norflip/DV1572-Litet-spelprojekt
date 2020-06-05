@@ -27,7 +27,7 @@ public:
 			
 	void Update();
 
-	void Start();	//Game starts here
+	void Start();
 	void LoadStart();
 
 	void HowToPlay();
@@ -36,7 +36,7 @@ public:
 	void Credits();
 	void LoadsCredits();
 
-	void Options(); // enable / disable stuff
+	void Options(); 
 	void LoadOptions();
 
 	void Soundtracks();
@@ -49,7 +49,6 @@ public:
 	void LoadQuit();
 
 private:
-	void ClearButtons();
 	void ClearGUI();
 
 	bool first = true;

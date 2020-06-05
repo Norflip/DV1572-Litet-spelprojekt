@@ -8,13 +8,6 @@ GUI::GUI(DX11Handler& dx11) : dx11(dx11)
 void GUI::AddGUIObject(GUIObject *addObj, std::string name)
 {
 	GUIObjects.insert({ name,addObj });
-	//GUIObjects[name] = addObj;
-}
-
-void GUI::AddGUIButtonObject(GUIObject* addButton, std::string name)
-{
-	GUIButtons.insert({ name,addButton });
-	//GUIObjects[name] = addObj;
 }
 
 void GUI::RemoveGUIObject(std::string name)

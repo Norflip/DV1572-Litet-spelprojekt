@@ -72,6 +72,7 @@ public:
 	void SortHighscore(std::string name[], int points[], int totalscores);
 	void UpdateHighscore(GUI* gui, int score);
 	void DisplayHighscore(GUI* gui);
+	void NewHighscore(std::string highscoreName[], int highscoreScore[], GUIText* displayHighscorename[], GUIText* displayHighscorePoints[]);
 
 private:
 	DX11Handler* dxhandler;
