@@ -247,7 +247,7 @@ void DevScene::LoadResources()
 	resources.AddModel("coconutModel", AssimpHandler::loadFbxObject("Models/Coconut.fbx", dx11, toonShader));
 	resources.AddModel("spoonModel", AssimpHandler::loadFbxObject("Models/Spoon.fbx", dx11, toonShader));
 	resources.AddModel("wagonModel", AssimpHandler::loadFbxObject("Models/Wagon.fbx", dx11, toonShader));
-	resources.AddModel("enemyModel", AssimpHandler::loadFbxObject("Animations/animanim.fbx", dx11, animationShader));
+	resources.AddModel("enemyModel", AssimpHandler::loadFbxObject("Animations/enemy.fbx", dx11, animationShader));
 	resources.AddModel("arrowModel", AssimpHandler::loadFbxObject("Models/Arrow.fbx", dx11, toonShader));
 
 	resources.AddModel("quadInv", AssimpHandler::loadFbxObject("Models/QuadInv.fbx", dx11, billboardShader));
@@ -291,8 +291,6 @@ void DevScene::LoadResources()
 	this->assimpScene = imp.ReadFile("Animations/Glasse_Attack_Right.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
 	AssimpHandler::saveAnimationData(assimpScene, playerModel->mesh->skeleton, "Attack");
 
-	this->assimpScene = imp.ReadFile("Animations/Glasse_Melee_Attack.fbx", aiProcess_MakeLeftHanded | aiProcess_Triangulate);
-	AssimpHandler::saveAnimationData(assimpScene, playerModel->mesh->skeleton, "Melee");
 
 	/*
 		PREFABS
