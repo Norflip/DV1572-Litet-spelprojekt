@@ -106,7 +106,7 @@ void IntroScene::LoadResources()
 	// ------- TERRAIN
 	Shader* terrainShader = new Shader();
 	terrainShader->LoadPixelShader(L"Shaders/Terrain_ps.hlsl", "main", dx11.GetDevice());
-	terrainShader->LoadVertexShader(L"Shaders/Default_vs.hlsl", "main", dx11.GetDevice());
+	terrainShader->LoadVertexShader(L"Shaders/ToonShader_vs.hlsl", "main", dx11.GetDevice());
 
 	resources.AddResource("toonShader", toonShader);
 	resources.AddResource("terrainShader", terrainShader);
